@@ -7,6 +7,7 @@ import {
   Calendar, 
   Sparkles, 
   BarChart3, 
+  Settings as SettingsIcon,
   LogOut,
   Menu,
   X
@@ -50,6 +51,7 @@ export default function Layout({ children, currentPageName }) {
     { name: 'Activities', icon: Sparkles, page: 'Activities', adminOnly: true },
     { name: 'Calendar', icon: Calendar, page: 'Calendar', adminOnly: true },
     { name: 'Analytics', icon: BarChart3, page: 'Analytics', adminOnly: true },
+    { name: 'Settings', icon: SettingsIcon, page: 'Settings', adminOnly: true },
   ];
 
   const filteredNav = navigation.filter(item => !item.adminOnly || isAdmin);

@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import ActivityCard from '../components/activities/ActivityCard';
+import ActivityGenerator from '../components/ai/ActivityGenerator';
 import {
   Dialog,
   DialogContent,
@@ -25,6 +26,7 @@ export default function Activities() {
   const [selectedType, setSelectedType] = useState('all');
   const [selectedDuration, setSelectedDuration] = useState('all');
   const [viewingActivity, setViewingActivity] = useState(null);
+  const [showGenerator, setShowGenerator] = useState(false);
 
   useEffect(() => {
     const loadUser = async () => {
@@ -99,7 +101,10 @@ export default function Activities() {
             {filteredActivities.length} activities available
           </p>
         </div>
-        <Button className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700">
+        <Button 
+          onClick={() => setShowGenerator(true)}
+          className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700"
+        >
           <Plus className="h-4 w-4 mr-2" />
           Create Custom Activity
         </Button>
@@ -230,6 +235,16 @@ export default function Activities() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Activity Generator */}
+      <ActivityGenerator
+        open={showGenerator}
+        onOpenChange={setShowGenerator}
+        onActivityCreated={(activity) => {
+          setShowGenerator(false);
+          toast.success('Custom activity created!');
+        }}
+      />
     </div>
   );
 }

@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { Button } from '@/components/ui/button';
 import StatsCard from '../components/dashboard/StatsCard';
 import EventCalendarCard from '../components/events/EventCalendarCard';
+import AISuggestionsWidget from '../components/ai/AISuggestionsWidget';
+import ActivityGenerator from '../components/ai/ActivityGenerator';
 import { 
   Calendar, 
   Users, 
@@ -17,7 +19,9 @@ import {
 import { toast } from 'sonner';
 
 export default function Dashboard() {
+  const navigate = useNavigate();
   const [user, setUser] = useState(null);
+  const [showGenerator, setShowGenerator] = useState(false);
 
   useEffect(() => {
     const loadUser = async () => {
@@ -79,6 +83,14 @@ export default function Dashboard() {
   const handleCancelEvent = async (event) => {
     await base44.entities.Event.update(event.id, { status: 'cancelled' });
     toast.success('Event cancelled');
+  };
+
+  const handleScheduleActivity = (activity) => {
+    navigate(`${createPageUrl('Calendar')}?activity=${activity.id}`);
+  };
+
+  const handleActivityCreated = (activity) => {
+    handleScheduleActivity(activity);
   };
 
   if (!user) {
@@ -202,6 +214,12 @@ export default function Dashboard() {
         )}
       </div>
 
+      {/* AI Suggestions */}
+      <AISuggestionsWidget 
+        onScheduleActivity={handleScheduleActivity}
+        onGenerateCustom={() => setShowGenerator(true)}
+      />
+
       {/* Quick Actions */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Link to={createPageUrl('Activities')} className="group">
@@ -228,6 +246,13 @@ export default function Dashboard() {
           </div>
         </Link>
       </div>
+
+      {/* Activity Generator Dialog */}
+      <ActivityGenerator
+        open={showGenerator}
+        onOpenChange={setShowGenerator}
+        onActivityCreated={handleActivityCreated}
+      />
     </div>
   );
 }
