@@ -1,0 +1,335 @@
+import React, { useState, useEffect } from 'react';
+import { base44 } from '@/api/base44Client';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import EventCalendarCard from '../components/events/EventCalendarCard';
+import { Calendar as CalendarIcon, Plus, Copy } from 'lucide-react';
+import { toast } from 'sonner';
+import { format } from 'date-fns';
+
+export default function Calendar() {
+  const queryClient = useQueryClient();
+  const [user, setUser] = useState(null);
+  const [showScheduleDialog, setShowScheduleDialog] = useState(false);
+  const [formData, setFormData] = useState({
+    activity_id: '',
+    title: '',
+    scheduled_date: '',
+    duration_minutes: 30,
+    max_participants: null,
+    custom_instructions: '',
+    meeting_link: ''
+  });
+
+  useEffect(() => {
+    const loadUser = async () => {
+      try {
+        const currentUser = await base44.auth.me();
+        setUser(currentUser);
+        if (currentUser.role !== 'admin') {
+          base44.auth.redirectToLogin();
+        }
+      } catch (error) {
+        base44.auth.redirectToLogin();
+      }
+    };
+    loadUser();
+
+    // Check for pre-selected activity from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const activityId = urlParams.get('activity');
+    if (activityId) {
+      setFormData(prev => ({ ...prev, activity_id: activityId }));
+      setShowScheduleDialog(true);
+    }
+  }, []);
+
+  const { data: events = [], isLoading } = useQuery({
+    queryKey: ['events'],
+    queryFn: () => base44.entities.Event.list('-scheduled_date', 100)
+  });
+
+  const { data: activities = [] } = useQuery({
+    queryKey: ['activities'],
+    queryFn: () => base44.entities.Activity.list()
+  });
+
+  const { data: allParticipations = [] } = useQuery({
+    queryKey: ['participations'],
+    queryFn: () => base44.entities.Participation.list()
+  });
+
+  const createEventMutation = useMutation({
+    mutationFn: async (data) => {
+      const magicLink = `event-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      return base44.entities.Event.create({
+        ...data,
+        magic_link: magicLink,
+        status: 'scheduled'
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['events']);
+      setShowScheduleDialog(false);
+      setFormData({
+        activity_id: '',
+        title: '',
+        scheduled_date: '',
+        duration_minutes: 30,
+        max_participants: null,
+        custom_instructions: '',
+        meeting_link: ''
+      });
+      toast.success('Event scheduled successfully!');
+    }
+  });
+
+  const cancelEventMutation = useMutation({
+    mutationFn: (eventId) => base44.entities.Event.update(eventId, { status: 'cancelled' }),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['events']);
+      toast.success('Event cancelled');
+    }
+  });
+
+  const getParticipantCount = (eventId) => {
+    return allParticipations.filter(p => p.event_id === eventId).length;
+  };
+
+  const handleCopyLink = (event) => {
+    const link = `${window.location.origin}/ParticipantEvent?event=${event.magic_link || event.id}`;
+    navigator.clipboard.writeText(link);
+    toast.success('Magic link copied!');
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const selectedActivity = activities.find(a => a.id === formData.activity_id);
+    createEventMutation.mutate({
+      ...formData,
+      title: formData.title || selectedActivity?.title || 'Untitled Event'
+    });
+  };
+
+  const upcomingEvents = events.filter(e => 
+    e.status === 'scheduled' && new Date(e.scheduled_date) > new Date()
+  );
+  
+  const pastEvents = events.filter(e => 
+    e.status === 'completed' || (e.status === 'scheduled' && new Date(e.scheduled_date) <= new Date())
+  );
+
+  if (!user) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-8">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <h1 className="text-3xl font-bold text-slate-900 mb-2">Event Calendar</h1>
+          <p className="text-slate-600">Schedule and manage your team activities</p>
+        </div>
+        <Button
+          onClick={() => setShowScheduleDialog(true)}
+          className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700"
+        >
+          <Plus className="h-4 w-4 mr-2" />
+          Schedule Event
+        </Button>
+      </div>
+
+      {/* Upcoming Events */}
+      <div>
+        <h2 className="text-2xl font-bold text-slate-900 mb-4">Upcoming Events</h2>
+        {isLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[1, 2, 3].map(i => (
+              <div key={i} className="h-48 bg-slate-100 animate-pulse rounded-xl" />
+            ))}
+          </div>
+        ) : upcomingEvents.length === 0 ? (
+          <div className="text-center py-12 bg-white rounded-xl border-2 border-dashed border-slate-300">
+            <CalendarIcon className="h-12 w-12 text-slate-400 mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-slate-900 mb-2">No upcoming events</h3>
+            <p className="text-slate-600 mb-4">Schedule your first event to get started</p>
+            <Button onClick={() => setShowScheduleDialog(true)} className="bg-indigo-600 hover:bg-indigo-700">
+              <Plus className="h-4 w-4 mr-2" />
+              Schedule Event
+            </Button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {upcomingEvents.map(event => {
+              const activity = activities.find(a => a.id === event.activity_id);
+              return (
+                <EventCalendarCard
+                  key={event.id}
+                  event={event}
+                  activity={activity}
+                  participantCount={getParticipantCount(event.id)}
+                  onView={() => {}}
+                  onCopyLink={handleCopyLink}
+                  onCancel={(e) => cancelEventMutation.mutate(e.id)}
+                />
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      {/* Past Events */}
+      {pastEvents.length > 0 && (
+        <div>
+          <h2 className="text-2xl font-bold text-slate-900 mb-4">Past Events</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {pastEvents.slice(0, 6).map(event => {
+              const activity = activities.find(a => a.id === event.activity_id);
+              return (
+                <EventCalendarCard
+                  key={event.id}
+                  event={event}
+                  activity={activity}
+                  participantCount={getParticipantCount(event.id)}
+                  onView={() => {}}
+                  onCopyLink={handleCopyLink}
+                  onCancel={() => {}}
+                />
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Schedule Event Dialog */}
+      <Dialog open={showScheduleDialog} onOpenChange={setShowScheduleDialog}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Schedule New Event</DialogTitle>
+            <DialogDescription>
+              Create a new team activity event
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <Label>Select Activity</Label>
+              <Select
+                value={formData.activity_id}
+                onValueChange={(value) => {
+                  const activity = activities.find(a => a.id === value);
+                  setFormData(prev => ({
+                    ...prev,
+                    activity_id: value,
+                    title: activity?.title || ''
+                  }));
+                }}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Choose an activity..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {activities.map(activity => (
+                    <SelectItem key={activity.id} value={activity.id}>
+                      {activity.title} ({activity.type} • {activity.duration})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <Label>Event Title</Label>
+              <Input
+                value={formData.title}
+                onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+                placeholder="Override activity title (optional)"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label>Date & Time</Label>
+                <Input
+                  type="datetime-local"
+                  value={formData.scheduled_date}
+                  onChange={(e) => setFormData(prev => ({ ...prev, scheduled_date: e.target.value }))}
+                  required
+                />
+              </div>
+              <div>
+                <Label>Duration (minutes)</Label>
+                <Input
+                  type="number"
+                  value={formData.duration_minutes}
+                  onChange={(e) => setFormData(prev => ({ ...prev, duration_minutes: parseInt(e.target.value) }))}
+                  required
+                />
+              </div>
+            </div>
+
+            <div>
+              <Label>Max Participants (optional)</Label>
+              <Input
+                type="number"
+                value={formData.max_participants || ''}
+                onChange={(e) => setFormData(prev => ({ ...prev, max_participants: e.target.value ? parseInt(e.target.value) : null }))}
+                placeholder="Leave empty for unlimited"
+              />
+            </div>
+
+            <div>
+              <Label>Meeting Link (optional)</Label>
+              <Input
+                type="url"
+                value={formData.meeting_link}
+                onChange={(e) => setFormData(prev => ({ ...prev, meeting_link: e.target.value }))}
+                placeholder="https://zoom.us/j/..."
+              />
+            </div>
+
+            <div>
+              <Label>Custom Instructions (optional)</Label>
+              <Textarea
+                value={formData.custom_instructions}
+                onChange={(e) => setFormData(prev => ({ ...prev, custom_instructions: e.target.value }))}
+                placeholder="Add any special instructions for this event..."
+                rows={3}
+              />
+            </div>
+
+            <div className="flex justify-end gap-3 pt-4">
+              <Button type="button" variant="outline" onClick={() => setShowScheduleDialog(false)}>
+                Cancel
+              </Button>
+              <Button type="submit" className="bg-indigo-600 hover:bg-indigo-700">
+                Schedule Event
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}
