@@ -206,6 +206,37 @@ export default function Dashboard() {
                   participantCount={getParticipantCount(event.id)}
                   onView={(e) => {/* TODO: implement view */}}
                   onCopyLink={handleCopyLink}
+                  onDownloadCalendar={async (e) => {
+                    try {
+                      const response = await base44.functions.invoke('generateCalendarFile', {
+                        eventId: e.id
+                      });
+                      const blob = new Blob([response.data], { type: 'text/calendar' });
+                      const url = window.URL.createObjectURL(blob);
+                      const a = document.createElement('a');
+                      a.href = url;
+                      a.download = `${e.title.replace(/[^a-z0-9]/gi, '_')}.ics`;
+                      document.body.appendChild(a);
+                      a.click();
+                      window.URL.revokeObjectURL(url);
+                      a.remove();
+                      toast.success('Calendar file downloaded!');
+                    } catch (error) {
+                      toast.error('Failed to generate calendar file');
+                    }
+                  }}
+                  onSendReminder={async (e) => {
+                    try {
+                      await base44.functions.invoke('sendTeamsNotification', {
+                        eventId: e.id,
+                        notificationType: 'reminder'
+                      });
+                      toast.success('Reminder sent to Teams!');
+                    } catch (error) {
+                      toast.error('Failed to send reminder');
+                    }
+                  }}
+                  onSendRecap={() => {}}
                   onCancel={handleCancelEvent}
                 />
               );

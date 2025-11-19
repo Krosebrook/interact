@@ -20,7 +20,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import EventCalendarCard from '../components/events/EventCalendarCard';
-import { Calendar as CalendarIcon, Plus, Copy } from 'lucide-react';
+import { Calendar as CalendarIcon, Plus, Copy, Download } from 'lucide-react';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 
@@ -79,11 +79,24 @@ export default function Calendar() {
   const createEventMutation = useMutation({
     mutationFn: async (data) => {
       const magicLink = `event-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-      return base44.entities.Event.create({
+      const event = await base44.entities.Event.create({
         ...data,
         magic_link: magicLink,
         status: 'scheduled'
       });
+
+      // Send Teams announcement
+      try {
+        await base44.functions.invoke('sendTeamsNotification', {
+          eventId: event.id,
+          notificationType: 'announcement'
+        });
+      } catch (error) {
+        console.error('Failed to send Teams notification:', error);
+        // Don't fail the event creation if Teams notification fails
+      }
+
+      return event;
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['events']);
@@ -97,7 +110,7 @@ export default function Calendar() {
         custom_instructions: '',
         meeting_link: ''
       });
-      toast.success('Event scheduled successfully!');
+      toast.success('Event scheduled and Teams notified! 🎉');
     }
   });
 
@@ -117,6 +130,29 @@ export default function Calendar() {
     const link = `${window.location.origin}/ParticipantEvent?event=${event.magic_link || event.id}`;
     navigator.clipboard.writeText(link);
     toast.success('Magic link copied!');
+  };
+
+  const handleDownloadCalendar = async (event) => {
+    try {
+      const response = await base44.functions.invoke('generateCalendarFile', {
+        eventId: event.id
+      });
+      
+      // Create blob from response
+      const blob = new Blob([response.data], { type: 'text/calendar' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${event.title.replace(/[^a-z0-9]/gi, '_')}.ics`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      a.remove();
+      
+      toast.success('Calendar file downloaded!');
+    } catch (error) {
+      toast.error('Failed to generate calendar file');
+    }
   };
 
   const handleSubmit = (e) => {
@@ -192,6 +228,29 @@ export default function Calendar() {
                   participantCount={getParticipantCount(event.id)}
                   onView={() => {}}
                   onCopyLink={handleCopyLink}
+                  onDownloadCalendar={handleDownloadCalendar}
+                  onSendReminder={async (e) => {
+                    try {
+                      await base44.functions.invoke('sendTeamsNotification', {
+                        eventId: e.id,
+                        notificationType: 'reminder'
+                      });
+                      toast.success('Reminder sent to Teams!');
+                    } catch (error) {
+                      toast.error('Failed to send reminder');
+                    }
+                  }}
+                  onSendRecap={async (e) => {
+                    try {
+                      await base44.functions.invoke('sendTeamsNotification', {
+                        eventId: e.id,
+                        notificationType: 'recap'
+                      });
+                      toast.success('Recap sent to Teams!');
+                    } catch (error) {
+                      toast.error('Failed to send recap');
+                    }
+                  }}
                   onCancel={(e) => cancelEventMutation.mutate(e.id)}
                 />
               );
@@ -215,6 +274,19 @@ export default function Calendar() {
                   participantCount={getParticipantCount(event.id)}
                   onView={() => {}}
                   onCopyLink={handleCopyLink}
+                  onDownloadCalendar={handleDownloadCalendar}
+                  onSendReminder={() => {}}
+                  onSendRecap={async (e) => {
+                    try {
+                      await base44.functions.invoke('sendTeamsNotification', {
+                        eventId: e.id,
+                        notificationType: 'recap'
+                      });
+                      toast.success('Recap sent to Teams!');
+                    } catch (error) {
+                      toast.error('Failed to send recap');
+                    }
+                  }}
                   onCancel={() => {}}
                 />
               );

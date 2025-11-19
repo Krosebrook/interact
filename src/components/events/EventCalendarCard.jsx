@@ -2,7 +2,8 @@ import React from 'react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Calendar, Clock, Users, ExternalLink, Copy, Trash2 } from 'lucide-react';
+import EventActionsMenu from './EventActionsMenu';
+import { Calendar, Clock, Users, ExternalLink } from 'lucide-react';
 import { format } from 'date-fns';
 import { motion } from 'framer-motion';
 
@@ -13,7 +14,17 @@ const statusColors = {
   cancelled: "bg-slate-100 text-slate-700 border-slate-200"
 };
 
-export default function EventCalendarCard({ event, activity, participantCount, onView, onCopyLink, onCancel }) {
+export default function EventCalendarCard({ 
+  event, 
+  activity, 
+  participantCount, 
+  onView, 
+  onCopyLink, 
+  onDownloadCalendar,
+  onSendReminder,
+  onSendRecap,
+  onCancel 
+}) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -66,23 +77,14 @@ export default function EventCalendarCard({ event, activity, participantCount, o
               <ExternalLink className="h-4 w-4 mr-1" />
               View
             </Button>
-            <Button
-              onClick={() => onCopyLink(event)}
-              variant="outline"
-              size="sm"
-            >
-              <Copy className="h-4 w-4" />
-            </Button>
-            {event.status === 'scheduled' && (
-              <Button
-                onClick={() => onCancel(event)}
-                variant="ghost"
-                size="sm"
-                className="text-red-600 hover:text-red-700 hover:bg-red-50"
-              >
-                <Trash2 className="h-4 w-4" />
-              </Button>
-            )}
+            <EventActionsMenu
+              event={event}
+              onCopyLink={onCopyLink}
+              onDownloadCalendar={onDownloadCalendar}
+              onSendReminder={onSendReminder}
+              onSendRecap={onSendRecap}
+              onCancel={onCancel}
+            />
           </div>
         </div>
       </Card>

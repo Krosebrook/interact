@@ -14,7 +14,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Settings as SettingsIcon, Save, Sparkles, RefreshCw, Loader2 } from 'lucide-react';
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from '@/components/ui/tabs';
+import TeamsConfigPanel from '../components/teams/TeamsConfigPanel';
+import { Settings as SettingsIcon, Save, Sparkles, RefreshCw, Loader2, MessageSquare } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function Settings() {
@@ -132,14 +139,28 @@ export default function Settings() {
   }
 
   return (
-    <div className="space-y-8 max-w-4xl">
+    <div className="space-y-8 max-w-5xl">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">AI Settings</h1>
-          <p className="text-slate-600">Customize how AI recommends activities for your team</p>
+          <h1 className="text-3xl font-bold text-slate-900 mb-2">Settings</h1>
+          <p className="text-slate-600">Configure AI recommendations and integrations</p>
         </div>
         <SettingsIcon className="h-8 w-8 text-slate-400" />
       </div>
+
+      <Tabs defaultValue="ai" className="w-full">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="ai" className="flex items-center gap-2">
+            <Sparkles className="h-4 w-4" />
+            AI Recommendations
+          </TabsTrigger>
+          <TabsTrigger value="teams" className="flex items-center gap-2">
+            <MessageSquare className="h-4 w-4" />
+            Microsoft Teams
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="ai" className="space-y-6 mt-6">
 
       {/* Quick Actions */}
       <Card className="p-6 border-0 shadow-lg bg-gradient-to-br from-indigo-50 to-purple-50">
@@ -317,6 +338,12 @@ export default function Settings() {
           )}
         </Button>
       </div>
+        </TabsContent>
+
+        <TabsContent value="teams" className="mt-6">
+          <TeamsConfigPanel />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
