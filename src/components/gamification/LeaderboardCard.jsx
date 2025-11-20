@@ -1,148 +1,104 @@
 import React from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Trophy, Medal, Award, TrendingUp } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-const BADGES_INFO = {
-  first_timer: { emoji: '🎉', name: 'First Timer' },
-  feedback_champion: { emoji: '💬', name: 'Feedback Champion' },
-  consistent_3: { emoji: '🔥', name: '3-Event Streak' },
-  consistent_5: { emoji: '⚡', name: '5-Event Streak' },
-  top_scorer: { emoji: '🏆', name: 'Top Scorer' },
-  super_scorer: { emoji: '👑', name: 'Super Scorer' },
-  engagement_master: { emoji: '⭐', name: 'Engagement Master' },
-  team_player: { emoji: '🤝', name: 'Team Player' },
-  veteran: { emoji: '🎖️', name: 'Veteran' }
+const rankColors = {
+  Newcomer: "bg-slate-100 text-slate-700",
+  Regular: "bg-blue-100 text-blue-700",
+  Enthusiast: "bg-purple-100 text-purple-700",
+  Champion: "bg-amber-100 text-amber-700",
+  Legend: "bg-gradient-to-r from-yellow-400 to-orange-500 text-white"
 };
 
-export default function LeaderboardCard({ limit = 5, showBadges = true }) {
-  const { data: profiles = [], isLoading } = useQuery({
-    queryKey: ['leaderboard'],
-    queryFn: async () => {
-      const profiles = await base44.entities.ParticipantProfile.list('-total_points', 50);
-      return profiles;
-    },
-    refetchInterval: 30000 // Refresh every 30 seconds
-  });
+const positionIcons = {
+  1: { icon: Trophy, color: "text-yellow-500" },
+  2: { icon: Medal, color: "text-slate-400" },
+  3: { icon: Award, color: "text-amber-600" }
+};
 
-  const topProfiles = profiles.slice(0, limit);
-
-  const getRankIcon = (index) => {
-    if (index === 0) return <Trophy className="h-5 w-5 text-yellow-500" />;
-    if (index === 1) return <Medal className="h-5 w-5 text-slate-400" />;
-    if (index === 2) return <Award className="h-5 w-5 text-amber-600" />;
-    return null;
-  };
-
-  if (isLoading) {
-    return (
-      <Card className="p-6 border-0 shadow-lg">
-        <div className="space-y-3">
-          {[1, 2, 3].map(i => (
-            <div key={i} className="h-16 bg-slate-100 animate-pulse rounded-lg" />
-          ))}
-        </div>
-      </Card>
-    );
-  }
+export default function LeaderboardCard({ userStats, position, isCurrentUser }) {
+  const PositionIcon = positionIcons[position]?.icon;
+  const iconColor = positionIcons[position]?.color;
 
   return (
-    <Card className="p-6 border-0 shadow-lg">
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h3 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-            <Trophy className="h-6 w-6 text-yellow-500" />
-            Leaderboard
-          </h3>
-          <p className="text-sm text-slate-600 mt-1">Top participants this month</p>
-        </div>
-        <Badge className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white">
-          <TrendingUp className="h-3 w-3 mr-1" />
-          Live
-        </Badge>
-      </div>
-
-      <div className="space-y-3">
-        {topProfiles.length === 0 ? (
-          <div className="text-center py-8 text-slate-500">
-            <Trophy className="h-12 w-12 mx-auto mb-3 text-slate-300" />
-            <p>No participants yet</p>
+    <motion.div
+      initial={{ opacity: 0, x: -20 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ delay: position * 0.05 }}
+    >
+      <Card className={`p-4 hover:shadow-md transition-all ${
+        isCurrentUser ? 'ring-2 ring-indigo-500 bg-indigo-50' : ''
+      }`}>
+        <div className="flex items-center gap-4">
+          {/* Position */}
+          <div className="flex-shrink-0 w-12 text-center">
+            {position <= 3 ? (
+              <PositionIcon className={`h-8 w-8 mx-auto ${iconColor}`} />
+            ) : (
+              <div className="text-2xl font-bold text-slate-400">#{position}</div>
+            )}
           </div>
-        ) : (
-          topProfiles.map((profile, index) => (
-            <motion.div
-              key={profile.id}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: index * 0.1 }}
-              className={`p-4 rounded-lg border transition-all ${
-                index === 0
-                  ? 'bg-gradient-to-r from-yellow-50 to-orange-50 border-yellow-200'
-                  : index === 1
-                  ? 'bg-slate-50 border-slate-200'
-                  : index === 2
-                  ? 'bg-amber-50 border-amber-200'
-                  : 'bg-white border-slate-200 hover:border-slate-300'
-              }`}
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3 flex-1">
-                  <div className="flex items-center justify-center w-8">
-                    {getRankIcon(index) || (
-                      <span className="font-bold text-slate-600">#{index + 1}</span>
-                    )}
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <p className="font-semibold text-slate-900">
-                        {profile.participant_name}
-                      </p>
-                      {showBadges && profile.badges?.length > 0 && (
-                        <div className="flex gap-1">
-                          {profile.badges.slice(0, 3).map((badgeId) => (
-                            <span
-                              key={badgeId}
-                              className="text-lg"
-                              title={BADGES_INFO[badgeId]?.name}
-                            >
-                              {BADGES_INFO[badgeId]?.emoji}
-                            </span>
-                          ))}
-                          {profile.badges.length > 3 && (
-                            <span className="text-xs text-slate-500">
-                              +{profile.badges.length - 3}
-                            </span>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-3 text-xs text-slate-600">
-                      <span>{profile.events_attended} events</span>
-                      <span>•</span>
-                      <span>{profile.feedback_count} feedback</span>
-                      {profile.avg_engagement && (
-                        <>
-                          <span>•</span>
-                          <span>⭐ {profile.avg_engagement.toFixed(1)}</span>
-                        </>
-                      )}
-                    </div>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="text-2xl font-bold text-slate-900">
-                    {profile.total_points}
-                  </p>
-                  <p className="text-xs text-slate-500">points</p>
-                </div>
+
+          {/* User Info */}
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-1">
+              <h4 className="font-semibold text-slate-900 truncate">
+                {userStats.user_name}
+                {isCurrentUser && (
+                  <span className="text-xs text-indigo-600 ml-2">(You)</span>
+                )}
+              </h4>
+            </div>
+            <div className="flex items-center gap-2 flex-wrap">
+              <Badge className={rankColors[userStats.rank] || rankColors.Newcomer}>
+                {userStats.rank}
+              </Badge>
+              {userStats.badges_earned?.length > 0 && (
+                <span className="text-xs text-slate-500">
+                  🏅 {userStats.badges_earned.length} badges
+                </span>
+              )}
+            </div>
+          </div>
+
+          {/* Stats */}
+          <div className="flex-shrink-0 text-right">
+            <div className="text-2xl font-bold text-indigo-600">
+              {userStats.total_points}
+            </div>
+            <div className="text-xs text-slate-500">points</div>
+            {userStats.current_streak > 0 && (
+              <div className="text-xs text-orange-600 mt-1">
+                🔥 {userStats.current_streak} streak
               </div>
-            </motion.div>
-          ))
-        )}
-      </div>
-    </Card>
+            )}
+          </div>
+        </div>
+
+        {/* Additional Stats */}
+        <div className="mt-3 pt-3 border-t grid grid-cols-3 gap-2 text-center">
+          <div>
+            <div className="text-sm font-semibold text-slate-900">
+              {userStats.events_attended}
+            </div>
+            <div className="text-xs text-slate-500">Events</div>
+          </div>
+          <div>
+            <div className="text-sm font-semibold text-slate-900">
+              {userStats.feedback_count}
+            </div>
+            <div className="text-xs text-slate-500">Feedback</div>
+          </div>
+          <div>
+            <div className="text-sm font-semibold text-slate-900">
+              {userStats.best_streak}
+            </div>
+            <div className="text-xs text-slate-500">Best Streak</div>
+          </div>
+        </div>
+      </Card>
+    </motion.div>
   );
 }

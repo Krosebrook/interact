@@ -7,8 +7,8 @@ import {
   Calendar, 
   Sparkles, 
   BarChart3, 
-  Trophy,
   Settings as SettingsIcon,
+  Trophy,
   LogOut,
   Menu,
   X
@@ -51,7 +51,7 @@ export default function Layout({ children, currentPageName }) {
     { name: 'Dashboard', icon: LayoutDashboard, page: 'Dashboard', adminOnly: true },
     { name: 'Activities', icon: Sparkles, page: 'Activities', adminOnly: true },
     { name: 'Calendar', icon: Calendar, page: 'Calendar', adminOnly: true },
-    { name: 'Leaderboard', icon: Trophy, page: 'Leaderboard', adminOnly: true },
+    { name: 'Leaderboard', icon: Trophy, page: 'Leaderboard', adminOnly: false },
     { name: 'Analytics', icon: BarChart3, page: 'Analytics', adminOnly: true },
     { name: 'Settings', icon: SettingsIcon, page: 'Settings', adminOnly: true },
   ];
