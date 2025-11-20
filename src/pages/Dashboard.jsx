@@ -8,7 +8,6 @@ import StatsCard from '../components/dashboard/StatsCard';
 import EventCalendarCard from '../components/events/EventCalendarCard';
 import AISuggestionsWidget from '../components/ai/AISuggestionsWidget';
 import ActivityGenerator from '../components/ai/ActivityGenerator';
-import LeaderboardCard from '../components/gamification/LeaderboardCard';
 import { 
   Calendar, 
   Users, 
@@ -246,14 +245,11 @@ export default function Dashboard() {
         )}
       </div>
 
-      {/* AI Suggestions and Leaderboard */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <AISuggestionsWidget 
-          onScheduleActivity={handleScheduleActivity}
-          onGenerateCustom={() => setShowGenerator(true)}
-        />
-        <LeaderboardCard limit={5} />
-      </div>
+      {/* AI Suggestions */}
+      <AISuggestionsWidget 
+        onScheduleActivity={handleScheduleActivity}
+        onGenerateCustom={() => setShowGenerator(true)}
+      />
 
       {/* Quick Actions */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

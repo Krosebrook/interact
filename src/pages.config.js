@@ -4,7 +4,6 @@ import Calendar from './pages/Calendar';
 import Analytics from './pages/Analytics';
 import ParticipantEvent from './pages/ParticipantEvent';
 import Settings from './pages/Settings';
-import Leaderboard from './pages/Leaderboard';
 import __Layout from './Layout.jsx';
 
 
@@ -15,7 +14,6 @@ export const PAGES = {
     "Analytics": Analytics,
     "ParticipantEvent": ParticipantEvent,
     "Settings": Settings,
-    "Leaderboard": Leaderboard,
 }
 
 export const pagesConfig = {

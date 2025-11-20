@@ -88,26 +88,7 @@ export default function ParticipantEvent() {
 
   const submitFeedbackMutation = useMutation({
     mutationFn: async ({ participationId, data }) => {
-      const updated = await base44.entities.Participation.update(participationId, data);
-      
-      // Update user stats and check for badges
-      try {
-        const statsResult = await base44.functions.invoke('updateUserStats', {
-          participationId
-        });
-        
-        if (statsResult.data.new_badges?.length > 0) {
-          toast.success(`🎉 New badge${statsResult.data.new_badges.length > 1 ? 's' : ''} earned!`);
-        }
-        
-        if (statsResult.data.points_earned > 0) {
-          toast.success(`+${statsResult.data.points_earned} points earned!`);
-        }
-      } catch (error) {
-        console.error('Failed to update stats:', error);
-      }
-      
-      return updated;
+      return base44.entities.Participation.update(participationId, data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['participations']);
