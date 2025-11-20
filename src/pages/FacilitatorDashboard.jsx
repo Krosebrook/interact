@@ -1,66 +1,37 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
 import FacilitatorSupportChat from '../components/facilitator/FacilitatorSupportChat';
-import LiveCoachingWidget from '../components/facilitator/LiveCoachingWidget';
+import FacilitatorEventCard from '../components/events/FacilitatorEventCard';
+import { useAuth } from '../components/hooks/useAuth';
+import { useEventData } from '../components/hooks/useEventData';
+import { 
+  filterUpcomingEvents, 
+  filterTodayEvents, 
+  filterTomorrowEvents, 
+  filterThisWeekEvents,
+  getParticipationStats,
+  getActivityForEvent
+} from '../components/utils/eventUtils';
 import { 
   Calendar, 
   Users, 
-  Clock, 
   TrendingUp, 
-  Bell, 
-  FileText, 
-  Zap,
-  Send,
-  Download,
-  ExternalLink,
   Activity,
-  MessageSquare,
-  CheckCircle
+  MessageSquare
 } from 'lucide-react';
-import { format, isToday, isTomorrow, addDays } from 'date-fns';
 import { toast } from 'sonner';
 
 export default function FacilitatorDashboard() {
   const queryClient = useQueryClient();
-  const [user, setUser] = useState(null);
+  const { user, loading: userLoading } = useAuth(true);
+  const { events, activities, participations, isLoading } = useEventData();
   const [showSupport, setShowSupport] = useState(false);
-
-  useEffect(() => {
-    const loadUser = async () => {
-      try {
-        const currentUser = await base44.auth.me();
-        setUser(currentUser);
-        if (currentUser.role !== 'admin') {
-          base44.auth.redirectToLogin();
-        }
-      } catch (error) {
-        base44.auth.redirectToLogin();
-      }
-    };
-    loadUser();
-  }, []);
-
-  const { data: events = [] } = useQuery({
-    queryKey: ['events'],
-    queryFn: () => base44.entities.Event.list('-scheduled_date', 50)
-  });
-
-  const { data: activities = [] } = useQuery({
-    queryKey: ['activities'],
-    queryFn: () => base44.entities.Activity.list()
-  });
-
-  const { data: allParticipations = [] } = useQuery({
-    queryKey: ['participations'],
-    queryFn: () => base44.entities.Participation.list()
-  });
 
   const sendReminderMutation = useMutation({
     mutationFn: async (eventId) => {
@@ -106,123 +77,12 @@ export default function FacilitatorDashboard() {
   });
 
   // Filter events
-  const now = new Date();
-  const upcomingEvents = events.filter(e => 
-    e.status === 'scheduled' && new Date(e.scheduled_date) > now
-  ).slice(0, 10);
+  const upcomingEvents = filterUpcomingEvents(events).slice(0, 10);
+  const todayEvents = filterTodayEvents(upcomingEvents);
+  const tomorrowEvents = filterTomorrowEvents(upcomingEvents);
+  const thisWeekEvents = filterThisWeekEvents(upcomingEvents);
 
-  const todayEvents = upcomingEvents.filter(e => isToday(new Date(e.scheduled_date)));
-  const tomorrowEvents = upcomingEvents.filter(e => isTomorrow(new Date(e.scheduled_date)));
-  const thisWeekEvents = upcomingEvents.filter(e => {
-    const eventDate = new Date(e.scheduled_date);
-    return eventDate <= addDays(now, 7) && !isToday(eventDate) && !isTomorrow(eventDate);
-  });
-
-  const getParticipationData = (eventId) => {
-    const participations = allParticipations.filter(p => p.event_id === eventId);
-    const attended = participations.filter(p => p.attended).length;
-    const avgEngagement = participations.filter(p => p.engagement_score).length > 0
-      ? participations.reduce((sum, p) => sum + (p.engagement_score || 0), 0) / participations.filter(p => p.engagement_score).length
-      : 0;
-    
-    return { total: participations.length, attended, avgEngagement };
-  };
-
-  const EventCard = ({ event, timeCategory }) => {
-    const activity = activities.find(a => a.id === event.activity_id);
-    const { total, attended, avgEngagement } = getParticipationData(event.id);
-    const eventDate = new Date(event.scheduled_date);
-    const isLive = event.status === 'in_progress';
-    const [showCoaching, setShowCoaching] = useState(false);
-
-    return (
-      <div className="space-y-4">
-        <Card className="p-4 border-0 shadow-md hover:shadow-lg transition-all">
-          <div className="flex items-start justify-between mb-3">
-            <div className="flex-1">
-              <div className="flex items-center gap-2 mb-2">
-                <h3 className="font-bold text-lg">{event.title}</h3>
-                {isLive && (
-                  <Badge className="bg-red-600 animate-pulse">LIVE</Badge>
-                )}
-              </div>
-              <div className="flex items-center gap-4 text-sm text-slate-600 mb-2">
-                <div className="flex items-center gap-1">
-                  <Clock className="h-4 w-4" />
-                  {format(eventDate, 'h:mm a')}
-                </div>
-                <div className="flex items-center gap-1">
-                  <Users className="h-4 w-4" />
-                  {total} RSVPs
-                </div>
-              </div>
-              <Badge variant="outline">{activity?.type}</Badge>
-            </div>
-          </div>
-
-          {/* Engagement Metrics */}
-          <div className="grid grid-cols-3 gap-2 mb-3 p-3 bg-slate-50 rounded-lg">
-            <div className="text-center">
-              <div className="text-xs text-slate-600">RSVPs</div>
-              <div className="text-lg font-bold text-indigo-600">{total}</div>
-            </div>
-            <div className="text-center">
-              <div className="text-xs text-slate-600">Attended</div>
-              <div className="text-lg font-bold text-emerald-600">{attended}</div>
-            </div>
-            <div className="text-center">
-              <div className="text-xs text-slate-600">Engagement</div>
-              <div className="text-lg font-bold text-purple-600">
-                {avgEngagement > 0 ? avgEngagement.toFixed(1) : '-'}
-              </div>
-            </div>
-          </div>
-
-          {/* Quick Actions */}
-          <div className="space-y-2">
-            <div className="flex gap-2">
-              <Link to={`${createPageUrl('FacilitatorView')}?event=${event.id}`} className="flex-1">
-                <Button variant="outline" size="sm" className="w-full">
-                  <ExternalLink className="h-3 w-3 mr-1" />
-                  Facilitate
-                </Button>
-              </Link>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => sendReminderMutation.mutate(event.id)}
-                disabled={sendReminderMutation.isLoading}
-              >
-                <Bell className="h-3 w-3" />
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => downloadCalendarMutation.mutate(event.id)}
-                disabled={downloadCalendarMutation.isLoading}
-              >
-                <Download className="h-3 w-3" />
-              </Button>
-            </div>
-            <Button
-              onClick={() => setShowCoaching(!showCoaching)}
-              size="sm"
-              variant="outline"
-              className="w-full border-purple-300 text-purple-700 hover:bg-purple-50"
-            >
-              <Zap className="h-3 w-3 mr-2" />
-              {showCoaching ? 'Hide' : 'Show'} AI Coach
-            </Button>
-          </div>
-        </Card>
-
-        {/* Live Coaching Widget */}
-        {showCoaching && <LiveCoachingWidget eventId={event.id} />}
-      </div>
-    );
-  };
-
-  if (!user) {
+  if (userLoading || isLoading || !user) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
@@ -304,7 +164,15 @@ export default function FacilitatorDashboard() {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {todayEvents.map(event => (
-              <EventCard key={event.id} event={event} timeCategory="today" />
+              <FacilitatorEventCard 
+                key={event.id}
+                event={event}
+                activity={getActivityForEvent(event, activities)}
+                participationStats={getParticipationStats(event.id, participations)}
+                onSendReminder={(id) => sendReminderMutation.mutate(id)}
+                onDownloadCalendar={(id) => downloadCalendarMutation.mutate(id)}
+                isLoading={sendReminderMutation.isLoading || downloadCalendarMutation.isLoading}
+              />
             ))}
           </div>
         </div>
@@ -318,7 +186,15 @@ export default function FacilitatorDashboard() {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {tomorrowEvents.map(event => (
-              <EventCard key={event.id} event={event} timeCategory="tomorrow" />
+              <FacilitatorEventCard 
+                key={event.id}
+                event={event}
+                activity={getActivityForEvent(event, activities)}
+                participationStats={getParticipationStats(event.id, participations)}
+                onSendReminder={(id) => sendReminderMutation.mutate(id)}
+                onDownloadCalendar={(id) => downloadCalendarMutation.mutate(id)}
+                isLoading={sendReminderMutation.isLoading || downloadCalendarMutation.isLoading}
+              />
             ))}
           </div>
         </div>
@@ -329,7 +205,15 @@ export default function FacilitatorDashboard() {
           <h2 className="text-2xl font-bold text-slate-900 mb-4">This Week</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {thisWeekEvents.map(event => (
-              <EventCard key={event.id} event={event} timeCategory="week" />
+              <FacilitatorEventCard 
+                key={event.id}
+                event={event}
+                activity={getActivityForEvent(event, activities)}
+                participationStats={getParticipationStats(event.id, participations)}
+                onSendReminder={(id) => sendReminderMutation.mutate(id)}
+                onDownloadCalendar={(id) => downloadCalendarMutation.mutate(id)}
+                isLoading={sendReminderMutation.isLoading || downloadCalendarMutation.isLoading}
+              />
             ))}
           </div>
         </div>

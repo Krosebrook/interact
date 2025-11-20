@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
-import { useQuery } from '@tanstack/react-query';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '../utils';
+import { useAuth } from '../components/hooks/useAuth';
+import { useEventData } from '../components/hooks/useEventData';
+import { filterUpcomingEvents, getParticipationStats, getActivityForEvent } from '../components/utils/eventUtils';
 import { Button } from '@/components/ui/button';
 import StatsCard from '../components/dashboard/StatsCard';
 import EventCalendarCard from '../components/events/EventCalendarCard';
@@ -21,44 +22,13 @@ import { toast } from 'sonner';
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const [user, setUser] = useState(null);
+  const { user, loading: userLoading } = useAuth(true);
+  const { events, activities, participations, isLoading } = useEventData();
   const [showGenerator, setShowGenerator] = useState(false);
   const eventActions = useEventActions();
 
-  useEffect(() => {
-    const loadUser = async () => {
-      try {
-        const currentUser = await base44.auth.me();
-        setUser(currentUser);
-        if (currentUser.role !== 'admin') {
-          base44.auth.redirectToLogin();
-        }
-      } catch (error) {
-        base44.auth.redirectToLogin();
-      }
-    };
-    loadUser();
-  }, []);
-
-  const { data: events = [], isLoading: eventsLoading } = useQuery({
-    queryKey: ['events'],
-    queryFn: () => base44.entities.Event.list('-scheduled_date', 50)
-  });
-
-  const { data: activities = [] } = useQuery({
-    queryKey: ['activities'],
-    queryFn: () => base44.entities.Activity.list()
-  });
-
-  const { data: allParticipations = [] } = useQuery({
-    queryKey: ['participations'],
-    queryFn: () => base44.entities.Participation.list()
-  });
-
   // Calculate stats
-  const upcomingEvents = events.filter(e => 
-    e.status === 'scheduled' && new Date(e.scheduled_date) > new Date()
-  );
+  const upcomingEvents = filterUpcomingEvents(events);
   
   const completedThisMonth = events.filter(e => {
     const eventDate = new Date(e.scheduled_date);
@@ -69,12 +39,8 @@ export default function Dashboard() {
   }).length;
 
   const avgParticipation = events.length > 0 
-    ? Math.round(allParticipations.length / events.length)
+    ? Math.round(participations.length / events.length)
     : 0;
-
-  const getParticipantCount = (eventId) => {
-    return allParticipations.filter(p => p.event_id === eventId).length;
-  };
 
   const handleScheduleActivity = (activity) => {
     navigate(`${createPageUrl('Calendar')}?activity=${activity.id}`);
@@ -84,7 +50,7 @@ export default function Dashboard() {
     handleScheduleActivity(activity);
   };
 
-  if (!user) {
+  if (userLoading || isLoading || !user) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
@@ -187,23 +153,20 @@ export default function Dashboard() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {upcomingEvents.slice(0, 6).map(event => {
-              const activity = activities.find(a => a.id === event.activity_id);
-              return (
-                <EventCalendarCard
-                  key={event.id}
-                  event={event}
-                  activity={activity}
-                  participantCount={getParticipantCount(event.id)}
-                  onView={(e) => {/* TODO: implement view */}}
-                  onCopyLink={eventActions.handleCopyLink}
-                  onDownloadCalendar={eventActions.handleDownloadCalendar}
-                  onSendReminder={eventActions.handleSendReminder}
-                  onSendRecap={eventActions.handleSendRecap}
-                  onCancel={eventActions.handleCancelEvent}
-                />
-              );
-            })}
+            {upcomingEvents.slice(0, 6).map(event => (
+              <EventCalendarCard
+                key={event.id}
+                event={event}
+                activity={getActivityForEvent(event, activities)}
+                participantCount={getParticipationStats(event.id, participations).total}
+                onView={(e) => {/* TODO: implement view */}}
+                onCopyLink={eventActions.handleCopyLink}
+                onDownloadCalendar={eventActions.handleDownloadCalendar}
+                onSendReminder={eventActions.handleSendReminder}
+                onSendRecap={eventActions.handleSendRecap}
+                onCancel={eventActions.handleCancelEvent}
+              />
+            ))}
           </div>
         )}
       </div>
