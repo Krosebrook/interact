@@ -20,10 +20,12 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import EventCalendarCard from '../components/events/EventCalendarCard';
+import RecurrenceSettings from '../components/events/RecurrenceSettings';
+import TimeSlotSuggestions from '../components/events/TimeSlotSuggestions';
 import { useEventActions } from '../components/events/useEventActions';
 import { Calendar as CalendarIcon, Plus } from 'lucide-react';
 import { toast } from 'sonner';
-import { format } from 'date-fns';
+import { format, addDays, addWeeks, addMonths } from 'date-fns';
 
 export default function Calendar() {
   const queryClient = useQueryClient();
@@ -37,7 +39,14 @@ export default function Calendar() {
     duration_minutes: 30,
     max_participants: null,
     custom_instructions: '',
-    meeting_link: ''
+    meeting_link: '',
+    facilitator_name: '',
+    facilitator_email: ''
+  });
+  const [recurrenceSettings, setRecurrenceSettings] = useState({
+    enabled: false,
+    frequency: 'weekly',
+    occurrences: 4
   });
 
   useEffect(() => {
@@ -80,27 +89,78 @@ export default function Calendar() {
 
   const createEventMutation = useMutation({
     mutationFn: async (data) => {
-      const magicLink = `event-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-      const event = await base44.entities.Event.create({
-        ...data,
-        magic_link: magicLink,
-        status: 'scheduled'
-      });
+      const events = [];
+      const recurringSeriesId = recurrenceSettings.enabled 
+        ? `series-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+        : null;
 
-      // Send Teams announcement
-      try {
-        await base44.functions.invoke('sendTeamsNotification', {
-          eventId: event.id,
-          notificationType: 'announcement'
+      const createSingleEvent = async (scheduleDate, occurrenceNum = 1, totalOccurrences = 1) => {
+        const magicLink = `event-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+        const event = await base44.entities.Event.create({
+          ...data,
+          scheduled_date: scheduleDate,
+          magic_link: magicLink,
+          status: 'scheduled',
+          is_recurring: recurrenceSettings.enabled,
+          recurring_series_id: recurringSeriesId,
+          recurrence_pattern: recurrenceSettings.enabled ? {
+            frequency: recurrenceSettings.frequency,
+            occurrence_number: occurrenceNum,
+            total_occurrences: totalOccurrences
+          } : null
         });
-      } catch (error) {
-        console.error('Failed to send Teams notification:', error);
-        // Don't fail the event creation if Teams notification fails
+
+        // Send Teams announcement
+        try {
+          await base44.functions.invoke('sendTeamsNotification', {
+            eventId: event.id,
+            notificationType: 'announcement'
+          });
+        } catch (error) {
+          console.error('Failed to send Teams notification:', error);
+        }
+
+        return event;
+      };
+
+      if (recurrenceSettings.enabled) {
+        const baseDate = new Date(data.scheduled_date);
+        const occurrences = recurrenceSettings.occurrences || 4;
+
+        for (let i = 0; i < occurrences; i++) {
+          let nextDate;
+          switch (recurrenceSettings.frequency) {
+            case 'daily':
+              nextDate = addDays(baseDate, i);
+              break;
+            case 'weekly':
+              nextDate = addWeeks(baseDate, i);
+              break;
+            case 'biweekly':
+              nextDate = addWeeks(baseDate, i * 2);
+              break;
+            case 'monthly':
+              nextDate = addMonths(baseDate, i);
+              break;
+            default:
+              nextDate = addWeeks(baseDate, i);
+          }
+
+          const event = await createSingleEvent(
+            nextDate.toISOString(),
+            i + 1,
+            occurrences
+          );
+          events.push(event);
+        }
+      } else {
+        const event = await createSingleEvent(data.scheduled_date);
+        events.push(event);
       }
 
-      return event;
+      return events;
     },
-    onSuccess: () => {
+    onSuccess: (events) => {
       queryClient.invalidateQueries(['events']);
       setShowScheduleDialog(false);
       setFormData({
@@ -110,9 +170,20 @@ export default function Calendar() {
         duration_minutes: 30,
         max_participants: null,
         custom_instructions: '',
-        meeting_link: ''
+        meeting_link: '',
+        facilitator_name: '',
+        facilitator_email: ''
       });
-      toast.success('Event scheduled and Teams notified! 🎉');
+      setRecurrenceSettings({
+        enabled: false,
+        frequency: 'weekly',
+        occurrences: 4
+      });
+      toast.success(
+        recurrenceSettings.enabled 
+          ? `${events.length} recurring events created! 🎉`
+          : 'Event scheduled and Teams notified! 🎉'
+      );
     }
   });
 
@@ -239,7 +310,30 @@ export default function Calendar() {
               Create a new team activity event
             </DialogDescription>
           </DialogHeader>
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <TimeSlotSuggestions
+              onSelectTime={(slot) => {
+                // Auto-fill with suggested time
+                const now = new Date();
+                const dayIndex = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].indexOf(slot.day);
+                const daysUntil = (dayIndex - now.getDay() + 7) % 7 || 7;
+                const suggestedDate = new Date(now);
+                suggestedDate.setDate(now.getDate() + daysUntil);
+
+                // Set to suggested hour (extract from time string)
+                const hourMatch = slot.time.match(/(\d+)/);
+                if (hourMatch) {
+                  suggestedDate.setHours(parseInt(hourMatch[1]), 0, 0, 0);
+                }
+
+                setFormData(prev => ({
+                  ...prev,
+                  scheduled_date: suggestedDate.toISOString().slice(0, 16)
+                }));
+                toast.success(`Set to optimal time: ${slot.day} ${slot.time}`);
+              }}
+            />
+
             <div>
               <Label>Select Activity</Label>
               <Select
@@ -315,6 +409,31 @@ export default function Calendar() {
                 placeholder="https://zoom.us/j/..."
               />
             </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label>Facilitator Name (optional)</Label>
+                <Input
+                  value={formData.facilitator_name}
+                  onChange={(e) => setFormData(prev => ({ ...prev, facilitator_name: e.target.value }))}
+                  placeholder="Who's running this?"
+                />
+              </div>
+              <div>
+                <Label>Facilitator Email (optional)</Label>
+                <Input
+                  type="email"
+                  value={formData.facilitator_email}
+                  onChange={(e) => setFormData(prev => ({ ...prev, facilitator_email: e.target.value }))}
+                  placeholder="facilitator@example.com"
+                />
+              </div>
+            </div>
+
+            <RecurrenceSettings
+              recurrenceData={recurrenceSettings}
+              onChange={setRecurrenceSettings}
+            />
 
             <div>
               <Label>Custom Instructions (optional)</Label>
