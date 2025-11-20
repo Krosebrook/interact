@@ -41,7 +41,11 @@ export default function TeamCard({ team, rank, userStats, currentUserEmail }) {
     3: 'from-amber-500 to-amber-600'
   };
 
-  const teamMembers = userStats.filter(stat => team.members?.includes(stat.user_email));
+  const teamMembers = (team.members || [])
+    .map(email => {
+      const stats = userStats.find(stat => stat.user_email === email);
+      return stats || { user_email: email, user_name: email.split('@')[0], total_points: 0 };
+    });
 
   return (
     <motion.div
@@ -91,32 +95,34 @@ export default function TeamCard({ team, rank, userStats, currentUserEmail }) {
         </div>
 
         {/* Members Preview */}
-        <div className="mb-4">
-          <div className="flex items-center gap-2 text-sm text-slate-600 mb-2">
-            <Users className="h-4 w-4" />
-            <span>Team Members</span>
+        {teamMembers.length > 0 && (
+          <div className="mb-4">
+            <div className="flex items-center gap-2 text-sm text-slate-600 mb-2">
+              <Users className="h-4 w-4" />
+              <span>Team Members</span>
+            </div>
+            <div className="space-y-1">
+              {teamMembers.slice(0, 3).map((member, idx) => (
+                <div key={member.user_email || idx} className="flex items-center justify-between text-sm">
+                  <span className="flex items-center gap-2">
+                    {member.user_email === team.captain_email && (
+                      <Crown className="h-3 w-3 text-yellow-600" />
+                    )}
+                    {member.user_name}
+                  </span>
+                  <Badge variant="outline" className="text-xs">
+                    {member.total_points} pts
+                  </Badge>
+                </div>
+              ))}
+              {teamMembers.length > 3 && (
+                <p className="text-xs text-slate-500 pl-5">
+                  +{teamMembers.length - 3} more
+                </p>
+              )}
+            </div>
           </div>
-          <div className="space-y-1">
-            {teamMembers.slice(0, 3).map(member => (
-              <div key={member.id} className="flex items-center justify-between text-sm">
-                <span className="flex items-center gap-2">
-                  {member.user_email === team.captain_email && (
-                    <Crown className="h-3 w-3 text-yellow-600" />
-                  )}
-                  {member.user_name}
-                </span>
-                <Badge variant="outline" className="text-xs">
-                  {member.total_points} pts
-                </Badge>
-              </div>
-            ))}
-            {teamMembers.length > 3 && (
-              <p className="text-xs text-slate-500 pl-5">
-                +{teamMembers.length - 3} more
-              </p>
-            )}
-          </div>
-        </div>
+        )}
 
         {/* Actions */}
         {!isMember && (
