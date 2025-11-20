@@ -69,13 +69,13 @@ export default function EventCalendarCard({
 
           <div className="flex gap-2">
             <Button
-              onClick={() => onView(event)}
+              onClick={() => window.location.href = `/FacilitatorView?event=${event.id}`}
               variant="outline"
               size="sm"
               className="flex-1"
             >
               <ExternalLink className="h-4 w-4 mr-1" />
-              View
+              Facilitate
             </Button>
             <EventActionsMenu
               event={event}

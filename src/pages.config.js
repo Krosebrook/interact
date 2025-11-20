@@ -4,6 +4,7 @@ import Calendar from './pages/Calendar';
 import Analytics from './pages/Analytics';
 import ParticipantEvent from './pages/ParticipantEvent';
 import Settings from './pages/Settings';
+import FacilitatorView from './pages/FacilitatorView';
 import __Layout from './Layout.jsx';
 
 
@@ -14,6 +15,7 @@ export const PAGES = {
     "Analytics": Analytics,
     "ParticipantEvent": ParticipantEvent,
     "Settings": Settings,
+    "FacilitatorView": FacilitatorView,
 }
 
 export const pagesConfig = {
