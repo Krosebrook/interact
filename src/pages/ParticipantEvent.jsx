@@ -8,6 +8,9 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Label } from '@/components/ui/label';
 import { format } from 'date-fns';
+import CollaborativeWhiteboard from '../components/interactive/CollaborativeWhiteboard';
+import BreakoutRooms from '../components/interactive/BreakoutRooms';
+import MultiplayerGame from '../components/interactive/MultiplayerGame';
 import { 
   Calendar, 
   Clock, 
@@ -257,46 +260,88 @@ export default function ParticipantEvent() {
           </Card>
         )}
 
-        {/* Activity Submission */}
+        {/* Interactive Activity Submission */}
         {myParticipation && !hasSubmitted && (
-          <Card className="p-8 border-0 shadow-lg">
-            <h2 className="text-2xl font-bold text-slate-900 mb-6">
-              <Send className="inline h-6 w-6 mr-2 text-indigo-600" />
-              Submit Your Response
-            </h2>
-            <div className="space-y-4">
-              <div>
-                <Label>Your Submission</Label>
-                <Textarea
-                  value={submission.content}
-                  onChange={(e) => setSubmission(prev => ({ ...prev, content: e.target.value }))}
-                  placeholder="Share your response, ideas, or answer..."
-                  rows={4}
-                />
-              </div>
-              
-              {activity?.interaction_type === 'photo_upload' && (
-                <div>
-                  <Label>Upload Photo</Label>
-                  <Input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleFileUpload}
-                    disabled={uploadingFile}
-                  />
-                  {uploadingFile && <p className="text-sm text-slate-500 mt-1">Uploading...</p>}
-                </div>
-              )}
+          <>
+            {activity?.interaction_type === 'whiteboard' && (
+              <CollaborativeWhiteboard
+                participantName={participantData.participant_name}
+                onSave={(imageData) => {
+                  setSubmission({ content: 'Whiteboard drawing submitted', file_url: imageData });
+                  handleSubmitActivity();
+                }}
+              />
+            )}
 
-              <Button
-                onClick={handleSubmitActivity}
-                disabled={!submission.content && !submission.file_url}
-                className="w-full bg-indigo-600 hover:bg-indigo-700"
-              >
-                Submit
-              </Button>
-            </div>
-          </Card>
+            {activity?.interaction_type === 'breakout_rooms' && (
+              <BreakoutRooms
+                participantName={participantData.participant_name}
+                participantEmail={participantData.participant_email}
+                allParticipants={participations}
+                onSubmit={(discussionData) => {
+                  setSubmission({ content: JSON.stringify(discussionData) });
+                  submitActivityMutation.mutate({
+                    participationId: myParticipation.id,
+                    data: discussionData
+                  });
+                }}
+              />
+            )}
+
+            {activity?.interaction_type === 'multiplayer_game' && (
+              <MultiplayerGame
+                participantName={participantData.participant_name}
+                onComplete={(gameResults) => {
+                  setSubmission({ content: JSON.stringify(gameResults) });
+                  submitActivityMutation.mutate({
+                    participationId: myParticipation.id,
+                    data: gameResults
+                  });
+                }}
+              />
+            )}
+
+            {!['whiteboard', 'breakout_rooms', 'multiplayer_game'].includes(activity?.interaction_type) && (
+              <Card className="p-8 border-0 shadow-lg">
+                <h2 className="text-2xl font-bold text-slate-900 mb-6">
+                  <Send className="inline h-6 w-6 mr-2 text-indigo-600" />
+                  Submit Your Response
+                </h2>
+                <div className="space-y-4">
+                  <div>
+                    <Label>Your Submission</Label>
+                    <Textarea
+                      value={submission.content}
+                      onChange={(e) => setSubmission(prev => ({ ...prev, content: e.target.value }))}
+                      placeholder="Share your response, ideas, or answer..."
+                      rows={4}
+                    />
+                  </div>
+                  
+                  {activity?.interaction_type === 'photo_upload' && (
+                    <div>
+                      <Label>Upload Photo</Label>
+                      <Input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleFileUpload}
+                        disabled={uploadingFile}
+                      />
+                      {uploadingFile && <p className="text-sm text-slate-500 mt-1">Uploading...</p>}
+                    </div>
+                  )}
+
+                  <Button
+                    onClick={handleSubmitActivity}
+                    disabled={!submission.content && !submission.file_url}
+                    className="w-full bg-indigo-600 hover:bg-indigo-700"
+                  >
+                    Submit
+                  </Button>
+                </div>
+              </Card>
+            )}
+          </>
         )}
 
         {/* Feedback Form */}
