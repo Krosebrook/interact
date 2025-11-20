@@ -47,13 +47,15 @@ export default function Layout({ children, currentPageName }) {
   // Admin layout
   const isAdmin = user?.role === 'admin';
 
-  const navigation = [
+  const navigation = isAdmin ? [
     { name: 'Dashboard', icon: LayoutDashboard, page: 'Dashboard', adminOnly: true },
     { name: 'Facilitator', icon: Users, page: 'FacilitatorDashboard', adminOnly: true },
     { name: 'Activities', icon: Sparkles, page: 'Activities', adminOnly: true },
     { name: 'Calendar', icon: Calendar, page: 'Calendar', adminOnly: true },
     { name: 'Analytics', icon: BarChart3, page: 'Analytics', adminOnly: true },
     { name: 'Settings', icon: SettingsIcon, page: 'Settings', adminOnly: true },
+  ] : [
+    { name: 'My Events', icon: Calendar, page: 'ParticipantPortal', adminOnly: false },
   ];
 
   const filteredNav = navigation.filter(item => !item.adminOnly || isAdmin);
