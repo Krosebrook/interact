@@ -6,6 +6,8 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import ActivityCard from '../components/activities/ActivityCard';
 import ActivityGenerator from '../components/ai/ActivityGenerator';
+import AIActivitySuggester from '../components/activities/AIActivitySuggester';
+import ModuleBuilder from '../components/activities/ModuleBuilder';
 import {
   Dialog,
   DialogContent,
@@ -27,6 +29,8 @@ export default function Activities() {
   const [selectedDuration, setSelectedDuration] = useState('all');
   const [viewingActivity, setViewingActivity] = useState(null);
   const [showGenerator, setShowGenerator] = useState(false);
+  const [showSuggester, setShowSuggester] = useState(false);
+  const [showModuleBuilder, setShowModuleBuilder] = useState(false);
 
   useEffect(() => {
     const loadUser = async () => {
@@ -101,13 +105,31 @@ export default function Activities() {
             {filteredActivities.length} activities available
           </p>
         </div>
-        <Button 
-          onClick={() => setShowGenerator(true)}
-          className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700"
-        >
-          <Plus className="h-4 w-4 mr-2" />
-          Create Custom Activity
-        </Button>
+        <div className="flex gap-2">
+          <Button 
+            onClick={() => setShowSuggester(true)}
+            variant="outline"
+            className="border-purple-300 text-purple-700 hover:bg-purple-50"
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            AI Suggestions
+          </Button>
+          <Button 
+            onClick={() => setShowModuleBuilder(true)}
+            variant="outline"
+            className="border-indigo-300 text-indigo-700 hover:bg-indigo-50"
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Build from Modules
+          </Button>
+          <Button 
+            onClick={() => setShowGenerator(true)}
+            className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700"
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Generate Custom
+          </Button>
+        </div>
       </div>
 
       {/* Search and Filters */}
@@ -235,6 +257,26 @@ export default function Activities() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* AI Activity Suggester */}
+      <AIActivitySuggester
+        open={showSuggester}
+        onOpenChange={setShowSuggester}
+        onSelect={(activityType) => {
+          setSelectedType(activityType);
+          setShowSuggester(false);
+        }}
+      />
+
+      {/* Module Builder */}
+      <ModuleBuilder
+        open={showModuleBuilder}
+        onOpenChange={setShowModuleBuilder}
+        onActivityCreated={(activity) => {
+          queryClient.invalidateQueries(['activities']);
+          handleSchedule(activity);
+        }}
+      />
 
       {/* Activity Generator */}
       <ActivityGenerator
