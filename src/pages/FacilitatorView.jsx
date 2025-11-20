@@ -8,6 +8,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import PreEventAssistant from '../components/facilitator/PreEventAssistant';
 import RealTimeTips from '../components/facilitator/RealTimeTips';
 import PostEventRecap from '../components/facilitator/PostEventRecap';
+import LivePollCreator from '../components/facilitator/LivePollCreator';
+import SessionTimer from '../components/facilitator/SessionTimer';
+import LiveAnnouncements from '../components/facilitator/LiveAnnouncements';
 import { Calendar, Users, Clock, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
@@ -116,10 +119,12 @@ export default function FacilitatorView() {
 
         {/* Facilitator Assistant */}
         <Tabs defaultValue={isCompleted ? 'recap' : isUpcoming ? 'prep' : 'live'} className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-6">
-            <TabsTrigger value="prep">Pre-Event Prep</TabsTrigger>
-            <TabsTrigger value="live">Live Assistance</TabsTrigger>
-            <TabsTrigger value="recap">Post-Event Recap</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-5 mb-6">
+            <TabsTrigger value="prep">Pre-Event</TabsTrigger>
+            <TabsTrigger value="live">Live Tips</TabsTrigger>
+            <TabsTrigger value="tools">Tools</TabsTrigger>
+            <TabsTrigger value="polls">Polls</TabsTrigger>
+            <TabsTrigger value="recap">Recap</TabsTrigger>
           </TabsList>
 
           <TabsContent value="prep">
@@ -155,10 +160,21 @@ export default function FacilitatorView() {
             </div>
           </TabsContent>
 
+          <TabsContent value="tools">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <SessionTimer />
+              <LiveAnnouncements eventId={eventId} />
+            </div>
+          </TabsContent>
+
+          <TabsContent value="polls">
+            <LivePollCreator eventId={eventId} />
+          </TabsContent>
+
           <TabsContent value="recap">
             <PostEventRecap eventId={eventId} />
           </TabsContent>
-        </Tabs>
+          </Tabs>
       </div>
     </div>
   );
