@@ -19,7 +19,6 @@ import {
   Sparkles
 } from 'lucide-react';
 import { toast } from 'sonner';
-import PointsEarnedNotification from '../components/gamification/PointsEarnedNotification';
 
 export default function ParticipantEvent() {
   const queryClient = useQueryClient();
@@ -33,8 +32,6 @@ export default function ParticipantEvent() {
   const [submission, setSubmission] = useState({ content: '', file_url: '' });
   const [feedback, setFeedback] = useState({ engagement_score: 5, feedback: '' });
   const [uploadingFile, setUploadingFile] = useState(false);
-  const [showPointsNotification, setShowPointsNotification] = useState(false);
-  const [pointsData, setPointsData] = useState({ points: 0, badges: [] });
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -64,32 +61,11 @@ export default function ParticipantEvent() {
   });
 
   const rsvpMutation = useMutation({
-    mutationFn: async (data) => {
-      const participation = await base44.entities.Participation.create({
-        event_id: event.id,
-        ...data,
-        attended: false
-      });
-
-      // Award points
-      try {
-        const pointsResponse = await base44.functions.invoke('updateParticipantPoints', {
-          participationId: participation.id
-        });
-        
-        if (pointsResponse.data.points_earned > 0) {
-          setPointsData({
-            points: pointsResponse.data.points_earned,
-            badges: pointsResponse.data.badges_earned || []
-          });
-          setShowPointsNotification(true);
-        }
-      } catch (error) {
-        console.error('Failed to award points:', error);
-      }
-
-      return participation;
-    },
+    mutationFn: (data) => base44.entities.Participation.create({
+      event_id: event.id,
+      ...data,
+      attended: false
+    }),
     onSuccess: () => {
       queryClient.invalidateQueries(['participations']);
       setHasRSVPd(true);
@@ -99,29 +75,10 @@ export default function ParticipantEvent() {
 
   const submitActivityMutation = useMutation({
     mutationFn: async ({ participationId, data }) => {
-      const updated = await base44.entities.Participation.update(participationId, {
+      return base44.entities.Participation.update(participationId, {
         submission: data,
         attended: true
       });
-
-      // Award points
-      try {
-        const pointsResponse = await base44.functions.invoke('updateParticipantPoints', {
-          participationId: participationId
-        });
-        
-        if (pointsResponse.data.points_earned > 0) {
-          setPointsData({
-            points: pointsResponse.data.points_earned,
-            badges: pointsResponse.data.badges_earned || []
-          });
-          setShowPointsNotification(true);
-        }
-      } catch (error) {
-        console.error('Failed to award points:', error);
-      }
-
-      return updated;
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['participations']);
@@ -132,24 +89,24 @@ export default function ParticipantEvent() {
   const submitFeedbackMutation = useMutation({
     mutationFn: async ({ participationId, data }) => {
       const updated = await base44.entities.Participation.update(participationId, data);
-
-      // Award points
+      
+      // Update user stats and check for badges
       try {
-        const pointsResponse = await base44.functions.invoke('updateParticipantPoints', {
-          participationId: participationId
+        const statsResult = await base44.functions.invoke('updateUserStats', {
+          participationId
         });
         
-        if (pointsResponse.data.points_earned > 0) {
-          setPointsData({
-            points: pointsResponse.data.points_earned,
-            badges: pointsResponse.data.badges_earned || []
-          });
-          setShowPointsNotification(true);
+        if (statsResult.data.new_badges?.length > 0) {
+          toast.success(`🎉 New badge${statsResult.data.new_badges.length > 1 ? 's' : ''} earned!`);
+        }
+        
+        if (statsResult.data.points_earned > 0) {
+          toast.success(`+${statsResult.data.points_earned} points earned!`);
         }
       } catch (error) {
-        console.error('Failed to award points:', error);
+        console.error('Failed to update stats:', error);
       }
-
+      
       return updated;
     },
     onSuccess: () => {
@@ -419,14 +376,6 @@ export default function ParticipantEvent() {
             </p>
           </Card>
         )}
-
-        {/* Points Notification */}
-        <PointsEarnedNotification
-          show={showPointsNotification}
-          points={pointsData.points}
-          badges={pointsData.badges}
-          onComplete={() => setShowPointsNotification(false)}
-        />
       </div>
     </div>
   );
