@@ -20,7 +20,8 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import EventCalendarCard from '../components/events/EventCalendarCard';
-import { Calendar as CalendarIcon, Plus, Copy, Download } from 'lucide-react';
+import { useEventActions } from '../components/events/useEventActions';
+import { Calendar as CalendarIcon, Plus } from 'lucide-react';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 
@@ -28,6 +29,7 @@ export default function Calendar() {
   const queryClient = useQueryClient();
   const [user, setUser] = useState(null);
   const [showScheduleDialog, setShowScheduleDialog] = useState(false);
+  const eventActions = useEventActions();
   const [formData, setFormData] = useState({
     activity_id: '',
     title: '',
@@ -114,45 +116,8 @@ export default function Calendar() {
     }
   });
 
-  const cancelEventMutation = useMutation({
-    mutationFn: (eventId) => base44.entities.Event.update(eventId, { status: 'cancelled' }),
-    onSuccess: () => {
-      queryClient.invalidateQueries(['events']);
-      toast.success('Event cancelled');
-    }
-  });
-
   const getParticipantCount = (eventId) => {
     return allParticipations.filter(p => p.event_id === eventId).length;
-  };
-
-  const handleCopyLink = (event) => {
-    const link = `${window.location.origin}/ParticipantEvent?event=${event.magic_link || event.id}`;
-    navigator.clipboard.writeText(link);
-    toast.success('Magic link copied!');
-  };
-
-  const handleDownloadCalendar = async (event) => {
-    try {
-      const response = await base44.functions.invoke('generateCalendarFile', {
-        eventId: event.id
-      });
-      
-      // Create blob from response
-      const blob = new Blob([response.data], { type: 'text/calendar' });
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `${event.title.replace(/[^a-z0-9]/gi, '_')}.ics`;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      a.remove();
-      
-      toast.success('Calendar file downloaded!');
-    } catch (error) {
-      toast.error('Failed to generate calendar file');
-    }
   };
 
   const handleSubmit = (e) => {
@@ -227,31 +192,11 @@ export default function Calendar() {
                   activity={activity}
                   participantCount={getParticipantCount(event.id)}
                   onView={() => {}}
-                  onCopyLink={handleCopyLink}
-                  onDownloadCalendar={handleDownloadCalendar}
-                  onSendReminder={async (e) => {
-                    try {
-                      await base44.functions.invoke('sendTeamsNotification', {
-                        eventId: e.id,
-                        notificationType: 'reminder'
-                      });
-                      toast.success('Reminder sent to Teams!');
-                    } catch (error) {
-                      toast.error('Failed to send reminder');
-                    }
-                  }}
-                  onSendRecap={async (e) => {
-                    try {
-                      await base44.functions.invoke('sendTeamsNotification', {
-                        eventId: e.id,
-                        notificationType: 'recap'
-                      });
-                      toast.success('Recap sent to Teams!');
-                    } catch (error) {
-                      toast.error('Failed to send recap');
-                    }
-                  }}
-                  onCancel={(e) => cancelEventMutation.mutate(e.id)}
+                  onCopyLink={eventActions.handleCopyLink}
+                  onDownloadCalendar={eventActions.handleDownloadCalendar}
+                  onSendReminder={eventActions.handleSendReminder}
+                  onSendRecap={eventActions.handleSendRecap}
+                  onCancel={eventActions.handleCancelEvent}
                 />
               );
             })}
@@ -273,20 +218,10 @@ export default function Calendar() {
                   activity={activity}
                   participantCount={getParticipantCount(event.id)}
                   onView={() => {}}
-                  onCopyLink={handleCopyLink}
-                  onDownloadCalendar={handleDownloadCalendar}
+                  onCopyLink={eventActions.handleCopyLink}
+                  onDownloadCalendar={eventActions.handleDownloadCalendar}
                   onSendReminder={() => {}}
-                  onSendRecap={async (e) => {
-                    try {
-                      await base44.functions.invoke('sendTeamsNotification', {
-                        eventId: e.id,
-                        notificationType: 'recap'
-                      });
-                      toast.success('Recap sent to Teams!');
-                    } catch (error) {
-                      toast.error('Failed to send recap');
-                    }
-                  }}
+                  onSendRecap={eventActions.handleSendRecap}
                   onCancel={() => {}}
                 />
               );

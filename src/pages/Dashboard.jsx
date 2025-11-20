@@ -8,6 +8,7 @@ import StatsCard from '../components/dashboard/StatsCard';
 import EventCalendarCard from '../components/events/EventCalendarCard';
 import AISuggestionsWidget from '../components/ai/AISuggestionsWidget';
 import ActivityGenerator from '../components/ai/ActivityGenerator';
+import { useEventActions } from '../components/events/useEventActions';
 import { 
   Calendar, 
   Users, 
@@ -22,6 +23,7 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [showGenerator, setShowGenerator] = useState(false);
+  const eventActions = useEventActions();
 
   useEffect(() => {
     const loadUser = async () => {
@@ -72,17 +74,6 @@ export default function Dashboard() {
 
   const getParticipantCount = (eventId) => {
     return allParticipations.filter(p => p.event_id === eventId).length;
-  };
-
-  const handleCopyLink = (event) => {
-    const link = `${window.location.origin}${createPageUrl('ParticipantEvent')}?event=${event.magic_link || event.id}`;
-    navigator.clipboard.writeText(link);
-    toast.success('Magic link copied to clipboard!');
-  };
-
-  const handleCancelEvent = async (event) => {
-    await base44.entities.Event.update(event.id, { status: 'cancelled' });
-    toast.success('Event cancelled');
   };
 
   const handleScheduleActivity = (activity) => {
@@ -205,39 +196,11 @@ export default function Dashboard() {
                   activity={activity}
                   participantCount={getParticipantCount(event.id)}
                   onView={(e) => {/* TODO: implement view */}}
-                  onCopyLink={handleCopyLink}
-                  onDownloadCalendar={async (e) => {
-                    try {
-                      const response = await base44.functions.invoke('generateCalendarFile', {
-                        eventId: e.id
-                      });
-                      const blob = new Blob([response.data], { type: 'text/calendar' });
-                      const url = window.URL.createObjectURL(blob);
-                      const a = document.createElement('a');
-                      a.href = url;
-                      a.download = `${e.title.replace(/[^a-z0-9]/gi, '_')}.ics`;
-                      document.body.appendChild(a);
-                      a.click();
-                      window.URL.revokeObjectURL(url);
-                      a.remove();
-                      toast.success('Calendar file downloaded!');
-                    } catch (error) {
-                      toast.error('Failed to generate calendar file');
-                    }
-                  }}
-                  onSendReminder={async (e) => {
-                    try {
-                      await base44.functions.invoke('sendTeamsNotification', {
-                        eventId: e.id,
-                        notificationType: 'reminder'
-                      });
-                      toast.success('Reminder sent to Teams!');
-                    } catch (error) {
-                      toast.error('Failed to send reminder');
-                    }
-                  }}
-                  onSendRecap={() => {}}
-                  onCancel={handleCancelEvent}
+                  onCopyLink={eventActions.handleCopyLink}
+                  onDownloadCalendar={eventActions.handleDownloadCalendar}
+                  onSendReminder={eventActions.handleSendReminder}
+                  onSendRecap={eventActions.handleSendRecap}
+                  onCancel={eventActions.handleCancelEvent}
                 />
               );
             })}
