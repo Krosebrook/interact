@@ -43,9 +43,17 @@ export default function TeamCard({ team, rank, userStats = [], currentUserEmail 
 
   const teamMembers = (team.members || [])
     .map(email => {
-      const stats = userStats.find(stat => stat.user_email === email);
-      return stats || { user_email: email, user_name: email.split('@')[0], total_points: 0 };
-    });
+      const stats = userStats.find(stat => stat?.user_email === email);
+      if (stats) return stats;
+      // Create a fallback object if stats don't exist
+      const name = email ? email.split('@')[0] : 'Unknown';
+      return { 
+        user_email: email, 
+        user_name: name, 
+        total_points: 0 
+      };
+    })
+    .filter(member => member.user_name); // Filter out any invalid members
 
   return (
     <motion.div
@@ -111,7 +119,7 @@ export default function TeamCard({ team, rank, userStats = [], currentUserEmail 
                     {member.user_name}
                   </span>
                   <Badge variant="outline" className="text-xs">
-                    {member.total_points} pts
+                    {member.total_points || 0} pts
                   </Badge>
                 </div>
               ))}

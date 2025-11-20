@@ -40,18 +40,20 @@ export default function Leaderboard() {
     queryFn: () => base44.entities.Badge.list()
   });
 
-  // Sort by total points
-  const leaderboard = [...allUserStats]
+  // Filter out invalid stats and sort by total points
+  const validStats = allUserStats.filter(stat => stat && stat.user_name && stat.user_email);
+  
+  const leaderboard = [...validStats]
     .sort((a, b) => (b.total_points || 0) - (a.total_points || 0));
 
   // Filter by search
   const filteredLeaderboard = leaderboard.filter(stat =>
-    stat.user_name.toLowerCase().includes(searchQuery.toLowerCase())
+    stat.user_name && stat.user_name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   // Get current user stats
   const currentUserStats = user 
-    ? allUserStats.find(s => s.user_email === user.email)
+    ? validStats.find(s => s.user_email === user.email)
     : null;
 
   const currentUserPosition = currentUserStats
@@ -59,15 +61,15 @@ export default function Leaderboard() {
     : null;
 
   // Sort by different metrics
-  const topByEvents = [...allUserStats]
+  const topByEvents = [...validStats]
     .sort((a, b) => (b.events_attended || 0) - (a.events_attended || 0))
     .slice(0, 10);
 
-  const topByFeedback = [...allUserStats]
+  const topByFeedback = [...validStats]
     .sort((a, b) => (b.feedback_count || 0) - (a.feedback_count || 0))
     .slice(0, 10);
 
-  const topByStreak = [...allUserStats]
+  const topByStreak = [...validStats]
     .sort((a, b) => (b.best_streak || 0) - (a.best_streak || 0))
     .slice(0, 10);
 
