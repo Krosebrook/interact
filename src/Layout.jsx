@@ -48,6 +48,7 @@ export default function Layout({ children, currentPageName }) {
 
   const navigation = [
     { name: 'Dashboard', icon: LayoutDashboard, page: 'Dashboard', adminOnly: true },
+    { name: 'Facilitator', icon: Users, page: 'FacilitatorDashboard', adminOnly: true },
     { name: 'Activities', icon: Sparkles, page: 'Activities', adminOnly: true },
     { name: 'Calendar', icon: Calendar, page: 'Calendar', adminOnly: true },
     { name: 'Analytics', icon: BarChart3, page: 'Analytics', adminOnly: true },

@@ -5,6 +5,7 @@ import Analytics from './pages/Analytics';
 import ParticipantEvent from './pages/ParticipantEvent';
 import Settings from './pages/Settings';
 import FacilitatorView from './pages/FacilitatorView';
+import FacilitatorDashboard from './pages/FacilitatorDashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -16,6 +17,7 @@ export const PAGES = {
     "ParticipantEvent": ParticipantEvent,
     "Settings": Settings,
     "FacilitatorView": FacilitatorView,
+    "FacilitatorDashboard": FacilitatorDashboard,
 }
 
 export const pagesConfig = {
