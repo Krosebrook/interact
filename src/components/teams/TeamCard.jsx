@@ -8,7 +8,7 @@ import { Users, Trophy, UserPlus, Crown } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
 
-export default function TeamCard({ team, rank, userStats, currentUserEmail }) {
+export default function TeamCard({ team, rank, userStats = [], currentUserEmail }) {
   const queryClient = useQueryClient();
   const isMember = team.members?.includes(currentUserEmail);
   const isCaptain = team.captain_email === currentUserEmail;
