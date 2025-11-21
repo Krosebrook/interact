@@ -119,11 +119,27 @@ Deno.serve(async (req) => {
     }
 
     // Calculate level based on total points (every 100 points = 1 level)
+    const oldLevel = userPoints.level || 1;
     const newLevel = Math.floor(updates.total_points / 100) + 1;
     updates.level = newLevel;
 
     // Update user points
     await base44.asServiceRole.entities.UserPoints.update(userPoints.id, updates);
+    
+    // Check for level up notification
+    if (newLevel > oldLevel) {
+      await createNotificationForUser(
+        base44,
+        participation.participant_email,
+        'level_up_alerts',
+        '🚀 Level Up!',
+        `Awesome! You've reached Level ${newLevel}!`,
+        {
+          icon: '⬆️',
+          action_url: '/Gamification'
+        }
+      );
+    }
 
     // Check for badge awards
     const badges = await checkAndAwardBadges(base44, userPoints.id, updates);
@@ -182,6 +198,20 @@ async function checkAndAwardBadges(base44, userPointsId, stats) {
         badges_earned: updatedBadges,
         total_points: stats.total_points + (badge.points_value || 0)
       });
+      
+      // Create notification for badge earned
+      await createNotificationForUser(
+        base44,
+        user.user_email,
+        'badge_alerts',
+        '🎉 New Badge Earned!',
+        `Congratulations! You've earned the "${badge.badge_name}" badge!`,
+        {
+          icon: badge.badge_icon,
+          badge_id: badge.id,
+          action_url: '/Gamification'
+        }
+      );
     }
   }
 
