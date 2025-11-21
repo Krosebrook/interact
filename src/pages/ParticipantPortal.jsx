@@ -45,6 +45,12 @@ export default function ParticipantPortal() {
     queryFn: () => base44.entities.Activity.list()
   });
 
+  const { data: userPoints = [] } = useQuery({
+    queryKey: ['user-points', user?.email],
+    queryFn: () => base44.entities.UserPoints.filter({ user_email: user?.email }),
+    enabled: !!user
+  });
+
   const rsvpMutation = useMutation({
     mutationFn: ({ participationId, status }) => 
       base44.entities.Participation.update(participationId, { rsvp_status: status }),
@@ -75,13 +81,15 @@ export default function ParticipantPortal() {
     return !participation?.feedback;
   });
 
-  if (userLoading || !user) {
+  if (!user) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-int-orange"></div>
       </div>
     );
   }
+
+  const myUserPoints = userPoints[0];
 
   const statsData = {
     upcoming: upcomingEvents.length,
@@ -216,12 +224,28 @@ export default function ParticipantPortal() {
           </TabsContent>
 
           <TabsContent value="recommendations" className="space-y-6">
-            <PersonalizedCoachWidget userEmail={user.email} compact={false} />
-            <PersonalizedRecommendations
-              participations={myParticipations}
-              allEvents={allEvents}
-              activities={activities}
-            />
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2">
+                <PersonalizedCoachWidget userEmail={user.email} compact={false} />
+                <div className="mt-6">
+                  <PersonalizedRecommendations
+                    participations={myParticipations}
+                    allEvents={allEvents}
+                    activities={activities}
+                  />
+                </div>
+              </div>
+              <div>
+                <StreakTracker 
+                  streakDays={myUserPoints?.streak_days || 0}
+                  eventsThisMonth={myParticipations.filter(p => {
+                    const d = new Date(p.created_date);
+                    const now = new Date();
+                    return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+                  }).length}
+                />
+              </div>
+            </div>
           </TabsContent>
 
           <TabsContent value="feedback" className="space-y-6">
