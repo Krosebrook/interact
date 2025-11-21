@@ -53,12 +53,14 @@ export default function Layout({ children, currentPageName }) {
     { name: 'Facilitator', icon: Users, page: 'FacilitatorDashboard', adminOnly: true },
     { name: 'Activities', icon: Sparkles, page: 'Activities', adminOnly: true },
     { name: 'Calendar', icon: Calendar, page: 'Calendar', adminOnly: true },
+    { name: 'Teams', icon: Users, page: 'Teams', adminOnly: true },
     { name: 'Gamification', icon: BarChart3, page: 'GamificationDashboard', adminOnly: true },
     { name: 'Rewards Admin', icon: Gift, page: 'RewardsAdmin', adminOnly: true },
     { name: 'Analytics', icon: BarChart3, page: 'Analytics', adminOnly: true },
     { name: 'Settings', icon: SettingsIcon, page: 'Settings', adminOnly: true },
   ] : [
     { name: 'My Events', icon: Calendar, page: 'ParticipantPortal', adminOnly: false },
+    { name: 'Teams', icon: Users, page: 'Teams', adminOnly: false },
     { name: 'Rewards', icon: Gift, page: 'RewardsStore', adminOnly: false },
     { name: 'Leaderboard', icon: BarChart3, page: 'Gamification', adminOnly: false },
   ];
