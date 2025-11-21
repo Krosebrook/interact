@@ -25,6 +25,7 @@ import {
 import EventCalendarCard from '../components/events/EventCalendarCard';
 import RecurrenceSettings from '../components/events/RecurrenceSettings';
 import TimeSlotSuggestions from '../components/events/TimeSlotSuggestions';
+import RichTextEventEditor from '../components/events/RichTextEventEditor';
 import { useEventActions } from '../components/events/useEventActions';
 import { Calendar as CalendarIcon, Plus } from 'lucide-react';
 import { toast } from 'sonner';
@@ -399,15 +400,12 @@ export default function Calendar() {
               onChange={setRecurrenceSettings}
             />
 
-            <div>
-              <Label>Custom Instructions (optional)</Label>
-              <Textarea
-                value={formData.custom_instructions}
-                onChange={(e) => setFormData(prev => ({ ...prev, custom_instructions: e.target.value }))}
-                placeholder="Add any special instructions for this event..."
-                rows={3}
-              />
-            </div>
+            <RichTextEventEditor
+              label="Event Details & Instructions"
+              value={formData.custom_instructions}
+              onChange={(value) => setFormData(prev => ({ ...prev, custom_instructions: value }))}
+              placeholder="Add event details, instructions, what to bring, agenda, etc..."
+            />
 
             <div className="flex justify-end gap-3 pt-4">
               <Button type="button" variant="outline" onClick={() => setShowScheduleDialog(false)}>
