@@ -117,19 +117,19 @@ export default function RewardsStore() {
   };
 
   const categoryColors = {
-    badge: 'from-yellow-500 to-amber-600',
-    swag: 'from-blue-500 to-indigo-600',
-    gift_voucher: 'from-green-500 to-emerald-600',
-    extra_pto: 'from-purple-500 to-pink-600',
-    experience: 'from-orange-500 to-red-600',
-    donation: 'from-teal-500 to-cyan-600',
-    other: 'from-slate-500 to-gray-600'
+    badge: 'from-[#F5C16A] to-[#C46322]',
+    swag: 'from-[#4A6070] to-[#7A94A6]',
+    gift_voucher: 'from-[#F47C20] to-[#C46322]',
+    extra_pto: 'from-[#0A1C39] to-[#4A6070]',
+    experience: 'from-[#F47C20] to-[#F5C16A]',
+    donation: 'from-[#7A94A6] to-[#4A6070]',
+    other: 'from-[#4C4C4C] to-[#7A94A6]'
   };
 
   if (!user || !userPoints) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-int-orange"></div>
       </div>
     );
   }
@@ -142,13 +142,13 @@ export default function RewardsStore() {
           <h1 className="text-3xl font-bold text-slate-900 mb-2">Rewards Store</h1>
           <p className="text-slate-600">Redeem your points for awesome rewards</p>
         </div>
-        <Card className="bg-gradient-to-br from-indigo-600 to-purple-600 text-white border-0">
+        <Card className="bg-int-navy text-white border-0">
           <CardHeader className="pb-3">
             <CardTitle className="text-lg">Your Points</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-4xl font-bold">{userPoints.total_points}</div>
-            <p className="text-indigo-100 text-sm mt-1">Available to spend</p>
+            <p className="text-slate-300 text-sm mt-1">Available to spend</p>
           </CardContent>
         </Card>
       </div>
@@ -319,13 +319,13 @@ export default function RewardsStore() {
                 rows={3}
               />
             </div>
-            <div className="flex items-center justify-between p-3 bg-indigo-50 rounded-lg">
+            <div className="flex items-center justify-between p-3 bg-orange-50 rounded-lg border-2 border-int-orange">
               <div>
                 <p className="text-sm font-semibold text-slate-900">Your Points</p>
                 <p className="text-xs text-slate-600">After redemption</p>
               </div>
               <div className="text-right">
-                <p className="text-2xl font-bold text-indigo-600">
+                <p className="text-2xl font-bold text-int-orange">
                   {userPoints.total_points - (selectedReward?.points_cost || 0)}
                 </p>
                 <p className="text-xs text-slate-500">
@@ -348,7 +348,7 @@ export default function RewardsStore() {
             <Button
               onClick={handleRedeem}
               disabled={redeemMutation.isLoading}
-              className="flex-1 bg-gradient-to-r from-indigo-600 to-purple-600"
+              className="flex-1 bg-int-orange hover:bg-[#C46322] text-white"
             >
               {redeemMutation.isLoading ? 'Redeeming...' : 'Confirm Redemption'}
             </Button>

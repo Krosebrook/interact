@@ -90,7 +90,7 @@ export default function Activities() {
   if (!user) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-int-orange"></div>
       </div>
     );
   }
@@ -109,7 +109,7 @@ export default function Activities() {
           <Button 
             onClick={() => setShowSuggester(true)}
             variant="outline"
-            className="border-purple-300 text-purple-700 hover:bg-purple-50"
+            className="border-[#4A6070] text-[#4A6070] hover:bg-slate-50"
           >
             <Plus className="h-4 w-4 mr-2" />
             AI Suggestions
@@ -117,14 +117,14 @@ export default function Activities() {
           <Button 
             onClick={() => setShowModuleBuilder(true)}
             variant="outline"
-            className="border-indigo-300 text-indigo-700 hover:bg-indigo-50"
+            className="border-int-navy text-int-navy hover:bg-slate-50"
           >
             <Plus className="h-4 w-4 mr-2" />
             Build from Modules
           </Button>
           <Button 
             onClick={() => setShowGenerator(true)}
-            className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700"
+            className="bg-int-orange hover:bg-[#C46322] text-white"
           >
             <Plus className="h-4 w-4 mr-2" />
             Generate Custom
@@ -240,7 +240,7 @@ export default function Activities() {
                   handleSchedule(viewingActivity);
                   setViewingActivity(null);
                 }}
-                className="flex-1 bg-indigo-600 hover:bg-indigo-700"
+                className="flex-1 bg-int-orange hover:bg-[#C46322] text-white"
               >
                 Schedule This Activity
               </Button>

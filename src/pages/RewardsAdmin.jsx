@@ -164,7 +164,7 @@ export default function RewardsAdmin() {
   if (!user) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-int-orange"></div>
       </div>
     );
   }
@@ -176,7 +176,7 @@ export default function RewardsAdmin() {
           <h1 className="text-3xl font-bold text-slate-900">Rewards Administration</h1>
           <p className="text-slate-600">Manage rewards catalog and redemptions</p>
         </div>
-        <Button onClick={() => { resetForm(); setShowCreateDialog(true); }}>
+        <Button onClick={() => { resetForm(); setShowCreateDialog(true); }} className="bg-int-orange hover:bg-[#C46322] text-white">
           <Plus className="h-4 w-4 mr-2" />
           Add Reward
         </Button>
@@ -458,7 +458,7 @@ export default function RewardsAdmin() {
             <Button variant="outline" onClick={() => { setShowCreateDialog(false); setEditingReward(null); }} className="flex-1">
               Cancel
             </Button>
-            <Button onClick={handleCreateOrUpdate} className="flex-1">
+            <Button onClick={handleCreateOrUpdate} className="flex-1 bg-int-orange hover:bg-[#C46322] text-white">
               {editingReward ? 'Update' : 'Create'} Reward
             </Button>
           </div>
