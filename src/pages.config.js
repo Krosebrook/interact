@@ -12,6 +12,8 @@ import Gamification from './pages/Gamification';
 import RewardsStore from './pages/RewardsStore';
 import RewardsAdmin from './pages/RewardsAdmin';
 import GamificationDashboard from './pages/GamificationDashboard';
+import Teams from './pages/Teams';
+import TeamDashboard from './pages/TeamDashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -30,6 +32,8 @@ export const PAGES = {
     "RewardsStore": RewardsStore,
     "RewardsAdmin": RewardsAdmin,
     "GamificationDashboard": GamificationDashboard,
+    "Teams": Teams,
+    "TeamDashboard": TeamDashboard,
 }
 
 export const pagesConfig = {
