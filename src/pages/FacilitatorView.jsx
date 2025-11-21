@@ -11,6 +11,7 @@ import PostEventRecap from '../components/facilitator/PostEventRecap';
 import LivePollCreator from '../components/facilitator/LivePollCreator';
 import SessionTimer from '../components/facilitator/SessionTimer';
 import LiveAnnouncements from '../components/facilitator/LiveAnnouncements';
+import EventMediaGallery from '../components/events/EventMediaGallery';
 import { Calendar, Users, Clock, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
@@ -161,9 +162,12 @@ export default function FacilitatorView() {
           </TabsContent>
 
           <TabsContent value="tools">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <SessionTimer />
-              <LiveAnnouncements eventId={eventId} />
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <SessionTimer />
+                <LiveAnnouncements eventId={eventId} />
+              </div>
+              <EventMediaGallery eventId={eventId} canUpload={true} />
             </div>
           </TabsContent>
 
