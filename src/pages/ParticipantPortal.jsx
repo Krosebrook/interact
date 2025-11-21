@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import ParticipantEventCard from '../components/participant/ParticipantEventCard';
 import PersonalizedRecommendations from '../components/participant/PersonalizedRecommendations';
+import PersonalizedCoachWidget from '../components/gamification/PersonalizedCoachWidget';
 import FeedbackForm from '../components/participant/FeedbackForm';
 import { Calendar, Sparkles, MessageSquare, TrendingUp } from 'lucide-react';
 import { toast } from 'sonner';
@@ -207,7 +208,8 @@ export default function ParticipantPortal() {
             )}
           </TabsContent>
 
-          <TabsContent value="recommendations">
+          <TabsContent value="recommendations" className="space-y-6">
+            <PersonalizedCoachWidget userEmail={user.email} compact={false} />
             <PersonalizedRecommendations
               participations={myParticipations}
               allEvents={allEvents}
