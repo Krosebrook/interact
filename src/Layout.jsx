@@ -11,7 +11,8 @@ import {
   LogOut,
   Menu,
   X,
-  Users
+  Users,
+  Gift
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -56,6 +57,7 @@ export default function Layout({ children, currentPageName }) {
     { name: 'Settings', icon: SettingsIcon, page: 'Settings', adminOnly: true },
   ] : [
     { name: 'My Events', icon: Calendar, page: 'ParticipantPortal', adminOnly: false },
+    { name: 'Rewards', icon: Gift, page: 'RewardsStore', adminOnly: false },
     { name: 'Leaderboard', icon: BarChart3, page: 'Gamification', adminOnly: false },
   ];
 
