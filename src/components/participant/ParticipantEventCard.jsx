@@ -98,9 +98,11 @@ export default function ParticipantEventCard({
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
-                  <DropdownMenuItem onClick={() => onRSVP(participation.id, 'yes')}>
+                  <DropdownMenuItem onClick={() => {
+                    onRSVP(participation.id, 'yes');
+                  }}>
                     <CheckCircle2 className="h-4 w-4 mr-2 text-green-600" />
-                    Yes, I'll attend
+                    Yes, I'll attend ✨
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => onRSVP(participation.id, 'maybe')}>
                     <HelpCircle className="h-4 w-4 mr-2 text-yellow-600" />
