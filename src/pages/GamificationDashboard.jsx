@@ -37,33 +37,37 @@ import {
   Users,
   Calendar,
   Filter,
-  Target
+  Target,
+  Settings
 } from 'lucide-react';
 import { format, subDays, subMonths, isAfter, isBefore } from 'date-fns';
 import { motion } from 'framer-motion';
+import { useUserData } from '../components/hooks/useUserData';
+import DashboardCustomizer from '../components/dashboard/DashboardCustomizer';
+import { useQuery } from '@tanstack/react-query';
 
 export default function GamificationDashboard() {
-  const [user, setUser] = useState(null);
+  const { user, loading: userLoading } = useUserData(true, true);
   const [dateRange, setDateRange] = useState('30days');
   const [customStartDate, setCustomStartDate] = useState('');
   const [customEndDate, setCustomEndDate] = useState('');
   const [userSegment, setUserSegment] = useState('all');
   const [minLevel, setMinLevel] = useState(1);
+  const [showCustomizer, setShowCustomizer] = useState(false);
 
-  useEffect(() => {
-    const loadUser = async () => {
-      try {
-        const currentUser = await base44.auth.me();
-        setUser(currentUser);
-        if (currentUser.role !== 'admin') {
-          base44.auth.redirectToLogin();
-        }
-      } catch (error) {
-        base44.auth.redirectToLogin();
-      }
-    };
-    loadUser();
-  }, []);
+  const { data: preferences = [] } = useQuery({
+    queryKey: ['user-preferences', user?.email],
+    queryFn: () => base44.entities.UserPreferences.filter({ user_email: user?.email }),
+    enabled: !!user
+  });
+
+  const prefs = preferences[0] || {
+    dashboard_widgets: {
+      show_quick_stats: true,
+      show_leaderboard: true,
+      show_badges: true
+    }
+  };
 
   const { data: userPoints = [], isLoading: pointsLoading } = useQuery({
     queryKey: ['user-points'],
@@ -222,7 +226,7 @@ export default function GamificationDashboard() {
 
   const COLORS = ['#0A1C39', '#F47C20', '#4A6070', '#7A94A6', '#C46322', '#F5C16A'];
 
-  if (!user || pointsLoading) {
+  if (userLoading || !user || pointsLoading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-int-orange"></div>
@@ -237,6 +241,14 @@ export default function GamificationDashboard() {
           <h1 className="text-3xl font-bold text-slate-900">Gamification Analytics</h1>
           <p className="text-slate-600">Track user engagement and reward trends</p>
         </div>
+        <Button 
+          onClick={() => setShowCustomizer(true)}
+          variant="outline"
+          className="flex items-center gap-2"
+        >
+          <Settings className="h-4 w-4" />
+          Customize Dashboard
+        </Button>
       </div>
 
       {/* Filters */}
@@ -308,6 +320,7 @@ export default function GamificationDashboard() {
       </Card>
 
       {/* Stats Cards */}
+      {prefs.dashboard_widgets?.show_quick_stats !== false && (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -350,8 +363,10 @@ export default function GamificationDashboard() {
           </CardContent>
         </Card>
       </div>
+      )}
 
       {/* Leaderboard */}
+      {prefs.dashboard_widgets?.show_leaderboard !== false && (
       <Card className="overflow-hidden border-2 border-int-navy">
         <CardHeader className="bg-gradient-to-r from-int-navy to-[#4A6070] text-white">
           <CardTitle className="flex items-center gap-2">
@@ -417,6 +432,7 @@ export default function GamificationDashboard() {
           </div>
         </CardContent>
       </Card>
+      )}
 
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -599,6 +615,12 @@ export default function GamificationDashboard() {
           </div>
         </CardContent>
       </Card>
+
+      <DashboardCustomizer 
+        userEmail={user.email}
+        open={showCustomizer}
+        onOpenChange={setShowCustomizer}
+      />
     </div>
   );
 }

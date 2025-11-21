@@ -1,5 +1,28 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.4';
 
+async function createNotificationForUser(base44, userEmail, type, title, message, metadata = {}) {
+  try {
+    // Check user notification preferences
+    const prefs = await base44.asServiceRole.entities.UserPreferences.filter({ 
+      user_email: userEmail 
+    });
+    
+    const shouldNotify = !prefs[0] || prefs[0].notification_preferences?.[type] !== false;
+    
+    if (shouldNotify) {
+      await base44.asServiceRole.entities.Notification.create({
+        user_email: userEmail,
+        type,
+        title,
+        message,
+        ...metadata
+      });
+    }
+  } catch (error) {
+    console.error('Error creating notification:', error);
+  }
+}
+
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
