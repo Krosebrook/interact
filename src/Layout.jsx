@@ -15,6 +15,7 @@ import {
   Gift
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import NotificationBell from './components/notifications/NotificationBell';
 
 export default function Layout({ children, currentPageName }) {
   const [user, setUser] = useState(null);
@@ -113,6 +114,7 @@ export default function Layout({ children, currentPageName }) {
             <div className="flex items-center gap-3">
               {user && (
                 <>
+                  <NotificationBell userEmail={user.email} />
                   <div className="hidden sm:block text-right">
                     <p className="text-sm font-medium text-slate-700">{user.full_name}</p>
                     <p className="text-xs text-slate-500">{user.role}</p>
