@@ -38,15 +38,16 @@ export default function EventReportViewer({ eventId, eventTitle }) {
 
   return (
     <>
-      <Button
-        onClick={generateReport}
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          generateReport();
+        }}
         disabled={loading}
-        variant="outline"
-        className="flex items-center gap-2"
+        className="w-full text-left"
       >
-        <FileText className="h-4 w-4" />
         {loading ? 'Generating...' : 'View Report'}
-      </Button>
+      </button>
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">

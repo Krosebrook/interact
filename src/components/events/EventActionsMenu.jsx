@@ -7,7 +7,8 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
-import { MoreVertical, Copy, Download, Send, BarChart3, Trash2 } from 'lucide-react';
+import { MoreVertical, Copy, Download, Send, BarChart3, Trash2, FileText } from 'lucide-react';
+import EventReportViewer from './EventReportViewer';
 
 export default function EventActionsMenu({ 
   event, 
@@ -41,10 +42,18 @@ export default function EventActionsMenu({
           </DropdownMenuItem>
         )}
         {event.status === 'completed' && (
-          <DropdownMenuItem onClick={() => onSendRecap(event)}>
-            <BarChart3 className="h-4 w-4 mr-2" />
-            Send Teams Recap
-          </DropdownMenuItem>
+          <>
+            <DropdownMenuItem onClick={() => onSendRecap(event)}>
+              <BarChart3 className="h-4 w-4 mr-2" />
+              Send Teams Recap
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <div className="flex items-center">
+                <FileText className="h-4 w-4 mr-2" />
+                <EventReportViewer eventId={event.id} eventTitle={event.title} />
+              </div>
+            </DropdownMenuItem>
+          </>
         )}
         {event.status === 'scheduled' && (
           <>
