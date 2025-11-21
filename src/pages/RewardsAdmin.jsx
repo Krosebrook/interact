@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useUserData } from '../components/hooks/useUserData';
+import { useGamificationData } from '../components/hooks/useGamificationData';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -36,7 +38,8 @@ import { toast } from 'sonner';
 
 export default function RewardsAdmin() {
   const queryClient = useQueryClient();
-  const [user, setUser] = useState(null);
+  const { user, loading } = useUserData(true, true);
+  const { rewards, redemptions } = useGamificationData();
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [editingReward, setEditingReward] = useState(null);
   const [selectedRedemption, setSelectedRedemption] = useState(null);
@@ -49,31 +52,6 @@ export default function RewardsAdmin() {
     stock_quantity: null,
     redemption_instructions: '',
     expiry_date: ''
-  });
-
-  useEffect(() => {
-    const loadUser = async () => {
-      try {
-        const currentUser = await base44.auth.me();
-        setUser(currentUser);
-        if (currentUser.role !== 'admin') {
-          base44.auth.redirectToLogin();
-        }
-      } catch (error) {
-        base44.auth.redirectToLogin();
-      }
-    };
-    loadUser();
-  }, []);
-
-  const { data: rewards = [], isLoading: rewardsLoading } = useQuery({
-    queryKey: ['rewards'],
-    queryFn: () => base44.entities.Reward.list('-created_date', 100)
-  });
-
-  const { data: redemptions = [], isLoading: redemptionsLoading } = useQuery({
-    queryKey: ['all-redemptions'],
-    queryFn: () => base44.entities.RewardRedemption.list('-created_date', 100)
   });
 
   const createRewardMutation = useMutation({
@@ -161,7 +139,7 @@ export default function RewardsAdmin() {
   const approvedRedemptions = redemptions.filter(r => r.status === 'approved');
   const fulfilledRedemptions = redemptions.filter(r => r.status === 'fulfilled');
 
-  if (!user) {
+  if (loading || !user) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-int-orange"></div>

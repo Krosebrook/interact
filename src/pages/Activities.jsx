@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useUserData } from '../components/hooks/useUserData';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -23,7 +24,7 @@ import { createPageUrl } from '../utils';
 export default function Activities() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const [user, setUser] = useState(null);
+  const { user, loading } = useUserData(true, true);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedType, setSelectedType] = useState('all');
   const [selectedDuration, setSelectedDuration] = useState('all');
@@ -31,21 +32,6 @@ export default function Activities() {
   const [showGenerator, setShowGenerator] = useState(false);
   const [showSuggester, setShowSuggester] = useState(false);
   const [showModuleBuilder, setShowModuleBuilder] = useState(false);
-
-  useEffect(() => {
-    const loadUser = async () => {
-      try {
-        const currentUser = await base44.auth.me();
-        setUser(currentUser);
-        if (currentUser.role !== 'admin') {
-          base44.auth.redirectToLogin();
-        }
-      } catch (error) {
-        base44.auth.redirectToLogin();
-      }
-    };
-    loadUser();
-  }, []);
 
   const { data: activities = [], isLoading } = useQuery({
     queryKey: ['activities'],
@@ -87,7 +73,7 @@ export default function Activities() {
     duplicateMutation.mutate(activity);
   };
 
-  if (!user) {
+  if (loading || !user) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-int-orange"></div>

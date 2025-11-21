@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useUserData } from '../components/hooks/useUserData';
+import { useGamificationData } from '../components/hooks/useGamificationData';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -29,42 +31,12 @@ import { motion } from 'framer-motion';
 
 export default function RewardsStore() {
   const queryClient = useQueryClient();
-  const [user, setUser] = useState(null);
+  const { user, loading, userPoints } = useUserData(true);
+  const { rewards, redemptions: myRedemptions } = useGamificationData(user?.email);
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedReward, setSelectedReward] = useState(null);
   const [redemptionNotes, setRedemptionNotes] = useState('');
-
-  useEffect(() => {
-    const loadUser = async () => {
-      try {
-        const currentUser = await base44.auth.me();
-        setUser(currentUser);
-      } catch (error) {
-        base44.auth.redirectToLogin();
-      }
-    };
-    loadUser();
-  }, []);
-
-  const { data: rewards = [], isLoading: rewardsLoading } = useQuery({
-    queryKey: ['rewards'],
-    queryFn: () => base44.entities.Reward.list('-popularity_score', 100)
-  });
-
-  const { data: userPointsRecords = [] } = useQuery({
-    queryKey: ['user-points', user?.email],
-    queryFn: () => base44.entities.UserPoints.filter({ user_email: user?.email }),
-    enabled: !!user
-  });
-
-  const { data: myRedemptions = [] } = useQuery({
-    queryKey: ['my-redemptions', user?.email],
-    queryFn: () => base44.entities.RewardRedemption.filter({ user_email: user?.email }),
-    enabled: !!user
-  });
-
-  const userPoints = userPointsRecords[0];
 
   const redeemMutation = useMutation({
     mutationFn: async ({ reward_id, redemption_notes }) => {
@@ -126,7 +98,7 @@ export default function RewardsStore() {
     other: 'from-[#4C4C4C] to-[#7A94A6]'
   };
 
-  if (!user || !userPoints) {
+  if (loading || !user || !userPoints) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-int-orange"></div>
@@ -184,7 +156,7 @@ export default function RewardsStore() {
       </div>
 
       {/* Rewards Grid */}
-      {rewardsLoading ? (
+      {!rewards.length ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[1, 2, 3, 4, 5, 6].map(i => (
             <div key={i} className="h-80 bg-slate-100 animate-pulse rounded-xl" />

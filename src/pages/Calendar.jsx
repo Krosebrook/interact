@@ -1,6 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useUserData } from '../components/hooks/useUserData';
+import { useEventData } from '../components/hooks/useEventData';
+import { filterUpcomingEvents, filterPastEvents, getParticipationStats, getActivityForEvent } from '../components/utils/eventFilters';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -29,7 +32,8 @@ import { format, addDays, addWeeks, addMonths } from 'date-fns';
 
 export default function Calendar() {
   const queryClient = useQueryClient();
-  const [user, setUser] = useState(null);
+  const { user, loading } = useUserData(true, true);
+  const { events, activities, participations } = useEventData();
   const [showScheduleDialog, setShowScheduleDialog] = useState(false);
   const eventActions = useEventActions();
   const [formData, setFormData] = useState({
@@ -50,19 +54,6 @@ export default function Calendar() {
   });
 
   useEffect(() => {
-    const loadUser = async () => {
-      try {
-        const currentUser = await base44.auth.me();
-        setUser(currentUser);
-        if (currentUser.role !== 'admin') {
-          base44.auth.redirectToLogin();
-        }
-      } catch (error) {
-        base44.auth.redirectToLogin();
-      }
-    };
-    loadUser();
-
     // Check for pre-selected activity from URL
     const urlParams = new URLSearchParams(window.location.search);
     const activityId = urlParams.get('activity');
@@ -71,21 +62,6 @@ export default function Calendar() {
       setShowScheduleDialog(true);
     }
   }, []);
-
-  const { data: events = [], isLoading } = useQuery({
-    queryKey: ['events'],
-    queryFn: () => base44.entities.Event.list('-scheduled_date', 100)
-  });
-
-  const { data: activities = [] } = useQuery({
-    queryKey: ['activities'],
-    queryFn: () => base44.entities.Activity.list()
-  });
-
-  const { data: allParticipations = [] } = useQuery({
-    queryKey: ['participations'],
-    queryFn: () => base44.entities.Participation.list()
-  });
 
   const createEventMutation = useMutation({
     mutationFn: async (data) => {
@@ -187,10 +163,6 @@ export default function Calendar() {
     }
   });
 
-  const getParticipantCount = (eventId) => {
-    return allParticipations.filter(p => p.event_id === eventId).length;
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
     const selectedActivity = activities.find(a => a.id === formData.activity_id);
@@ -200,15 +172,10 @@ export default function Calendar() {
     });
   };
 
-  const upcomingEvents = events.filter(e => 
-    e.status === 'scheduled' && new Date(e.scheduled_date) > new Date()
-  );
-  
-  const pastEvents = events.filter(e => 
-    e.status === 'completed' || (e.status === 'scheduled' && new Date(e.scheduled_date) <= new Date())
-  );
+  const upcomingEvents = filterUpcomingEvents(events);
+  const pastEvents = filterPastEvents(events);
 
-  if (!user) {
+  if (loading || !user) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
@@ -280,23 +247,20 @@ export default function Calendar() {
         <div>
           <h2 className="text-2xl font-bold text-slate-900 mb-4">Past Events</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {pastEvents.slice(0, 6).map(event => {
-              const activity = activities.find(a => a.id === event.activity_id);
-              return (
-                <EventCalendarCard
-                  key={event.id}
-                  event={event}
-                  activity={activity}
-                  participantCount={getParticipantCount(event.id)}
-                  onView={() => {}}
-                  onCopyLink={eventActions.handleCopyLink}
-                  onDownloadCalendar={eventActions.handleDownloadCalendar}
-                  onSendReminder={() => {}}
-                  onSendRecap={eventActions.handleSendRecap}
-                  onCancel={() => {}}
-                />
-              );
-            })}
+            {pastEvents.slice(0, 6).map(event => (
+              <EventCalendarCard
+                key={event.id}
+                event={event}
+                activity={getActivityForEvent(event, activities)}
+                participantCount={getParticipationStats(event.id, participations).total}
+                onView={() => {}}
+                onCopyLink={eventActions.handleCopyLink}
+                onDownloadCalendar={eventActions.handleDownloadCalendar}
+                onSendReminder={() => {}}
+                onSendRecap={eventActions.handleSendRecap}
+                onCancel={() => {}}
+              />
+            ))}
           </div>
         </div>
       )}
