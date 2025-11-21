@@ -226,7 +226,7 @@ export default function Calendar() {
         </div>
         <Button
           onClick={() => setShowScheduleDialog(true)}
-          className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700"
+          className="bg-int-orange hover:bg-[#C46322] text-white"
         >
           <Plus className="h-4 w-4 mr-2" />
           Schedule Event
@@ -247,7 +247,7 @@ export default function Calendar() {
             <CalendarIcon className="h-12 w-12 text-slate-400 mx-auto mb-4" />
             <h3 className="text-lg font-semibold text-slate-900 mb-2">No upcoming events</h3>
             <p className="text-slate-600 mb-4">Schedule your first event to get started</p>
-            <Button onClick={() => setShowScheduleDialog(true)} className="bg-indigo-600 hover:bg-indigo-700">
+            <Button onClick={() => setShowScheduleDialog(true)} className="bg-int-orange hover:bg-[#C46322] text-white">
               <Plus className="h-4 w-4 mr-2" />
               Schedule Event
             </Button>
@@ -449,7 +449,7 @@ export default function Calendar() {
               <Button type="button" variant="outline" onClick={() => setShowScheduleDialog(false)}>
                 Cancel
               </Button>
-              <Button type="submit" className="bg-indigo-600 hover:bg-indigo-700">
+              <Button type="submit" className="bg-int-orange hover:bg-[#C46322] text-white">
                 Schedule Event
               </Button>
             </div>

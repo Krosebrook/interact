@@ -1,0 +1,98 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* INT Brand Colors */
+    --int-navy: #0A1C39;
+    --int-orange: #F47C20;
+    --slate-gray: #4C4C4C;
+    --brand-white: #FFFFFF;
+    
+    /* Sunrise Gradient Colors */
+    --sunrise-gold: #F5C16A;
+    --deep-desert-orange: #C46322;
+    --mountain-blue-gray: #4A6070;
+    --sky-blue-gray: #7A94A6;
+    
+    /* Shadcn UI Variables */
+    --background: 0 0% 100%;
+    --foreground: 218 70% 13%;
+    
+    --card: 0 0% 100%;
+    --card-foreground: 218 70% 13%;
+    
+    --popover: 0 0% 100%;
+    --popover-foreground: 218 70% 13%;
+    
+    --primary: 218 70% 13%;
+    --primary-foreground: 0 0% 100%;
+    
+    --secondary: 27 90% 54%;
+    --secondary-foreground: 0 0% 100%;
+    
+    --muted: 205 20% 57%;
+    --muted-foreground: 0 0% 30%;
+    
+    --accent: 27 90% 54%;
+    --accent-foreground: 0 0% 100%;
+    
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    
+    --border: 205 20% 90%;
+    --input: 205 20% 90%;
+    --ring: 218 70% 13%;
+    
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Custom INT Brand Utilities */
+@layer utilities {
+  .bg-int-navy {
+    background-color: var(--int-navy);
+  }
+  .bg-int-orange {
+    background-color: var(--int-orange);
+  }
+  .bg-slate-gray {
+    background-color: var(--slate-gray);
+  }
+  .text-int-navy {
+    color: var(--int-navy);
+  }
+  .text-int-orange {
+    color: var(--int-orange);
+  }
+  .text-slate-gray {
+    color: var(--slate-gray);
+  }
+  .border-int-orange {
+    border-color: var(--int-orange);
+  }
+  .border-int-navy {
+    border-color: var(--int-navy);
+  }
+  
+  /* Gradient utilities */
+  .bg-int-gradient {
+    background: linear-gradient(135deg, var(--int-navy) 0%, var(--mountain-blue-gray) 100%);
+  }
+  .bg-int-gradient-warm {
+    background: linear-gradient(135deg, var(--int-orange) 0%, var(--deep-desert-orange) 100%);
+  }
+  .bg-sunrise-gradient {
+    background: linear-gradient(135deg, var(--sunrise-gold) 0%, var(--int-orange) 50%, var(--deep-desert-orange) 100%);
+  }
+}

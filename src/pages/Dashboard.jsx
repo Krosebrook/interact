@@ -72,7 +72,7 @@ export default function Dashboard() {
         </div>
         <div className="flex gap-3">
           <Link to={createPageUrl('Activities')}>
-            <Button className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white shadow-lg">
+            <Button className="bg-int-orange hover:bg-[#C46322] text-white shadow-lg">
               <Sparkles className="h-4 w-4 mr-2" />
               Browse Activities
             </Button>
@@ -180,26 +180,27 @@ export default function Dashboard() {
       {/* Quick Actions */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Link to={createPageUrl('Activities')} className="group">
-          <div className="bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl p-6 text-white hover:shadow-xl transition-shadow">
+          <div className="bg-int-navy rounded-xl p-6 text-white hover:shadow-xl transition-shadow relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-20 h-20 bg-int-orange opacity-20 rounded-full -mr-10 -mt-10"></div>
             <Sparkles className="h-8 w-8 mb-3" />
             <h3 className="text-lg font-bold mb-2">Browse Activities</h3>
-            <p className="text-indigo-100 text-sm">Explore {activities.length} activity templates</p>
+            <p className="text-sky-blue-gray text-sm">Explore {activities.length} activity templates</p>
           </div>
         </Link>
-        
+
         <Link to={createPageUrl('Calendar')} className="group">
-          <div className="bg-gradient-to-br from-rose-500 to-pink-600 rounded-xl p-6 text-white hover:shadow-xl transition-shadow">
+          <div className="bg-int-orange rounded-xl p-6 text-white hover:shadow-xl transition-shadow">
             <Calendar className="h-8 w-8 mb-3" />
             <h3 className="text-lg font-bold mb-2">Schedule Event</h3>
-            <p className="text-rose-100 text-sm">Plan your next team activity</p>
+            <p className="text-orange-100 text-sm">Plan your next team activity</p>
           </div>
         </Link>
-        
+
         <Link to={createPageUrl('Analytics')} className="group">
-          <div className="bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl p-6 text-white hover:shadow-xl transition-shadow">
+          <div className="bg-[#4A6070] rounded-xl p-6 text-white hover:shadow-xl transition-shadow">
             <TrendingUp className="h-8 w-8 mb-3" />
             <h3 className="text-lg font-bold mb-2">View Analytics</h3>
-            <p className="text-emerald-100 text-sm">Track engagement & trends</p>
+            <p className="text-slate-200 text-sm">Track engagement & trends</p>
           </div>
         </Link>
       </div>

@@ -39,7 +39,7 @@ export default function Layout({ children, currentPageName }) {
   // If participant page, show minimal layout
   if (currentPageName === 'ParticipantEvent') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
         {children}
       </div>
     );
@@ -66,21 +66,22 @@ export default function Layout({ children, currentPageName }) {
   const filteredNav = navigation.filter(item => !item.adminOnly || isAdmin);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
       {/* Header */}
       <header className="bg-white/80 backdrop-blur-lg border-b border-slate-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
             <Link to={createPageUrl('Dashboard')} className="flex items-center gap-3">
-              <div className="h-10 w-10 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center">
+              <div className="h-10 w-10 bg-int-navy rounded-xl flex items-center justify-center relative">
                 <Sparkles className="h-6 w-6 text-white" />
+                <div className="absolute -top-1 -right-1 w-3 h-3 bg-int-orange rounded-full"></div>
               </div>
               <div className="hidden sm:block">
-                <h1 className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                <h1 className="text-xl font-bold text-int-navy">
                   Team Engage
                 </h1>
-                <p className="text-xs text-slate-500">Activity Hub</p>
+                <p className="text-xs text-slate-gray">Activity Hub</p>
               </div>
             </Link>
 
@@ -95,8 +96,8 @@ export default function Layout({ children, currentPageName }) {
                     to={createPageUrl(item.page)}
                     className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${
                       isActive
-                        ? 'bg-indigo-100 text-indigo-700 font-medium'
-                        : 'text-slate-600 hover:bg-slate-100'
+                        ? 'bg-int-orange text-white font-medium'
+                        : 'text-slate-gray hover:bg-slate-100'
                     }`}
                   >
                     <Icon className="h-4 w-4" />
@@ -152,8 +153,8 @@ export default function Layout({ children, currentPageName }) {
                     onClick={() => setMobileMenuOpen(false)}
                     className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
                       isActive
-                        ? 'bg-indigo-100 text-indigo-700 font-medium'
-                        : 'text-slate-600 hover:bg-slate-100'
+                        ? 'bg-int-orange text-white font-medium'
+                        : 'text-slate-gray hover:bg-slate-100'
                     }`}
                   >
                     <Icon className="h-5 w-5" />
