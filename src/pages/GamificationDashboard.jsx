@@ -36,9 +36,11 @@ import {
   Zap,
   Users,
   Calendar,
-  Filter
+  Filter,
+  Target
 } from 'lucide-react';
 import { format, subDays, subMonths, isAfter, isBefore } from 'date-fns';
+import { motion } from 'framer-motion';
 
 export default function GamificationDashboard() {
   const [user, setUser] = useState(null);
@@ -86,6 +88,11 @@ export default function GamificationDashboard() {
   const { data: users = [] } = useQuery({
     queryKey: ['users'],
     queryFn: () => base44.entities.User.list()
+  });
+
+  const { data: teams = [] } = useQuery({
+    queryKey: ['teams'],
+    queryFn: () => base44.entities.Team.list('-total_points', 20)
   });
 
   // Date filtering logic

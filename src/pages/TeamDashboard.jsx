@@ -9,11 +9,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Users, Trophy, MessageSquare, Target, Send, TrendingUp, Award } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
+import TeamBadgeDisplay from '../components/teams/TeamBadgeDisplay';
+import AchievementCelebration from '../components/gamification/AchievementCelebration';
 
 export default function TeamDashboard() {
   const queryClient = useQueryClient();
   const [user, setUser] = useState(null);
   const [message, setMessage] = useState('');
+  const [achievementToShow, setAchievementToShow] = useState(null);
   const urlParams = new URLSearchParams(window.location.search);
   const teamId = urlParams.get('teamId');
 
@@ -154,6 +157,10 @@ export default function TeamDashboard() {
           <TabsTrigger value="challenges">
             <Target className="h-4 w-4 mr-2" />
             Challenges
+          </TabsTrigger>
+          <TabsTrigger value="badges">
+            <Award className="h-4 w-4 mr-2" />
+            Team Badges
           </TabsTrigger>
         </TabsList>
 
@@ -339,7 +346,19 @@ export default function TeamDashboard() {
             )}
           </div>
         </TabsContent>
+
+        {/* Team Badges Tab */}
+        <TabsContent value="badges">
+          <TeamBadgeDisplay teamId={teamId} teamData={team} />
+        </TabsContent>
       </Tabs>
+
+      {/* Achievement Celebration */}
+      <AchievementCelebration
+        show={!!achievementToShow}
+        onClose={() => setAchievementToShow(null)}
+        achievement={achievementToShow}
+      />
     </div>
   );
 }
