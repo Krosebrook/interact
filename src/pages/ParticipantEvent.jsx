@@ -11,6 +11,7 @@ import { format } from 'date-fns';
 import CollaborativeWhiteboard from '../components/interactive/CollaborativeWhiteboard';
 import BreakoutRooms from '../components/interactive/BreakoutRooms';
 import MultiplayerGame from '../components/interactive/MultiplayerGame';
+import EventMediaGallery from '../components/events/EventMediaGallery';
 import { 
   Calendar, 
   Clock, 
@@ -342,6 +343,14 @@ export default function ParticipantEvent() {
               </Card>
             )}
           </>
+        )}
+
+        {/* Event Media Gallery */}
+        {myParticipation && (event.status === 'in_progress' || event.status === 'completed') && (
+          <EventMediaGallery 
+            eventId={event.id}
+            canUpload={true}
+          />
         )}
 
         {/* Feedback Form */}
