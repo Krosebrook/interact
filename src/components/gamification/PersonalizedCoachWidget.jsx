@@ -110,11 +110,11 @@ export default function PersonalizedCoachWidget({ userEmail, compact = false }) 
     : recommendations.recommendations;
 
   return (
-    <Card className="bg-gradient-to-br from-indigo-50 to-purple-50 border-indigo-200">
+    <Card className="bg-gradient-to-br from-orange-50 to-slate-50 border-int-orange">
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">
-            <Sparkles className="h-5 w-5 text-indigo-600" />
+            <Sparkles className="h-5 w-5 text-int-orange" />
             Your Personal Coach
           </CardTitle>
           <Button 
@@ -138,10 +138,10 @@ export default function PersonalizedCoachWidget({ userEmail, compact = false }) 
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="p-4 bg-white rounded-lg border-2 border-indigo-300 shadow-sm"
+            className="p-4 bg-white rounded-lg border-2 border-int-orange shadow-sm"
           >
             <div className="flex items-start gap-3">
-              <div className="h-10 w-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center flex-shrink-0">
+              <div className="h-10 w-10 rounded-full bg-int-navy flex items-center justify-center flex-shrink-0">
                 <Target className="h-5 w-5 text-white" />
               </div>
               <div className="flex-1">

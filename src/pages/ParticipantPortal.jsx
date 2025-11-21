@@ -78,13 +78,13 @@ export default function ParticipantPortal() {
   if (!user) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-int-orange"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-indigo-50 py-8 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 py-8 px-4">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
@@ -100,9 +100,9 @@ export default function ParticipantPortal() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-slate-600 mb-1">Upcoming</p>
-                <p className="text-3xl font-bold text-indigo-600">{upcomingEvents.length}</p>
+                <p className="text-3xl font-bold text-int-navy">{upcomingEvents.length}</p>
               </div>
-              <Calendar className="h-8 w-8 text-indigo-600" />
+              <Calendar className="h-8 w-8 text-int-navy" />
             </div>
           </Card>
 
@@ -110,9 +110,9 @@ export default function ParticipantPortal() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-slate-600 mb-1">Past Events</p>
-                <p className="text-3xl font-bold text-emerald-600">{pastEvents.length}</p>
+                <p className="text-3xl font-bold" style={{color: '#4A6070'}}>{pastEvents.length}</p>
               </div>
-              <TrendingUp className="h-8 w-8 text-emerald-600" />
+              <TrendingUp className="h-8 w-8" style={{color: '#4A6070'}} />
             </div>
           </Card>
 
@@ -120,9 +120,9 @@ export default function ParticipantPortal() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-slate-600 mb-1">Pending Feedback</p>
-                <p className="text-3xl font-bold text-orange-600">{pendingFeedbackEvents.length}</p>
+                <p className="text-3xl font-bold text-int-orange">{pendingFeedbackEvents.length}</p>
               </div>
-              <MessageSquare className="h-8 w-8 text-orange-600" />
+              <MessageSquare className="h-8 w-8 text-int-orange" />
             </div>
           </Card>
 
@@ -130,11 +130,11 @@ export default function ParticipantPortal() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-slate-600 mb-1">Total Attended</p>
-                <p className="text-3xl font-bold text-purple-600">
+                <p className="text-3xl font-bold text-int-orange">
                   {myParticipations.filter(p => p.attended).length}
                 </p>
               </div>
-              <Sparkles className="h-8 w-8 text-purple-600" />
+              <Sparkles className="h-8 w-8 text-int-orange" />
             </div>
           </Card>
         </div>
@@ -242,7 +242,7 @@ export default function ParticipantPortal() {
                       </div>
                       <Button
                         onClick={() => setSelectedEventForFeedback({ event, participation })}
-                        className="w-full bg-indigo-600 hover:bg-indigo-700"
+                        className="w-full bg-int-orange hover:bg-[#C46322] text-white"
                       >
                         Provide Feedback
                       </Button>

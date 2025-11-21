@@ -213,12 +213,12 @@ export default function GamificationDashboard() {
     return Object.entries(distribution).map(([name, value]) => ({ name, value }));
   }, [filteredData.userPoints]);
 
-  const COLORS = ['#6366f1', '#ec4899', '#10b981', '#f59e0b', '#8b5cf6', '#06b6d4'];
+  const COLORS = ['#0A1C39', '#F47C20', '#4A6070', '#7A94A6', '#C46322', '#F5C16A'];
 
   if (!user || pointsLoading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-int-orange"></div>
       </div>
     );
   }
@@ -356,7 +356,7 @@ export default function GamificationDashboard() {
           <div className="space-y-3">
             {leaderboardData.map((user) => (
               <div key={user.email} className="flex items-center gap-4 p-3 bg-slate-50 rounded-lg">
-                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-br from-indigo-600 to-purple-600 text-white font-bold">
+                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-int-navy text-white font-bold">
                   {user.rank}
                 </div>
                 <div className="flex-1">
@@ -365,19 +365,19 @@ export default function GamificationDashboard() {
                 </div>
                 <div className="flex gap-4 text-sm">
                   <div className="text-center">
-                    <div className="font-bold text-indigo-600">{user.points}</div>
+                    <div className="font-bold text-int-orange">{user.points}</div>
                     <div className="text-xs text-slate-500">Points</div>
                   </div>
                   <div className="text-center">
-                    <div className="font-bold text-purple-600">{user.level}</div>
+                    <div className="font-bold text-int-navy">{user.level}</div>
                     <div className="text-xs text-slate-500">Level</div>
                   </div>
                   <div className="text-center">
-                    <div className="font-bold text-green-600">{user.badges}</div>
+                    <div className="font-bold text-[#4A6070]">{user.badges}</div>
                     <div className="text-xs text-slate-500">Badges</div>
                   </div>
                   <div className="text-center">
-                    <div className="font-bold text-orange-600">{user.streak}</div>
+                    <div className="font-bold text-int-orange">{user.streak}</div>
                     <div className="text-xs text-slate-500">Streak</div>
                   </div>
                 </div>
@@ -429,7 +429,7 @@ export default function GamificationDashboard() {
                 <XAxis dataKey="name" />
                 <YAxis />
                 <Tooltip />
-                <Bar dataKey="value" fill="#6366f1" />
+                <Bar dataKey="value" fill="#0A1C39" />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
@@ -448,7 +448,7 @@ export default function GamificationDashboard() {
                 <YAxis />
                 <Tooltip />
                 <Legend />
-                <Line type="monotone" dataKey="count" stroke="#10b981" strokeWidth={2} />
+                <Line type="monotone" dataKey="count" stroke="#F47C20" strokeWidth={2} />
               </LineChart>
             </ResponsiveContainer>
           </CardContent>
@@ -467,7 +467,7 @@ export default function GamificationDashboard() {
                 <YAxis />
                 <Tooltip />
                 <Legend />
-                <Line type="monotone" dataKey="points" stroke="#f59e0b" strokeWidth={2} />
+                <Line type="monotone" dataKey="points" stroke="#C46322" strokeWidth={2} />
               </LineChart>
             </ResponsiveContainer>
           </CardContent>
@@ -481,20 +481,20 @@ export default function GamificationDashboard() {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="text-center p-6 bg-indigo-50 rounded-lg">
-              <div className="text-3xl font-bold text-indigo-600">{totalParticipations}</div>
+            <div className="text-center p-6 bg-slate-50 rounded-lg border-2 border-int-navy">
+              <div className="text-3xl font-bold text-int-navy">{totalParticipations}</div>
               <div className="text-sm text-slate-600 mt-2">Total Participations</div>
               <div className="text-xs text-slate-500 mt-1">In selected date range</div>
             </div>
-            <div className="text-center p-6 bg-purple-50 rounded-lg">
-              <div className="text-3xl font-bold text-purple-600">
+            <div className="text-center p-6 bg-orange-50 rounded-lg border-2 border-int-orange">
+              <div className="text-3xl font-bold text-int-orange">
                 {totalParticipations > 0 ? Math.round((totalParticipations / totalUsers) * 10) / 10 : 0}
               </div>
               <div className="text-sm text-slate-600 mt-2">Avg Participations/User</div>
               <div className="text-xs text-slate-500 mt-1">Higher is better</div>
             </div>
-            <div className="text-center p-6 bg-green-50 rounded-lg">
-              <div className="text-3xl font-bold text-green-600">
+            <div className="text-center p-6 bg-blue-50 rounded-lg border-2 border-[#4A6070]">
+              <div className="text-3xl font-bold" style={{color: '#4A6070'}}>
                 {userPoints.filter(up => up.streak_days > 0).length}
               </div>
               <div className="text-sm text-slate-600 mt-2">Users with Active Streaks</div>
