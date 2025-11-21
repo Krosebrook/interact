@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -9,55 +9,20 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Users, Trophy, MessageSquare, Target, Send, TrendingUp, Award } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useUserData } from '../components/hooks/useUserData';
+import { useTeamData } from '../components/hooks/useTeamData';
 import TeamBadgeDisplay from '../components/teams/TeamBadgeDisplay';
 import AchievementCelebration from '../components/gamification/AchievementCelebration';
 
 export default function TeamDashboard() {
   const queryClient = useQueryClient();
-  const [user, setUser] = useState(null);
+  const { user, loading } = useUserData(true);
   const [message, setMessage] = useState('');
   const [achievementToShow, setAchievementToShow] = useState(null);
   const urlParams = new URLSearchParams(window.location.search);
   const teamId = urlParams.get('teamId');
 
-  useEffect(() => {
-    const loadUser = async () => {
-      try {
-        const currentUser = await base44.auth.me();
-        setUser(currentUser);
-      } catch (error) {
-        base44.auth.redirectToLogin();
-      }
-    };
-    loadUser();
-  }, []);
-
-  const { data: team } = useQuery({
-    queryKey: ['team', teamId],
-    queryFn: async () => {
-      const teams = await base44.entities.Team.filter({ id: teamId });
-      return teams[0];
-    },
-    enabled: !!teamId
-  });
-
-  const { data: teamMembers = [] } = useQuery({
-    queryKey: ['team-members', teamId],
-    queryFn: () => base44.entities.UserPoints.filter({ team_id: teamId }),
-    enabled: !!teamId
-  });
-
-  const { data: messages = [] } = useQuery({
-    queryKey: ['team-messages', teamId],
-    queryFn: () => base44.entities.TeamMessage.filter({ team_id: teamId }),
-    enabled: !!teamId,
-    refetchInterval: 5000
-  });
-
-  const { data: challenges = [] } = useQuery({
-    queryKey: ['team-challenges'],
-    queryFn: () => base44.entities.TeamChallenge.list('-created_date', 20)
-  });
+  const { team, teamMembers, teamMessages: messages, challenges } = useTeamData(teamId);
 
   const sendMessageMutation = useMutation({
     mutationFn: (msg) => base44.entities.TeamMessage.create({
@@ -101,7 +66,7 @@ export default function TeamDashboard() {
     c.status === 'active' && !c.participating_teams?.includes(teamId)
   );
 
-  if (!user || !team) {
+  if (loading || !user || !team) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-int-orange"></div>

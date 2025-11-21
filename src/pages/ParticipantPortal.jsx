@@ -75,13 +75,20 @@ export default function ParticipantPortal() {
     return !participation?.feedback;
   });
 
-  if (!user) {
+  if (userLoading || !user) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-int-orange"></div>
       </div>
     );
   }
+
+  const statsData = {
+    upcoming: upcomingEvents.length,
+    past: pastEvents.length,
+    pendingFeedback: pendingFeedbackEvents.length,
+    attended: myParticipations.filter(p => p.attended).length
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 py-8 px-4">

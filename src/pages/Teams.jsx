@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -14,16 +14,19 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Users, Plus, Trophy, Crown, MessageSquare, Target } from 'lucide-react';
+import { Users, Plus, Trophy, Crown, MessageSquare } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '../utils';
+import { useUserData } from '../components/hooks/useUserData';
+import { useTeamData } from '../components/hooks/useTeamData';
 
 export default function Teams() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const [user, setUser] = useState(null);
+  const { user, loading, userPoints } = useUserData(true);
+  const { teams } = useTeamData();
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [teamForm, setTeamForm] = useState({
     team_name: '',
@@ -31,30 +34,7 @@ export default function Teams() {
     team_avatar: '🚀'
   });
 
-  useEffect(() => {
-    const loadUser = async () => {
-      try {
-        const currentUser = await base44.auth.me();
-        setUser(currentUser);
-      } catch (error) {
-        base44.auth.redirectToLogin();
-      }
-    };
-    loadUser();
-  }, []);
-
-  const { data: teams = [] } = useQuery({
-    queryKey: ['teams'],
-    queryFn: () => base44.entities.Team.list('-total_points', 50)
-  });
-
-  const { data: userPoints = [] } = useQuery({
-    queryKey: ['user-points', user?.email],
-    queryFn: () => base44.entities.UserPoints.filter({ user_email: user?.email }),
-    enabled: !!user
-  });
-
-  const myTeam = userPoints[0]?.team_id ? teams.find(t => t.id === userPoints[0].team_id) : null;
+  const myTeam = userPoints?.team_id ? teams.find(t => t.id === userPoints.team_id) : null;
 
   const createTeamMutation = useMutation({
     mutationFn: async (data) => {
@@ -66,8 +46,8 @@ export default function Teams() {
       });
 
       // Update user's team
-      if (userPoints[0]) {
-        await base44.entities.UserPoints.update(userPoints[0].id, {
+      if (userPoints) {
+        await base44.entities.UserPoints.update(userPoints.id, {
           team_id: team.id,
           team_name: team.team_name
         });
@@ -91,8 +71,8 @@ export default function Teams() {
       }
 
       // Update user's team
-      if (userPoints[0]) {
-        await base44.entities.UserPoints.update(userPoints[0].id, {
+      if (userPoints) {
+        await base44.entities.UserPoints.update(userPoints.id, {
           team_id: team.id,
           team_name: team.team_name
         });
@@ -115,8 +95,8 @@ export default function Teams() {
 
   const leaveTeamMutation = useMutation({
     mutationFn: async () => {
-      if (userPoints[0]) {
-        await base44.entities.UserPoints.update(userPoints[0].id, {
+      if (userPoints) {
+        await base44.entities.UserPoints.update(userPoints.id, {
           team_id: null,
           team_name: null
         });
@@ -137,7 +117,7 @@ export default function Teams() {
 
   const avatarOptions = ['🚀', '⚡', '🔥', '💎', '🌟', '🎯', '🏆', '👑', '🦁', '🐉'];
 
-  if (!user) {
+  if (loading || !user) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-int-orange"></div>

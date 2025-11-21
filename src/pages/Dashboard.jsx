@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '../utils';
-import { useAuth } from '../components/hooks/useAuth';
+import { useUserData } from '../components/hooks/useUserData';
 import { useEventData } from '../components/hooks/useEventData';
-import { filterUpcomingEvents, getParticipationStats, getActivityForEvent } from '../components/utils/eventUtils';
+import { filterUpcomingEvents, getParticipationStats, getActivityForEvent } from '../components/utils/eventFilters';
 import { Button } from '@/components/ui/button';
-import StatsCard from '../components/dashboard/StatsCard';
+import QuickStats from '../components/dashboard/QuickStats';
 import EventCalendarCard from '../components/events/EventCalendarCard';
 import AISuggestionsWidget from '../components/ai/AISuggestionsWidget';
 import ActivityGenerator from '../components/ai/ActivityGenerator';
@@ -22,7 +22,7 @@ import { toast } from 'sonner';
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const { user, loading: userLoading } = useAuth(true);
+  const { user, loading: userLoading, isAdmin } = useUserData(true, true);
   const { events, activities, participations, isLoading } = useEventData();
   const [showGenerator, setShowGenerator] = useState(false);
   const eventActions = useEventActions();
@@ -88,34 +88,25 @@ export default function Dashboard() {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatsCard
-          title="Upcoming Events"
-          value={upcomingEvents.length}
-          subtitle="Scheduled activities"
+        <QuickStats 
+          stats={{ title: 'Upcoming Events', value: upcomingEvents.length, subtitle: 'Scheduled activities' }}
           icon={Calendar}
-          color="indigo"
+          color="navy"
         />
-        <StatsCard
-          title="Total Activities"
-          value={activities.length}
-          subtitle="In your library"
+        <QuickStats 
+          stats={{ title: 'Total Activities', value: activities.length, subtitle: 'In your library' }}
           icon={Sparkles}
-          color="coral"
+          color="orange"
         />
-        <StatsCard
-          title="This Month"
-          value={completedThisMonth}
-          subtitle="Events completed"
+        <QuickStats 
+          stats={{ title: 'This Month', value: completedThisMonth, subtitle: 'Events completed', trend: '+12% from last month' }}
           icon={TrendingUp}
-          color="mint"
-          trend="+12% from last month"
+          color="orange"
         />
-        <StatsCard
-          title="Avg Participation"
-          value={avgParticipation}
-          subtitle="People per event"
+        <QuickStats 
+          stats={{ title: 'Avg Participation', value: avgParticipation, subtitle: 'People per event' }}
           icon={Users}
-          color="sky"
+          color="navy"
         />
       </div>
 
