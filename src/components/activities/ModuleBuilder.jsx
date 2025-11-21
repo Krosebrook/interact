@@ -21,7 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Plus, Trash2, GripVertical, Save } from 'lucide-react';
+import { Plus, Trash2, GripVertical, Save, Sparkles, Loader2, Shuffle } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 
@@ -31,9 +31,12 @@ export default function ModuleBuilder({ open, onOpenChange, onActivityCreated })
     title: '',
     description: '',
     type: 'social',
-    duration: '15-30min'
+    duration: '15-30min',
+    interaction_type: 'discussion'
   });
   const [selectedModules, setSelectedModules] = useState([]);
+  const [aiPrompt, setAiPrompt] = useState('');
+  const [isGeneratingAI, setIsGeneratingAI] = useState(false);
 
   const { data: modules = [] } = useQuery({
     queryKey: ['activity-modules'],
@@ -56,7 +59,7 @@ export default function ModuleBuilder({ open, onOpenChange, onActivityCreated })
         type: data.type,
         duration: totalDuration > 30 ? '30+min' : totalDuration > 15 ? '15-30min' : '5-15min',
         materials_needed: allMaterials || 'None',
-        interaction_type: 'discussion',
+        interaction_type: data.interaction_type,
         is_template: false,
         popularity_score: 0
       });
@@ -99,9 +102,122 @@ export default function ModuleBuilder({ open, onOpenChange, onActivityCreated })
     createActivityMutation.mutate(activityData);
   };
 
+  const generateAIModuleSuggestions = async () => {
+    if (!aiPrompt) {
+      toast.error('Please provide a prompt for AI suggestions');
+      return;
+    }
+
+    setIsGeneratingAI(true);
+    try {
+      const modulesList = modules.map(m => ({
+        id: m.id,
+        name: m.name,
+        description: m.description,
+        type: m.module_type,
+        duration: m.duration_minutes,
+        tags: m.tags
+      }));
+
+      const response = await base44.integrations.Core.InvokeLLM({
+        prompt: `You are an expert activity designer. Based on this request: "${aiPrompt}"
+
+Available modules:
+${JSON.stringify(modulesList, null, 2)}
+
+Please:
+1. Select the most relevant module IDs from the list above
+2. Arrange them in an optimal sequence for a cohesive activity flow
+3. Provide reasoning for your selection and sequence
+
+Consider: flow, engagement, duration balance, and logical progression.`,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            selected_module_ids: {
+              type: "array",
+              items: { type: "string" }
+            },
+            reasoning: { type: "string" },
+            suggested_title: { type: "string" },
+            suggested_description: { type: "string" }
+          }
+        }
+      });
+
+      // Apply AI suggestions
+      const suggestedModules = response.selected_module_ids
+        .map(id => modules.find(m => m.id === id))
+        .filter(Boolean);
+
+      setSelectedModules(suggestedModules);
+      setActivityData(prev => ({
+        ...prev,
+        title: response.suggested_title || prev.title,
+        description: response.suggested_description || prev.description
+      }));
+
+      toast.success('AI suggestions applied! 🎉');
+    } catch (error) {
+      toast.error('Failed to generate AI suggestions');
+    } finally {
+      setIsGeneratingAI(false);
+    }
+  };
+
+  const handleOptimizeSequence = async () => {
+    if (selectedModules.length < 2) {
+      toast.error('Select at least 2 modules to optimize');
+      return;
+    }
+
+    setIsGeneratingAI(true);
+    try {
+      const modulesList = selectedModules.map((m, i) => ({
+        current_position: i + 1,
+        id: m.id,
+        name: m.name,
+        type: m.module_type,
+        duration: m.duration_minutes
+      }));
+
+      const response = await base44.integrations.Core.InvokeLLM({
+        prompt: `You are an activity flow expert. Optimize the sequence of these modules for best engagement and logical flow:
+
+${JSON.stringify(modulesList, null, 2)}
+
+Activity context: ${activityData.title || 'General activity'} - ${activityData.description || 'Team event'}
+
+Return the module IDs in the optimal order with reasoning.`,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            optimized_module_ids: {
+              type: "array",
+              items: { type: "string" }
+            },
+            reasoning: { type: "string" }
+          }
+        }
+      });
+
+      const optimizedModules = response.optimized_module_ids
+        .map(id => selectedModules.find(m => m.id === id))
+        .filter(Boolean);
+
+      setSelectedModules(optimizedModules);
+      toast.success(`Sequence optimized! ${response.reasoning}`);
+    } catch (error) {
+      toast.error('Failed to optimize sequence');
+    } finally {
+      setIsGeneratingAI(false);
+    }
+  };
+
   const handleClose = () => {
-    setActivityData({ title: '', description: '', type: 'social', duration: '15-30min' });
+    setActivityData({ title: '', description: '', type: 'social', duration: '15-30min', interaction_type: 'discussion' });
     setSelectedModules([]);
+    setAiPrompt('');
     onOpenChange(false);
   };
 
@@ -126,6 +242,39 @@ export default function ModuleBuilder({ open, onOpenChange, onActivityCreated })
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 py-4">
           {/* Left: Activity Details */}
           <div className="space-y-4">
+            {/* AI Assistance */}
+            <Card className="p-4 bg-gradient-to-br from-purple-50 to-pink-50 border-purple-200">
+              <h3 className="font-bold mb-3 flex items-center gap-2">
+                <Sparkles className="h-4 w-4 text-purple-600" />
+                AI Module Assistant
+              </h3>
+              <Textarea
+                value={aiPrompt}
+                onChange={(e) => setAiPrompt(e.target.value)}
+                placeholder="e.g., 'Create a workshop for improving team communication with icebreaker, discussion, and reflection'"
+                rows={2}
+                className="mb-2"
+              />
+              <Button
+                onClick={generateAIModuleSuggestions}
+                disabled={isGeneratingAI || !aiPrompt}
+                size="sm"
+                className="w-full"
+              >
+                {isGeneratingAI ? (
+                  <>
+                    <Loader2 className="h-3 w-3 mr-2 animate-spin" />
+                    Generating...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="h-3 w-3 mr-2" />
+                    Suggest Modules
+                  </>
+                )}
+              </Button>
+            </Card>
+
             <Card className="p-4 bg-indigo-50 border-indigo-200">
               <h3 className="font-bold mb-3">Activity Details</h3>
               <div className="space-y-3">
@@ -167,16 +316,50 @@ export default function ModuleBuilder({ open, onOpenChange, onActivityCreated })
                     </Select>
                   </div>
                   <div>
-                    <Label>Total Duration</Label>
-                    <Input value={`${totalDuration} minutes`} disabled />
+                    <Label>Interaction Type</Label>
+                    <Select
+                      value={activityData.interaction_type}
+                      onValueChange={(value) => setActivityData(prev => ({ ...prev, interaction_type: value }))}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="poll">Poll</SelectItem>
+                        <SelectItem value="photo_upload">Photo Upload</SelectItem>
+                        <SelectItem value="text_submission">Text Submission</SelectItem>
+                        <SelectItem value="quiz">Quiz</SelectItem>
+                        <SelectItem value="discussion">Discussion</SelectItem>
+                        <SelectItem value="whiteboard">Whiteboard</SelectItem>
+                        <SelectItem value="breakout_rooms">Breakout Rooms</SelectItem>
+                        <SelectItem value="multiplayer_game">Multiplayer Game</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
+                </div>
+                <div>
+                  <Label>Total Duration</Label>
+                  <Input value={`${totalDuration} minutes`} disabled />
                 </div>
               </div>
             </Card>
 
             {/* Selected Modules */}
             <Card className="p-4">
-              <h3 className="font-bold mb-3">Activity Flow ({selectedModules.length} modules)</h3>
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-bold">Activity Flow ({selectedModules.length} modules)</h3>
+                {selectedModules.length >= 2 && (
+                  <Button
+                    onClick={handleOptimizeSequence}
+                    disabled={isGeneratingAI}
+                    size="sm"
+                    variant="outline"
+                  >
+                    <Shuffle className="h-3 w-3 mr-1" />
+                    Optimize
+                  </Button>
+                )}
+              </div>
               {selectedModules.length === 0 ? (
                 <p className="text-sm text-slate-500 text-center py-4">
                   Select modules from the right to build your activity
