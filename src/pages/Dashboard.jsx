@@ -99,7 +99,12 @@ export default function Dashboard() {
           color="orange"
         />
         <QuickStats 
-          stats={{ title: 'This Month', value: completedThisMonth, subtitle: 'Events completed', trend: '+12% from last month' }}
+          stats={{ 
+            title: 'This Month', 
+            value: completedThisMonth, 
+            subtitle: 'Events completed',
+            trend: completedThisMonth > 0 ? `${Math.round((completedThisMonth / upcomingEvents.length) * 100)}% completion rate` : 'Let\'s schedule more!'
+          }}
           icon={TrendingUp}
           color="orange"
         />
