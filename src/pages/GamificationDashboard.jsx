@@ -44,7 +44,6 @@ import { format, subDays, subMonths, isAfter, isBefore } from 'date-fns';
 import { motion } from 'framer-motion';
 import { useUserData } from '../components/hooks/useUserData';
 import DashboardCustomizer from '../components/dashboard/DashboardCustomizer';
-import { useQuery } from '@tanstack/react-query';
 
 export default function GamificationDashboard() {
   const { user, loading: userLoading } = useUserData(true, true);
