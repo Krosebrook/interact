@@ -10,6 +10,7 @@ import ParticipantPortal from './pages/ParticipantPortal';
 import EventWizard from './pages/EventWizard';
 import Gamification from './pages/Gamification';
 import RewardsStore from './pages/RewardsStore';
+import RewardsAdmin from './pages/RewardsAdmin';
 import __Layout from './Layout.jsx';
 
 
@@ -26,6 +27,7 @@ export const PAGES = {
     "EventWizard": EventWizard,
     "Gamification": Gamification,
     "RewardsStore": RewardsStore,
+    "RewardsAdmin": RewardsAdmin,
 }
 
 export const pagesConfig = {
