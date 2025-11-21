@@ -7,6 +7,7 @@ import Settings from './pages/Settings';
 import FacilitatorView from './pages/FacilitatorView';
 import FacilitatorDashboard from './pages/FacilitatorDashboard';
 import ParticipantPortal from './pages/ParticipantPortal';
+import EventWizard from './pages/EventWizard';
 import __Layout from './Layout.jsx';
 
 
@@ -20,6 +21,7 @@ export const PAGES = {
     "FacilitatorView": FacilitatorView,
     "FacilitatorDashboard": FacilitatorDashboard,
     "ParticipantPortal": ParticipantPortal,
+    "EventWizard": EventWizard,
 }
 
 export const pagesConfig = {
