@@ -345,43 +345,67 @@ export default function GamificationDashboard() {
       </div>
 
       {/* Leaderboard */}
-      <Card>
-        <CardHeader>
+      <Card className="overflow-hidden border-2 border-int-navy">
+        <CardHeader className="bg-gradient-to-r from-int-navy to-[#4A6070] text-white">
           <CardTitle className="flex items-center gap-2">
-            <Trophy className="h-5 w-5 text-yellow-500" />
+            <Trophy className="h-5 w-5 text-[#F5C16A]" />
             Top Performers
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="pt-6">
           <div className="space-y-3">
-            {leaderboardData.map((user) => (
-              <div key={user.email} className="flex items-center gap-4 p-3 bg-slate-50 rounded-lg">
-                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-int-navy text-white font-bold">
-                  {user.rank}
+            {leaderboardData.map((user, index) => (
+              <motion.div
+                key={user.email}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.1 }}
+                whileHover={{ scale: 1.02, x: 4 }}
+                className={`flex items-center gap-4 p-4 rounded-lg transition-all cursor-pointer ${
+                  user.rank === 1 ? 'bg-gradient-to-r from-[#F5C16A]/20 to-[#F47C20]/20 border-2 border-int-orange' :
+                  user.rank === 2 ? 'bg-slate-100 border-2 border-[#7A94A6]' :
+                  user.rank === 3 ? 'bg-slate-50 border-2 border-[#C46322]' :
+                  'bg-slate-50 border border-slate-200 hover:border-int-orange'
+                }`}
+              >
+                <div className={`flex items-center justify-center w-10 h-10 rounded-full font-bold text-lg ${
+                  user.rank === 1 ? 'bg-gradient-to-br from-[#F5C16A] to-int-orange text-white' :
+                  user.rank === 2 ? 'bg-gradient-to-br from-[#7A94A6] to-[#4A6070] text-white' :
+                  user.rank === 3 ? 'bg-gradient-to-br from-[#C46322] to-int-orange text-white' :
+                  'bg-int-navy text-white'
+                }`}>
+                  {user.rank <= 3 ? (
+                    <Trophy className="h-5 w-5" />
+                  ) : (
+                    user.rank
+                  )}
                 </div>
                 <div className="flex-1">
-                  <div className="font-semibold">{user.name}</div>
+                  <div className="font-semibold flex items-center gap-2">
+                    {user.name}
+                    {user.rank === 1 && <span className="text-lg">👑</span>}
+                  </div>
                   <div className="text-sm text-slate-600">{user.email}</div>
                 </div>
                 <div className="flex gap-4 text-sm">
                   <div className="text-center">
-                    <div className="font-bold text-int-orange">{user.points}</div>
+                    <div className="font-bold text-int-orange text-lg">{user.points}</div>
                     <div className="text-xs text-slate-500">Points</div>
                   </div>
                   <div className="text-center">
-                    <div className="font-bold text-int-navy">{user.level}</div>
+                    <div className="font-bold text-int-navy text-lg">{user.level}</div>
                     <div className="text-xs text-slate-500">Level</div>
                   </div>
                   <div className="text-center">
-                    <div className="font-bold text-[#4A6070]">{user.badges}</div>
+                    <div className="font-bold text-[#4A6070] text-lg">{user.badges}</div>
                     <div className="text-xs text-slate-500">Badges</div>
                   </div>
                   <div className="text-center">
-                    <div className="font-bold text-int-orange">{user.streak}</div>
+                    <div className="font-bold text-int-orange text-lg">{user.streak}</div>
                     <div className="text-xs text-slate-500">Streak</div>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </CardContent>
@@ -390,9 +414,12 @@ export default function GamificationDashboard() {
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Badge Distribution */}
-        <Card>
+        <Card className="border-2 border-int-orange/30 hover:border-int-orange transition-all">
           <CardHeader>
-            <CardTitle>Badge Distribution by Rarity</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <Award className="h-5 w-5 text-int-orange" />
+              Badge Distribution by Rarity
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
@@ -406,68 +433,130 @@ export default function GamificationDashboard() {
                   outerRadius={100}
                   fill="#8884d8"
                   dataKey="value"
+                  animationBegin={0}
+                  animationDuration={800}
                 >
                   {badgeDistribution.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
-                <Tooltip />
+                <Tooltip 
+                  contentStyle={{
+                    backgroundColor: '#0A1C39',
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: '8px',
+                    padding: '8px 12px'
+                  }}
+                />
               </PieChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
 
         {/* Level Distribution */}
-        <Card>
+        <Card className="border-2 border-int-navy/30 hover:border-int-navy transition-all">
           <CardHeader>
-            <CardTitle>User Level Distribution</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <TrendingUp className="h-5 w-5 text-int-navy" />
+              User Level Distribution
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={levelDistribution}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Bar dataKey="value" fill="#0A1C39" />
+                <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
+                <XAxis dataKey="name" stroke="#4C4C4C" />
+                <YAxis stroke="#4C4C4C" />
+                <Tooltip 
+                  contentStyle={{
+                    backgroundColor: '#0A1C39',
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: '8px'
+                  }}
+                  cursor={{ fill: 'rgba(10, 28, 57, 0.1)' }}
+                />
+                <Bar 
+                  dataKey="value" 
+                  fill="#0A1C39" 
+                  radius={[8, 8, 0, 0]}
+                  animationDuration={800}
+                />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
 
         {/* Redemption Trends */}
-        <Card>
+        <Card className="border-2 border-int-orange/30 hover:border-int-orange transition-all">
           <CardHeader>
-            <CardTitle>Redemption Trends</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <Zap className="h-5 w-5 text-int-orange" />
+              Redemption Trends
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={redemptionTrends}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="date" />
-                <YAxis />
-                <Tooltip />
+                <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
+                <XAxis dataKey="date" stroke="#4C4C4C" />
+                <YAxis stroke="#4C4C4C" />
+                <Tooltip 
+                  contentStyle={{
+                    backgroundColor: '#F47C20',
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: '8px'
+                  }}
+                />
                 <Legend />
-                <Line type="monotone" dataKey="count" stroke="#F47C20" strokeWidth={2} />
+                <Line 
+                  type="monotone" 
+                  dataKey="count" 
+                  stroke="#F47C20" 
+                  strokeWidth={3}
+                  dot={{ fill: '#F47C20', r: 5 }}
+                  activeDot={{ r: 8, fill: '#C46322' }}
+                  animationDuration={1000}
+                />
               </LineChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
 
         {/* Points Over Time */}
-        <Card>
+        <Card className="border-2 border-[#C46322]/30 hover:border-[#C46322] transition-all">
           <CardHeader>
-            <CardTitle>Points Earned Over Time</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <TrendingUp className="h-5 w-5 text-[#C46322]" />
+              Points Earned Over Time
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={pointsOverTime}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="date" />
-                <YAxis />
-                <Tooltip />
+                <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
+                <XAxis dataKey="date" stroke="#4C4C4C" />
+                <YAxis stroke="#4C4C4C" />
+                <Tooltip 
+                  contentStyle={{
+                    backgroundColor: '#C46322',
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: '8px'
+                  }}
+                />
                 <Legend />
-                <Line type="monotone" dataKey="points" stroke="#C46322" strokeWidth={2} />
+                <Line 
+                  type="monotone" 
+                  dataKey="points" 
+                  stroke="#C46322" 
+                  strokeWidth={3}
+                  dot={{ fill: '#C46322', r: 5 }}
+                  activeDot={{ r: 8, fill: '#F5C16A' }}
+                  animationDuration={1000}
+                />
               </LineChart>
             </ResponsiveContainer>
           </CardContent>
