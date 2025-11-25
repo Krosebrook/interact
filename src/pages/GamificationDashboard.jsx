@@ -44,6 +44,8 @@ import { format, subDays, subMonths, isAfter, isBefore } from 'date-fns';
 import { motion } from 'framer-motion';
 import { useUserData } from '../components/hooks/useUserData';
 import DashboardCustomizer from '../components/dashboard/DashboardCustomizer';
+import AdvancedLeaderboard from '../components/gamification/AdvancedLeaderboard';
+import AchievementSystem from '../components/gamification/AchievementSystem';
 
 export default function GamificationDashboard() {
   const { user, loading: userLoading } = useUserData(true, true);
@@ -612,6 +614,22 @@ export default function GamificationDashboard() {
               <div className="text-xs text-slate-500 mt-1">Consistency matters</div>
             </div>
           </div>
+        </CardContent>
+      </Card>
+
+      {/* Advanced Leaderboard */}
+      <AdvancedLeaderboard currentUserEmail={user.email} />
+
+      {/* Achievement System */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Award className="h-5 w-5 text-int-orange" />
+            Badges & Achievements
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <AchievementSystem userEmail={user.email} />
         </CardContent>
       </Card>
 
