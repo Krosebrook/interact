@@ -56,7 +56,7 @@ export default function EventTemplateEditor({ open, onOpenChange, template, onSa
   const queryClient = useQueryClient();
   const isEditing = !!template?.id;
 
-  const [formData, setFormData] = useState(template || {
+  const getInitialFormData = (tmpl) => tmpl || {
     name: '',
     description: '',
     category: 'custom',
@@ -71,7 +71,16 @@ export default function EventTemplateEditor({ open, onOpenChange, template, onSa
     materials_needed: [],
     facilitator_tips: [],
     is_active: true
-  });
+  };
+
+  const [formData, setFormData] = useState(getInitialFormData(template));
+
+  // Reset form when template changes or dialog opens
+  React.useEffect(() => {
+    if (open) {
+      setFormData(getInitialFormData(template));
+    }
+  }, [open, template]);
 
   const saveMutation = useMutation({
     mutationFn: async (data) => {
