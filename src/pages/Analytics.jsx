@@ -8,6 +8,9 @@ import AttendanceMetrics from '../components/analytics/AttendanceMetrics';
 import EngagementOverTime from '../components/analytics/EngagementOverTime';
 import ActivityTypeAnalytics from '../components/analytics/ActivityTypeAnalytics';
 import SkillDevelopmentCorrelation from '../components/analytics/SkillDevelopmentCorrelation';
+import EngagementAnalytics from '../components/analytics/EngagementAnalytics';
+import FacilitatorMetrics from '../components/analytics/FacilitatorMetrics';
+import AIInsightsPanel from '../components/ai/AIInsightsPanel';
 import {
   BarChart,
   Bar,
@@ -23,7 +26,7 @@ import {
   Legend,
   ResponsiveContainer
 } from 'recharts';
-import { TrendingUp, Users, Star, Calendar, BarChart3, Target, GraduationCap, Sparkles } from 'lucide-react';
+import { TrendingUp, Users, Star, Calendar, BarChart3, Target, GraduationCap, Sparkles, Award, Brain } from 'lucide-react';
 
 const COLORS = ['#6366f1', '#ec4899', '#10b981', '#f59e0b', '#8b5cf6', '#06b6d4'];
 
@@ -165,18 +168,22 @@ export default function Analytics() {
 
       {/* Tabbed Analytics Sections */}
       <Tabs defaultValue="overview" className="w-full">
-        <TabsList className="grid grid-cols-5 mb-6">
+        <TabsList className="grid grid-cols-4 lg:grid-cols-7 mb-6">
           <TabsTrigger value="overview" className="text-xs sm:text-sm">
             <BarChart3 className="h-4 w-4 mr-1 hidden sm:inline" />
             Overview
           </TabsTrigger>
+          <TabsTrigger value="engagement-detailed" className="text-xs sm:text-sm">
+            <Sparkles className="h-4 w-4 mr-1 hidden sm:inline" />
+            Engagement
+          </TabsTrigger>
+          <TabsTrigger value="facilitators" className="text-xs sm:text-sm">
+            <Award className="h-4 w-4 mr-1 hidden sm:inline" />
+            Facilitators
+          </TabsTrigger>
           <TabsTrigger value="attendance" className="text-xs sm:text-sm">
             <Users className="h-4 w-4 mr-1 hidden sm:inline" />
             Attendance
-          </TabsTrigger>
-          <TabsTrigger value="engagement" className="text-xs sm:text-sm">
-            <Sparkles className="h-4 w-4 mr-1 hidden sm:inline" />
-            Engagement
           </TabsTrigger>
           <TabsTrigger value="activities" className="text-xs sm:text-sm">
             <Target className="h-4 w-4 mr-1 hidden sm:inline" />
@@ -185,6 +192,10 @@ export default function Analytics() {
           <TabsTrigger value="skills" className="text-xs sm:text-sm">
             <GraduationCap className="h-4 w-4 mr-1 hidden sm:inline" />
             Skills
+          </TabsTrigger>
+          <TabsTrigger value="ai-insights" className="text-xs sm:text-sm">
+            <Brain className="h-4 w-4 mr-1 hidden sm:inline" />
+            AI Insights
           </TabsTrigger>
         </TabsList>
 
@@ -294,18 +305,26 @@ export default function Analytics() {
           </div>
         </TabsContent>
 
+        {/* Detailed Engagement Tab */}
+        <TabsContent value="engagement-detailed">
+          <EngagementAnalytics 
+            events={events} 
+            participations={participations}
+            activities={activities}
+          />
+        </TabsContent>
+
+        {/* Facilitator Metrics Tab */}
+        <TabsContent value="facilitators">
+          <FacilitatorMetrics 
+            events={events} 
+            participations={participations}
+          />
+        </TabsContent>
+
         {/* Attendance Tab */}
         <TabsContent value="attendance">
           <AttendanceMetrics events={events} participations={participations} />
-        </TabsContent>
-
-        {/* Engagement Tab */}
-        <TabsContent value="engagement">
-          <EngagementOverTime 
-            events={events} 
-            participations={participations}
-            userProfiles={userProfiles}
-          />
         </TabsContent>
 
         {/* Activities Tab */}
@@ -324,6 +343,16 @@ export default function Analytics() {
             userProfiles={userProfiles}
             events={events}
             activities={activities}
+          />
+        </TabsContent>
+
+        {/* AI Insights Tab */}
+        <TabsContent value="ai-insights">
+          <AIInsightsPanel 
+            events={events}
+            participations={participations}
+            activities={activities}
+            userEmail={user?.email}
           />
         </TabsContent>
       </Tabs>

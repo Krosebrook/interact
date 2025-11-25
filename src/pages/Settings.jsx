@@ -21,7 +21,8 @@ import {
   TabsTrigger,
 } from '@/components/ui/tabs';
 import TeamsConfigPanel from '../components/teams/TeamsConfigPanel';
-import { Settings as SettingsIcon, Save, Sparkles, RefreshCw, Loader2, MessageSquare } from 'lucide-react';
+import RoleManagement from '../components/admin/RoleManagement';
+import { Settings as SettingsIcon, Save, Sparkles, RefreshCw, Loader2, MessageSquare, Shield } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function Settings() {
@@ -149,10 +150,14 @@ export default function Settings() {
       </div>
 
       <Tabs defaultValue="ai" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="ai" className="flex items-center gap-2">
             <Sparkles className="h-4 w-4" />
-            AI Recommendations
+            AI Settings
+          </TabsTrigger>
+          <TabsTrigger value="roles" className="flex items-center gap-2">
+            <Shield className="h-4 w-4" />
+            Roles & Permissions
           </TabsTrigger>
           <TabsTrigger value="teams" className="flex items-center gap-2">
             <MessageSquare className="h-4 w-4" />
@@ -338,6 +343,10 @@ export default function Settings() {
           )}
         </Button>
       </div>
+        </TabsContent>
+
+        <TabsContent value="roles" className="mt-6">
+          <RoleManagement />
         </TabsContent>
 
         <TabsContent value="teams" className="mt-6">
