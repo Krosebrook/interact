@@ -198,7 +198,7 @@ export default function Layout({ children, currentPageName }) {
         <div className="relative z-10 h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
           <p className="text-sm text-white/80">© 2025 Team Engage</p>
           <div className="flex items-center gap-4 text-sm text-white/80">
-            <span>Powered by Base44</span>
+            <span>Powered by FlashFusion</span>
           </div>
         </div>
       </footer>
