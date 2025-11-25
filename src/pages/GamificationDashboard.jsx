@@ -46,6 +46,8 @@ import { useUserData } from '../components/hooks/useUserData';
 import DashboardCustomizer from '../components/dashboard/DashboardCustomizer';
 import AdvancedLeaderboard from '../components/gamification/AdvancedLeaderboard';
 import AchievementSystem from '../components/gamification/AchievementSystem';
+import EnhancedLeaderboard from '../components/gamification/EnhancedLeaderboard';
+import BadgeShowcase from '../components/gamification/BadgeShowcase';
 
 export default function GamificationDashboard() {
   const { user, loading: userLoading } = useUserData(true, true);
@@ -616,6 +618,15 @@ export default function GamificationDashboard() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Enhanced Leaderboard with Tabs */}
+      <EnhancedLeaderboard />
+
+      {/* Badge Showcase */}
+      <BadgeShowcase 
+        userEmail={user.email}
+        earnedBadgeIds={userPoints.find(up => up.user_email === user.email)?.badges_earned || []}
+      />
 
       {/* Advanced Leaderboard */}
       <AdvancedLeaderboard currentUserEmail={user.email} />
