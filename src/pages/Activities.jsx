@@ -23,7 +23,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Search, Filter, Plus, Brain, GraduationCap } from 'lucide-react';
+import { 
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Search, Filter, Plus, Brain, GraduationCap, SortAsc, X, Clock, Zap } from 'lucide-react';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '../utils';
@@ -36,20 +43,71 @@ export default function Activities() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedType, setSelectedType] = useState('all');
   const [selectedDuration, setSelectedDuration] = useState('all');
+  const [selectedSkill, setSelectedSkill] = useState('all');
+  const [selectedSkillLevel, setSelectedSkillLevel] = useState('all');
+  const [sortBy, setSortBy] = useState('newest');
   const [viewingActivity, setViewingActivity] = useState(null);
   const [showGenerator, setShowGenerator] = useState(false);
   const [showPlanner, setShowPlanner] = useState(false);
   const [showSuggester, setShowSuggester] = useState(false);
   const [showModuleBuilder, setShowModuleBuilder] = useState(false);
 
-  const filteredActivities = filterActivities({ 
+  // Get unique skills from all activities
+  const allSkills = [...new Set(activities?.flatMap(a => a.skills_developed || []) || [])].sort();
+
+  // Filter activities
+  let filteredActivities = filterActivities({ 
     search: searchQuery, 
     type: selectedType, 
     duration: selectedDuration 
   });
 
+  // Additional filtering by skill
+  if (selectedSkill !== 'all') {
+    filteredActivities = filteredActivities.filter(a => 
+      a.skills_developed?.includes(selectedSkill)
+    );
+  }
+
+  // Additional filtering by skill level
+  if (selectedSkillLevel !== 'all') {
+    filteredActivities = filteredActivities.filter(a => 
+      a.skill_level === selectedSkillLevel
+    );
+  }
+
+  // Sort activities
+  filteredActivities = [...filteredActivities].sort((a, b) => {
+    switch (sortBy) {
+      case 'newest':
+        return new Date(b.created_date) - new Date(a.created_date);
+      case 'oldest':
+        return new Date(a.created_date) - new Date(b.created_date);
+      case 'popularity':
+        return (b.popularity_score || 0) - (a.popularity_score || 0);
+      case 'az':
+        return a.title.localeCompare(b.title);
+      case 'za':
+        return b.title.localeCompare(a.title);
+      default:
+        return 0;
+    }
+  });
+
+  const hasActiveFilters = selectedType !== 'all' || selectedDuration !== 'all' || 
+    selectedSkill !== 'all' || selectedSkillLevel !== 'all' || searchQuery;
+
+  const clearAllFilters = () => {
+    setSearchQuery('');
+    setSelectedType('all');
+    setSelectedDuration('all');
+    setSelectedSkill('all');
+    setSelectedSkillLevel('all');
+  };
+
   const types = ['all', 'icebreaker', 'creative', 'competitive', 'wellness', 'learning', 'social'];
   const durations = ['all', '5-15min', '15-30min', '30+min'];
+  const skillLevels = ['all', 'beginner', 'intermediate', 'advanced'];
 
   const handleSchedule = (activity) => {
     navigate(`${createPageUrl('Calendar')}?activity=${activity.id}`);
@@ -108,51 +166,177 @@ export default function Activities() {
       </div>
 
       {/* Search and Filters */}
-      <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-200">
-        <div className="flex flex-col lg:flex-row gap-4">
-          <div className="flex-1">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
-              <Input
-                placeholder="Search activities..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
-              />
-            </div>
+      <div className="glass-card-solid space-y-4">
+        {/* Search Bar & Sort */}
+        <div className="flex flex-col sm:flex-row gap-4">
+          <div className="flex-1 relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
+            <Input
+              placeholder="Search by name, description, or skills..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 h-11"
+            />
+            {searchQuery && (
+              <button 
+                onClick={() => setSearchQuery('')}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            )}
           </div>
-          
-          <div className="flex gap-3 flex-wrap">
-            <div className="flex items-center gap-2">
-              <Filter className="h-4 w-4 text-slate-500" />
-              <span className="text-sm text-slate-600 font-medium">Type:</span>
-              {types.map(type => (
-                <Badge
-                  key={type}
-                  variant={selectedType === type ? 'default' : 'outline'}
-                  className="cursor-pointer"
-                  onClick={() => setSelectedType(type)}
-                >
-                  {type}
-                </Badge>
-              ))}
-            </div>
+          <div className="flex items-center gap-2">
+            <SortAsc className="h-4 w-4 text-slate-500" />
+            <Select value={sortBy} onValueChange={setSortBy}>
+              <SelectTrigger className="w-[160px]">
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="newest">Newest First</SelectItem>
+                <SelectItem value="oldest">Oldest First</SelectItem>
+                <SelectItem value="popularity">Most Popular</SelectItem>
+                <SelectItem value="az">A to Z</SelectItem>
+                <SelectItem value="za">Z to A</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
 
-        <div className="flex gap-3 mt-4 flex-wrap">
-          <span className="text-sm text-slate-600 font-medium">Duration:</span>
-          {durations.map(duration => (
+        {/* Filter Row 1: Type */}
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="flex items-center gap-2 mr-2">
+            <Filter className="h-4 w-4 text-int-orange" />
+            <span className="text-sm font-medium text-slate-700">Type:</span>
+          </div>
+          {types.map(type => (
             <Badge
-              key={duration}
-              variant={selectedDuration === duration ? 'default' : 'outline'}
-              className="cursor-pointer"
-              onClick={() => setSelectedDuration(duration)}
+              key={type}
+              variant={selectedType === type ? 'default' : 'outline'}
+              className={`cursor-pointer transition-all ${
+                selectedType === type 
+                  ? 'bg-int-orange hover:bg-int-orange/90 text-white' 
+                  : 'hover:bg-slate-100'
+              }`}
+              onClick={() => setSelectedType(type)}
             >
-              {duration}
+              {type === 'all' ? 'All Types' : type}
             </Badge>
           ))}
         </div>
+
+        {/* Filter Row 2: Duration & Skill Level */}
+        <div className="flex flex-wrap items-center gap-4">
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="flex items-center gap-2 mr-2">
+              <Clock className="h-4 w-4 text-int-navy" />
+              <span className="text-sm font-medium text-slate-700">Duration:</span>
+            </div>
+            {durations.map(duration => (
+              <Badge
+                key={duration}
+                variant={selectedDuration === duration ? 'default' : 'outline'}
+                className={`cursor-pointer transition-all ${
+                  selectedDuration === duration 
+                    ? 'bg-int-navy hover:bg-int-navy/90 text-white' 
+                    : 'hover:bg-slate-100'
+                }`}
+                onClick={() => setSelectedDuration(duration)}
+              >
+                {duration === 'all' ? 'Any' : duration}
+              </Badge>
+            ))}
+          </div>
+
+          <div className="h-6 w-px bg-slate-200 hidden sm:block" />
+
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="flex items-center gap-2 mr-2">
+              <Zap className="h-4 w-4 text-purple-600" />
+              <span className="text-sm font-medium text-slate-700">Level:</span>
+            </div>
+            {skillLevels.map(level => (
+              <Badge
+                key={level}
+                variant={selectedSkillLevel === level ? 'default' : 'outline'}
+                className={`cursor-pointer transition-all ${
+                  selectedSkillLevel === level 
+                    ? 'bg-purple-600 hover:bg-purple-700 text-white' 
+                    : 'hover:bg-slate-100'
+                }`}
+                onClick={() => setSelectedSkillLevel(level)}
+              >
+                {level === 'all' ? 'Any' : level}
+              </Badge>
+            ))}
+          </div>
+        </div>
+
+        {/* Filter Row 3: Skills Developed */}
+        {allSkills.length > 0 && (
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="flex items-center gap-2 mr-2">
+              <GraduationCap className="h-4 w-4 text-emerald-600" />
+              <span className="text-sm font-medium text-slate-700">Skills:</span>
+            </div>
+            <Badge
+              variant={selectedSkill === 'all' ? 'default' : 'outline'}
+              className={`cursor-pointer transition-all ${
+                selectedSkill === 'all' 
+                  ? 'bg-emerald-600 hover:bg-emerald-700 text-white' 
+                  : 'hover:bg-slate-100'
+              }`}
+              onClick={() => setSelectedSkill('all')}
+            >
+              All Skills
+            </Badge>
+            {allSkills.slice(0, 10).map(skill => (
+              <Badge
+                key={skill}
+                variant={selectedSkill === skill ? 'default' : 'outline'}
+                className={`cursor-pointer transition-all ${
+                  selectedSkill === skill 
+                    ? 'bg-emerald-600 hover:bg-emerald-700 text-white' 
+                    : 'hover:bg-slate-100'
+                }`}
+                onClick={() => setSelectedSkill(skill)}
+              >
+                {skill}
+              </Badge>
+            ))}
+            {allSkills.length > 10 && (
+              <Select value={selectedSkill} onValueChange={setSelectedSkill}>
+                <SelectTrigger className="w-[140px] h-7 text-xs">
+                  <SelectValue placeholder="More skills..." />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Skills</SelectItem>
+                  {allSkills.map(skill => (
+                    <SelectItem key={skill} value={skill}>{skill}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+          </div>
+        )}
+
+        {/* Active Filters Summary */}
+        {hasActiveFilters && (
+          <div className="flex items-center justify-between pt-3 border-t border-slate-200">
+            <p className="text-sm text-slate-600">
+              Showing <span className="font-semibold text-slate-900">{filteredActivities.length}</span> of {activities?.length || 0} activities
+            </p>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={clearAllFilters}
+              className="text-slate-500 hover:text-slate-700"
+            >
+              <X className="h-4 w-4 mr-1" />
+              Clear all filters
+            </Button>
+          </div>
+        )}
       </div>
 
       {/* Activities Grid */}
