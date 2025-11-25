@@ -167,9 +167,14 @@ async function checkAndAwardBadges(base44, userPointsId, stats) {
   for (const badge of allBadges) {
     // Skip if already earned
     if (user.badges_earned?.includes(badge.id)) continue;
+    
+    // Skip manual-award-only badges
+    if (badge.is_manual_award) continue;
 
     // Check criteria
     const { type, threshold } = badge.award_criteria || {};
+    if (!type || type === 'manual') continue;
+    
     let shouldAward = false;
 
     switch (type) {
@@ -188,15 +193,34 @@ async function checkAndAwardBadges(base44, userPointsId, stats) {
       case 'streak_days':
         shouldAward = stats.streak_days >= threshold;
         break;
+      case 'media_uploads':
+        shouldAward = (stats.media_uploads || 0) >= threshold;
+        break;
+      case 'peer_recognitions':
+        shouldAward = (stats.peer_recognitions || 0) >= threshold;
+        break;
     }
 
     if (shouldAward) {
       earnedBadges.push(badge);
       // Update user with new badge
       const updatedBadges = [...(user.badges_earned || []), badge.id];
+      const newTotalPoints = stats.total_points + (badge.points_value || 0);
       await base44.asServiceRole.entities.UserPoints.update(userPointsId, {
         badges_earned: updatedBadges,
-        total_points: stats.total_points + (badge.points_value || 0)
+        total_points: newTotalPoints
+      });
+      
+      // Update stats for next iteration
+      stats.total_points = newTotalPoints;
+      
+      // Create badge award record
+      await base44.asServiceRole.entities.BadgeAward.create({
+        badge_id: badge.id,
+        user_email: user.user_email,
+        user_name: user.user_email,
+        award_type: 'automatic',
+        points_awarded: badge.points_value || 0
       });
       
       // Create notification for badge earned
@@ -209,7 +233,7 @@ async function checkAndAwardBadges(base44, userPointsId, stats) {
         {
           icon: badge.badge_icon,
           badge_id: badge.id,
-          action_url: '/Gamification'
+          action_url: '/RewardsStore'
         }
       );
     }
