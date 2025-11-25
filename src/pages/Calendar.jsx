@@ -34,7 +34,7 @@ import { format, addDays, addWeeks, addMonths } from 'date-fns';
 export default function Calendar() {
   const queryClient = useQueryClient();
   const { user, loading } = useUserData(true, true);
-  const { events, activities, participations } = useEventData();
+  const { events, activities, participations, isLoading } = useEventData();
   const [showScheduleDialog, setShowScheduleDialog] = useState(false);
   const eventActions = useEventActions();
   const [formData, setFormData] = useState({
@@ -229,7 +229,7 @@ export default function Calendar() {
                   key={event.id}
                   event={event}
                   activity={activity}
-                  participantCount={getParticipantCount(event.id)}
+                  participantCount={getParticipationStats(event.id, participations).total}
                   onView={() => {}}
                   onCopyLink={eventActions.handleCopyLink}
                   onDownloadCalendar={eventActions.handleDownloadCalendar}
