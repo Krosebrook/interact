@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import ActivityCard from '../components/activities/ActivityCard';
 import ActivityGenerator from '../components/ai/ActivityGenerator';
+import AIActivityPlanner from '../components/ai/AIActivityPlanner';
 import AIActivitySuggester from '../components/activities/AIActivitySuggester';
 import ModuleBuilder from '../components/activities/ModuleBuilder';
 import LoadingSpinner from '../components/common/LoadingSpinner';
@@ -19,7 +20,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Search, Filter, Plus } from 'lucide-react';
+import { Search, Filter, Plus, Brain } from 'lucide-react';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '../utils';
@@ -34,6 +35,7 @@ export default function Activities() {
   const [selectedDuration, setSelectedDuration] = useState('all');
   const [viewingActivity, setViewingActivity] = useState(null);
   const [showGenerator, setShowGenerator] = useState(false);
+  const [showPlanner, setShowPlanner] = useState(false);
   const [showSuggester, setShowSuggester] = useState(false);
   const [showModuleBuilder, setShowModuleBuilder] = useState(false);
 
@@ -68,7 +70,14 @@ export default function Activities() {
             {filteredActivities.length} activities available
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
+          <Button 
+            onClick={() => setShowPlanner(true)}
+            className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white"
+          >
+            <Brain className="h-4 w-4 mr-2" />
+            AI Activity Planner
+          </Button>
           <Button 
             onClick={() => setShowSuggester(true)}
             variant="outline"
@@ -244,6 +253,16 @@ export default function Activities() {
         onActivityCreated={(activity) => {
           setShowGenerator(false);
           toast.success('Custom activity created!');
+        }}
+      />
+
+      {/* AI Activity Planner */}
+      <AIActivityPlanner
+        open={showPlanner}
+        onOpenChange={setShowPlanner}
+        onActivityCreated={(activity) => {
+          queryClient.invalidateQueries(['activities']);
+          handleSchedule(activity);
         }}
       />
     </div>
