@@ -6,9 +6,16 @@ import { createPageUrl } from '../utils';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import FacilitatorSupportChat from '../components/facilitator/FacilitatorSupportChat';
 import FacilitatorEventCard from '../components/events/FacilitatorEventCard';
 import TemplateAnalytics from '../components/facilitator/TemplateAnalytics';
+import FacilitatorAgentChat from '../components/facilitator/FacilitatorAgentChat';
+import ReactiveEventList from '../components/dashboard/ReactiveEventList';
+import QuickActionsPanel from '../components/dashboard/QuickActionsPanel';
+import LiveEventsBanner from '../components/dashboard/LiveEventsBanner';
+import CompletedEventsList from '../components/dashboard/CompletedEventsList';
+import ActivityGenerator from '../components/ai/ActivityGenerator';
 import { useAuth } from '../components/hooks/useAuth';
 import { useEventData } from '../components/hooks/useEventData';
 import { 
@@ -24,9 +31,13 @@ import {
   Users, 
   TrendingUp, 
   Activity,
-  MessageSquare
+  MessageSquare,
+  Bot,
+  LayoutDashboard,
+  BarChart3
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { motion } from 'framer-motion';
 
 export default function FacilitatorDashboard() {
   const queryClient = useQueryClient();
