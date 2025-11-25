@@ -62,6 +62,7 @@ export default function Calendar() {
     occurrences: 4
   });
   const [showPollDialog, setShowPollDialog] = useState(false);
+  const [showSeriesCreator, setShowSeriesCreator] = useState(false);
   const [scheduleMode, setScheduleMode] = useState('direct'); // 'direct' or 'poll'
 
   useEffect(() => {
@@ -210,7 +211,14 @@ export default function Calendar() {
   return (
     <div className="space-y-8">
       <PageHeader title="Event Calendar" description="Schedule and manage your team activities">
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
+          <Button
+            variant="outline"
+            onClick={() => setShowSeriesCreator(true)}
+          >
+            <Layers className="h-4 w-4 mr-2" />
+            Create Series
+          </Button>
           <Button
             variant="outline"
             onClick={() => setShowPollDialog(true)}
@@ -473,6 +481,13 @@ export default function Calendar() {
           />
         </DialogContent>
       </Dialog>
+
+      {/* Event Series Creator */}
+      <EventSeriesCreator
+        open={showSeriesCreator}
+        onOpenChange={setShowSeriesCreator}
+        onSeriesCreated={() => queryClient.invalidateQueries(['events'])}
+      />
     </div>
   );
 }
