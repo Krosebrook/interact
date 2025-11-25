@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { useUserData } from '../components/hooks/useUserData';
 import { useEventData } from '../components/hooks/useEventData';
-import { filterUpcomingEvents, getParticipationStats, getActivityForEvent } from '../components/utils/eventFilters';
+import { filterUpcomingEvents, getParticipationStats, getActivityForEvent } from '../components/utils/eventUtils';
 import { Button } from '@/components/ui/button';
 import StatsGrid from '../components/common/StatsGrid';
 import SkeletonGrid from '../components/common/SkeletonGrid';

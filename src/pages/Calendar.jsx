@@ -3,7 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useUserData } from '../components/hooks/useUserData';
 import { useEventData } from '../components/hooks/useEventData';
-import { filterUpcomingEvents, filterPastEvents, getParticipationStats, getActivityForEvent } from '../components/utils/eventFilters';
+import { filterUpcomingEvents, filterPastEvents, getParticipationStats, getActivityForEvent } from '../components/utils/eventUtils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
