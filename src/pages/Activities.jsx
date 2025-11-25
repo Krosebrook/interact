@@ -212,22 +212,33 @@ export default function Activities() {
         <div className="flex flex-wrap items-center gap-2">
           <div className="flex items-center gap-2 mr-2">
             <Filter className="h-4 w-4 text-int-orange" />
-            <span className="text-sm font-medium text-slate-700">Type:</span>
+            <span className="text-sm font-semibold text-int-navy">Type:</span>
           </div>
-          {types.map(type => (
-            <Badge
-              key={type}
-              variant={selectedType === type ? 'default' : 'outline'}
-              className={`cursor-pointer transition-all ${
-                selectedType === type 
-                  ? 'bg-int-orange hover:bg-int-orange/90 text-white' 
-                  : 'hover:bg-slate-100'
-              }`}
-              onClick={() => setSelectedType(type)}
-            >
-              {type === 'all' ? 'All Types' : type}
-            </Badge>
-          ))}
+          {types.map(type => {
+            const typeColors = {
+              all: 'bg-int-orange',
+              icebreaker: 'bg-gradient-icebreaker',
+              creative: 'bg-gradient-creative',
+              competitive: 'bg-gradient-competitive',
+              wellness: 'bg-gradient-wellness',
+              learning: 'bg-gradient-learning',
+              social: 'bg-gradient-social'
+            };
+            return (
+              <Badge
+                key={type}
+                variant={selectedType === type ? 'default' : 'outline'}
+                className={`cursor-pointer transition-all font-medium ${
+                  selectedType === type 
+                    ? `${typeColors[type]} text-white shadow-sm` 
+                    : 'hover:bg-slate-100 text-slate-600'
+                }`}
+                onClick={() => setSelectedType(type)}
+              >
+                {type === 'all' ? 'All Types' : type}
+              </Badge>
+            );
+          })}
         </div>
 
         {/* Filter Row 2: Duration & Skill Level */}
@@ -235,16 +246,16 @@ export default function Activities() {
           <div className="flex flex-wrap items-center gap-2">
             <div className="flex items-center gap-2 mr-2">
               <Clock className="h-4 w-4 text-int-navy" />
-              <span className="text-sm font-medium text-slate-700">Duration:</span>
+              <span className="text-sm font-semibold text-int-navy">Duration:</span>
             </div>
             {durations.map(duration => (
               <Badge
                 key={duration}
                 variant={selectedDuration === duration ? 'default' : 'outline'}
-                className={`cursor-pointer transition-all ${
+                className={`cursor-pointer transition-all font-medium ${
                   selectedDuration === duration 
-                    ? 'bg-int-navy hover:bg-int-navy/90 text-white' 
-                    : 'hover:bg-slate-100'
+                    ? 'bg-gradient-navy text-white shadow-sm' 
+                    : 'hover:bg-slate-100 text-slate-600'
                 }`}
                 onClick={() => setSelectedDuration(duration)}
               >
@@ -258,16 +269,16 @@ export default function Activities() {
           <div className="flex flex-wrap items-center gap-2">
             <div className="flex items-center gap-2 mr-2">
               <Zap className="h-4 w-4 text-purple-600" />
-              <span className="text-sm font-medium text-slate-700">Level:</span>
+              <span className="text-sm font-semibold text-int-navy">Level:</span>
             </div>
             {skillLevels.map(level => (
               <Badge
                 key={level}
                 variant={selectedSkillLevel === level ? 'default' : 'outline'}
-                className={`cursor-pointer transition-all ${
+                className={`cursor-pointer transition-all font-medium ${
                   selectedSkillLevel === level 
-                    ? 'bg-purple-600 hover:bg-purple-700 text-white' 
-                    : 'hover:bg-slate-100'
+                    ? 'bg-gradient-purple text-white shadow-sm' 
+                    : 'hover:bg-slate-100 text-slate-600'
                 }`}
                 onClick={() => setSelectedSkillLevel(level)}
               >
@@ -282,14 +293,14 @@ export default function Activities() {
           <div className="flex flex-wrap items-center gap-2">
             <div className="flex items-center gap-2 mr-2">
               <GraduationCap className="h-4 w-4 text-emerald-600" />
-              <span className="text-sm font-medium text-slate-700">Skills:</span>
+              <span className="text-sm font-semibold text-int-navy">Skills:</span>
             </div>
             <Badge
               variant={selectedSkill === 'all' ? 'default' : 'outline'}
-              className={`cursor-pointer transition-all ${
+              className={`cursor-pointer transition-all font-medium ${
                 selectedSkill === 'all' 
-                  ? 'bg-emerald-600 hover:bg-emerald-700 text-white' 
-                  : 'hover:bg-slate-100'
+                  ? 'bg-gradient-wellness text-white shadow-sm' 
+                  : 'hover:bg-slate-100 text-slate-600'
               }`}
               onClick={() => setSelectedSkill('all')}
             >
@@ -299,10 +310,10 @@ export default function Activities() {
               <Badge
                 key={skill}
                 variant={selectedSkill === skill ? 'default' : 'outline'}
-                className={`cursor-pointer transition-all ${
+                className={`cursor-pointer transition-all font-medium ${
                   selectedSkill === skill 
-                    ? 'bg-emerald-600 hover:bg-emerald-700 text-white' 
-                    : 'hover:bg-slate-100'
+                    ? 'bg-gradient-wellness text-white shadow-sm' 
+                    : 'hover:bg-slate-100 text-slate-600'
                 }`}
                 onClick={() => setSelectedSkill(skill)}
               >
@@ -311,7 +322,7 @@ export default function Activities() {
             ))}
             {allSkills.length > 10 && (
               <Select value={selectedSkill} onValueChange={setSelectedSkill}>
-                <SelectTrigger className="w-[140px] h-7 text-xs">
+                <SelectTrigger className="w-[140px] h-7 text-xs font-medium">
                   <SelectValue placeholder="More skills..." />
                 </SelectTrigger>
                 <SelectContent>
