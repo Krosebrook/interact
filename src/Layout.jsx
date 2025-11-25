@@ -13,7 +13,8 @@ import {
   X,
   Users,
   Gift,
-  User
+  User,
+  Download
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import NotificationBell from './components/notifications/NotificationBell';
@@ -21,6 +22,8 @@ import NotificationBell from './components/notifications/NotificationBell';
 export default function Layout({ children, currentPageName }) {
   const [user, setUser] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [installPrompt, setInstallPrompt] = useState(null);
+  const [showInstallBanner, setShowInstallBanner] = useState(false);
 
   useEffect(() => {
     const loadUser = async () => {
@@ -32,7 +35,35 @@ export default function Layout({ children, currentPageName }) {
       }
     };
     loadUser();
+
+    // PWA install prompt
+    const handleBeforeInstall = (e) => {
+      e.preventDefault();
+      setInstallPrompt(e);
+      const dismissed = localStorage.getItem('pwa-install-dismissed');
+      if (!dismissed) {
+        setShowInstallBanner(true);
+      }
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstall);
+    return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstall);
   }, []);
+
+  const handleInstallClick = async () => {
+    if (!installPrompt) return;
+    installPrompt.prompt();
+    const { outcome } = await installPrompt.userChoice;
+    if (outcome === 'accepted') {
+      setShowInstallBanner(false);
+    }
+    setInstallPrompt(null);
+  };
+
+  const dismissInstallBanner = () => {
+    setShowInstallBanner(false);
+    localStorage.setItem('pwa-install-dismissed', 'true');
+  };
 
   const handleLogout = () => {
     base44.auth.logout();
@@ -73,6 +104,34 @@ export default function Layout({ children, currentPageName }) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
+      {/* PWA Install Banner */}
+      {showInstallBanner && (
+        <div className="bg-int-orange text-white px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Download className="h-5 w-5" />
+            <span className="text-sm font-medium">Install Team Engage for a better experience</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button 
+              size="sm" 
+              variant="secondary" 
+              className="bg-white text-int-orange hover:bg-white/90"
+              onClick={handleInstallClick}
+            >
+              Install
+            </Button>
+            <Button 
+              size="sm" 
+              variant="ghost" 
+              className="text-white hover:bg-white/20"
+              onClick={dismissInstallBanner}
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <header className="bg-white/80 backdrop-blur-lg border-b border-slate-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
