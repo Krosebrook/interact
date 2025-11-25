@@ -54,6 +54,7 @@ export default function Layout({ children, currentPageName }) {
     { name: 'Dashboard', icon: LayoutDashboard, page: 'Dashboard', adminOnly: true },
     { name: 'Facilitator', icon: Users, page: 'FacilitatorDashboard', adminOnly: true },
     { name: 'Activities', icon: Sparkles, page: 'Activities', adminOnly: true },
+    { name: 'Templates', icon: LayoutDashboard, page: 'EventTemplates', adminOnly: true },
     { name: 'Calendar', icon: Calendar, page: 'Calendar', adminOnly: true },
     { name: 'Teams', icon: Users, page: 'Teams', adminOnly: true },
     { name: 'Gamification', icon: BarChart3, page: 'GamificationDashboard', adminOnly: true },
