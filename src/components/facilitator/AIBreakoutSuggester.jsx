@@ -42,43 +42,64 @@ export default function AIBreakoutSuggester({ eventId, eventTitle }) {
 
   const generateBreakoutsMutation = useMutation({
     mutationFn: async () => {
-      // Get profile data for participants
+      // Get rich profile data for participants
       const participantData = activeParticipants.map(p => {
         const profile = userProfiles.find(up => up.user_email === p.participant_email);
         return {
           name: p.participant_name,
           email: p.participant_email,
           department: profile?.department || 'Unknown',
+          job_title: profile?.job_title || '',
           skills: profile?.skill_interests || [],
+          skill_levels: profile?.skill_levels || [],
           interests: profile?.interests_tags || [],
-          preferences: profile?.activity_preferences || {}
+          expertise_areas: profile?.expertise_areas || [],
+          learning_goals: profile?.learning_goals || [],
+          preferred_learning_styles: profile?.preferred_learning_styles || [],
+          personality: profile?.personality_traits || {},
+          events_attended: profile?.engagement_stats?.total_events_attended || 0,
+          avg_engagement: profile?.engagement_stats?.average_engagement_score || 0,
+          previous_events: (profile?.previous_event_attendance || []).slice(0, 5).map(e => e.event_type)
         };
       });
 
       const result = await base44.integrations.Core.InvokeLLM({
-        prompt: `Create intelligent breakout room assignments for an event.
+        prompt: `Create intelligent breakout room assignments for an event using rich participant profile data.
 
 Event: "${eventTitle}"
 ${topic ? `Discussion Topic: "${topic}"` : ''}
 Number of rooms requested: ${roomCount}
 Grouping strategy: ${groupingStrategy}
 
-Participants (${participantData.length}):
-${participantData.map((p, i) => `${i + 1}. ${p.name} (${p.department})
-   - Skills: ${p.skills.join(', ') || 'Not specified'}
-   - Interests: ${p.interests.join(', ') || 'Not specified'}`).join('\n')}
+Detailed Participant Profiles (${participantData.length}):
+${participantData.map((p, i) => `${i + 1}. ${p.name} (${p.department}${p.job_title ? `, ${p.job_title}` : ''})
+   - Skill Levels: ${p.skill_levels.map(s => `${s.skill}:${s.level}`).join(', ') || 'Not specified'}
+   - Expertise (can teach): ${p.expertise_areas.join(', ') || 'None listed'}
+   - Learning Goals (wants to learn): ${p.learning_goals.join(', ') || 'None listed'}
+   - Interests: ${p.interests.join(', ') || 'Not specified'}
+   - Learning Styles: ${p.preferred_learning_styles.join(', ') || 'Not specified'}
+   - Personality: ${p.personality.introvert_extrovert || 'unknown'} / ${p.personality.collaboration_style || 'unknown'}
+   - Experience: ${p.events_attended} events, avg engagement ${p.avg_engagement.toFixed(1)}/10
+   - Recent event types: ${p.previous_events.join(', ') || 'None'}`).join('\n\n')}
 
 Strategy explanation:
-- skills: Group by complementary skills for collaborative problem-solving
-- interests: Group by shared interests for engaging discussions
-- mixed: Diverse groups with varied backgrounds for fresh perspectives
-- random: Random assignment for networking
+- skills: Group by complementary skill levels - pair experts with learners in their areas of interest
+- interests: Group by shared interests and learning goals for engaging peer discussions
+- mixed: Diverse groups mixing introverts/extroverts, leaders/supporters, different departments
+- random: Random assignment for networking, but balance personality types
+
+IMPORTANT: Use the rich profile data to:
+1. Match mentors (expertise_areas) with mentees (learning_goals) when using skills strategy
+2. Consider personality traits - ensure each room has a mix of collaboration styles
+3. Account for learning styles when suggesting discussion formats
+4. Consider engagement history - pair high-engagement with lower-engagement participants
 
 Create ${roomCount} breakout rooms with:
 1. Room names/themes that match the grouping
-2. Participant assignments with reasoning
-3. Suggested discussion prompts for each room
-4. Facilitator tips for each room's dynamic`,
+2. Participant assignments with specific reasoning based on their profiles
+3. Suggested discussion prompts tailored to the room's composition
+4. Facilitator tips based on the personality mix and learning styles in each room
+5. Potential mentor-mentee pairings within each room`,
         response_json_schema: {
           type: "object",
           properties: {

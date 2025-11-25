@@ -20,7 +20,8 @@ import AIQAModerator from '../components/facilitator/AIQAModerator';
 import AIEventSummarizer from '../components/facilitator/AIEventSummarizer';
 import AIBreakoutSuggester from '../components/facilitator/AIBreakoutSuggester';
 import AIContentGenerator from '../components/facilitator/AIContentGenerator';
-import { Calendar, Users, Clock, ArrowLeft, MessageCircle, Video, Mail, Brain } from 'lucide-react';
+import ParticipantProfilesView from '../components/facilitator/ParticipantProfilesView';
+import { Calendar, Users, Clock, ArrowLeft, MessageCircle, Video, Mail, Brain, UserCog } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { format } from 'date-fns';
@@ -128,10 +129,14 @@ export default function FacilitatorView() {
 
         {/* Facilitator Assistant */}
         <Tabs defaultValue={isCompleted ? 'recap' : isUpcoming ? 'participants' : 'live'} className="w-full">
-          <TabsList className="grid w-full grid-cols-5 lg:grid-cols-9 mb-6">
+          <TabsList className="grid w-full grid-cols-5 lg:grid-cols-10 mb-6">
             <TabsTrigger value="participants" className="text-xs">
               <Users className="h-3.5 w-3.5 mr-1 hidden sm:inline" />
               Participants
+            </TabsTrigger>
+            <TabsTrigger value="profiles" className="text-xs">
+              <UserCog className="h-3.5 w-3.5 mr-1 hidden sm:inline" />
+              Profiles
             </TabsTrigger>
             <TabsTrigger value="prep" className="text-xs">Pre-Event</TabsTrigger>
             <TabsTrigger value="live" className="text-xs">Live</TabsTrigger>
@@ -158,6 +163,11 @@ export default function FacilitatorView() {
           {/* Participants Management */}
           <TabsContent value="participants">
             <ParticipantManager eventId={eventId} />
+          </TabsContent>
+
+          {/* Participant Profiles */}
+          <TabsContent value="profiles">
+            <ParticipantProfilesView eventId={eventId} />
           </TabsContent>
 
           <TabsContent value="prep">
