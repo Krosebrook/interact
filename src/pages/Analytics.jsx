@@ -11,6 +11,7 @@ import SkillDevelopmentCorrelation from '../components/analytics/SkillDevelopmen
 import EngagementAnalytics from '../components/analytics/EngagementAnalytics';
 import FacilitatorMetrics from '../components/analytics/FacilitatorMetrics';
 import AIInsightsPanel from '../components/ai/AIInsightsPanel';
+import FeedbackAnalyzer from '../components/analytics/FeedbackAnalyzer';
 import {
   BarChart,
   Bar,
@@ -26,7 +27,7 @@ import {
   Legend,
   ResponsiveContainer
 } from 'recharts';
-import { TrendingUp, Users, Star, Calendar, BarChart3, Target, GraduationCap, Sparkles, Award, Brain } from 'lucide-react';
+import { TrendingUp, Users, Star, Calendar, BarChart3, Target, GraduationCap, Sparkles, Award, Brain, MessageSquare } from 'lucide-react';
 
 const COLORS = ['#6366f1', '#ec4899', '#10b981', '#f59e0b', '#8b5cf6', '#06b6d4'];
 
@@ -168,7 +169,7 @@ export default function Analytics() {
 
       {/* Tabbed Analytics Sections */}
       <Tabs defaultValue="overview" className="w-full">
-        <TabsList className="grid grid-cols-4 lg:grid-cols-7 mb-6">
+        <TabsList className="grid grid-cols-4 lg:grid-cols-8 mb-6">
           <TabsTrigger value="overview" className="text-xs sm:text-sm">
             <BarChart3 className="h-4 w-4 mr-1 hidden sm:inline" />
             Overview
@@ -176,6 +177,10 @@ export default function Analytics() {
           <TabsTrigger value="engagement-detailed" className="text-xs sm:text-sm">
             <Sparkles className="h-4 w-4 mr-1 hidden sm:inline" />
             Engagement
+          </TabsTrigger>
+          <TabsTrigger value="feedback" className="text-xs sm:text-sm">
+            <MessageSquare className="h-4 w-4 mr-1 hidden sm:inline" />
+            Feedback AI
           </TabsTrigger>
           <TabsTrigger value="facilitators" className="text-xs sm:text-sm">
             <Award className="h-4 w-4 mr-1 hidden sm:inline" />
@@ -311,6 +316,14 @@ export default function Analytics() {
             events={events} 
             participations={participations}
             activities={activities}
+          />
+        </TabsContent>
+
+        {/* Feedback Analysis Tab */}
+        <TabsContent value="feedback">
+          <FeedbackAnalyzer 
+            events={events} 
+            participations={participations}
           />
         </TabsContent>
 
