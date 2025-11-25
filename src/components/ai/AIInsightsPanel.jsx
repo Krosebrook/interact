@@ -35,7 +35,7 @@ const INSIGHT_COLORS = {
   trend_alert: 'bg-red-100 text-red-700 border-red-200'
 };
 
-export default function AIInsightsPanel({ events, participations, activities, userEmail }) {
+export default function AIInsightsPanel({ events = [], participations = [], activities = [], userEmail }) {
   const queryClient = useQueryClient();
   const [expandedInsight, setExpandedInsight] = useState(null);
   const [generating, setGenerating] = useState(false);
@@ -56,17 +56,20 @@ export default function AIInsightsPanel({ events, participations, activities, us
       setGenerating(true);
       
       // Prepare analytics data for AI
+      const eventsArr = events || [];
+      const participationsArr = participations || [];
+      const activitiesArr = activities || [];
       const analyticsData = {
-        totalEvents: events.length,
-        completedEvents: events.filter(e => e.status === 'completed').length,
-        totalParticipations: participations.length,
-        avgEngagement: participations.length > 0 
-          ? (participations.reduce((sum, p) => sum + (p.engagement_score || 0), 0) / participations.length).toFixed(2)
+        totalEvents: eventsArr.length,
+        completedEvents: eventsArr.filter(e => e.status === 'completed').length,
+        totalParticipations: participationsArr.length,
+        avgEngagement: participationsArr.length > 0 
+          ? (participationsArr.reduce((sum, p) => sum + (p.engagement_score || 0), 0) / participationsArr.length).toFixed(2)
           : 0,
-        activityTypes: [...new Set(activities.map(a => a.type))],
-        recentTrends: events.slice(0, 20).map(e => ({
+        activityTypes: [...new Set(activitiesArr.map(a => a.type).filter(Boolean))],
+        recentTrends: eventsArr.slice(0, 20).map(e => ({
           status: e.status,
-          type: activities.find(a => a.id === e.activity_id)?.type
+          type: activitiesArr.find(a => a.id === e.activity_id)?.type
         }))
       };
 

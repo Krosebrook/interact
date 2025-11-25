@@ -6,11 +6,22 @@ import {
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer 
 } from 'recharts';
 import { TrendingUp, TrendingDown, Users, Calendar, Star, Target } from 'lucide-react';
-import { format, subDays, startOfWeek, eachDayOfInterval } from 'date-fns';
+import { format, subDays, startOfWeek, eachDayOfInterval, isValid, parseISO } from 'date-fns';
 
 const COLORS = ['#F47C20', '#0A1C39', '#4A6070', '#F5C16A', '#C46322', '#7A94A6'];
 
 export default function EngagementAnalytics({ events, participations, activities }) {
+  // Safely parse date
+  const safeParseDate = (dateStr) => {
+    if (!dateStr) return null;
+    try {
+      const date = typeof dateStr === 'string' ? parseISO(dateStr) : new Date(dateStr);
+      return isValid(date) ? date : null;
+    } catch {
+      return null;
+    }
+  };
+
   // Calculate engagement over time (last 30 days)
   const engagementOverTime = useMemo(() => {
     const last30Days = eachDayOfInterval({
@@ -20,10 +31,11 @@ export default function EngagementAnalytics({ events, participations, activities
 
     return last30Days.map(date => {
       const dateStr = format(date, 'yyyy-MM-dd');
-      const dayEvents = events.filter(e => 
-        format(new Date(e.scheduled_date), 'yyyy-MM-dd') === dateStr
-      );
-      const dayParticipations = participations.filter(p =>
+      const dayEvents = (events || []).filter(e => {
+        const eventDate = safeParseDate(e.scheduled_date);
+        return eventDate && format(eventDate, 'yyyy-MM-dd') === dateStr;
+      });
+      const dayParticipations = (participations || []).filter(p =>
         dayEvents.some(e => e.id === p.event_id)
       );
 
@@ -46,15 +58,15 @@ export default function EngagementAnalytics({ events, participations, activities
   const attendanceByType = useMemo(() => {
     const typeStats = {};
 
-    events.forEach(event => {
-      const activity = activities.find(a => a.id === event.activity_id);
+    (events || []).forEach(event => {
+      const activity = (activities || []).find(a => a.id === event.activity_id);
       const type = activity?.type || 'unknown';
       
       if (!typeStats[type]) {
         typeStats[type] = { type, totalInvited: 0, attended: 0, events: 0, totalEngagement: 0 };
       }
 
-      const eventParticipations = participations.filter(p => p.event_id === event.id);
+      const eventParticipations = (participations || []).filter(p => p.event_id === event.id);
       typeStats[type].totalInvited += eventParticipations.length;
       typeStats[type].attended += eventParticipations.filter(p => p.attended).length;
       typeStats[type].events += 1;
@@ -71,8 +83,8 @@ export default function EngagementAnalytics({ events, participations, activities
   // Popular activity types (pie chart data)
   const activityPopularity = useMemo(() => {
     const typeCounts = {};
-    events.forEach(event => {
-      const activity = activities.find(a => a.id === event.activity_id);
+    (events || []).forEach(event => {
+      const activity = (activities || []).find(a => a.id === event.activity_id);
       const type = activity?.type || 'other';
       typeCounts[type] = (typeCounts[type] || 0) + 1;
     });
@@ -89,9 +101,9 @@ export default function EngagementAnalytics({ events, participations, activities
       const weekStart = startOfWeek(subDays(new Date(), i * 7));
       const weekEnd = subDays(weekStart, -6);
       
-      const weekEvents = events.filter(e => {
-        const eventDate = new Date(e.scheduled_date);
-        return eventDate >= weekStart && eventDate <= weekEnd;
+      const weekEvents = (events || []).filter(e => {
+        const eventDate = safeParseDate(e.scheduled_date);
+        return eventDate && eventDate >= weekStart && eventDate <= weekEnd;
       });
 
       weeklyData.push({
@@ -109,12 +121,14 @@ export default function EngagementAnalytics({ events, participations, activities
 
   // Summary stats
   const summaryStats = useMemo(() => {
-    const totalEvents = events.length;
-    const completedEvents = events.filter(e => e.status === 'completed').length;
-    const totalParticipants = participations.length;
-    const attendedCount = participations.filter(p => p.attended).length;
-    const avgEngagement = participations.length > 0
-      ? participations.reduce((sum, p) => sum + (p.engagement_score || 0), 0) / participations.length
+    const eventsArr = events || [];
+    const participationsArr = participations || [];
+    const totalEvents = eventsArr.length;
+    const completedEvents = eventsArr.filter(e => e.status === 'completed').length;
+    const totalParticipants = participationsArr.length;
+    const attendedCount = participationsArr.filter(p => p.attended).length;
+    const avgEngagement = participationsArr.length > 0
+      ? participationsArr.reduce((sum, p) => sum + (p.engagement_score || 0), 0) / participationsArr.length
       : 0;
 
     return {

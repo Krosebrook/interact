@@ -45,7 +45,7 @@ export default function FacilitatorView() {
     loadUser();
 
     const urlParams = new URLSearchParams(window.location.search);
-    setEventId(urlParams.get('event'));
+    setEventId(urlParams.get('eventId') || urlParams.get('event'));
   }, []);
 
   const { data: event } = useQuery({

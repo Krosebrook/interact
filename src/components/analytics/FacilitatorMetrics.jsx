@@ -9,12 +9,12 @@ import {
 } from 'recharts';
 import { Star, Users, Calendar, TrendingUp, Award } from 'lucide-react';
 
-export default function FacilitatorMetrics({ events, participations }) {
+export default function FacilitatorMetrics({ events = [], participations = [] }) {
   // Calculate facilitator performance metrics
   const facilitatorStats = useMemo(() => {
     const stats = {};
 
-    events.forEach(event => {
+    (events || []).forEach(event => {
       const email = event.facilitator_email || event.created_by;
       const name = event.facilitator_name || email?.split('@')[0] || 'Unknown';
       
@@ -35,7 +35,7 @@ export default function FacilitatorMetrics({ events, participations }) {
         };
       }
 
-      const eventParticipations = participations.filter(p => p.event_id === event.id);
+      const eventParticipations = (participations || []).filter(p => p.event_id === event.id);
       const activity = event.activity_id;
 
       stats[email].totalEvents += 1;
