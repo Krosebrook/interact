@@ -47,6 +47,22 @@ export function useGamificationData(options = {}) {
     staleTime: 30000
   });
 
+  // All redemptions for admin view
+  const { data: allRedemptions = [], isLoading: allRedemptionsLoading, refetch: refetchAllRedemptions } = useQuery({
+    queryKey: ['all-redemptions'],
+    queryFn: () => base44.entities.RewardRedemption.list('-created_date', 500),
+    enabled,
+    staleTime: 30000
+  });
+
+  // All rewards including unavailable (for admin)
+  const { data: allRewards = [], isLoading: allRewardsLoading, refetch: refetchRewards } = useQuery({
+    queryKey: ['all-rewards'],
+    queryFn: () => base44.entities.Reward.list('-created_date', 200),
+    enabled,
+    staleTime: 30000
+  });
+
   // Get current user's points
   const currentUserPoints = userEmail 
     ? userPoints.find(up => up.user_email === userEmail) 
@@ -70,11 +86,15 @@ export function useGamificationData(options = {}) {
     badges,
     badgeAwards,
     rewards,
+    allRewards,
     redemptions,
+    allRedemptions,
     currentUserPoints,
     userBadges,
     leaderboard,
-    isLoading: pointsLoading || badgesLoading || awardsLoading || rewardsLoading || redemptionsLoading,
-    refetchPoints
+    isLoading: pointsLoading || badgesLoading || awardsLoading || rewardsLoading || redemptionsLoading || allRedemptionsLoading || allRewardsLoading,
+    refetchPoints,
+    refetchRewards,
+    refetchAllRedemptions
   };
 }
