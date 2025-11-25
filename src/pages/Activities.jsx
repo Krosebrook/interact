@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { useUserData } from '../components/hooks/useUserData';
+import { useActivities } from '../components/hooks/useActivities';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -9,6 +9,9 @@ import ActivityCard from '../components/activities/ActivityCard';
 import ActivityGenerator from '../components/ai/ActivityGenerator';
 import AIActivitySuggester from '../components/activities/AIActivitySuggester';
 import ModuleBuilder from '../components/activities/ModuleBuilder';
+import LoadingSpinner from '../components/common/LoadingSpinner';
+import EmptyState from '../components/common/EmptyState';
+import PageHeader from '../components/common/PageHeader';
 import {
   Dialog,
   DialogContent,
@@ -25,6 +28,7 @@ export default function Activities() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { user, loading } = useUserData(true, true);
+  const { activities, isLoading, duplicateActivity, filterActivities } = useActivities();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedType, setSelectedType] = useState('all');
   const [selectedDuration, setSelectedDuration] = useState('all');
@@ -33,33 +37,10 @@ export default function Activities() {
   const [showSuggester, setShowSuggester] = useState(false);
   const [showModuleBuilder, setShowModuleBuilder] = useState(false);
 
-  const { data: activities = [], isLoading } = useQuery({
-    queryKey: ['activities'],
-    queryFn: () => base44.entities.Activity.list()
-  });
-
-  const duplicateMutation = useMutation({
-    mutationFn: (activity) => {
-      const { id, created_date, updated_date, created_by, ...activityData } = activity;
-      return base44.entities.Activity.create({
-        ...activityData,
-        title: `${activity.title} (Copy)`,
-        is_template: false
-      });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries(['activities']);
-      toast.success('Activity duplicated!');
-    }
-  });
-
-  // Filter activities
-  const filteredActivities = activities.filter(activity => {
-    const matchesSearch = activity.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         activity.description.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesType = selectedType === 'all' || activity.type === selectedType;
-    const matchesDuration = selectedDuration === 'all' || activity.duration === selectedDuration;
-    return matchesSearch && matchesType && matchesDuration;
+  const filteredActivities = filterActivities({ 
+    search: searchQuery, 
+    type: selectedType, 
+    duration: selectedDuration 
   });
 
   const types = ['all', 'icebreaker', 'creative', 'competitive', 'wellness', 'learning', 'social'];
@@ -70,15 +51,11 @@ export default function Activities() {
   };
 
   const handleDuplicate = (activity) => {
-    duplicateMutation.mutate(activity);
+    duplicateActivity(activity);
   };
 
   if (loading || !user) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-int-orange"></div>
-      </div>
-    );
+    return <LoadingSpinner className="min-h-[60vh]" />;
   }
 
   return (
@@ -174,11 +151,11 @@ export default function Activities() {
           ))}
         </div>
       ) : filteredActivities.length === 0 ? (
-        <div className="text-center py-12 bg-white rounded-xl border-2 border-dashed border-slate-300">
-          <Search className="h-12 w-12 text-slate-400 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-slate-900 mb-2">No activities found</h3>
-          <p className="text-slate-600">Try adjusting your filters or search query</p>
-        </div>
+        <EmptyState
+          icon={Search}
+          title="No activities found"
+          description="Try adjusting your filters or search query"
+        />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredActivities.map(activity => (

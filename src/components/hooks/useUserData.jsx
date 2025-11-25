@@ -1,28 +1,35 @@
-import { useQuery } from '@tanstack/react-query';
+import { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
+import { useQuery } from '@tanstack/react-query';
 
 /**
  * Centralized hook for user authentication and data
+ * @param {boolean} requireAuth - Redirect to login if not authenticated
+ * @param {boolean} requireAdmin - Redirect to login if not admin
  */
 export function useUserData(requireAuth = true, requireAdmin = false) {
-  const { data: user, isLoading: loading, error } = useQuery({
-    queryKey: ['current-user'],
-    queryFn: async () => {
-      const currentUser = await base44.auth.me();
-      if (requireAdmin && currentUser.role !== 'admin') {
-        base44.auth.redirectToLogin();
-        return null;
-      }
-      return currentUser;
-    },
-    retry: false,
-    staleTime: 5 * 60 * 1000 // 5 minutes
-  });
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // Redirect on auth error
-  if (error && requireAuth) {
-    base44.auth.redirectToLogin();
-  }
+  useEffect(() => {
+    const loadUser = async () => {
+      try {
+        const currentUser = await base44.auth.me();
+        setUser(currentUser);
+        
+        if (requireAdmin && currentUser.role !== 'admin') {
+          base44.auth.redirectToLogin();
+        }
+      } catch (error) {
+        if (requireAuth) {
+          base44.auth.redirectToLogin();
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadUser();
+  }, [requireAuth, requireAdmin]);
 
   const { data: userPoints = [] } = useQuery({
     queryKey: ['user-points', user?.email],
@@ -30,11 +37,11 @@ export function useUserData(requireAuth = true, requireAdmin = false) {
     enabled: !!user
   });
 
-  const { data: userProfile } = useQuery({
+  const { data: profile } = useQuery({
     queryKey: ['user-profile', user?.email],
     queryFn: async () => {
       const profiles = await base44.entities.UserProfile.filter({ user_email: user?.email });
-      return profiles[0] || null;
+      return profiles[0];
     },
     enabled: !!user
   });
@@ -43,7 +50,7 @@ export function useUserData(requireAuth = true, requireAdmin = false) {
     user,
     loading,
     userPoints: userPoints[0] || null,
-    userProfile,
+    profile,
     isAdmin: user?.role === 'admin'
   };
 }

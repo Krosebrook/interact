@@ -9,6 +9,9 @@ import QuickStats from '../components/dashboard/QuickStats';
 import EventCalendarCard from '../components/events/EventCalendarCard';
 import AISuggestionsWidget from '../components/ai/AISuggestionsWidget';
 import ActivityGenerator from '../components/ai/ActivityGenerator';
+import LoadingSpinner from '../components/common/LoadingSpinner';
+import EmptyState from '../components/common/EmptyState';
+import PageHeader from '../components/common/PageHeader';
 import { useEventActions } from '../components/events/useEventActions';
 import { 
   Calendar, 
@@ -18,7 +21,6 @@ import {
   Plus,
   ArrowRight
 } from 'lucide-react';
-import { toast } from 'sonner';
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -51,11 +53,7 @@ export default function Dashboard() {
   };
 
   if (userLoading || isLoading || !user) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
-      </div>
-    );
+    return <LoadingSpinner className="min-h-[60vh]" />;
   }
 
   return (
@@ -136,17 +134,13 @@ export default function Dashboard() {
             ))}
           </div>
         ) : upcomingEvents.length === 0 ? (
-          <div className="text-center py-12 bg-white rounded-xl border-2 border-dashed border-slate-300">
-            <Calendar className="h-12 w-12 text-slate-400 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-slate-900 mb-2">No upcoming events</h3>
-            <p className="text-slate-600 mb-4">Get started by scheduling your first activity</p>
-            <Link to={createPageUrl('Calendar')}>
-              <Button className="bg-indigo-600 hover:bg-indigo-700">
-                <Plus className="h-4 w-4 mr-2" />
-                Schedule Event
-              </Button>
-            </Link>
-          </div>
+          <EmptyState
+            icon={Calendar}
+            title="No upcoming events"
+            description="Get started by scheduling your first activity"
+            actionLabel="Schedule Event"
+            onAction={() => navigate(createPageUrl('Calendar'))}
+          />
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {upcomingEvents.slice(0, 6).map(event => (

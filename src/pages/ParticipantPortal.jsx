@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useUserData } from '../components/hooks/useUserData';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -8,26 +9,16 @@ import { Badge } from '@/components/ui/badge';
 import ParticipantEventCard from '../components/participant/ParticipantEventCard';
 import PersonalizedRecommendations from '../components/participant/PersonalizedRecommendations';
 import PersonalizedCoachWidget from '../components/gamification/PersonalizedCoachWidget';
+import StreakTracker from '../components/gamification/StreakTracker';
 import FeedbackForm from '../components/participant/FeedbackForm';
+import LoadingSpinner from '../components/common/LoadingSpinner';
 import { Calendar, Sparkles, MessageSquare, TrendingUp } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function ParticipantPortal() {
   const queryClient = useQueryClient();
-  const [user, setUser] = useState(null);
+  const { user, loading: userLoading, userPoints: myUserPoints } = useUserData(true, false);
   const [selectedEventForFeedback, setSelectedEventForFeedback] = useState(null);
-
-  useEffect(() => {
-    const loadUser = async () => {
-      try {
-        const currentUser = await base44.auth.me();
-        setUser(currentUser);
-      } catch (error) {
-        base44.auth.redirectToLogin();
-      }
-    };
-    loadUser();
-  }, []);
 
   const { data: myParticipations = [] } = useQuery({
     queryKey: ['my-participations', user?.email],
@@ -43,12 +34,6 @@ export default function ParticipantPortal() {
   const { data: activities = [] } = useQuery({
     queryKey: ['activities'],
     queryFn: () => base44.entities.Activity.list()
-  });
-
-  const { data: userPoints = [] } = useQuery({
-    queryKey: ['user-points', user?.email],
-    queryFn: () => base44.entities.UserPoints.filter({ user_email: user?.email }),
-    enabled: !!user
   });
 
   const rsvpMutation = useMutation({
@@ -81,15 +66,9 @@ export default function ParticipantPortal() {
     return !participation?.feedback;
   });
 
-  if (!user) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-int-orange"></div>
-      </div>
-    );
+  if (userLoading || !user) {
+    return <LoadingSpinner className="min-h-[60vh]" />;
   }
-
-  const myUserPoints = userPoints[0];
 
   const statsData = {
     upcoming: upcomingEvents.length,
