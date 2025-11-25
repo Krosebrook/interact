@@ -84,18 +84,19 @@ export default function Layout({ children, currentPageName }) {
   const isAdmin = user?.role === 'admin';
 
   const navigation = isAdmin ? [
-    { name: 'Dashboard', icon: LayoutDashboard, page: 'Dashboard' },
-    { name: 'Facilitator', icon: Users, page: 'FacilitatorDashboard' },
-    { name: 'Activities', icon: Sparkles, page: 'Activities' },
-    { name: 'Templates', icon: LayoutDashboard, page: 'EventTemplates' },
-    { name: 'Calendar', icon: Calendar, page: 'Calendar' },
-    { name: 'Teams', icon: Users, page: 'Teams' },
-    { name: 'Skills', icon: BarChart3, page: 'SkillsDashboard' },
-    { name: 'Gamification', icon: Gift, page: 'GamificationDashboard' },
-    { name: 'Analytics', icon: BarChart3, page: 'Analytics' },
-    { name: 'Integrations', icon: Plug, page: 'Integrations' },
-    { name: 'Settings', icon: SettingsIcon, page: 'Settings' },
-  ] : [
+        { name: 'Dashboard', icon: LayoutDashboard, page: 'Dashboard' },
+        { name: 'Facilitator', icon: Users, page: 'FacilitatorDashboard' },
+        { name: 'Activities', icon: Sparkles, page: 'Activities' },
+        { name: 'Templates', icon: LayoutDashboard, page: 'EventTemplates' },
+        { name: 'Calendar', icon: Calendar, page: 'Calendar' },
+        { name: 'Teams', icon: Users, page: 'Teams' },
+        { name: 'Skills', icon: BarChart3, page: 'SkillsDashboard' },
+        { name: 'Gamification', icon: Gift, page: 'GamificationDashboard' },
+        { name: 'Analytics', icon: BarChart3, page: 'Analytics' },
+        { name: 'Integrations', icon: Plug, page: 'Integrations' },
+        { name: 'Project Plan', icon: LayoutDashboard, page: 'ProjectPlan' },
+        { name: 'Settings', icon: SettingsIcon, page: 'Settings' },
+      ] : [
     { name: 'My Events', icon: Calendar, page: 'ParticipantPortal' },
     { name: 'Teams', icon: Users, page: 'Teams' },
     { name: 'Rewards', icon: Gift, page: 'RewardsStore' },
