@@ -24,7 +24,8 @@ import {
   Users, 
   Sparkles, 
   TrendingUp, 
-  ArrowRight
+  ArrowRight,
+  Zap
 } from 'lucide-react';
 
 export default function Dashboard() {
@@ -51,30 +52,32 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="space-y-8">
-      {/* Welcome Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">
-            Welcome back, {user.full_name}! 👋
-          </h1>
-          <p className="text-slate-600">
-            Here's what's happening with your team activities
-          </p>
-        </div>
-        <div className="flex gap-3">
-          <Link to={createPageUrl('Activities')}>
-            <Button className="bg-int-orange hover:bg-[#C46322] text-white shadow-lg">
-              <Sparkles className="h-4 w-4 mr-2" />
-              Browse Activities
-            </Button>
-          </Link>
-          <Link to={createPageUrl('Calendar')}>
-            <Button variant="outline">
-              <Calendar className="h-4 w-4 mr-2" />
-              Schedule Event
-            </Button>
-          </Link>
+    <div className="space-y-8 animate-fade-in">
+      {/* Welcome Header - Glass Panel */}
+      <div className="glass-panel-solid">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div>
+            <h1 className="text-3xl font-bold text-slate-900 mb-2">
+              Welcome back, {user.full_name}! 👋
+            </h1>
+            <p className="text-slate-600">
+              Here's what's happening with your team activities
+            </p>
+          </div>
+          <div className="flex gap-3">
+            <Link to={createPageUrl('Activities')}>
+              <Button className="bg-int-orange hover:bg-[#C46322] text-white shadow-lg">
+                <Sparkles className="h-4 w-4 mr-2" />
+                Browse Activities
+              </Button>
+            </Link>
+            <Link to={createPageUrl('Calendar')}>
+              <Button variant="outline" className="border-slate-300 hover:bg-slate-100">
+                <Calendar className="h-4 w-4 mr-2" />
+                Schedule Event
+              </Button>
+            </Link>
+          </div>
         </div>
       </div>
 
@@ -82,19 +85,19 @@ export default function Dashboard() {
       <StatsGrid stats={[
         { title: 'Upcoming Events', value: stats.upcomingCount, subtitle: 'Scheduled activities', icon: Calendar, color: 'navy' },
         { title: 'Total Activities', value: stats.activitiesCount, subtitle: 'In your library', icon: Sparkles, color: 'orange' },
-        { title: 'This Month', value: stats.completedThisMonth, subtitle: 'Events completed', trend: stats.completedThisMonth > 0 ? `${Math.round((stats.completedThisMonth / Math.max(stats.upcomingCount, 1)) * 100)}% completion rate` : "Let's schedule more!", icon: TrendingUp, color: 'orange' },
-        { title: 'Avg Participation', value: stats.avgParticipation, subtitle: 'People per event', icon: Users, color: 'navy' }
+        { title: 'This Month', value: stats.completedThisMonth, subtitle: 'Events completed', trend: stats.completedThisMonth > 0 ? `${Math.round((stats.completedThisMonth / Math.max(stats.upcomingCount, 1)) * 100)}% completion rate` : "Let's schedule more!", icon: TrendingUp, color: 'green' },
+        { title: 'Avg Participation', value: stats.avgParticipation, subtitle: 'People per event', icon: Users, color: 'purple' }
       ]} />
 
       {/* Upcoming Events */}
-      <div>
+      <div className="glass-panel-solid">
         <div className="flex justify-between items-center mb-6">
           <div>
             <h2 className="text-2xl font-bold text-slate-900">Upcoming Events</h2>
-            <p className="text-slate-600 text-sm mt-1">Your next scheduled activities</p>
+            <p className="text-slate-500 text-sm mt-1">Your next scheduled activities</p>
           </div>
           <Link to={createPageUrl('Calendar')}>
-            <Button variant="ghost" className="text-indigo-600 hover:text-indigo-700">
+            <Button variant="ghost" className="text-int-orange hover:text-[#C46322] hover:bg-int-orange/10">
               View All <ArrowRight className="h-4 w-4 ml-1" />
             </Button>
           </Link>
@@ -111,7 +114,7 @@ export default function Dashboard() {
             onAction={() => navigate(createPageUrl('Calendar'))}
           />
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {upcomingEvents.slice(0, 6).map(event => (
               <EventCalendarCard
                 key={event.id}
@@ -138,27 +141,27 @@ export default function Dashboard() {
       />
 
       {/* Quick Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <QuickActionCard 
           title="Browse Activities" 
           subtitle={`Explore ${activities.length} activity templates`}
           icon={Sparkles}
           page="Activities"
-          color="navy"
+          color="orange"
         />
         <QuickActionCard 
           title="Schedule Event" 
           subtitle="Plan your next team activity"
           icon={Calendar}
           page="Calendar"
-          color="orange"
+          color="navy"
         />
         <QuickActionCard 
           title="View Analytics" 
           subtitle="Track engagement & trends"
           icon={TrendingUp}
           page="Analytics"
-          color="slate"
+          color="purple"
         />
       </div>
 

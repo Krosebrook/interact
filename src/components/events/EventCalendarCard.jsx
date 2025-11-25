@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Link } from 'react-router-dom';
+import { createPageUrl } from '../../utils';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -14,36 +15,37 @@ import {
   Clock, 
   Users, 
   MoreVertical, 
-  Copy, 
+  Link as LinkIcon, 
   Download, 
   Bell, 
-  Mail,
-  ExternalLink,
+  FileText, 
+  XCircle,
   Bookmark,
   BookmarkCheck,
-  XCircle,
-  Edit,
-  CalendarClock,
-  Repeat
+  MapPin,
+  Video,
+  RefreshCw
 } from 'lucide-react';
-import { format, parseISO } from 'date-fns';
+import { format, isPast } from 'date-fns';
 import { motion } from 'framer-motion';
-import BookmarkButton from './BookmarkButton';
-import { Link } from 'react-router-dom';
-import { createPageUrl } from '../../utils';
 
-const STATUS_STYLES = {
-  scheduled: 'bg-blue-100 text-blue-800 border-blue-200',
-  in_progress: 'bg-green-100 text-green-800 border-green-200',
-  completed: 'bg-slate-100 text-slate-800 border-slate-200',
-  cancelled: 'bg-red-100 text-red-800 border-red-200',
-  rescheduled: 'bg-amber-100 text-amber-800 border-amber-200',
-  draft: 'bg-gray-100 text-gray-600 border-gray-200'
+const statusStyles = {
+  scheduled: 'bg-blue-500/20 text-blue-200 border-blue-400/30',
+  in_progress: 'bg-emerald-500/20 text-emerald-200 border-emerald-400/30',
+  completed: 'bg-slate-500/20 text-slate-200 border-slate-400/30',
+  cancelled: 'bg-red-500/20 text-red-200 border-red-400/30',
+  rescheduled: 'bg-amber-500/20 text-amber-200 border-amber-400/30'
 };
 
-export default function EventCalendarCard({
-  event,
-  activity,
+const formatStyles = {
+  online: { icon: Video, label: 'Online', color: 'text-blue-300' },
+  offline: { icon: MapPin, label: 'In-Person', color: 'text-emerald-300' },
+  hybrid: { icon: Users, label: 'Hybrid', color: 'text-purple-300' }
+};
+
+export default function EventCalendarCard({ 
+  event, 
+  activity, 
   participantCount = 0,
   onView,
   onCopyLink,
@@ -54,169 +56,150 @@ export default function EventCalendarCard({
   onReschedule,
   userEmail
 }) {
-  const [isHovered, setIsHovered] = useState(false);
-
-  const eventDate = event.scheduled_date ? parseISO(event.scheduled_date) : null;
-  const isPast = eventDate && eventDate < new Date();
-  const statusStyle = STATUS_STYLES[event.status] || STATUS_STYLES.scheduled;
+  const [isBookmarked, setIsBookmarked] = useState(false);
+  
+  const eventDate = new Date(event.scheduled_date);
+  const isEventPast = isPast(eventDate);
+  const formatConfig = formatStyles[event.event_format] || formatStyles.online;
+  const FormatIcon = formatConfig.icon;
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      whileHover={{ y: -4 }}
-      onHoverStart={() => setIsHovered(true)}
-      onHoverEnd={() => setIsHovered(false)}
+      whileHover={{ y: -2 }}
+      className="glass-card group"
     >
-      <Card className={`h-full hover:shadow-lg transition-all border-2 ${
-        isPast ? 'opacity-75' : 'border-transparent hover:border-int-orange'
-      }`}>
-        <CardHeader className="pb-3">
-          <div className="flex items-start justify-between gap-2">
-            <div className="flex-1 min-w-0">
-              <CardTitle className="text-lg line-clamp-2">{event.title}</CardTitle>
-              {activity && (
-                <div className="flex flex-wrap gap-1 mt-2">
-                  <Badge variant="outline" className="text-xs">
-                    {activity.type}
-                  </Badge>
-                  <Badge variant="outline" className="text-xs">
-                    {activity.duration}
-                  </Badge>
-                </div>
-              )}
-            </div>
-            
-            <div className="flex items-center gap-1">
-              <Badge className={statusStyle}>
-                {event.status === 'rescheduled' && '↻ '}
-                {event.status?.replace('_', ' ')}
-              </Badge>
-              
-              {event.is_recurring && (
-                <Badge variant="outline" className="text-xs">
-                  <Repeat className="h-3 w-3 mr-1" />
-                  Series
-                </Badge>
-              )}
-            </div>
-          </div>
-        </CardHeader>
-
-        <CardContent className="space-y-3">
-          {/* Date & Time */}
-          {eventDate && (
-            <div className="flex items-center gap-2 text-sm text-slate-600">
-              <Calendar className="h-4 w-4 text-int-orange" />
-              <span>{format(eventDate, 'EEE, MMM d, yyyy')}</span>
-            </div>
-          )}
-          
-          {eventDate && (
-            <div className="flex items-center gap-2 text-sm text-slate-600">
-              <Clock className="h-4 w-4 text-int-navy" />
-              <span>{format(eventDate, 'h:mm a')}</span>
-              {event.duration_minutes && (
-                <span className="text-slate-400">• {event.duration_minutes} min</span>
-              )}
-            </div>
-          )}
-
-          {/* Rescheduled indicator */}
-          {event.original_date && event.original_date !== event.scheduled_date && (
-            <div className="flex items-center gap-2 text-xs text-amber-600 bg-amber-50 p-2 rounded">
-              <CalendarClock className="h-4 w-4" />
-              <span>Rescheduled from {format(parseISO(event.original_date), 'MMM d')}</span>
-            </div>
-          )}
-
-          {/* Participants */}
-          <div className="flex items-center gap-2 text-sm text-slate-600">
-            <Users className="h-4 w-4 text-slate-400" />
-            <span>
-              {participantCount} {event.max_participants ? `/ ${event.max_participants}` : ''} participants
-            </span>
-          </div>
-
-          {/* Location/Format */}
-          {event.event_format && event.event_format !== 'online' && (
-            <Badge variant="outline" className="text-xs">
-              {event.event_format === 'hybrid' ? '🌐 Hybrid' : '📍 In-person'}
+      {/* Header */}
+      <div className="flex items-start justify-between mb-3">
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 mb-1">
+            <Badge className={`${statusStyles[event.status]} border text-xs`}>
+              {event.status.replace('_', ' ')}
             </Badge>
-          )}
-
-          {/* Actions */}
-          <div className="flex items-center gap-2 pt-2">
-            <Link to={createPageUrl('FacilitatorView') + `?eventId=${event.id}`} className="flex-1">
-              <Button 
-                className="w-full bg-int-orange hover:bg-[#C46322] text-white"
-                size="sm"
-              >
-                <ExternalLink className="h-4 w-4 mr-2" />
-                Facilitate
-              </Button>
-            </Link>
-
-            <BookmarkButton eventId={event.id} userEmail={userEmail} />
-
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon">
-                  <MoreVertical className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => onCopyLink?.(event)}>
-                  <Copy className="h-4 w-4 mr-2" />
-                  Copy Magic Link
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => onDownloadCalendar?.(event)}>
-                  <Download className="h-4 w-4 mr-2" />
-                  Download Calendar
-                </DropdownMenuItem>
-                
-                <DropdownMenuSeparator />
-                
-                {onReschedule && event.status !== 'completed' && event.status !== 'cancelled' && (
-                  <DropdownMenuItem onClick={() => onReschedule(event)}>
-                    <CalendarClock className="h-4 w-4 mr-2" />
-                    Reschedule
-                  </DropdownMenuItem>
-                )}
-                
-                {!isPast && (
-                  <>
-                    <DropdownMenuItem onClick={() => onSendReminder?.(event)}>
-                      <Bell className="h-4 w-4 mr-2" />
-                      Send Reminder
-                    </DropdownMenuItem>
-                  </>
-                )}
-                
-                {isPast && event.status === 'completed' && (
-                  <DropdownMenuItem onClick={() => onSendRecap?.(event)}>
-                    <Mail className="h-4 w-4 mr-2" />
-                    Send Recap
-                  </DropdownMenuItem>
-                )}
-                
-                {event.status !== 'cancelled' && event.status !== 'completed' && (
-                  <>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem 
-                      onClick={() => onCancel?.(event)}
-                      className="text-red-600"
-                    >
-                      <XCircle className="h-4 w-4 mr-2" />
-                      Cancel Event
-                    </DropdownMenuItem>
-                  </>
-                )}
-              </DropdownMenuContent>
-            </DropdownMenu>
+            {event.is_recurring && (
+              <Badge variant="outline" className="border-white/20 text-white/70 text-xs">
+                <RefreshCw className="h-3 w-3 mr-1" />
+                Recurring
+              </Badge>
+            )}
           </div>
-        </CardContent>
-      </Card>
+          <h3 className="font-semibold text-white truncate group-hover:text-int-orange transition-colors">
+            {event.title}
+          </h3>
+          {activity && (
+            <p className="text-sm text-white/60 truncate">{activity.title}</p>
+          )}
+        </div>
+        
+        <div className="flex items-center gap-1">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 text-white/50 hover:text-white hover:bg-white/10"
+            onClick={() => setIsBookmarked(!isBookmarked)}
+          >
+            {isBookmarked ? (
+              <BookmarkCheck className="h-4 w-4 text-int-orange" />
+            ) : (
+              <Bookmark className="h-4 w-4" />
+            )}
+          </Button>
+          
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="h-8 w-8 text-white/50 hover:text-white hover:bg-white/10">
+                <MoreVertical className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuItem onClick={() => onCopyLink(event)}>
+                <LinkIcon className="h-4 w-4 mr-2" />
+                Copy Link
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onDownloadCalendar(event)}>
+                <Download className="h-4 w-4 mr-2" />
+                Add to Calendar
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              {!isEventPast && (
+                <>
+                  <DropdownMenuItem onClick={() => onSendReminder(event)}>
+                    <Bell className="h-4 w-4 mr-2" />
+                    Send Reminder
+                  </DropdownMenuItem>
+                  {onReschedule && (
+                    <DropdownMenuItem onClick={() => onReschedule(event)}>
+                      <RefreshCw className="h-4 w-4 mr-2" />
+                      Reschedule
+                    </DropdownMenuItem>
+                  )}
+                </>
+              )}
+              {isEventPast && event.status === 'completed' && (
+                <DropdownMenuItem onClick={() => onSendRecap(event)}>
+                  <FileText className="h-4 w-4 mr-2" />
+                  Send Recap
+                </DropdownMenuItem>
+              )}
+              {!isEventPast && event.status !== 'cancelled' && (
+                <>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem 
+                    onClick={() => onCancel(event)}
+                    className="text-red-600 focus:text-red-600"
+                  >
+                    <XCircle className="h-4 w-4 mr-2" />
+                    Cancel Event
+                  </DropdownMenuItem>
+                </>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </div>
+
+      {/* Event Details */}
+      <div className="space-y-2 mb-4">
+        <div className="flex items-center gap-2 text-sm text-white/70">
+          <Calendar className="h-4 w-4 text-int-orange" />
+          <span>{format(eventDate, 'EEE, MMM d, yyyy')}</span>
+        </div>
+        <div className="flex items-center gap-2 text-sm text-white/70">
+          <Clock className="h-4 w-4 text-int-orange" />
+          <span>{format(eventDate, 'h:mm a')}</span>
+          {event.duration_minutes && (
+            <span className="text-white/50">• {event.duration_minutes} min</span>
+          )}
+        </div>
+        <div className="flex items-center gap-2 text-sm text-white/70">
+          <FormatIcon className={`h-4 w-4 ${formatConfig.color}`} />
+          <span>{formatConfig.label}</span>
+          {event.location && (
+            <span className="text-white/50 truncate">• {event.location}</span>
+          )}
+        </div>
+      </div>
+
+      {/* Participants */}
+      <div className="flex items-center justify-between pt-3 border-t border-white/10">
+        <div className="flex items-center gap-2 text-sm text-white/60">
+          <Users className="h-4 w-4" />
+          <span>{participantCount} participant{participantCount !== 1 ? 's' : ''}</span>
+          {event.max_participants && (
+            <span className="text-white/40">/ {event.max_participants}</span>
+          )}
+        </div>
+        
+        <Link to={`${createPageUrl('FacilitatorView')}?eventId=${event.id}`}>
+          <Button 
+            size="sm" 
+            className="bg-int-orange hover:bg-[#C46322] text-white shadow-lg"
+          >
+            Facilitate
+          </Button>
+        </Link>
+      </div>
     </motion.div>
   );
 }

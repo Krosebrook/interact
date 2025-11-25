@@ -1,27 +1,43 @@
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-export function StatCard({ title, value, subtitle, trend, icon: Icon, color = 'navy' }) {
-  const colorClasses = {
+export function StatCard({ title, value, subtitle, trend, icon: Icon, color = 'orange' }) {
+  const accentColors = {
+    orange: 'from-int-orange/20 to-int-orange/5',
+    navy: 'from-int-navy/20 to-int-navy/5',
+    purple: 'from-purple-500/20 to-purple-500/5',
+    green: 'from-emerald-500/20 to-emerald-500/5',
+    slate: 'from-slate-500/20 to-slate-500/5'
+  };
+
+  const iconColors = {
     orange: 'text-int-orange',
     navy: 'text-int-navy',
-    slate: 'text-slate-500',
-    green: 'text-green-600',
-    purple: 'text-purple-600'
+    purple: 'text-purple-400',
+    green: 'text-emerald-400',
+    slate: 'text-slate-400'
   };
 
   return (
-    <Card className="bg-white border-0 shadow-lg">
-      <CardHeader className="flex flex-row items-center justify-between pb-2">
-        <CardTitle className="text-sm font-medium text-slate-600">{title}</CardTitle>
-        {Icon && <Icon className={`h-4 w-4 ${colorClasses[color]}`} />}
-      </CardHeader>
-      <CardContent>
-        <div className={`text-3xl font-bold ${colorClasses[color]}`}>{value}</div>
-        {subtitle && <p className="text-xs text-slate-500 mt-1">{subtitle}</p>}
-        {trend && <p className="text-xs text-green-600 mt-1">{trend}</p>}
-      </CardContent>
-    </Card>
+    <div className="glass-card-solid group relative overflow-hidden">
+      {/* Accent gradient top bar */}
+      <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${accentColors[color]}`} />
+      
+      <div className="flex items-start justify-between">
+        <div className="flex-1">
+          <p className="text-sm font-medium text-slate-500 mb-1">{title}</p>
+          <p className="text-3xl font-bold text-slate-900">{value}</p>
+          {subtitle && <p className="text-xs text-slate-500 mt-1">{subtitle}</p>}
+          {trend && (
+            <p className="text-xs text-emerald-600 mt-1 font-medium">{trend}</p>
+          )}
+        </div>
+        {Icon && (
+          <div className={`p-3 rounded-xl bg-gradient-to-br ${accentColors[color]}`}>
+            <Icon className={`h-5 w-5 ${iconColors[color]}`} />
+          </div>
+        )}
+      </div>
+    </div>
   );
 }
 
@@ -33,7 +49,7 @@ export default function StatsGrid({ stats, columns = 4 }) {
   };
 
   return (
-    <div className={`grid ${gridCols[columns]} gap-6`}>
+    <div className={`grid ${gridCols[columns]} gap-4`}>
       {stats.map((stat, index) => (
         <StatCard key={index} {...stat} />
       ))}

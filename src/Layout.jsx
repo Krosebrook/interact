@@ -70,10 +70,11 @@ export default function Layout({ children, currentPageName }) {
     base44.auth.logout();
   };
 
-  // If participant page, show minimal layout
+  // If participant page, show minimal layout with immersive bg
   if (currentPageName === 'ParticipantEvent') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
+      <div className="min-h-screen relative">
+        <div className="immersive-bg" />
         {children}
       </div>
     );
@@ -105,19 +106,21 @@ export default function Layout({ children, currentPageName }) {
   const filteredNav = navigation.filter(item => !item.adminOnly || isAdmin);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
+    <div className="min-h-screen relative">
+      {/* Immersive Background */}
+      <div className="immersive-bg" />
+      
       {/* PWA Install Banner */}
       {showInstallBanner && (
-        <div className="bg-int-orange text-white px-4 py-3 flex items-center justify-between">
+        <div className="relative z-50 glass-panel-dark mx-4 mt-4 rounded-xl flex items-center justify-between px-4 py-3">
           <div className="flex items-center gap-3">
-            <Download className="h-5 w-5" />
-            <span className="text-sm font-medium">Install Team Engage for a better experience</span>
+            <Download className="h-5 w-5 text-white" />
+            <span className="text-sm font-medium text-white">Install Team Engage for a better experience</span>
           </div>
           <div className="flex items-center gap-2">
             <Button 
               size="sm" 
-              variant="secondary" 
-              className="bg-white text-int-orange hover:bg-white/90"
+              className="bg-white/20 hover:bg-white/30 text-white border border-white/30"
               onClick={handleInstallClick}
             >
               Install
@@ -134,26 +137,25 @@ export default function Layout({ children, currentPageName }) {
         </div>
       )}
 
-      {/* Header */}
-      <header className="bg-white/80 backdrop-blur-lg border-b border-slate-200 sticky top-0 z-50">
+      {/* Glass Header */}
+      <header className="glass-header sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
             <Link to={createPageUrl('Dashboard')} className="flex items-center gap-3">
-              <div className="h-10 w-10 bg-int-navy rounded-xl flex items-center justify-center relative">
+              <div className="h-10 w-10 bg-gradient-to-br from-int-orange to-[#C46322] rounded-xl flex items-center justify-center relative shadow-lg">
                 <Sparkles className="h-6 w-6 text-white" />
-                <div className="absolute -top-1 -right-1 w-3 h-3 bg-int-orange rounded-full"></div>
               </div>
               <div className="hidden sm:block">
-                <h1 className="text-xl font-bold text-int-navy">
+                <h1 className="text-xl font-bold text-white text-shadow">
                   Team Engage
                 </h1>
-                <p className="text-xs text-slate-gray">Activity Hub</p>
+                <p className="text-xs text-white/70">Activity Hub</p>
               </div>
             </Link>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center gap-1">
+            <nav className="hidden lg:flex items-center gap-1">
               {filteredNav.map((item) => {
                 const Icon = item.icon;
                 const isActive = currentPageName === item.page;
@@ -161,10 +163,10 @@ export default function Layout({ children, currentPageName }) {
                   <Link
                     key={item.name}
                     to={createPageUrl(item.page)}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${
+                    className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all ${
                       isActive
-                        ? 'bg-int-orange text-white font-medium'
-                        : 'text-slate-gray hover:bg-slate-100'
+                        ? 'bg-white/25 text-white font-medium shadow-lg'
+                        : 'text-white/80 hover:bg-white/15 hover:text-white'
                     }`}
                   >
                     <Icon className="h-4 w-4" />
@@ -180,14 +182,14 @@ export default function Layout({ children, currentPageName }) {
                 <>
                   <NotificationBell userEmail={user.email} />
                   <div className="hidden sm:block text-right">
-                    <p className="text-sm font-medium text-slate-700">{user.full_name}</p>
-                    <p className="text-xs text-slate-500">{user.role}</p>
+                    <p className="text-sm font-medium text-white">{user.full_name}</p>
+                    <p className="text-xs text-white/70">{user.role}</p>
                   </div>
                   <Button
                     variant="ghost"
                     size="icon"
                     onClick={handleLogout}
-                    className="text-slate-600 hover:text-slate-900"
+                    className="text-white/80 hover:text-white hover:bg-white/15"
                   >
                     <LogOut className="h-5 w-5" />
                   </Button>
@@ -198,7 +200,7 @@ export default function Layout({ children, currentPageName }) {
               <Button
                 variant="ghost"
                 size="icon"
-                className="md:hidden"
+                className="lg:hidden text-white hover:bg-white/15"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               >
                 {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -209,8 +211,8 @@ export default function Layout({ children, currentPageName }) {
 
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
-          <div className="md:hidden border-t border-slate-200 bg-white">
-            <nav className="px-4 py-3 space-y-1">
+          <div className="lg:hidden glass-panel-dark mx-4 mb-4 rounded-xl">
+            <nav className="p-3 space-y-1">
               {filteredNav.map((item) => {
                 const Icon = item.icon;
                 const isActive = currentPageName === item.page;
@@ -221,8 +223,8 @@ export default function Layout({ children, currentPageName }) {
                     onClick={() => setMobileMenuOpen(false)}
                     className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
                       isActive
-                        ? 'bg-int-orange text-white font-medium'
-                        : 'text-slate-gray hover:bg-slate-100'
+                        ? 'bg-white/25 text-white font-medium'
+                        : 'text-white/80 hover:bg-white/15 hover:text-white'
                     }`}
                   >
                     <Icon className="h-5 w-5" />
@@ -236,7 +238,7 @@ export default function Layout({ children, currentPageName }) {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {children}
       </main>
     </div>
