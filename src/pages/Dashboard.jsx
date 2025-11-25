@@ -5,13 +5,14 @@ import { useUserData } from '../components/hooks/useUserData';
 import { useEventData } from '../components/hooks/useEventData';
 import { filterUpcomingEvents, getParticipationStats, getActivityForEvent } from '../components/utils/eventFilters';
 import { Button } from '@/components/ui/button';
+import LoadingSpinner from '../components/ui/LoadingSpinner';
+import EmptyState from '../components/ui/EmptyState';
+import PageHeader from '../components/ui/PageHeader';
+import SkeletonGrid from '../components/ui/SkeletonGrid';
 import QuickStats from '../components/dashboard/QuickStats';
 import EventCalendarCard from '../components/events/EventCalendarCard';
 import AISuggestionsWidget from '../components/ai/AISuggestionsWidget';
 import ActivityGenerator from '../components/ai/ActivityGenerator';
-import LoadingSpinner from '../components/common/LoadingSpinner';
-import EmptyState from '../components/common/EmptyState';
-import PageHeader from '../components/common/PageHeader';
 import { useEventActions } from '../components/events/useEventActions';
 import { 
   Calendar, 
@@ -53,36 +54,29 @@ export default function Dashboard() {
   };
 
   if (userLoading || isLoading || !user) {
-    return <LoadingSpinner className="min-h-[60vh]" />;
+    return <LoadingSpinner />;
   }
 
   return (
     <div className="space-y-8">
       {/* Welcome Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">
-            Welcome back, {user.full_name}! 👋
-          </h1>
-          <p className="text-slate-600">
-            Here's what's happening with your team activities
-          </p>
-        </div>
-        <div className="flex gap-3">
-          <Link to={createPageUrl('Activities')}>
-            <Button className="bg-int-orange hover:bg-[#C46322] text-white shadow-lg">
-              <Sparkles className="h-4 w-4 mr-2" />
-              Browse Activities
-            </Button>
-          </Link>
-          <Link to={createPageUrl('Calendar')}>
-            <Button variant="outline">
-              <Calendar className="h-4 w-4 mr-2" />
-              Schedule Event
-            </Button>
-          </Link>
-        </div>
-      </div>
+      <PageHeader 
+        title={`Welcome back, ${user.full_name}! 👋`}
+        description="Here's what's happening with your team activities"
+      >
+        <Link to={createPageUrl('Activities')}>
+          <Button className="bg-int-orange hover:bg-[#C46322] text-white shadow-lg">
+            <Sparkles className="h-4 w-4 mr-2" />
+            Browse Activities
+          </Button>
+        </Link>
+        <Link to={createPageUrl('Calendar')}>
+          <Button variant="outline">
+            <Calendar className="h-4 w-4 mr-2" />
+            Schedule Event
+          </Button>
+        </Link>
+      </PageHeader>
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -128,17 +122,14 @@ export default function Dashboard() {
         </div>
 
         {isLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3].map(i => (
-              <div key={i} className="h-48 bg-slate-100 animate-pulse rounded-xl" />
-            ))}
-          </div>
+          <SkeletonGrid count={3} />
         ) : upcomingEvents.length === 0 ? (
           <EmptyState
             icon={Calendar}
             title="No upcoming events"
             description="Get started by scheduling your first activity"
             actionLabel="Schedule Event"
+            actionIcon={Plus}
             onAction={() => navigate(createPageUrl('Calendar'))}
           />
         ) : (

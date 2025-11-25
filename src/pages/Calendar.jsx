@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useUserData } from '../components/hooks/useUserData';
 import { useEventData } from '../components/hooks/useEventData';
 import { filterUpcomingEvents, filterPastEvents, getParticipationStats, getActivityForEvent } from '../components/utils/eventFilters';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
+import LoadingSpinner from '../components/ui/LoadingSpinner';
+import EmptyState from '../components/ui/EmptyState';
+import PageHeader from '../components/ui/PageHeader';
+import SkeletonGrid from '../components/ui/SkeletonGrid';
 import {
   Select,
   SelectContent,
@@ -29,7 +32,7 @@ import RichTextEventEditor from '../components/events/RichTextEventEditor';
 import { useEventActions } from '../components/events/useEventActions';
 import { Calendar as CalendarIcon, Plus } from 'lucide-react';
 import { toast } from 'sonner';
-import { format, addDays, addWeeks, addMonths } from 'date-fns';
+import { addDays, addWeeks, addMonths } from 'date-fns';
 
 export default function Calendar() {
   const queryClient = useQueryClient();
@@ -177,21 +180,16 @@ export default function Calendar() {
   const pastEvents = filterPastEvents(events);
 
   if (loading || !user) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">Event Calendar</h1>
-          <p className="text-slate-600">Schedule and manage your team activities</p>
-        </div>
+      <PageHeader
+        title="Event Calendar"
+        description="Schedule and manage your team activities"
+      >
         <Button
           onClick={() => setShowScheduleDialog(true)}
           className="bg-int-orange hover:bg-[#C46322] text-white"
@@ -199,27 +197,22 @@ export default function Calendar() {
           <Plus className="h-4 w-4 mr-2" />
           Schedule Event
         </Button>
-      </div>
+      </PageHeader>
 
       {/* Upcoming Events */}
       <div>
         <h2 className="text-2xl font-bold text-slate-900 mb-4">Upcoming Events</h2>
         {isLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3].map(i => (
-              <div key={i} className="h-48 bg-slate-100 animate-pulse rounded-xl" />
-            ))}
-          </div>
+          <SkeletonGrid count={3} />
         ) : upcomingEvents.length === 0 ? (
-          <div className="text-center py-12 bg-white rounded-xl border-2 border-dashed border-slate-300">
-            <CalendarIcon className="h-12 w-12 text-slate-400 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-slate-900 mb-2">No upcoming events</h3>
-            <p className="text-slate-600 mb-4">Schedule your first event to get started</p>
-            <Button onClick={() => setShowScheduleDialog(true)} className="bg-int-orange hover:bg-[#C46322] text-white">
-              <Plus className="h-4 w-4 mr-2" />
-              Schedule Event
-            </Button>
-          </div>
+          <EmptyState
+            icon={CalendarIcon}
+            title="No upcoming events"
+            description="Schedule your first event to get started"
+            actionLabel="Schedule Event"
+            actionIcon={Plus}
+            onAction={() => setShowScheduleDialog(true)}
+          />
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {upcomingEvents.map(event => {
