@@ -3,9 +3,11 @@ import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
 
 /**
- * Centralized hook for user authentication and data
+ * Full user data hook with profile and points
+ * Use useAuth for simple auth checks without extra queries
+ * 
  * @param {boolean} requireAuth - Redirect to login if not authenticated
- * @param {boolean} requireAdmin - Redirect to login if not admin
+ * @param {boolean} requireAdmin - Redirect if not admin (only checked if requireAuth is true)
  */
 export function useUserData(requireAuth = true, requireAdmin = false) {
   const [user, setUser] = useState(null);
@@ -31,25 +33,30 @@ export function useUserData(requireAuth = true, requireAdmin = false) {
     loadUser();
   }, [requireAuth, requireAdmin]);
 
-  const { data: userPoints = [] } = useQuery({
+  const { data: userPoints } = useQuery({
     queryKey: ['user-points', user?.email],
-    queryFn: () => base44.entities.UserPoints.filter({ user_email: user?.email }),
-    enabled: !!user
+    queryFn: async () => {
+      const points = await base44.entities.UserPoints.filter({ user_email: user?.email });
+      return points[0] || null;
+    },
+    enabled: !!user?.email,
+    staleTime: 30000 // Cache for 30 seconds
   });
 
   const { data: profile } = useQuery({
     queryKey: ['user-profile', user?.email],
     queryFn: async () => {
       const profiles = await base44.entities.UserProfile.filter({ user_email: user?.email });
-      return profiles[0];
+      return profiles[0] || null;
     },
-    enabled: !!user
+    enabled: !!user?.email,
+    staleTime: 30000
   });
 
   return {
     user,
     loading,
-    userPoints: userPoints[0] || null,
+    userPoints,
     profile,
     isAdmin: user?.role === 'admin'
   };
