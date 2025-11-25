@@ -8,6 +8,7 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import FacilitatorSupportChat from '../components/facilitator/FacilitatorSupportChat';
 import FacilitatorEventCard from '../components/events/FacilitatorEventCard';
+import TemplateAnalytics from '../components/facilitator/TemplateAnalytics';
 import { useAuth } from '../components/hooks/useAuth';
 import { useEventData } from '../components/hooks/useEventData';
 import { 
@@ -231,6 +232,9 @@ export default function FacilitatorDashboard() {
           </Link>
         </Card>
       )}
+
+      {/* Template Analytics */}
+      <TemplateAnalytics />
 
       {/* Support Chat Sidebar */}
       {showSupport && (
