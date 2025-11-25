@@ -19,6 +19,7 @@ import CommunicationHub from '../components/facilitator/CommunicationHub';
 import AIQAModerator from '../components/facilitator/AIQAModerator';
 import AIEventSummarizer from '../components/facilitator/AIEventSummarizer';
 import AIBreakoutSuggester from '../components/facilitator/AIBreakoutSuggester';
+import AIContentGenerator from '../components/facilitator/AIContentGenerator';
 import { Calendar, Users, Clock, ArrowLeft, MessageCircle, Video, Mail, Brain } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
@@ -207,9 +208,12 @@ export default function FacilitatorView() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <AIQAModerator eventId={eventId} eventTitle={event.title} />
               <AIEventSummarizer eventId={eventId} eventTitle={event.title} />
-              <div className="lg:col-span-2">
-                <AIBreakoutSuggester eventId={eventId} eventTitle={event.title} />
-              </div>
+              <AIContentGenerator 
+                eventId={eventId} 
+                eventTitle={event.title}
+                activityType={activity?.type}
+              />
+              <AIBreakoutSuggester eventId={eventId} eventTitle={event.title} />
             </div>
           </TabsContent>
 
