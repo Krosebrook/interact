@@ -1,6 +1,10 @@
 import { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 
+/**
+ * Lightweight auth hook - use for simple auth checks
+ * For more features (profile, points), use useUserData instead
+ */
 export function useAuth(requireAdmin = false) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -23,5 +27,9 @@ export function useAuth(requireAdmin = false) {
     loadUser();
   }, [requireAdmin]);
 
-  return { user, loading };
+  return { 
+    user, 
+    loading,
+    isAdmin: user?.role === 'admin'
+  };
 }
