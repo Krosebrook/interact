@@ -12,7 +12,8 @@ import {
   Menu,
   X,
   Users,
-  Gift
+  Gift,
+  User
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import NotificationBell from './components/notifications/NotificationBell';
@@ -64,6 +65,7 @@ export default function Layout({ children, currentPageName }) {
     { name: 'Teams', icon: Users, page: 'Teams', adminOnly: false },
     { name: 'Rewards', icon: Gift, page: 'RewardsStore', adminOnly: false },
     { name: 'Leaderboard', icon: BarChart3, page: 'Gamification', adminOnly: false },
+    { name: 'My Profile', icon: User, page: 'UserProfile', adminOnly: false },
   ];
 
   const filteredNav = navigation.filter(item => !item.adminOnly || isAdmin);
