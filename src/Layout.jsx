@@ -14,7 +14,8 @@ import {
   Users,
   Gift,
   User,
-  Download
+  Download,
+  Plug
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import NotificationBell from './components/notifications/NotificationBell';
@@ -91,8 +92,9 @@ export default function Layout({ children, currentPageName }) {
     { name: 'Skills', icon: BarChart3, page: 'SkillsDashboard', adminOnly: true },
     { name: 'Gamification', icon: Gift, page: 'GamificationDashboard', adminOnly: true },
     { name: 'Analytics', icon: BarChart3, page: 'Analytics', adminOnly: true },
+    { name: 'Integrations', icon: Plug, page: 'Integrations', adminOnly: true },
     { name: 'Settings', icon: SettingsIcon, page: 'Settings', adminOnly: true },
-  ] : [
+    ] : [
     { name: 'My Events', icon: Calendar, page: 'ParticipantPortal', adminOnly: false },
     { name: 'Teams', icon: Users, page: 'Teams', adminOnly: false },
     { name: 'Rewards', icon: Gift, page: 'RewardsStore', adminOnly: false },
