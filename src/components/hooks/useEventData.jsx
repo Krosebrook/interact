@@ -6,13 +6,14 @@ import { base44 } from '@/api/base44Client';
  * Used by Dashboard, Calendar, FacilitatorDashboard, Analytics
  */
 export function useEventData(options = {}) {
-  const { limit = 100, enabled = true } = options;
+  const { limit = 100, enabled = true, refetchInterval = null } = options;
 
-  const { data: events = [], isLoading: eventsLoading } = useQuery({
+  const { data: events = [], isLoading: eventsLoading, refetch: refetchEvents } = useQuery({
     queryKey: ['events', limit],
     queryFn: () => base44.entities.Event.list('-scheduled_date', limit),
     enabled,
-    staleTime: 10000
+    staleTime: 10000,
+    refetchInterval
   });
 
   const { data: activities = [], isLoading: activitiesLoading } = useQuery({
@@ -26,13 +27,15 @@ export function useEventData(options = {}) {
     queryKey: ['participations'],
     queryFn: () => base44.entities.Participation.list('-created_date', 500),
     enabled,
-    staleTime: 10000
+    staleTime: 10000,
+    refetchInterval
   });
 
   return {
     events,
     activities,
     participations,
-    isLoading: eventsLoading || activitiesLoading || participationsLoading
+    isLoading: eventsLoading || activitiesLoading || participationsLoading,
+    refetchEvents
   };
 }

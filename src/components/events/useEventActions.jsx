@@ -1,8 +1,11 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
-import { createPageUrl } from '../../utils';
 
+/**
+ * Centralized hook for event actions (cancel, copy link, download calendar, notifications)
+ * Used by Dashboard, Calendar, FacilitatorDashboard
+ */
 export function useEventActions() {
   const queryClient = useQueryClient();
 
@@ -11,66 +14,76 @@ export function useEventActions() {
     onSuccess: () => {
       queryClient.invalidateQueries(['events']);
       toast.success('Event cancelled');
-    }
+    },
+    onError: () => toast.error('Failed to cancel event')
   });
 
-  const handleCopyLink = (event) => {
-    const link = `${window.location.origin}${createPageUrl('ParticipantEvent')}?event=${event.magic_link || event.id}`;
-    navigator.clipboard.writeText(link);
-    toast.success('Magic link copied to clipboard!');
-  };
-
-  const handleDownloadCalendar = async (event) => {
-    try {
-      const response = await base44.functions.invoke('generateCalendarFile', {
-        eventId: event.id
+  const sendReminderMutation = useMutation({
+    mutationFn: async (eventId) => {
+      await base44.functions.invoke('sendTeamsNotification', {
+        eventId,
+        notificationType: 'reminder'
       });
-      
-      const blob = new Blob([response.data], { type: 'text/calendar' });
+    },
+    onSuccess: () => toast.success('Reminder sent to all participants!'),
+    onError: () => toast.error('Failed to send reminder')
+  });
+
+  const sendRecapMutation = useMutation({
+    mutationFn: async (eventId) => {
+      await base44.functions.invoke('sendTeamsNotification', {
+        eventId,
+        notificationType: 'recap'
+      });
+    },
+    onSuccess: () => toast.success('Recap sent!'),
+    onError: () => toast.error('Failed to send recap')
+  });
+
+  const downloadCalendarMutation = useMutation({
+    mutationFn: async (eventId) => {
+      const response = await base44.functions.invoke('generateCalendarFile', { eventId });
+      return response.data;
+    },
+    onSuccess: (data, variables) => {
+      const blob = new Blob([data], { type: 'text/calendar' });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `${event.title.replace(/[^a-z0-9]/gi, '_')}.ics`;
+      a.download = 'event.ics';
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
       a.remove();
-      
       toast.success('Calendar file downloaded!');
-    } catch (error) {
-      toast.error('Failed to generate calendar file');
-    }
+    },
+    onError: () => toast.error('Failed to download calendar file')
+  });
+
+  const handleCopyLink = (event) => {
+    const link = event.magic_link 
+      ? `${window.location.origin}/ParticipantEvent?link=${event.magic_link}`
+      : `${window.location.origin}/ParticipantEvent?id=${event.id}`;
+    navigator.clipboard.writeText(link);
+    toast.success('Link copied to clipboard!');
   };
 
-  const handleSendTeamsNotification = async (eventId, notificationType) => {
-    try {
-      await base44.functions.invoke('sendTeamsNotification', {
-        eventId,
-        notificationType
-      });
-      
-      const messages = {
-        announcement: 'Announcement sent to Teams!',
-        reminder: 'Reminder sent to Teams!',
-        recap: 'Recap sent to Teams!'
-      };
-      
-      toast.success(messages[notificationType] || 'Notification sent!');
-    } catch (error) {
-      toast.error(`Failed to send ${notificationType}`);
-    }
+  const handleDownloadCalendar = (event) => {
+    downloadCalendarMutation.mutate(event.id);
   };
 
   const handleSendReminder = (event) => {
-    return handleSendTeamsNotification(event.id, 'reminder');
+    sendReminderMutation.mutate(event.id);
   };
 
   const handleSendRecap = (event) => {
-    return handleSendTeamsNotification(event.id, 'recap');
+    sendRecapMutation.mutate(event.id);
   };
 
   const handleCancelEvent = (event) => {
-    cancelEventMutation.mutate(event.id);
+    if (window.confirm('Are you sure you want to cancel this event?')) {
+      cancelEventMutation.mutate(event.id);
+    }
   };
 
   return {
@@ -79,6 +92,9 @@ export function useEventActions() {
     handleSendReminder,
     handleSendRecap,
     handleCancelEvent,
-    cancelEventMutation
+    isLoading: cancelEventMutation.isPending || 
+               sendReminderMutation.isPending || 
+               sendRecapMutation.isPending || 
+               downloadCalendarMutation.isPending
   };
 }

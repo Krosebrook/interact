@@ -2,52 +2,79 @@ import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 
 /**
- * Centralized hook for gamification-related data
+ * Central hook for gamification-related data
+ * Used by GamificationDashboard, Leaderboard, RewardsStore, UserProfile
  */
-export function useGamificationData(userEmail = null) {
+export function useGamificationData(options = {}) {
+  const { enabled = true, userEmail = null, limit = 100 } = options;
+
+  const { data: userPoints = [], isLoading: pointsLoading, refetch: refetchPoints } = useQuery({
+    queryKey: ['user-points', limit],
+    queryFn: () => base44.entities.UserPoints.list('-total_points', limit),
+    enabled,
+    staleTime: 30000
+  });
+
   const { data: badges = [], isLoading: badgesLoading } = useQuery({
     queryKey: ['badges'],
-    queryFn: () => base44.entities.Badge.list()
+    queryFn: () => base44.entities.Badge.filter({ is_active: true }),
+    enabled,
+    staleTime: 60000
+  });
+
+  const { data: badgeAwards = [], isLoading: awardsLoading } = useQuery({
+    queryKey: ['badge-awards', userEmail],
+    queryFn: () => userEmail
+      ? base44.entities.BadgeAward.filter({ user_email: userEmail })
+      : base44.entities.BadgeAward.list('-created_date', 500),
+    enabled,
+    staleTime: 30000
   });
 
   const { data: rewards = [], isLoading: rewardsLoading } = useQuery({
     queryKey: ['rewards'],
-    queryFn: () => base44.entities.Reward.list('-popularity_score', 100)
+    queryFn: () => base44.entities.Reward.filter({ is_available: true }),
+    enabled,
+    staleTime: 60000
   });
 
   const { data: redemptions = [], isLoading: redemptionsLoading } = useQuery({
-    queryKey: userEmail ? ['redemptions', userEmail] : ['all-redemptions'],
-    queryFn: () => userEmail 
-      ? base44.entities.RewardRedemption.filter({ user_email: userEmail })
-      : base44.entities.RewardRedemption.list('-created_date', 100)
-  });
-
-  const { data: allUserPoints = [], isLoading: pointsLoading } = useQuery({
-    queryKey: ['all-user-points'],
-    queryFn: () => base44.entities.UserPoints.list('-total_points', 100)
-  });
-
-  const { data: badgeAwards = [] } = useQuery({
-    queryKey: userEmail ? ['badge-awards', userEmail] : ['badge-awards'],
+    queryKey: ['reward-redemptions', userEmail],
     queryFn: () => userEmail
-      ? base44.entities.BadgeAward.filter({ user_email: userEmail })
-      : base44.entities.BadgeAward.list('-created_date', 50)
+      ? base44.entities.RewardRedemption.filter({ user_email: userEmail })
+      : [],
+    enabled: !!userEmail,
+    staleTime: 30000
   });
 
-  // Helper to get badges by category
-  const getBadgesByCategory = (category) => badges.filter(b => b.category === category);
-  
-  // Helper to get user's earned badges
-  const getUserBadges = (badgeIds = []) => badges.filter(b => badgeIds.includes(b.id));
+  // Get current user's points
+  const currentUserPoints = userEmail 
+    ? userPoints.find(up => up.user_email === userEmail) 
+    : null;
+
+  // Get user's earned badges
+  const userBadges = userEmail
+    ? badgeAwards.filter(ba => ba.user_email === userEmail).map(ba => {
+        const badge = badges.find(b => b.id === ba.badge_id);
+        return { ...ba, badge };
+      })
+    : [];
+
+  // Calculate leaderboard with ranks
+  const leaderboard = userPoints
+    .sort((a, b) => b.total_points - a.total_points)
+    .map((up, index) => ({ ...up, rank: index + 1 }));
 
   return {
+    userPoints,
     badges,
+    badgeAwards,
     rewards,
     redemptions,
-    allUserPoints,
-    badgeAwards,
-    getBadgesByCategory,
-    getUserBadges,
-    isLoading: badgesLoading || rewardsLoading || redemptionsLoading || pointsLoading
+    currentUserPoints,
+    userBadges,
+    leaderboard,
+    isLoading: pointsLoading || badgesLoading || awardsLoading || rewardsLoading || redemptionsLoading,
+    refetchPoints
   };
 }
