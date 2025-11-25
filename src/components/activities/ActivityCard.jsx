@@ -1,119 +1,133 @@
 import React from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Clock, Users, Calendar, Copy, GraduationCap, ChevronRight } from 'lucide-react';
+import { Clock, Users, Calendar, Copy, GraduationCap, ChevronRight, Star } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const typeConfig = {
-  icebreaker: { emoji: '❄️', label: 'Icebreaker', color: 'bg-blue-100 text-blue-700 border-blue-200' },
-  creative: { emoji: '🎨', label: 'Creative', color: 'bg-purple-100 text-purple-700 border-purple-200' },
-  competitive: { emoji: '🏆', label: 'Competitive', color: 'bg-yellow-100 text-yellow-700 border-yellow-200' },
-  wellness: { emoji: '🧘', label: 'Wellness', color: 'bg-emerald-100 text-emerald-700 border-emerald-200' },
-  learning: { emoji: '📚', label: 'Learning', color: 'bg-cyan-100 text-cyan-700 border-cyan-200' },
-  social: { emoji: '🎉', label: 'Social', color: 'bg-pink-100 text-pink-700 border-pink-200' }
+  icebreaker: { emoji: '❄️', label: 'Icebreaker', badgeClass: 'activity-badge-icebreaker' },
+  creative: { emoji: '🎨', label: 'Creative', badgeClass: 'activity-badge-creative' },
+  competitive: { emoji: '🏆', label: 'Competitive', badgeClass: 'activity-badge-competitive' },
+  wellness: { emoji: '🧘', label: 'Wellness', badgeClass: 'activity-badge-wellness' },
+  learning: { emoji: '📚', label: 'Learning', badgeClass: 'activity-badge-learning' },
+  social: { emoji: '🎉', label: 'Social', badgeClass: 'activity-badge-social' }
 };
 
-const gradientBgs = {
-  icebreaker: 'from-blue-600/40 to-blue-800/60',
-  creative: 'from-purple-600/40 to-purple-800/60',
-  competitive: 'from-yellow-600/40 to-amber-800/60',
-  wellness: 'from-emerald-600/40 to-emerald-800/60',
-  learning: 'from-cyan-600/40 to-cyan-800/60',
-  social: 'from-pink-600/40 to-rose-800/60'
+const gradientClasses = {
+  icebreaker: 'bg-gradient-icebreaker',
+  creative: 'bg-gradient-creative',
+  competitive: 'bg-gradient-competitive',
+  wellness: 'bg-gradient-wellness',
+  learning: 'bg-gradient-learning',
+  social: 'bg-gradient-social'
+};
+
+// Default images per type for activities without images
+const defaultImages = {
+  icebreaker: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=400&h=300&fit=crop',
+  creative: 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=400&h=300&fit=crop',
+  competitive: 'https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=400&h=300&fit=crop',
+  wellness: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400&h=300&fit=crop',
+  learning: 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=400&h=300&fit=crop',
+  social: 'https://images.unsplash.com/photo-1543269865-cbf427effbad?w=400&h=300&fit=crop'
 };
 
 export default function ActivityCard({ activity, onSchedule, onDuplicate, onView }) {
   const config = typeConfig[activity.type] || typeConfig.social;
-  const gradient = gradientBgs[activity.type] || gradientBgs.social;
+  const gradientClass = gradientClasses[activity.type] || gradientClasses.social;
+  const imageUrl = activity.image_url || defaultImages[activity.type] || defaultImages.social;
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.2 }}
-      whileHover={{ y: -4, scale: 1.02 }}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+      whileHover={{ y: -6 }}
       className="h-full"
     >
       <div 
-        className="glass-card h-full flex flex-col cursor-pointer group overflow-hidden"
+        className="activity-card h-full flex flex-col cursor-pointer group"
         onClick={() => onView(activity)}
       >
-        {/* Header with gradient and icon */}
-        <div className={`relative h-32 -mx-4 -mt-4 mb-4 bg-gradient-to-br ${gradient} flex items-center justify-center`}>
-          {activity.image_url ? (
-            <img 
-              src={activity.image_url} 
-              alt={activity.title}
-              className="w-full h-full object-cover opacity-80"
-            />
-          ) : (
-            <span className="text-6xl opacity-60 group-hover:scale-110 transition-transform">
-              {config.emoji}
-            </span>
-          )}
+        {/* Header with image and gradient overlay */}
+        <div className="activity-card-header">
+          <img 
+            src={imageUrl} 
+            alt={activity.title}
+            className="w-full h-full object-cover"
+          />
           
           {/* Type badge */}
-          <Badge className={`absolute top-3 right-3 ${config.color} border backdrop-blur-sm`}>
+          <div className={`activity-card-badge ${config.badgeClass}`}>
             {config.emoji} {config.label}
-          </Badge>
+          </div>
+          
+          {/* Title overlaid on image */}
+          <h3 className="activity-card-title line-clamp-2">
+            {activity.title}
+          </h3>
         </div>
         
         {/* Content */}
-        <div className="flex-1 flex flex-col">
-          <h3 className="font-bold text-lg text-slate-900 mb-2 line-clamp-1 group-hover:text-int-orange transition-colors">
-            {activity.title}
-          </h3>
-          <p className="text-sm text-slate-600 mb-4 line-clamp-2 flex-1">
+        <div className="flex-1 flex flex-col p-4">
+          <p className="text-sm text-slate-600 mb-4 line-clamp-2 flex-1 leading-relaxed">
             {activity.description}
           </p>
           
-          {/* Meta info */}
-          <div className="flex flex-wrap gap-3 mb-4 text-xs text-slate-500">
-            <div className="flex items-center gap-1">
-              <Clock className="h-3.5 w-3.5" />
-              <span>{activity.duration}</span>
-            </div>
+          {/* Meta info with pills */}
+          <div className="flex flex-wrap gap-2 mb-4">
+            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-100 text-xs font-medium text-slate-700">
+              <Clock className="h-3 w-3" />
+              {activity.duration}
+            </span>
             {activity.capacity && (
-              <div className="flex items-center gap-1">
-                <Users className="h-3.5 w-3.5" />
-                <span>Max {activity.capacity}</span>
-              </div>
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-100 text-xs font-medium text-slate-700">
+                <Users className="h-3 w-3" />
+                Max {activity.capacity}
+              </span>
             )}
             {activity.popularity_score > 0 && (
-              <div className="flex items-center gap-1">
-                <span>⭐ {activity.popularity_score}</span>
-              </div>
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-50 text-xs font-medium text-amber-700">
+                <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
+                {activity.popularity_score}
+              </span>
             )}
           </div>
           
           {/* Skills Tags */}
           {activity.skills_developed?.length > 0 && (
-            <div className="flex flex-wrap gap-1 mb-4">
-              <GraduationCap className="h-3.5 w-3.5 text-slate-400" />
-              {activity.skills_developed.slice(0, 2).map(skill => (
-                <Badge key={skill} variant="outline" className="text-xs py-0 px-1.5 border-slate-200 text-slate-600 bg-slate-50">
+            <div className="flex flex-wrap gap-1.5 mb-4">
+              {activity.skills_developed.slice(0, 3).map(skill => (
+                <Badge 
+                  key={skill} 
+                  variant="outline" 
+                  className="text-xs py-0.5 px-2 border-int-navy/20 text-int-navy bg-int-navy/5 font-medium"
+                >
                   {skill}
                 </Badge>
               ))}
-              {activity.skills_developed.length > 2 && (
-                <Badge variant="outline" className="text-xs py-0 px-1.5 border-slate-200 text-slate-600 bg-slate-50">
-                  +{activity.skills_developed.length - 2}
+              {activity.skills_developed.length > 3 && (
+                <Badge 
+                  variant="outline" 
+                  className="text-xs py-0.5 px-2 border-slate-200 text-slate-500 bg-slate-50"
+                >
+                  +{activity.skills_developed.length - 3}
                 </Badge>
               )}
             </div>
           )}
           
           {/* Actions */}
-          <div className="flex gap-2 mt-auto">
+          <div className="flex gap-2 mt-auto pt-2 border-t border-slate-100">
             <Button 
               onClick={(e) => {
                 e.stopPropagation();
                 onSchedule(activity);
               }}
-              className="flex-1 bg-int-orange hover:bg-[#C46322] text-white shadow-lg"
+              className="flex-1 bg-gradient-orange hover:opacity-90 text-white shadow-md hover:shadow-lg transition-all press-effect"
               size="sm"
             >
-              <Calendar className="h-4 w-4 mr-1" />
+              <Calendar className="h-4 w-4 mr-1.5" />
               Schedule
             </Button>
             <Button 
@@ -123,7 +137,7 @@ export default function ActivityCard({ activity, onSchedule, onDuplicate, onView
               }}
               variant="outline"
               size="sm"
-              className="border-slate-200 text-slate-700 hover:bg-slate-100"
+              className="border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300"
             >
               <ChevronRight className="h-4 w-4" />
             </Button>
@@ -134,7 +148,7 @@ export default function ActivityCard({ activity, onSchedule, onDuplicate, onView
               }}
               variant="outline"
               size="sm"
-              className="border-slate-200 text-slate-700 hover:bg-slate-100"
+              className="border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300"
             >
               <Copy className="h-4 w-4" />
             </Button>

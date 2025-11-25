@@ -122,46 +122,51 @@ export default function Activities() {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">Activity Library</h1>
-          <p className="text-slate-600">
-            {filteredActivities.length} activities available
-          </p>
-        </div>
-        <div className="flex gap-2 flex-wrap">
-          <Button 
-            onClick={() => setShowPlanner(true)}
-            className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white"
-          >
-            <Brain className="h-4 w-4 mr-2" />
-            AI Activity Planner
-          </Button>
-          <Button 
-            onClick={() => setShowSuggester(true)}
-            variant="outline"
-            className="border-[#4A6070] text-[#4A6070] hover:bg-slate-50"
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            AI Suggestions
-          </Button>
-          <Button 
-            onClick={() => setShowModuleBuilder(true)}
-            variant="outline"
-            className="border-int-navy text-int-navy hover:bg-slate-50"
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            Build from Modules
-          </Button>
-          <Button 
-            onClick={() => setShowGenerator(true)}
-            className="bg-int-orange hover:bg-[#C46322] text-white"
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            Generate Custom
-          </Button>
+    <div className="space-y-6 animate-fade-in">
+      {/* Header with gradient background */}
+      <div className="glass-panel-solid relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-int-navy/5 via-transparent to-int-orange/5 pointer-events-none" />
+        <div className="relative flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div>
+            <h1 className="text-3xl font-bold text-int-navy mb-1 font-display">
+              <span className="text-highlight">Activity Library</span>
+            </h1>
+            <p className="text-slate-600 font-medium">
+              <span className="text-int-orange font-bold">{filteredActivities.length}</span> activities available
+            </p>
+          </div>
+          <div className="flex gap-2 flex-wrap">
+            <Button 
+              onClick={() => setShowPlanner(true)}
+              className="bg-gradient-purple hover:opacity-90 text-white shadow-lg hover:shadow-xl transition-all press-effect"
+            >
+              <Brain className="h-4 w-4 mr-2" />
+              AI Activity Planner
+            </Button>
+            <Button 
+              onClick={() => setShowSuggester(true)}
+              variant="outline"
+              className="border-int-navy text-int-navy hover:bg-int-navy/5 font-medium"
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              AI Suggestions
+            </Button>
+            <Button 
+              onClick={() => setShowModuleBuilder(true)}
+              variant="outline"
+              className="border-int-navy text-int-navy hover:bg-int-navy/5 font-medium"
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Build from Modules
+            </Button>
+            <Button 
+              onClick={() => setShowGenerator(true)}
+              className="bg-gradient-orange hover:opacity-90 text-white shadow-lg hover:shadow-xl transition-all press-effect"
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Generate Custom
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -170,26 +175,26 @@ export default function Activities() {
         {/* Search Bar & Sort */}
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-int-navy/40" />
             <Input
               placeholder="Search by name, description, or skills..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 h-11"
+              className="pl-10 h-11 border-slate-200 focus:border-int-orange focus:ring-int-orange/20 font-medium"
             />
             {searchQuery && (
               <button 
                 onClick={() => setSearchQuery('')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-int-orange transition-colors"
               >
                 <X className="h-4 w-4" />
               </button>
             )}
           </div>
           <div className="flex items-center gap-2">
-            <SortAsc className="h-4 w-4 text-slate-500" />
+            <SortAsc className="h-4 w-4 text-int-navy/50" />
             <Select value={sortBy} onValueChange={setSortBy}>
-              <SelectTrigger className="w-[160px]">
+              <SelectTrigger className="w-[160px] border-slate-200 font-medium">
                 <SelectValue placeholder="Sort by" />
               </SelectTrigger>
               <SelectContent>
