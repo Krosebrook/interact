@@ -72,6 +72,7 @@ Deno.serve(async (req) => {
     // Award points based on action type
     let pointsToAward = 0;
     let updates = {};
+    const pointsHistory = userPoints.points_history || [];
 
     switch (actionType) {
       case 'attendance':
@@ -79,7 +80,16 @@ Deno.serve(async (req) => {
         updates = {
           events_attended: (userPoints.events_attended || 0) + 1,
           total_points: (userPoints.total_points || 0) + pointsToAward,
-          last_activity_date: new Date().toISOString().split('T')[0]
+          available_points: (userPoints.available_points || 0) + pointsToAward,
+          lifetime_points: (userPoints.lifetime_points || 0) + pointsToAward,
+          last_activity_date: new Date().toISOString().split('T')[0],
+          points_history: [...pointsHistory.slice(-49), {
+            amount: pointsToAward,
+            reason: 'Event attendance',
+            source: 'attendance',
+            event_id: participation.event_id,
+            timestamp: new Date().toISOString()
+          }]
         };
         await base44.asServiceRole.entities.Participation.update(participationId, {
           points_awarded: true
@@ -93,7 +103,16 @@ Deno.serve(async (req) => {
         pointsToAward = 15;
         updates = {
           activities_completed: (userPoints.activities_completed || 0) + 1,
-          total_points: (userPoints.total_points || 0) + pointsToAward
+          total_points: (userPoints.total_points || 0) + pointsToAward,
+          available_points: (userPoints.available_points || 0) + pointsToAward,
+          lifetime_points: (userPoints.lifetime_points || 0) + pointsToAward,
+          points_history: [...pointsHistory.slice(-49), {
+            amount: pointsToAward,
+            reason: 'Activity completed',
+            source: 'activity',
+            event_id: participation.event_id,
+            timestamp: new Date().toISOString()
+          }]
         };
         await base44.asServiceRole.entities.Participation.update(participationId, {
           activity_completed: true
@@ -107,15 +126,59 @@ Deno.serve(async (req) => {
         pointsToAward = 5;
         updates = {
           feedback_submitted: (userPoints.feedback_submitted || 0) + 1,
-          total_points: (userPoints.total_points || 0) + pointsToAward
+          total_points: (userPoints.total_points || 0) + pointsToAward,
+          available_points: (userPoints.available_points || 0) + pointsToAward,
+          lifetime_points: (userPoints.lifetime_points || 0) + pointsToAward,
+          points_history: [...pointsHistory.slice(-49), {
+            amount: pointsToAward,
+            reason: 'Feedback submitted',
+            source: 'feedback',
+            event_id: participation.event_id,
+            timestamp: new Date().toISOString()
+          }]
         };
         await base44.asServiceRole.entities.Participation.update(participationId, {
           feedback_submitted: true
         });
         break;
 
+      case 'high_engagement':
+        if (participation.engagement_score >= 4) {
+          pointsToAward = 5;
+          updates = {
+            total_points: (userPoints.total_points || 0) + pointsToAward,
+            available_points: (userPoints.available_points || 0) + pointsToAward,
+            lifetime_points: (userPoints.lifetime_points || 0) + pointsToAward,
+            points_history: [...pointsHistory.slice(-49), {
+              amount: pointsToAward,
+              reason: 'High engagement bonus',
+              source: 'bonus',
+              event_id: participation.event_id,
+              timestamp: new Date().toISOString()
+            }]
+          };
+        }
+        break;
+
       default:
         return Response.json({ error: 'Invalid action type' }, { status: 400 });
+    }
+    
+    // Update team points if user has a team
+    if (userPoints.team_id && pointsToAward > 0) {
+      try {
+        const teams = await base44.asServiceRole.entities.Team.filter({ id: userPoints.team_id });
+        if (teams.length > 0) {
+          const team = teams[0];
+          await base44.asServiceRole.entities.Team.update(team.id, {
+            total_points: (team.total_points || 0) + pointsToAward,
+            'team_stats.weekly_points': (team.team_stats?.weekly_points || 0) + pointsToAward,
+            'team_stats.monthly_points': (team.team_stats?.monthly_points || 0) + pointsToAward
+          });
+        }
+      } catch (error) {
+        console.error('Failed to update team points:', error);
+      }
     }
 
     // Calculate level based on total points (every 100 points = 1 level)
