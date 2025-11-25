@@ -12,7 +12,11 @@ import LivePollCreator from '../components/facilitator/LivePollCreator';
 import SessionTimer from '../components/facilitator/SessionTimer';
 import LiveAnnouncements from '../components/facilitator/LiveAnnouncements';
 import EventMediaGallery from '../components/events/EventMediaGallery';
-import { Calendar, Users, Clock, ArrowLeft } from 'lucide-react';
+import ParticipantManager from '../components/facilitator/ParticipantManager';
+import QAModerator from '../components/facilitator/QAModerator';
+import RecordingUploader from '../components/facilitator/RecordingUploader';
+import CommunicationHub from '../components/facilitator/CommunicationHub';
+import { Calendar, Users, Clock, ArrowLeft, MessageCircle, Video, Mail, Settings } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { format } from 'date-fns';
@@ -119,14 +123,34 @@ export default function FacilitatorView() {
         </div>
 
         {/* Facilitator Assistant */}
-        <Tabs defaultValue={isCompleted ? 'recap' : isUpcoming ? 'prep' : 'live'} className="w-full">
-          <TabsList className="grid w-full grid-cols-5 mb-6">
-            <TabsTrigger value="prep">Pre-Event</TabsTrigger>
-            <TabsTrigger value="live">Live Tips</TabsTrigger>
-            <TabsTrigger value="tools">Tools</TabsTrigger>
-            <TabsTrigger value="polls">Polls</TabsTrigger>
-            <TabsTrigger value="recap">Recap</TabsTrigger>
+        <Tabs defaultValue={isCompleted ? 'recap' : isUpcoming ? 'participants' : 'live'} className="w-full">
+          <TabsList className="grid w-full grid-cols-4 lg:grid-cols-8 mb-6">
+            <TabsTrigger value="participants" className="text-xs">
+              <Users className="h-3.5 w-3.5 mr-1 hidden sm:inline" />
+              Participants
+            </TabsTrigger>
+            <TabsTrigger value="prep" className="text-xs">Pre-Event</TabsTrigger>
+            <TabsTrigger value="live" className="text-xs">Live</TabsTrigger>
+            <TabsTrigger value="qa" className="text-xs">
+              <MessageCircle className="h-3.5 w-3.5 mr-1 hidden sm:inline" />
+              Q&A
+            </TabsTrigger>
+            <TabsTrigger value="tools" className="text-xs">Tools</TabsTrigger>
+            <TabsTrigger value="recordings" className="text-xs">
+              <Video className="h-3.5 w-3.5 mr-1 hidden sm:inline" />
+              Recordings
+            </TabsTrigger>
+            <TabsTrigger value="comms" className="text-xs">
+              <Mail className="h-3.5 w-3.5 mr-1 hidden sm:inline" />
+              Comms
+            </TabsTrigger>
+            <TabsTrigger value="recap" className="text-xs">Recap</TabsTrigger>
           </TabsList>
+
+          {/* Participants Management */}
+          <TabsContent value="participants">
+            <ParticipantManager eventId={eventId} />
+          </TabsContent>
 
           <TabsContent value="prep">
             <PreEventAssistant eventId={eventId} />
@@ -137,48 +161,82 @@ export default function FacilitatorView() {
               <div className="lg:col-span-2 space-y-6">
                 <Card className="p-6 border-0 shadow-lg">
                   <h3 className="font-bold text-lg mb-4">Live Participant Feed</h3>
-                  <div className="space-y-3">
-                    {participations.slice(0, 10).map((p, i) => (
-                      <div key={i} className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-                        <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-full bg-indigo-200 flex items-center justify-center font-bold text-indigo-700">
-                            {p.participant_name?.charAt(0)}
+                  <div className="space-y-3 max-h-[400px] overflow-y-auto">
+                    {participations.length === 0 ? (
+                      <p className="text-center text-slate-500 py-8">No participants yet</p>
+                    ) : (
+                      participations.map((p, i) => (
+                        <div key={i} className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-full bg-indigo-200 flex items-center justify-center font-bold text-indigo-700">
+                              {p.participant_name?.charAt(0)}
+                            </div>
+                            <div>
+                              <span className="font-medium">{p.participant_name}</span>
+                              <p className="text-xs text-slate-500">{p.participant_email}</p>
+                            </div>
                           </div>
-                          <span className="font-medium">{p.participant_name}</span>
+                          <Badge variant={p.attended ? 'default' : 'outline'}>
+                            {p.attended ? 'Active' : 'RSVP'}
+                          </Badge>
                         </div>
-                        <Badge variant={p.attended ? 'default' : 'outline'}>
-                          {p.attended ? 'Active' : 'RSVP'}
-                        </Badge>
-                      </div>
-                    ))}
+                      ))
+                    )}
                   </div>
                 </Card>
+                <div className="grid grid-cols-2 gap-4">
+                  <SessionTimer />
+                  <LiveAnnouncements eventId={eventId} />
+                </div>
               </div>
-
               <div>
                 <RealTimeTips eventId={eventId} />
               </div>
             </div>
           </TabsContent>
 
+          {/* Q&A Moderation */}
+          <TabsContent value="qa">
+            <div className="h-[600px]">
+              <QAModerator 
+                eventId={eventId} 
+                userName={user.full_name}
+                userEmail={user.email}
+              />
+            </div>
+          </TabsContent>
+
           <TabsContent value="tools">
             <div className="space-y-6">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <SessionTimer />
+                <LivePollCreator eventId={eventId} />
                 <LiveAnnouncements eventId={eventId} />
               </div>
               <EventMediaGallery eventId={eventId} canUpload={true} />
             </div>
           </TabsContent>
 
-          <TabsContent value="polls">
-            <LivePollCreator eventId={eventId} />
+          {/* Recordings */}
+          <TabsContent value="recordings">
+            <RecordingUploader 
+              eventId={eventId}
+              eventTitle={event.title}
+              userEmail={user.email}
+            />
+          </TabsContent>
+
+          {/* Communications */}
+          <TabsContent value="comms">
+            <CommunicationHub 
+              eventId={eventId}
+              eventTitle={event.title}
+            />
           </TabsContent>
 
           <TabsContent value="recap">
             <PostEventRecap eventId={eventId} />
           </TabsContent>
-          </Tabs>
+        </Tabs>
       </div>
     </div>
   );
