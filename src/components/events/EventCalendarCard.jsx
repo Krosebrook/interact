@@ -30,11 +30,11 @@ import { format, isPast } from 'date-fns';
 import { motion } from 'framer-motion';
 
 const statusStyles = {
-  scheduled: 'bg-blue-100 text-blue-700 border-blue-200',
-  in_progress: 'bg-emerald-100 text-emerald-700 border-emerald-200',
-  completed: 'bg-slate-100 text-slate-700 border-slate-200',
-  cancelled: 'bg-red-100 text-red-700 border-red-200',
-  rescheduled: 'bg-amber-100 text-amber-700 border-amber-200'
+  scheduled: 'bg-gradient-icebreaker text-white',
+  in_progress: 'bg-gradient-wellness text-white',
+  completed: 'bg-slate-200 text-slate-700',
+  cancelled: 'bg-red-500 text-white',
+  rescheduled: 'bg-gradient-competitive text-white'
 };
 
 const formatStyles = {
@@ -67,8 +67,9 @@ export default function EventCalendarCard({
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      whileHover={{ y: -2 }}
-      className="glass-card group"
+      whileHover={{ y: -4 }}
+      transition={{ duration: 0.2 }}
+      className="activity-card group p-4"
     >
       {/* Header */}
       <div className="flex items-start justify-between mb-3">
@@ -194,7 +195,7 @@ export default function EventCalendarCard({
         <Link to={`${createPageUrl('FacilitatorView')}?eventId=${event.id}`}>
           <Button 
             size="sm" 
-            className="bg-int-orange hover:bg-[#C46322] text-white shadow-lg"
+            className="bg-gradient-orange hover:opacity-90 text-white shadow-lg hover:shadow-xl transition-all press-effect"
           >
             Facilitate
           </Button>
