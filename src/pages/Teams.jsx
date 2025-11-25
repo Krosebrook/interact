@@ -14,13 +14,15 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Users, Plus, Trophy, Crown, MessageSquare } from 'lucide-react';
+import { Users, Plus, Trophy, Crown, MessageSquare, BarChart3, Settings } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { useUserData } from '../components/hooks/useUserData';
 import { useTeamData } from '../components/hooks/useTeamData';
+import TeamMemberManager from '../components/teams/TeamMemberManager';
+import TeamAnalytics from '../components/teams/TeamAnalytics';
 
 export default function Teams() {
   const navigate = useNavigate();
@@ -28,6 +30,8 @@ export default function Teams() {
   const { user, loading, userPoints } = useUserData(true);
   const { teams } = useTeamData();
   const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const [showMemberManager, setShowMemberManager] = useState(false);
+  const [showAnalytics, setShowAnalytics] = useState(false);
   const [teamForm, setTeamForm] = useState({
     team_name: '',
     description: '',
@@ -165,24 +169,42 @@ export default function Teams() {
                 <span className="font-semibold">{myTeam.total_points} Points</span>
               </div>
             </div>
-            <div className="flex gap-3">
-              <Button
-                onClick={() => navigate(createPageUrl('TeamDashboard') + `?teamId=${myTeam.id}`)}
-                className="bg-int-navy hover:bg-[#4A6070] text-white"
-              >
-                <MessageSquare className="h-4 w-4 mr-2" />
-                Team Dashboard
-              </Button>
-              {myTeam.team_leader_email !== user.email && (
-                <Button
-                  variant="outline"
-                  onClick={() => leaveTeamMutation.mutate()}
-                  disabled={leaveTeamMutation.isLoading}
-                >
-                  Leave Team
-                </Button>
-              )}
-            </div>
+            <div className="flex gap-3 flex-wrap">
+                            <Button
+                              onClick={() => navigate(createPageUrl('TeamDashboard') + `?teamId=${myTeam.id}`)}
+                              className="bg-int-navy hover:bg-[#4A6070] text-white"
+                            >
+                              <MessageSquare className="h-4 w-4 mr-2" />
+                              Team Dashboard
+                            </Button>
+                            {myTeam.team_leader_email === user.email && (
+                              <>
+                                <Button
+                                  variant="outline"
+                                  onClick={() => setShowMemberManager(true)}
+                                >
+                                  <Users className="h-4 w-4 mr-2" />
+                                  Manage Members
+                                </Button>
+                                <Button
+                                  variant="outline"
+                                  onClick={() => setShowAnalytics(true)}
+                                >
+                                  <BarChart3 className="h-4 w-4 mr-2" />
+                                  Analytics
+                                </Button>
+                              </>
+                            )}
+                            {myTeam.team_leader_email !== user.email && (
+                              <Button
+                                variant="outline"
+                                onClick={() => leaveTeamMutation.mutate()}
+                                disabled={leaveTeamMutation.isLoading}
+                              >
+                                Leave Team
+                              </Button>
+                            )}
+                          </div>
           </CardContent>
         </Card>
       )}
@@ -309,6 +331,35 @@ export default function Teams() {
               Create Team
             </Button>
           </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Member Manager Dialog */}
+      <Dialog open={showMemberManager} onOpenChange={setShowMemberManager}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Team Member Management</DialogTitle>
+            <DialogDescription>Manage roles and invite new members</DialogDescription>
+          </DialogHeader>
+          {myTeam && (
+            <TeamMemberManager
+              teamId={myTeam.id}
+              team={myTeam}
+              currentUserEmail={user?.email}
+              isLeader={myTeam.team_leader_email === user?.email}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Analytics Dialog */}
+      <Dialog open={showAnalytics} onOpenChange={setShowAnalytics}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Team Analytics</DialogTitle>
+            <DialogDescription>Performance metrics and insights</DialogDescription>
+          </DialogHeader>
+          {myTeam && <TeamAnalytics teamId={myTeam.id} />}
         </DialogContent>
       </Dialog>
     </div>
