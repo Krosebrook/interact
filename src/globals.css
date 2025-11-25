@@ -8,6 +8,16 @@
   --int-navy: #14294D;
   --int-orange: #D97230;
   --slate-gray: #64748b;
+  --int-gold: #F5C16A;
+  --int-teal: #2DD4BF;
+  
+  /* Activity Type Colors */
+  --activity-icebreaker: #3B82F6;
+  --activity-creative: #8B5CF6;
+  --activity-competitive: #F59E0B;
+  --activity-wellness: #10B981;
+  --activity-learning: #06B6D4;
+  --activity-social: #EC4899;
   
   /* Glassmorphism */
   --glass-bg: rgba(255, 255, 255, 0.12);
@@ -18,10 +28,28 @@
   --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
   --glass-blur: 14px;
   
-  /* Gradient Presets */
+  /* Gradient Presets - Primary */
   --gradient-orange: linear-gradient(135deg, #D97230 0%, #C46322 100%);
   --gradient-navy: linear-gradient(135deg, #14294D 0%, #1e3a6d 100%);
   --gradient-purple: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+  
+  /* Gradient Presets - Activity Types */
+  --gradient-icebreaker: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%);
+  --gradient-creative: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%);
+  --gradient-competitive: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+  --gradient-wellness: linear-gradient(135deg, #10B981 0%, #059669 100%);
+  --gradient-learning: linear-gradient(135deg, #06B6D4 0%, #0891B2 100%);
+  --gradient-social: linear-gradient(135deg, #EC4899 0%, #DB2777 100%);
+  
+  /* Gradient Presets - UI Elements */
+  --gradient-hero: linear-gradient(135deg, #14294D 0%, #1e3a6d 50%, #D97230 100%);
+  --gradient-card-overlay: linear-gradient(180deg, transparent 0%, rgba(20, 41, 77, 0.9) 100%);
+  --gradient-shimmer: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%);
+  
+  /* Font System */
+  --font-display: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
   
   /* shadcn UI colors */
   --background: 0 0% 100%;
@@ -53,19 +81,100 @@
 body {
   background: hsl(var(--background));
   color: hsl(var(--foreground));
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Typography System */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--int-navy);
+}
+
+.font-display { font-family: var(--font-display); }
+.font-body { font-family: var(--font-body); }
+.font-mono { font-family: var(--font-mono); }
+
+/* Text highlight with gradient */
+.text-gradient-orange {
+  background: var(--gradient-orange);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-navy {
+  background: var(--gradient-navy);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-hero {
+  background: var(--gradient-hero);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Text with background highlight */
+.text-highlight {
+  background: linear-gradient(120deg, rgba(217, 114, 48, 0.2) 0%, rgba(217, 114, 48, 0.2) 100%);
+  background-repeat: no-repeat;
+  background-size: 100% 40%;
+  background-position: 0 90%;
+}
+
+.text-highlight-navy {
+  background: linear-gradient(120deg, rgba(20, 41, 77, 0.15) 0%, rgba(20, 41, 77, 0.15) 100%);
+  background-repeat: no-repeat;
+  background-size: 100% 40%;
+  background-position: 0 90%;
 }
 
 /* Brand color utilities */
 .bg-int-navy { background-color: var(--int-navy); }
 .bg-int-orange { background-color: var(--int-orange); }
+.bg-int-gold { background-color: var(--int-gold); }
+.bg-int-teal { background-color: var(--int-teal); }
 .text-int-navy { color: var(--int-navy); }
 .text-int-orange { color: var(--int-orange); }
+.text-int-gold { color: var(--int-gold); }
+.text-int-teal { color: var(--int-teal); }
 .text-slate-gray { color: var(--slate-gray); }
 
-/* Gradient utilities */
+/* Gradient utilities - Primary */
 .bg-gradient-orange { background: var(--gradient-orange); }
 .bg-gradient-navy { background: var(--gradient-navy); }
 .bg-gradient-purple { background: var(--gradient-purple); }
+.bg-gradient-hero { background: var(--gradient-hero); }
+
+/* Gradient utilities - Activity Types */
+.bg-gradient-icebreaker { background: var(--gradient-icebreaker); }
+.bg-gradient-creative { background: var(--gradient-creative); }
+.bg-gradient-competitive { background: var(--gradient-competitive); }
+.bg-gradient-wellness { background: var(--gradient-wellness); }
+.bg-gradient-learning { background: var(--gradient-learning); }
+.bg-gradient-social { background: var(--gradient-social); }
+
+/* Activity type text colors */
+.text-activity-icebreaker { color: var(--activity-icebreaker); }
+.text-activity-creative { color: var(--activity-creative); }
+.text-activity-competitive { color: var(--activity-competitive); }
+.text-activity-wellness { color: var(--activity-wellness); }
+.text-activity-learning { color: var(--activity-learning); }
+.text-activity-social { color: var(--activity-social); }
+
+/* Activity type border colors */
+.border-activity-icebreaker { border-color: var(--activity-icebreaker); }
+.border-activity-creative { border-color: var(--activity-creative); }
+.border-activity-competitive { border-color: var(--activity-competitive); }
+.border-activity-wellness { border-color: var(--activity-wellness); }
+.border-activity-learning { border-color: var(--activity-learning); }
+.border-activity-social { border-color: var(--activity-social); }
 
 /* ===== GLASSMORPHISM SYSTEM ===== */
 
@@ -134,6 +243,105 @@ body {
   background: rgba(255, 255, 255, 0.95);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
   transform: translateY(-2px);
+}
+
+/* Activity Card specific styles */
+.activity-card {
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.activity-card:hover {
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  transform: translateY(-6px);
+  border-color: rgba(217, 114, 48, 0.3);
+}
+
+.activity-card-header {
+  position: relative;
+  height: 140px;
+  overflow: hidden;
+}
+
+.activity-card-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60%;
+  background: var(--gradient-card-overlay);
+  pointer-events: none;
+}
+
+.activity-card-header img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.activity-card:hover .activity-card-header img {
+  transform: scale(1.05);
+}
+
+.activity-card-title {
+  position: absolute;
+  bottom: 12px;
+  left: 16px;
+  right: 16px;
+  z-index: 10;
+  color: white;
+  font-weight: 700;
+  font-size: 1.1rem;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  line-height: 1.3;
+}
+
+.activity-card-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 10;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.3);
+}
+
+/* Activity type badge colors */
+.activity-badge-icebreaker {
+  background: rgba(59, 130, 246, 0.9);
+  color: white;
+}
+.activity-badge-creative {
+  background: rgba(139, 92, 246, 0.9);
+  color: white;
+}
+.activity-badge-competitive {
+  background: rgba(245, 158, 11, 0.9);
+  color: white;
+}
+.activity-badge-wellness {
+  background: rgba(16, 185, 129, 0.9);
+  color: white;
+}
+.activity-badge-learning {
+  background: rgba(6, 182, 212, 0.9);
+  color: white;
+}
+.activity-badge-social {
+  background: rgba(236, 72, 153, 0.9);
+  color: white;
 }
 
 /* Glass card solid variant */
