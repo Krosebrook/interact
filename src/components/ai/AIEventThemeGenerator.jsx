@@ -33,10 +33,12 @@ import {
   CheckCircle,
   ArrowRight,
   RefreshCw,
-  Palette
+  Palette,
+  Pencil
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
+import ThemeCustomizer from './ThemeCustomizer';
 
 const DESIRED_OUTCOMES = [
   { value: 'team_building', label: 'Team Building', icon: '🤝' },
@@ -68,6 +70,7 @@ export default function AIEventThemeGenerator({ open, onOpenChange, onThemeGener
     energyLevel: 3
   });
   const [generatedThemes, setGeneratedThemes] = useState(null);
+  const [selectedTheme, setSelectedTheme] = useState(null);
 
   const generateThemesMutation = useMutation({
     mutationFn: async (data) => {
@@ -196,7 +199,12 @@ Make themes creative, specific to the team context, and actionable. Avoid generi
   };
 
   const handleSelectTheme = (theme) => {
-    createActivityMutation.mutate(theme);
+    setSelectedTheme(theme);
+    setStep(4);
+  };
+
+  const handleSaveCustomizedTheme = (customizedTheme) => {
+    createActivityMutation.mutate(customizedTheme);
   };
 
   const handleClose = () => {
@@ -211,6 +219,7 @@ Make themes creative, specific to the team context, and actionable. Avoid generi
       energyLevel: 3
     });
     setGeneratedThemes(null);
+    setSelectedTheme(null);
     onOpenChange(false);
   };
 
@@ -234,15 +243,15 @@ Make themes creative, specific to the team context, and actionable. Avoid generi
 
         {/* Progress Steps */}
         <div className="flex items-center justify-center gap-2 py-4">
-          {[1, 2, 3].map((s) => (
+          {[1, 2, 3, 4].map((s) => (
             <div key={s} className="flex items-center">
               <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
                 step >= s ? 'bg-purple-600 text-white' : 'bg-slate-200 text-slate-500'
               }`}>
                 {step > s ? <CheckCircle className="h-5 w-5" /> : s}
               </div>
-              {s < 3 && (
-                <div className={`w-12 h-1 mx-1 ${step > s ? 'bg-purple-600' : 'bg-slate-200'}`} />
+              {s < 4 && (
+                <div className={`w-8 h-1 mx-1 ${step > s ? 'bg-purple-600' : 'bg-slate-200'}`} />
               )}
             </div>
           ))}
@@ -546,15 +555,10 @@ Make themes creative, specific to the team context, and actionable. Avoid generi
 
                         <Button
                           onClick={() => handleSelectTheme(theme)}
-                          disabled={createActivityMutation.isLoading}
                           className="w-full bg-purple-600 hover:bg-purple-700"
                         >
-                          {createActivityMutation.isLoading ? (
-                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                          ) : (
-                            <CheckCircle className="h-4 w-4 mr-2" />
-                          )}
-                          Use This Theme
+                          <Pencil className="h-4 w-4 mr-2" />
+                          Customize & Use
                         </Button>
                       </div>
                     </Card>
@@ -582,6 +586,19 @@ Make themes creative, specific to the team context, and actionable. Avoid generi
                 </Button>
               </div>
             </motion.div>
+          )}
+
+          {/* Step 4: Customize Theme */}
+          {step === 4 && selectedTheme && (
+            <ThemeCustomizer
+              theme={selectedTheme}
+              inputs={inputs}
+              onSave={handleSaveCustomizedTheme}
+              onBack={() => {
+                setSelectedTheme(null);
+                setStep(3);
+              }}
+            />
           )}
         </AnimatePresence>
       </DialogContent>
