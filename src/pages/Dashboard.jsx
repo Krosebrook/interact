@@ -10,7 +10,7 @@ import {
   calculateDashboardStats 
 } from '../components/utils/eventUtils';
 import { Button } from '@/components/ui/button';
-import StatsGrid from '../components/common/StatsGrid';
+import StatsGrid, { StatCard } from '../components/common/StatsGrid';
 import SkeletonGrid from '../components/common/SkeletonGrid';
 import QuickActionCard from '../components/common/QuickActionCard';
 import EventCalendarCard from '../components/events/EventCalendarCard';
@@ -54,25 +54,26 @@ export default function Dashboard() {
   return (
     <div className="space-y-8 animate-fade-in">
       {/* Welcome Header - Glass Panel */}
-      <div className="glass-panel-solid">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div className="glass-panel-solid relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-int-navy/5 via-transparent to-int-orange/5 pointer-events-none" />
+        <div className="relative flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-slate-900 mb-2">
-              Welcome back, {user.full_name}! 👋
+            <h1 className="text-3xl font-bold text-int-navy mb-2 font-display">
+              Welcome back, <span className="text-gradient-orange">{user.full_name}</span>! 👋
             </h1>
-            <p className="text-slate-600">
+            <p className="text-slate-600 font-medium">
               Here's what's happening with your team activities
             </p>
           </div>
           <div className="flex gap-3">
             <Link to={createPageUrl('Activities')}>
-              <Button className="bg-int-orange hover:bg-[#C46322] text-white shadow-lg">
+              <Button className="bg-gradient-orange hover:opacity-90 text-white shadow-lg hover:shadow-xl transition-all press-effect">
                 <Sparkles className="h-4 w-4 mr-2" />
                 Browse Activities
               </Button>
             </Link>
             <Link to={createPageUrl('Calendar')}>
-              <Button variant="outline" className="border-slate-300 hover:bg-slate-100">
+              <Button variant="outline" className="border-int-navy/20 text-int-navy hover:bg-int-navy/5 font-medium">
                 <Calendar className="h-4 w-4 mr-2" />
                 Schedule Event
               </Button>
@@ -82,22 +83,24 @@ export default function Dashboard() {
       </div>
 
       {/* Stats Grid */}
-      <StatsGrid stats={[
-        { title: 'Upcoming Events', value: stats.upcomingCount, subtitle: 'Scheduled activities', icon: Calendar, color: 'navy' },
-        { title: 'Total Activities', value: stats.activitiesCount, subtitle: 'In your library', icon: Sparkles, color: 'orange' },
-        { title: 'This Month', value: stats.completedThisMonth, subtitle: 'Events completed', trend: stats.completedThisMonth > 0 ? `${Math.round((stats.completedThisMonth / Math.max(stats.upcomingCount, 1)) * 100)}% completion rate` : "Let's schedule more!", icon: TrendingUp, color: 'green' },
-        { title: 'Avg Participation', value: stats.avgParticipation, subtitle: 'People per event', icon: Users, color: 'purple' }
-      ]} />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatCard title="Upcoming Events" value={stats.upcomingCount} subtitle="Scheduled activities" icon={Calendar} color="navy" delay={0} />
+        <StatCard title="Total Activities" value={stats.activitiesCount} subtitle="In your library" icon={Sparkles} color="orange" delay={0.1} />
+        <StatCard title="This Month" value={stats.completedThisMonth} subtitle="Events completed" trend={stats.completedThisMonth > 0 ? `${Math.round((stats.completedThisMonth / Math.max(stats.upcomingCount, 1)) * 100)}% completion rate` : "Let's schedule more!"} icon={TrendingUp} color="green" delay={0.2} />
+        <StatCard title="Avg Participation" value={stats.avgParticipation} subtitle="People per event" icon={Users} color="purple" delay={0.3} />
+      </div>
 
       {/* Upcoming Events */}
       <div className="glass-panel-solid">
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h2 className="text-2xl font-bold text-slate-900">Upcoming Events</h2>
+            <h2 className="text-2xl font-bold text-int-navy font-display">
+              <span className="text-highlight-navy">Upcoming Events</span>
+            </h2>
             <p className="text-slate-500 text-sm mt-1">Your next scheduled activities</p>
           </div>
           <Link to={createPageUrl('Calendar')}>
-            <Button variant="ghost" className="text-int-orange hover:text-[#C46322] hover:bg-int-orange/10">
+            <Button variant="ghost" className="text-int-orange hover:text-[#C46322] hover:bg-int-orange/10 font-semibold">
               View All <ArrowRight className="h-4 w-4 ml-1" />
             </Button>
           </Link>
