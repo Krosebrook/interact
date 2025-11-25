@@ -36,14 +36,20 @@ import {
   Edit,
   Package,
   TrendingUp,
-  Award
+  Award,
+  Trash2,
+  Users,
+  Zap,
+  Search,
+  RotateCcw,
+  Eye
 } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function RewardsAdmin() {
   const queryClient = useQueryClient();
   const { user, loading } = useUserData(true, true);
-  const { rewards, redemptions } = useGamificationData();
+  const { allRewards: rewards, allRedemptions: redemptions, userPoints, refetchRewards, refetchAllRedemptions } = useGamificationData();
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [editingReward, setEditingReward] = useState(null);
   const [selectedRedemption, setSelectedRedemption] = useState(null);
@@ -62,6 +68,8 @@ export default function RewardsAdmin() {
     mutationFn: async (data) => base44.entities.Reward.create(data),
     onSuccess: () => {
       queryClient.invalidateQueries(['rewards']);
+      queryClient.invalidateQueries(['all-rewards']);
+      refetchRewards?.();
       setShowCreateDialog(false);
       resetForm();
       toast.success('Reward created successfully!');
@@ -72,14 +80,26 @@ export default function RewardsAdmin() {
     mutationFn: async ({ id, data }) => base44.entities.Reward.update(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries(['rewards']);
+      queryClient.invalidateQueries(['all-rewards']);
+      refetchRewards?.();
       setEditingReward(null);
       resetForm();
       toast.success('Reward updated successfully!');
     }
   });
 
+  const deleteRewardMutation = useMutation({
+    mutationFn: async (id) => base44.entities.Reward.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['rewards']);
+      queryClient.invalidateQueries(['all-rewards']);
+      refetchRewards?.();
+      toast.success('Reward deleted successfully!');
+    }
+  });
+
   const updateRedemptionMutation = useMutation({
-    mutationFn: async ({ id, status, notes }) => {
+    mutationFn: async ({ id, status, notes, refundPoints, userEmail, pointsToRefund }) => {
       const updateData = { status };
       if (status === 'fulfilled') {
         updateData.fulfilled_date = new Date().toISOString();
@@ -87,10 +107,24 @@ export default function RewardsAdmin() {
       if (notes) {
         updateData.fulfillment_notes = notes;
       }
+      
+      // Refund points if cancelling
+      if (refundPoints && userEmail && pointsToRefund) {
+        const userPointsRecords = await base44.entities.UserPoints.filter({ user_email: userEmail });
+        if (userPointsRecords.length > 0) {
+          const currentPoints = userPointsRecords[0];
+          await base44.entities.UserPoints.update(currentPoints.id, {
+            total_points: (currentPoints.total_points || 0) + pointsToRefund
+          });
+        }
+      }
+      
       return base44.entities.RewardRedemption.update(id, updateData);
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['all-redemptions']);
+      queryClient.invalidateQueries(['user-points']);
+      refetchAllRedemptions?.();
       setSelectedRedemption(null);
       toast.success('Redemption status updated!');
     }
@@ -142,6 +176,11 @@ export default function RewardsAdmin() {
   const pendingRedemptions = redemptions.filter(r => r.status === 'pending');
   const approvedRedemptions = redemptions.filter(r => r.status === 'approved');
   const fulfilledRedemptions = redemptions.filter(r => r.status === 'fulfilled');
+  const cancelledRedemptions = redemptions.filter(r => r.status === 'cancelled');
+  
+  // Calculate stats
+  const totalPointsDistributed = userPoints.reduce((sum, up) => sum + (up.total_points || 0), 0);
+  const totalPointsSpent = redemptions.filter(r => r.status !== 'cancelled').reduce((sum, r) => sum + (r.points_spent || 0), 0);
 
   if (loading || !user) {
     return <LoadingSpinner className="min-h-[60vh]" />;
@@ -157,7 +196,7 @@ export default function RewardsAdmin() {
       </PageHeader>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium">Total Rewards</CardTitle>
@@ -165,24 +204,47 @@ export default function RewardsAdmin() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{rewards.length}</div>
+            <p className="text-xs text-slate-500">{rewards.filter(r => r.is_available).length} available</p>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="border-2 border-yellow-200 bg-yellow-50">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium">Pending</CardTitle>
-            <Clock className="h-4 w-4 text-yellow-500" />
+            <Clock className="h-4 w-4 text-yellow-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{pendingRedemptions.length}</div>
+            <div className="text-2xl font-bold text-yellow-700">{pendingRedemptions.length}</div>
+            <p className="text-xs text-yellow-600">Needs attention</p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Total Redemptions</CardTitle>
-            <TrendingUp className="h-4 w-4 text-green-500" />
+            <CardTitle className="text-sm font-medium">Approved</CardTitle>
+            <CheckCircle className="h-4 w-4 text-blue-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{redemptions.length}</div>
+            <div className="text-2xl font-bold">{approvedRedemptions.length}</div>
+            <p className="text-xs text-slate-500">Awaiting fulfillment</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-medium">Fulfilled</CardTitle>
+            <Package className="h-4 w-4 text-green-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-green-600">{fulfilledRedemptions.length}</div>
+            <p className="text-xs text-slate-500">Completed</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-medium">Points Spent</CardTitle>
+            <Zap className="h-4 w-4 text-int-orange" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-int-orange">{totalPointsSpent.toLocaleString()}</div>
+            <p className="text-xs text-slate-500">On rewards</p>
           </CardContent>
         </Card>
         <Card>
@@ -191,21 +253,37 @@ export default function RewardsAdmin() {
             <Package className="h-4 w-4 text-red-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-2xl font-bold text-red-600">
               {rewards.filter(r => r.stock_quantity !== null && r.stock_quantity < 10).length}
             </div>
+            <p className="text-xs text-slate-500">Need restocking</p>
           </CardContent>
         </Card>
       </div>
 
-      <Tabs defaultValue="rewards" className="space-y-6">
-        <TabsList>
-          <TabsTrigger value="rewards">Rewards Catalog</TabsTrigger>
+      <Tabs defaultValue="redemptions" className="space-y-6">
+        <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="redemptions" className="relative">
+            <Package className="h-4 w-4 mr-1" />
+            Redemptions
+            {pendingRedemptions.length > 0 && (
+              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                {pendingRedemptions.length}
+              </span>
+            )}
+          </TabsTrigger>
+          <TabsTrigger value="rewards">
+            <Gift className="h-4 w-4 mr-1" />
+            Rewards Catalog
+          </TabsTrigger>
           <TabsTrigger value="badges">
             <Award className="h-4 w-4 mr-1" />
             Badges
           </TabsTrigger>
-          <TabsTrigger value="redemptions">Redemptions</TabsTrigger>
+          <TabsTrigger value="users">
+            <Users className="h-4 w-4 mr-1" />
+            User Points
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="rewards" className="space-y-4">
@@ -233,17 +311,41 @@ export default function RewardsAdmin() {
                 <CardContent className="space-y-2">
                   <div className="flex justify-between text-sm">
                     <span className="text-slate-600">Points Cost:</span>
-                    <span className="font-semibold">{reward.points_cost}</span>
+                    <span className="font-semibold text-int-orange">{reward.points_cost}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-slate-600">Stock:</span>
-                    <span className="font-semibold">
+                    <span className={`font-semibold ${reward.stock_quantity !== null && reward.stock_quantity < 10 ? 'text-red-600' : ''}`}>
                       {reward.stock_quantity === null ? 'Unlimited' : reward.stock_quantity}
                     </span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-slate-600">Redeemed:</span>
                     <span className="font-semibold">{reward.popularity_score || 0} times</span>
+                  </div>
+                  <div className="flex gap-2 pt-2">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="flex-1"
+                      onClick={() => updateRewardMutation.mutate({ 
+                        id: reward.id, 
+                        data: { is_available: !reward.is_available } 
+                      })}
+                    >
+                      {reward.is_available ? 'Disable' : 'Enable'}
+                    </Button>
+                    <Button 
+                      variant="destructive" 
+                      size="sm"
+                      onClick={() => {
+                        if (confirm('Are you sure you want to delete this reward?')) {
+                          deleteRewardMutation.mutate(reward.id);
+                        }
+                      }}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
@@ -255,91 +357,209 @@ export default function RewardsAdmin() {
           <BadgeAdminPanel />
         </TabsContent>
 
-        <TabsContent value="redemptions" className="space-y-4">
+        <TabsContent value="redemptions" className="space-y-6">
+          {/* Pending Section */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Pending Approval ({pendingRedemptions.length})</h3>
-            {pendingRedemptions.map(redemption => (
-              <Card key={redemption.id}>
-                <CardContent className="flex items-center justify-between p-4">
-                  <div className="flex-1">
-                    <div className="font-semibold">{redemption.reward_name}</div>
-                    <div className="text-sm text-slate-600">
-                      {redemption.user_name} ({redemption.user_email})
-                    </div>
-                    <div className="text-sm text-slate-500">
-                      {redemption.points_spent} points • {new Date(redemption.created_date).toLocaleString()}
-                    </div>
-                    {redemption.redemption_notes && (
-                      <div className="text-sm text-slate-600 mt-1 italic">
-                        Note: {redemption.redemption_notes}
-                      </div>
-                    )}
-                  </div>
-                  <div className="flex gap-2">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => updateRedemptionMutation.mutate({ 
-                        id: redemption.id, 
-                        status: 'approved' 
-                      })}
-                    >
-                      <CheckCircle className="h-4 w-4 mr-1" />
-                      Approve
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => updateRedemptionMutation.mutate({ 
-                        id: redemption.id, 
-                        status: 'fulfilled' 
-                      })}
-                    >
-                      <Package className="h-4 w-4 mr-1" />
-                      Fulfill
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="destructive"
-                      onClick={() => updateRedemptionMutation.mutate({ 
-                        id: redemption.id, 
-                        status: 'cancelled' 
-                      })}
-                    >
-                      <XCircle className="h-4 w-4 mr-1" />
-                      Cancel
-                    </Button>
-                  </div>
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-semibold flex items-center gap-2">
+                <Clock className="h-5 w-5 text-yellow-500" />
+                Pending Approval ({pendingRedemptions.length})
+              </h3>
+            </div>
+            {pendingRedemptions.length === 0 ? (
+              <Card className="bg-slate-50 border-dashed">
+                <CardContent className="flex items-center justify-center py-8 text-slate-500">
+                  <CheckCircle className="h-5 w-5 mr-2" />
+                  No pending redemptions
                 </CardContent>
               </Card>
-            ))}
-
-            {approvedRedemptions.length > 0 && (
-              <>
-                <h3 className="text-lg font-semibold mt-8">Approved ({approvedRedemptions.length})</h3>
-                {approvedRedemptions.map(redemption => (
-                  <Card key={redemption.id}>
-                    <CardContent className="flex items-center justify-between p-4">
-                      <div className="flex-1">
-                        <div className="font-semibold">{redemption.reward_name}</div>
-                        <div className="text-sm text-slate-600">{redemption.user_name}</div>
+            ) : (
+              pendingRedemptions.map(redemption => (
+                <Card key={redemption.id} className="border-l-4 border-l-yellow-500">
+                  <CardContent className="flex items-center justify-between p-4">
+                    <div className="flex-1">
+                      <div className="font-semibold">{redemption.reward_name}</div>
+                      <div className="text-sm text-slate-600">
+                        {redemption.user_name} ({redemption.user_email})
                       </div>
+                      <div className="text-sm text-slate-500">
+                        {redemption.points_spent} points • {new Date(redemption.created_date).toLocaleString()}
+                      </div>
+                      {redemption.redemption_notes && (
+                        <div className="text-sm text-slate-600 mt-1 italic bg-slate-50 p-2 rounded">
+                          Note: {redemption.redemption_notes}
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex gap-2">
                       <Button
                         size="sm"
+                        variant="outline"
+                        className="border-blue-200 text-blue-600 hover:bg-blue-50"
+                        onClick={() => updateRedemptionMutation.mutate({ 
+                          id: redemption.id, 
+                          status: 'approved' 
+                        })}
+                      >
+                        <CheckCircle className="h-4 w-4 mr-1" />
+                        Approve
+                      </Button>
+                      <Button
+                        size="sm"
+                        className="bg-green-600 hover:bg-green-700"
                         onClick={() => updateRedemptionMutation.mutate({ 
                           id: redemption.id, 
                           status: 'fulfilled' 
                         })}
                       >
                         <Package className="h-4 w-4 mr-1" />
-                        Mark Fulfilled
+                        Fulfill
                       </Button>
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        onClick={() => updateRedemptionMutation.mutate({ 
+                          id: redemption.id, 
+                          status: 'cancelled',
+                          refundPoints: true,
+                          userEmail: redemption.user_email,
+                          pointsToRefund: redemption.points_spent
+                        })}
+                      >
+                        <RotateCcw className="h-4 w-4 mr-1" />
+                        Cancel & Refund
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))
+            )}
+          </div>
+
+          {/* Approved Section */}
+          {approvedRedemptions.length > 0 && (
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold flex items-center gap-2">
+                <CheckCircle className="h-5 w-5 text-blue-500" />
+                Approved - Awaiting Fulfillment ({approvedRedemptions.length})
+              </h3>
+              {approvedRedemptions.map(redemption => (
+                <Card key={redemption.id} className="border-l-4 border-l-blue-500">
+                  <CardContent className="flex items-center justify-between p-4">
+                    <div className="flex-1">
+                      <div className="font-semibold">{redemption.reward_name}</div>
+                      <div className="text-sm text-slate-600">{redemption.user_name} • {redemption.points_spent} points</div>
+                      {redemption.redemption_notes && (
+                        <div className="text-sm text-slate-500 italic mt-1">{redemption.redemption_notes}</div>
+                      )}
+                    </div>
+                    <Button
+                      size="sm"
+                      className="bg-green-600 hover:bg-green-700"
+                      onClick={() => updateRedemptionMutation.mutate({ 
+                        id: redemption.id, 
+                        status: 'fulfilled' 
+                      })}
+                    >
+                      <Package className="h-4 w-4 mr-1" />
+                      Mark Fulfilled
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
+
+          {/* Recent Fulfilled */}
+          {fulfilledRedemptions.length > 0 && (
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold flex items-center gap-2">
+                <Package className="h-5 w-5 text-green-500" />
+                Recently Fulfilled ({fulfilledRedemptions.length})
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {fulfilledRedemptions.slice(0, 10).map(redemption => (
+                  <Card key={redemption.id} className="border-l-4 border-l-green-500 bg-green-50/50">
+                    <CardContent className="p-4">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <div className="font-semibold">{redemption.reward_name}</div>
+                          <div className="text-sm text-slate-600">{redemption.user_name}</div>
+                          <div className="text-xs text-slate-500">{redemption.points_spent} points</div>
+                        </div>
+                        <Badge className="bg-green-100 text-green-700">Fulfilled</Badge>
+                      </div>
+                      {redemption.fulfilled_date && (
+                        <div className="text-xs text-slate-500 mt-2">
+                          Fulfilled: {new Date(redemption.fulfilled_date).toLocaleDateString()}
+                        </div>
+                      )}
                     </CardContent>
                   </Card>
                 ))}
-              </>
-            )}
-          </div>
+              </div>
+            </div>
+          )}
+        </TabsContent>
+
+        {/* User Points Tab */}
+        <TabsContent value="users" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Users className="h-5 w-5" />
+                User Point Balances
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b">
+                      <th className="text-left py-3 px-4">User</th>
+                      <th className="text-left py-3 px-4">Total Points</th>
+                      <th className="text-left py-3 px-4">Level</th>
+                      <th className="text-left py-3 px-4">Events Attended</th>
+                      <th className="text-left py-3 px-4">Streak</th>
+                      <th className="text-left py-3 px-4">Badges</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {userPoints.slice(0, 50).map((up, index) => (
+                      <tr key={up.id} className="border-b hover:bg-slate-50">
+                        <td className="py-3 px-4">
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm font-medium text-slate-500 w-6">{index + 1}.</span>
+                            <div>
+                              <div className="font-medium">{up.user_email}</div>
+                              {up.team_name && <div className="text-xs text-slate-500">{up.team_name}</div>}
+                            </div>
+                          </div>
+                        </td>
+                        <td className="py-3 px-4">
+                          <span className="font-bold text-int-orange">{up.total_points || 0}</span>
+                        </td>
+                        <td className="py-3 px-4">
+                          <Badge variant="outline">Lv. {up.level || 1}</Badge>
+                        </td>
+                        <td className="py-3 px-4">{up.events_attended || 0}</td>
+                        <td className="py-3 px-4">
+                          {up.streak_days > 0 ? (
+                            <span className="flex items-center gap-1">
+                              🔥 {up.streak_days} days
+                            </span>
+                          ) : (
+                            <span className="text-slate-400">-</span>
+                          )}
+                        </td>
+                        <td className="py-3 px-4">{up.badges_earned?.length || 0}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
 
