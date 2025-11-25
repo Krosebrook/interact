@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
+import { base44 } from '@/api/base44Client';
+import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { useUserData } from '../components/hooks/useUserData';
 import { useActivities } from '../components/hooks/useActivities';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+import { Label } from '@/components/ui/label';
 import ActivityCard from '../components/activities/ActivityCard';
 import ActivityGenerator from '../components/ai/ActivityGenerator';
 import AIActivityPlanner from '../components/ai/AIActivityPlanner';
 import AIActivitySuggester from '../components/activities/AIActivitySuggester';
 import ModuleBuilder from '../components/activities/ModuleBuilder';
+import SkillTagger from '../components/skills/SkillTagger';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import EmptyState from '../components/common/EmptyState';
 import SkeletonGrid from '../components/common/SkeletonGrid';
@@ -20,7 +23,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Search, Filter, Plus, Brain } from 'lucide-react';
+import { Search, Filter, Plus, Brain, GraduationCap } from 'lucide-react';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '../utils';
@@ -200,6 +203,31 @@ export default function Activities() {
               <div>
                 <h4 className="font-semibold mb-2">Materials Needed</h4>
                 <p className="text-slate-600">{viewingActivity.materials_needed}</p>
+              </div>
+            )}
+            {viewingActivity?.skills_developed?.length > 0 && (
+              <div>
+                <h4 className="font-semibold mb-2 flex items-center gap-2">
+                  <GraduationCap className="h-4 w-4" />
+                  Skills Developed
+                </h4>
+                <div className="flex flex-wrap gap-2">
+                  {viewingActivity.skills_developed.map(skill => (
+                    <Badge key={skill} className="bg-int-navy text-white">
+                      {skill}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            )}
+            {viewingActivity?.learning_outcomes?.length > 0 && (
+              <div>
+                <h4 className="font-semibold mb-2">Learning Outcomes</h4>
+                <ul className="list-disc list-inside text-slate-600 space-y-1">
+                  {viewingActivity.learning_outcomes.map((outcome, i) => (
+                    <li key={i}>{outcome}</li>
+                  ))}
+                </ul>
               </div>
             )}
             <div className="flex gap-3 pt-4">
