@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useUserData } from '../components/hooks/useUserData';
 import { useGamificationData } from '../components/hooks/useGamificationData';
 import { Button } from '@/components/ui/button';
@@ -10,6 +10,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import BadgeAdminPanel from '../components/gamification/BadgeAdminPanel';
+import LoadingSpinner from '../components/common/LoadingSpinner';
+import PageHeader from '../components/common/PageHeader';
 import {
   Select,
   SelectContent,
@@ -32,7 +35,8 @@ import {
   Clock,
   Edit,
   Package,
-  TrendingUp
+  TrendingUp,
+  Award
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -140,25 +144,17 @@ export default function RewardsAdmin() {
   const fulfilledRedemptions = redemptions.filter(r => r.status === 'fulfilled');
 
   if (loading || !user) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-int-orange"></div>
-      </div>
-    );
+    return <LoadingSpinner className="min-h-[60vh]" />;
   }
 
   return (
     <div className="space-y-8">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold text-slate-900">Rewards Administration</h1>
-          <p className="text-slate-600">Manage rewards catalog and redemptions</p>
-        </div>
+      <PageHeader title="Rewards & Badges Administration" description="Manage rewards catalog, badges, and redemptions">
         <Button onClick={() => { resetForm(); setShowCreateDialog(true); }} className="bg-int-orange hover:bg-[#C46322] text-white">
           <Plus className="h-4 w-4 mr-2" />
           Add Reward
         </Button>
-      </div>
+      </PageHeader>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -205,6 +201,10 @@ export default function RewardsAdmin() {
       <Tabs defaultValue="rewards" className="space-y-6">
         <TabsList>
           <TabsTrigger value="rewards">Rewards Catalog</TabsTrigger>
+          <TabsTrigger value="badges">
+            <Award className="h-4 w-4 mr-1" />
+            Badges
+          </TabsTrigger>
           <TabsTrigger value="redemptions">Redemptions</TabsTrigger>
         </TabsList>
 
@@ -249,6 +249,10 @@ export default function RewardsAdmin() {
               </Card>
             ))}
           </div>
+        </TabsContent>
+
+        <TabsContent value="badges">
+          <BadgeAdminPanel />
         </TabsContent>
 
         <TabsContent value="redemptions" className="space-y-4">
