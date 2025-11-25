@@ -2,7 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
 import { Card } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import StatsCard from '../components/dashboard/StatsCard';
+import AttendanceMetrics from '../components/analytics/AttendanceMetrics';
+import EngagementOverTime from '../components/analytics/EngagementOverTime';
+import ActivityTypeAnalytics from '../components/analytics/ActivityTypeAnalytics';
+import SkillDevelopmentCorrelation from '../components/analytics/SkillDevelopmentCorrelation';
 import {
   BarChart,
   Bar,
@@ -18,7 +23,7 @@ import {
   Legend,
   ResponsiveContainer
 } from 'recharts';
-import { TrendingUp, Users, Star, Calendar } from 'lucide-react';
+import { TrendingUp, Users, Star, Calendar, BarChart3, Target, GraduationCap, Sparkles } from 'lucide-react';
 
 const COLORS = ['#6366f1', '#ec4899', '#10b981', '#f59e0b', '#8b5cf6', '#06b6d4'];
 
@@ -53,6 +58,11 @@ export default function Analytics() {
   const { data: participations = [] } = useQuery({
     queryKey: ['participations'],
     queryFn: () => base44.entities.Participation.list()
+  });
+
+  const { data: userProfiles = [] } = useQuery({
+    queryKey: ['user-profiles'],
+    queryFn: () => base44.entities.UserProfile.list()
   });
 
   // Calculate metrics
@@ -118,7 +128,7 @@ export default function Analytics() {
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold text-slate-900 mb-2">Analytics Dashboard</h1>
-        <p className="text-slate-600">Track engagement and activity performance</p>
+        <p className="text-slate-600">Track engagement, attendance, and skill development insights</p>
       </div>
 
       {/* Key Metrics */}
@@ -140,7 +150,7 @@ export default function Analytics() {
         <StatsCard
           title="Engagement Score"
           value={avgEngagement}
-          subtitle="Out of 5.0"
+          subtitle="Out of 10"
           icon={Star}
           color="mint"
         />
@@ -153,106 +163,170 @@ export default function Analytics() {
         />
       </div>
 
-      {/* Charts Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Activity Types */}
-        <Card className="p-6 shadow-md border-0">
-          <h3 className="text-lg font-bold text-slate-900 mb-4">Activity Types Distribution</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <PieChart>
-              <Pie
-                data={typeData}
-                cx="50%"
-                cy="50%"
-                labelLine={false}
-                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                outerRadius={80}
-                fill="#8884d8"
-                dataKey="value"
-              >
-                {typeData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip />
-            </PieChart>
-          </ResponsiveContainer>
-        </Card>
+      {/* Tabbed Analytics Sections */}
+      <Tabs defaultValue="overview" className="w-full">
+        <TabsList className="grid grid-cols-5 mb-6">
+          <TabsTrigger value="overview" className="text-xs sm:text-sm">
+            <BarChart3 className="h-4 w-4 mr-1 hidden sm:inline" />
+            Overview
+          </TabsTrigger>
+          <TabsTrigger value="attendance" className="text-xs sm:text-sm">
+            <Users className="h-4 w-4 mr-1 hidden sm:inline" />
+            Attendance
+          </TabsTrigger>
+          <TabsTrigger value="engagement" className="text-xs sm:text-sm">
+            <Sparkles className="h-4 w-4 mr-1 hidden sm:inline" />
+            Engagement
+          </TabsTrigger>
+          <TabsTrigger value="activities" className="text-xs sm:text-sm">
+            <Target className="h-4 w-4 mr-1 hidden sm:inline" />
+            Activities
+          </TabsTrigger>
+          <TabsTrigger value="skills" className="text-xs sm:text-sm">
+            <GraduationCap className="h-4 w-4 mr-1 hidden sm:inline" />
+            Skills
+          </TabsTrigger>
+        </TabsList>
 
-        {/* Monthly Trend */}
-        <Card className="p-6 shadow-md border-0">
-          <h3 className="text-lg font-bold text-slate-900 mb-4">Monthly Event Trend</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={monthlyData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="month" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Line 
-                type="monotone" 
-                dataKey="events" 
-                stroke="#6366f1" 
-                strokeWidth={2}
-                name="Events"
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </Card>
-      </div>
-
-      {/* Top Activities */}
-      <Card className="p-6 shadow-md border-0">
-        <h3 className="text-lg font-bold text-slate-900 mb-4">Top Activities by Participation</h3>
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={activityParticipation}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Bar dataKey="participants" fill="#6366f1" name="Participants" />
-            <Bar dataKey="events" fill="#ec4899" name="Events Held" />
-          </BarChart>
-        </ResponsiveContainer>
-      </Card>
-
-      {/* Participation Details */}
-      <Card className="p-6 shadow-md border-0">
-        <h3 className="text-lg font-bold text-slate-900 mb-4">Recent Participation Feedback</h3>
-        <div className="space-y-4">
-          {participations
-            .filter(p => p.feedback)
-            .slice(0, 5)
-            .map(p => {
-              const event = events.find(e => e.id === p.event_id);
-              return (
-                <div key={p.id} className="border-l-4 border-indigo-500 pl-4 py-2">
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="font-medium text-slate-900">{p.participant_name}</span>
-                    <div className="flex items-center gap-1">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          className={`h-4 w-4 ${
-                            i < (p.engagement_score || 0) 
-                              ? 'fill-yellow-400 text-yellow-400' 
-                              : 'text-slate-300'
-                          }`}
-                        />
+        {/* Overview Tab */}
+        <TabsContent value="overview">
+          <div className="space-y-6">
+            {/* Charts Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Activity Types */}
+              <Card className="p-6 shadow-md border-0">
+                <h3 className="text-lg font-bold text-slate-900 mb-4">Activity Types Distribution</h3>
+                <ResponsiveContainer width="100%" height={300}>
+                  <PieChart>
+                    <Pie
+                      data={typeData}
+                      cx="50%"
+                      cy="50%"
+                      labelLine={false}
+                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                      outerRadius={80}
+                      fill="#8884d8"
+                      dataKey="value"
+                    >
+                      {typeData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                       ))}
-                    </div>
-                  </div>
-                  <p className="text-sm text-slate-600 mb-1">{p.feedback}</p>
-                  <p className="text-xs text-slate-400">{event?.title}</p>
-                </div>
-              );
-            })}
-          {participations.filter(p => p.feedback).length === 0 && (
-            <p className="text-slate-500 text-center py-4">No feedback yet</p>
-          )}
-        </div>
-      </Card>
+                    </Pie>
+                    <Tooltip />
+                  </PieChart>
+                </ResponsiveContainer>
+              </Card>
+
+              {/* Monthly Trend */}
+              <Card className="p-6 shadow-md border-0">
+                <h3 className="text-lg font-bold text-slate-900 mb-4">Monthly Event Trend</h3>
+                <ResponsiveContainer width="100%" height={300}>
+                  <LineChart data={monthlyData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="month" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Line 
+                      type="monotone" 
+                      dataKey="events" 
+                      stroke="#6366f1" 
+                      strokeWidth={2}
+                      name="Events"
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </Card>
+            </div>
+
+            {/* Top Activities */}
+            <Card className="p-6 shadow-md border-0">
+              <h3 className="text-lg font-bold text-slate-900 mb-4">Top Activities by Participation</h3>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={activityParticipation}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Bar dataKey="participants" fill="#6366f1" name="Participants" />
+                  <Bar dataKey="events" fill="#ec4899" name="Events Held" />
+                </BarChart>
+              </ResponsiveContainer>
+            </Card>
+
+            {/* Participation Details */}
+            <Card className="p-6 shadow-md border-0">
+              <h3 className="text-lg font-bold text-slate-900 mb-4">Recent Participation Feedback</h3>
+              <div className="space-y-4">
+                {participations
+                  .filter(p => p.feedback)
+                  .slice(0, 5)
+                  .map(p => {
+                    const event = events.find(e => e.id === p.event_id);
+                    return (
+                      <div key={p.id} className="border-l-4 border-indigo-500 pl-4 py-2">
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="font-medium text-slate-900">{p.participant_name}</span>
+                          <div className="flex items-center gap-1">
+                            {[...Array(5)].map((_, i) => (
+                              <Star
+                                key={i}
+                                className={`h-4 w-4 ${
+                                  i < (p.engagement_score || 0) 
+                                    ? 'fill-yellow-400 text-yellow-400' 
+                                    : 'text-slate-300'
+                                }`}
+                              />
+                            ))}
+                          </div>
+                        </div>
+                        <p className="text-sm text-slate-600 mb-1">{p.feedback}</p>
+                        <p className="text-xs text-slate-400">{event?.title}</p>
+                      </div>
+                    );
+                  })}
+                {participations.filter(p => p.feedback).length === 0 && (
+                  <p className="text-slate-500 text-center py-4">No feedback yet</p>
+                )}
+              </div>
+            </Card>
+          </div>
+        </TabsContent>
+
+        {/* Attendance Tab */}
+        <TabsContent value="attendance">
+          <AttendanceMetrics events={events} participations={participations} />
+        </TabsContent>
+
+        {/* Engagement Tab */}
+        <TabsContent value="engagement">
+          <EngagementOverTime 
+            events={events} 
+            participations={participations}
+            userProfiles={userProfiles}
+          />
+        </TabsContent>
+
+        {/* Activities Tab */}
+        <TabsContent value="activities">
+          <ActivityTypeAnalytics 
+            activities={activities}
+            events={events}
+            participations={participations}
+          />
+        </TabsContent>
+
+        {/* Skills Tab */}
+        <TabsContent value="skills">
+          <SkillDevelopmentCorrelation 
+            participations={participations}
+            userProfiles={userProfiles}
+            events={events}
+            activities={activities}
+          />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
