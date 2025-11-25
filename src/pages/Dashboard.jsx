@@ -3,7 +3,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { useUserData } from '../components/hooks/useUserData';
 import { useEventData } from '../components/hooks/useEventData';
-import { filterUpcomingEvents, getParticipationStats, getActivityForEvent } from '../components/utils/eventUtils';
+import { 
+  filterUpcomingEvents, 
+  getParticipationStats, 
+  getActivityForEvent,
+  calculateDashboardStats 
+} from '../components/utils/eventUtils';
 import { Button } from '@/components/ui/button';
 import StatsGrid from '../components/common/StatsGrid';
 import SkeletonGrid from '../components/common/SkeletonGrid';
@@ -29,20 +34,9 @@ export default function Dashboard() {
   const [showGenerator, setShowGenerator] = useState(false);
   const eventActions = useEventActions();
 
-  // Calculate stats
+  // Calculate stats using centralized utility
   const upcomingEvents = filterUpcomingEvents(events);
-  
-  const completedThisMonth = events.filter(e => {
-    const eventDate = new Date(e.scheduled_date);
-    const now = new Date();
-    return e.status === 'completed' && 
-           eventDate.getMonth() === now.getMonth() &&
-           eventDate.getFullYear() === now.getFullYear();
-  }).length;
-
-  const avgParticipation = events.length > 0 
-    ? Math.round(participations.length / events.length)
-    : 0;
+  const stats = calculateDashboardStats(events, activities, participations);
 
   const handleScheduleActivity = (activity) => {
     navigate(`${createPageUrl('Calendar')}?activity=${activity.id}`);
@@ -86,10 +80,10 @@ export default function Dashboard() {
 
       {/* Stats Grid */}
       <StatsGrid stats={[
-        { title: 'Upcoming Events', value: upcomingEvents.length, subtitle: 'Scheduled activities', icon: Calendar, color: 'navy' },
-        { title: 'Total Activities', value: activities.length, subtitle: 'In your library', icon: Sparkles, color: 'orange' },
-        { title: 'This Month', value: completedThisMonth, subtitle: 'Events completed', trend: completedThisMonth > 0 ? `${Math.round((completedThisMonth / Math.max(upcomingEvents.length, 1)) * 100)}% completion rate` : "Let's schedule more!", icon: TrendingUp, color: 'orange' },
-        { title: 'Avg Participation', value: avgParticipation, subtitle: 'People per event', icon: Users, color: 'navy' }
+        { title: 'Upcoming Events', value: stats.upcomingCount, subtitle: 'Scheduled activities', icon: Calendar, color: 'navy' },
+        { title: 'Total Activities', value: stats.activitiesCount, subtitle: 'In your library', icon: Sparkles, color: 'orange' },
+        { title: 'This Month', value: stats.completedThisMonth, subtitle: 'Events completed', trend: stats.completedThisMonth > 0 ? `${Math.round((stats.completedThisMonth / Math.max(stats.upcomingCount, 1)) * 100)}% completion rate` : "Let's schedule more!", icon: TrendingUp, color: 'orange' },
+        { title: 'Avg Participation', value: stats.avgParticipation, subtitle: 'People per event', icon: Users, color: 'navy' }
       ]} />
 
       {/* Upcoming Events */}

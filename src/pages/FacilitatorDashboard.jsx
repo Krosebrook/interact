@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { Button } from '@/components/ui/button';
@@ -8,7 +6,6 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import FacilitatorSupportChat from '../components/facilitator/FacilitatorSupportChat';
-import FacilitatorEventCard from '../components/events/FacilitatorEventCard';
 import TemplateAnalytics from '../components/facilitator/TemplateAnalytics';
 import FacilitatorAgentChat from '../components/facilitator/FacilitatorAgentChat';
 import ReactiveEventList from '../components/dashboard/ReactiveEventList';
@@ -18,78 +15,32 @@ import CompletedEventsList from '../components/dashboard/CompletedEventsList';
 import ActivityGenerator from '../components/ai/ActivityGenerator';
 import { useAuth } from '../components/hooks/useAuth';
 import { useEventData } from '../components/hooks/useEventData';
+import { useEventActions } from '../components/events/useEventActions';
 import { 
   filterUpcomingEvents, 
   filterTodayEvents, 
   filterTomorrowEvents, 
-  filterThisWeekEvents,
-  getParticipationStats,
-  getActivityForEvent
+  filterThisWeekEvents
 } from '../components/utils/eventUtils';
 import { 
   Calendar, 
   Users, 
   TrendingUp, 
   Activity,
-  MessageSquare,
   Bot,
   LayoutDashboard,
   BarChart3
 } from 'lucide-react';
-import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 
 export default function FacilitatorDashboard() {
-  const queryClient = useQueryClient();
   const { user, loading: userLoading } = useAuth(true);
   const { events, activities, participations, isLoading } = useEventData();
+  const eventActions = useEventActions();
   const [showSupport, setShowSupport] = useState(false);
   const [showAgentChat, setShowAgentChat] = useState(false);
   const [showActivityGenerator, setShowActivityGenerator] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
-
-  const sendReminderMutation = useMutation({
-    mutationFn: async (eventId) => {
-      await base44.functions.invoke('sendTeamsNotification', {
-        eventId,
-        notificationType: 'reminder'
-      });
-    },
-    onSuccess: () => {
-      toast.success('Reminder sent to all participants!');
-    }
-  });
-
-  const sendRecapMutation = useMutation({
-    mutationFn: async (eventId) => {
-      await base44.functions.invoke('sendTeamsNotification', {
-        eventId,
-        notificationType: 'recap'
-      });
-    },
-    onSuccess: () => {
-      toast.success('Recap sent!');
-    }
-  });
-
-  const downloadCalendarMutation = useMutation({
-    mutationFn: async (eventId) => {
-      const response = await base44.functions.invoke('generateCalendarFile', { eventId });
-      return response.data;
-    },
-    onSuccess: (data) => {
-      const blob = new Blob([data], { type: 'text/calendar' });
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'event.ics';
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      a.remove();
-      toast.success('Calendar file downloaded!');
-    }
-  });
 
   // Filter events
   const upcomingEvents = filterUpcomingEvents(events).slice(0, 10);
@@ -107,7 +58,11 @@ export default function FacilitatorDashboard() {
 
   const handleEventAction = (action, event) => {
     if (action === 'remind') {
-      sendReminderMutation.mutate(event.id);
+      eventActions.handleSendReminder(event);
+    } else if (action === 'recap') {
+      eventActions.handleSendRecap(event);
+    } else if (action === 'cancel') {
+      eventActions.handleCancelEvent(event);
     }
   };
 
