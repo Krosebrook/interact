@@ -105,150 +105,161 @@ export default function FacilitatorDashboard() {
     );
   }
 
+  const handleEventAction = (action, event) => {
+    if (action === 'remind') {
+      sendReminderMutation.mutate(event.id);
+    }
+  };
+
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <motion.div 
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
+      >
         <div>
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">Facilitator Dashboard</h1>
-          <p className="text-slate-600">Manage and monitor your team events</p>
+          <h1 className="text-3xl font-bold text-slate-900 mb-1">Facilitator Dashboard</h1>
+          <p className="text-slate-600">Welcome back, {user?.full_name?.split(' ')[0] || 'Facilitator'}</p>
         </div>
-        <div className="flex gap-3">
+        <div className="flex gap-2">
           <Button
-            onClick={() => setShowSupport(!showSupport)}
+            onClick={() => setShowAgentChat(!showAgentChat)}
             variant="outline"
             className="gap-2"
           >
-            <MessageSquare className="h-4 w-4" />
-            Support Chat
+            <Bot className="h-4 w-4" />
+            AI Assistant
           </Button>
           <Link to={createPageUrl('Calendar')}>
-            <Button className="bg-indigo-600 hover:bg-indigo-700">
+            <Button className="bg-int-orange hover:bg-[#C46322]">
               <Calendar className="h-4 w-4 mr-2" />
               Schedule Event
             </Button>
           </Link>
         </div>
-      </div>
+      </motion.div>
+
+      {/* Live Events Banner */}
+      <LiveEventsBanner events={events} participations={participations} />
+
+      {/* Quick Actions */}
+      <QuickActionsPanel 
+        onOpenAgentChat={() => setShowAgentChat(true)}
+        onOpenActivityGenerator={() => setShowActivityGenerator(true)}
+      />
 
       {/* Quick Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card className="p-6 border-0 shadow-lg bg-gradient-to-br from-blue-500 to-blue-600 text-white">
-          <div className="flex items-center justify-between mb-2">
-            <Calendar className="h-8 w-8 opacity-80" />
-            <Badge className="bg-white/20 text-white border-0">Today</Badge>
-          </div>
-          <div className="text-3xl font-bold mb-1">{todayEvents.length}</div>
-          <div className="text-sm opacity-90">Events today</div>
-        </Card>
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+          <Card className="p-5 border-0 shadow-lg bg-gradient-to-br from-blue-500 to-blue-600 text-white">
+            <div className="flex items-center justify-between mb-2">
+              <Calendar className="h-6 w-6 opacity-80" />
+              <Badge className="bg-white/20 text-white border-0 text-xs">Today</Badge>
+            </div>
+            <div className="text-3xl font-bold">{todayEvents.length}</div>
+            <div className="text-sm opacity-80">Events today</div>
+          </Card>
+        </motion.div>
 
-        <Card className="p-6 border-0 shadow-lg bg-gradient-to-br from-purple-500 to-purple-600 text-white">
-          <div className="flex items-center justify-between mb-2">
-            <TrendingUp className="h-8 w-8 opacity-80" />
-            <Badge className="bg-white/20 text-white border-0">Tomorrow</Badge>
-          </div>
-          <div className="text-3xl font-bold mb-1">{tomorrowEvents.length}</div>
-          <div className="text-sm opacity-90">Events tomorrow</div>
-        </Card>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
+          <Card className="p-5 border-0 shadow-lg bg-gradient-to-br from-purple-500 to-purple-600 text-white">
+            <div className="flex items-center justify-between mb-2">
+              <TrendingUp className="h-6 w-6 opacity-80" />
+              <Badge className="bg-white/20 text-white border-0 text-xs">Tomorrow</Badge>
+            </div>
+            <div className="text-3xl font-bold">{tomorrowEvents.length}</div>
+            <div className="text-sm opacity-80">Events tomorrow</div>
+          </Card>
+        </motion.div>
 
-        <Card className="p-6 border-0 shadow-lg bg-gradient-to-br from-emerald-500 to-emerald-600 text-white">
-          <div className="flex items-center justify-between mb-2">
-            <Users className="h-8 w-8 opacity-80" />
-            <Badge className="bg-white/20 text-white border-0">Week</Badge>
-          </div>
-          <div className="text-3xl font-bold mb-1">{thisWeekEvents.length}</div>
-          <div className="text-sm opacity-90">This week</div>
-        </Card>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
+          <Card className="p-5 border-0 shadow-lg bg-gradient-to-br from-emerald-500 to-emerald-600 text-white">
+            <div className="flex items-center justify-between mb-2">
+              <Users className="h-6 w-6 opacity-80" />
+              <Badge className="bg-white/20 text-white border-0 text-xs">Week</Badge>
+            </div>
+            <div className="text-3xl font-bold">{thisWeekEvents.length}</div>
+            <div className="text-sm opacity-80">This week</div>
+          </Card>
+        </motion.div>
 
-        <Card className="p-6 border-0 shadow-lg bg-gradient-to-br from-orange-500 to-orange-600 text-white">
-          <div className="flex items-center justify-between mb-2">
-            <Activity className="h-8 w-8 opacity-80" />
-            <Badge className="bg-white/20 text-white border-0">Total</Badge>
-          </div>
-          <div className="text-3xl font-bold mb-1">{upcomingEvents.length}</div>
-          <div className="text-sm opacity-90">Upcoming events</div>
-        </Card>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}>
+          <Card className="p-5 border-0 shadow-lg bg-gradient-to-br from-orange-500 to-orange-600 text-white">
+            <div className="flex items-center justify-between mb-2">
+              <Activity className="h-6 w-6 opacity-80" />
+              <Badge className="bg-white/20 text-white border-0 text-xs">Total</Badge>
+            </div>
+            <div className="text-3xl font-bold">{upcomingEvents.length}</div>
+            <div className="text-sm opacity-80">Upcoming</div>
+          </Card>
+        </motion.div>
       </div>
 
-      {/* Event Sections */}
-      {todayEvents.length > 0 && (
-        <div>
-          <h2 className="text-2xl font-bold text-slate-900 mb-4 flex items-center gap-2">
-            <Badge className="bg-red-600">TODAY</Badge>
-            Today's Events
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {todayEvents.map(event => (
-              <FacilitatorEventCard 
-                key={event.id}
-                event={event}
-                activity={getActivityForEvent(event, activities)}
-                participationStats={getParticipationStats(event.id, participations)}
-                onSendReminder={(id) => sendReminderMutation.mutate(id)}
-                onDownloadCalendar={(id) => downloadCalendarMutation.mutate(id)}
-                isLoading={sendReminderMutation.isLoading || downloadCalendarMutation.isLoading}
-              />
-            ))}
+      {/* Tabbed Content */}
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+        <TabsList className="bg-slate-100">
+          <TabsTrigger value="overview" className="gap-2">
+            <LayoutDashboard className="h-4 w-4" />
+            Overview
+          </TabsTrigger>
+          <TabsTrigger value="analytics" className="gap-2">
+            <BarChart3 className="h-4 w-4" />
+            Analytics
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="overview" className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Upcoming Events */}
+            <ReactiveEventList
+              events={upcomingEvents}
+              activities={activities}
+              participations={participations}
+              title="Upcoming Events"
+              emptyMessage="No upcoming events scheduled"
+              onEventAction={handleEventAction}
+              maxItems={5}
+            />
+
+            {/* Completed Events with AI Summary */}
+            <CompletedEventsList
+              events={events}
+              activities={activities}
+              participations={participations}
+            />
           </div>
-        </div>
+
+          {upcomingEvents.length === 0 && (
+            <Card className="p-12 text-center border-2 border-dashed">
+              <Calendar className="h-16 w-16 text-slate-400 mx-auto mb-4" />
+              <h3 className="text-xl font-bold text-slate-900 mb-2">No Upcoming Events</h3>
+              <p className="text-slate-600 mb-6">Schedule your first event to get started</p>
+              <Link to={createPageUrl('Calendar')}>
+                <Button className="bg-int-orange hover:bg-[#C46322]">
+                  Schedule Event
+                </Button>
+              </Link>
+            </Card>
+          )}
+        </TabsContent>
+
+        <TabsContent value="analytics">
+          <TemplateAnalytics />
+        </TabsContent>
+      </Tabs>
+
+      {/* AI Agent Chat */}
+      {showAgentChat && (
+        <FacilitatorAgentChat onClose={() => setShowAgentChat(false)} />
       )}
 
-      {tomorrowEvents.length > 0 && (
-        <div>
-          <h2 className="text-2xl font-bold text-slate-900 mb-4 flex items-center gap-2">
-            <Badge className="bg-purple-600">TOMORROW</Badge>
-            Tomorrow's Events
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {tomorrowEvents.map(event => (
-              <FacilitatorEventCard 
-                key={event.id}
-                event={event}
-                activity={getActivityForEvent(event, activities)}
-                participationStats={getParticipationStats(event.id, participations)}
-                onSendReminder={(id) => sendReminderMutation.mutate(id)}
-                onDownloadCalendar={(id) => downloadCalendarMutation.mutate(id)}
-                isLoading={sendReminderMutation.isLoading || downloadCalendarMutation.isLoading}
-              />
-            ))}
-          </div>
-        </div>
-      )}
-
-      {thisWeekEvents.length > 0 && (
-        <div>
-          <h2 className="text-2xl font-bold text-slate-900 mb-4">This Week</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {thisWeekEvents.map(event => (
-              <FacilitatorEventCard 
-                key={event.id}
-                event={event}
-                activity={getActivityForEvent(event, activities)}
-                participationStats={getParticipationStats(event.id, participations)}
-                onSendReminder={(id) => sendReminderMutation.mutate(id)}
-                onDownloadCalendar={(id) => downloadCalendarMutation.mutate(id)}
-                isLoading={sendReminderMutation.isLoading || downloadCalendarMutation.isLoading}
-              />
-            ))}
-          </div>
-        </div>
-      )}
-
-      {upcomingEvents.length === 0 && (
-        <Card className="p-12 text-center border-2 border-dashed">
-          <Calendar className="h-16 w-16 text-slate-400 mx-auto mb-4" />
-          <h3 className="text-xl font-bold text-slate-900 mb-2">No Upcoming Events</h3>
-          <p className="text-slate-600 mb-6">Schedule your first event to get started</p>
-          <Link to={createPageUrl('Calendar')}>
-            <Button className="bg-indigo-600 hover:bg-indigo-700">
-              Schedule Event
-            </Button>
-          </Link>
-        </Card>
-      )}
-
-      {/* Template Analytics */}
-      <TemplateAnalytics />
+      {/* Activity Generator */}
+      <ActivityGenerator 
+        open={showActivityGenerator}
+        onClose={() => setShowActivityGenerator(false)}
+      />
 
       {/* Support Chat Sidebar */}
       {showSupport && (
