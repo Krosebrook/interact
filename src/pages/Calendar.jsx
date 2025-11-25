@@ -7,10 +7,6 @@ import { filterUpcomingEvents, filterPastEvents, getParticipationStats, getActiv
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import LoadingSpinner from '../components/ui/LoadingSpinner';
-import EmptyState from '../components/ui/EmptyState';
-import PageHeader from '../components/ui/PageHeader';
-import SkeletonGrid from '../components/ui/SkeletonGrid';
 import {
   Select,
   SelectContent,
@@ -29,6 +25,9 @@ import EventCalendarCard from '../components/events/EventCalendarCard';
 import RecurrenceSettings from '../components/events/RecurrenceSettings';
 import TimeSlotSuggestions from '../components/events/TimeSlotSuggestions';
 import RichTextEventEditor from '../components/events/RichTextEventEditor';
+import LoadingSpinner from '../components/common/LoadingSpinner';
+import EmptyState from '../components/common/EmptyState';
+import PageHeader from '../components/common/PageHeader';
 import { useEventActions } from '../components/events/useEventActions';
 import { Calendar as CalendarIcon, Plus } from 'lucide-react';
 import { toast } from 'sonner';
@@ -180,16 +179,12 @@ export default function Calendar() {
   const pastEvents = filterPastEvents(events);
 
   if (loading || !user) {
-    return <LoadingSpinner />;
+    return <LoadingSpinner className="min-h-[60vh]" />;
   }
 
   return (
     <div className="space-y-8">
-      {/* Header */}
-      <PageHeader
-        title="Event Calendar"
-        description="Schedule and manage your team activities"
-      >
+      <PageHeader title="Event Calendar" description="Schedule and manage your team activities">
         <Button
           onClick={() => setShowScheduleDialog(true)}
           className="bg-int-orange hover:bg-[#C46322] text-white"
@@ -203,14 +198,17 @@ export default function Calendar() {
       <div>
         <h2 className="text-2xl font-bold text-slate-900 mb-4">Upcoming Events</h2>
         {isLoading ? (
-          <SkeletonGrid count={3} />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[1, 2, 3].map(i => (
+              <div key={i} className="h-48 bg-slate-100 animate-pulse rounded-xl" />
+            ))}
+          </div>
         ) : upcomingEvents.length === 0 ? (
           <EmptyState
             icon={CalendarIcon}
             title="No upcoming events"
             description="Schedule your first event to get started"
             actionLabel="Schedule Event"
-            actionIcon={Plus}
             onAction={() => setShowScheduleDialog(true)}
           />
         ) : (

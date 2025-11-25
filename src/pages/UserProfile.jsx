@@ -1,62 +1,29 @@
-import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
-import { useQuery } from '@tanstack/react-query';
+import React, { useState } from 'react';
+import { useUserData } from '../components/hooks/useUserData';
+import { useUserProfile } from '../components/hooks/useUserProfile';
 import UserProfileCard from '../components/profile/UserProfileCard';
 import ProfilePreferencesEditor from '../components/profile/ProfilePreferencesEditor';
 import ContributionsShowcase from '../components/profile/ContributionsShowcase';
+import LoadingSpinner from '../components/common/LoadingSpinner';
+import PageHeader from '../components/common/PageHeader';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { User, Settings, Trophy } from 'lucide-react';
 
 export default function UserProfilePage() {
-  const [user, setUser] = useState(null);
+  const { user, loading: userLoading } = useUserData(true, false);
+  const { profile, userPoints, refetchProfile } = useUserProfile(user?.email);
   const [editing, setEditing] = useState(false);
 
-  useEffect(() => {
-    const loadUser = async () => {
-      try {
-        const currentUser = await base44.auth.me();
-        setUser(currentUser);
-      } catch (error) {
-        base44.auth.redirectToLogin();
-      }
-    };
-    loadUser();
-  }, []);
-
-  const { data: profile, refetch: refetchProfile } = useQuery({
-    queryKey: ['user-profile', user?.email],
-    queryFn: async () => {
-      const profiles = await base44.entities.UserProfile.filter({ user_email: user.email });
-      return profiles[0] || { user_email: user.email };
-    },
-    enabled: !!user?.email
-  });
-
-  const { data: userPoints } = useQuery({
-    queryKey: ['user-points', user?.email],
-    queryFn: async () => {
-      const points = await base44.entities.UserPoints.filter({ user_email: user.email });
-      return points[0];
-    },
-    enabled: !!user?.email
-  });
-
-  if (!user) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
-      </div>
-    );
+  if (userLoading || !user) {
+    return <LoadingSpinner className="min-h-[60vh]" />;
   }
 
   return (
     <div className="max-w-5xl mx-auto space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-slate-900">My Profile</h1>
-          <p className="text-slate-600">Manage your preferences and view your contributions</p>
-        </div>
-      </div>
+      <PageHeader 
+        title="My Profile" 
+        description="Manage your preferences and view your contributions" 
+      />
 
       <Tabs defaultValue="profile" className="w-full">
         <TabsList className="grid w-full grid-cols-3 mb-6">
