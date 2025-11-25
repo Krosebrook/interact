@@ -7,6 +7,7 @@ import { filterUpcomingEvents, filterPastEvents, getParticipationStats, getActiv
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Select,
   SelectContent,
@@ -24,12 +25,14 @@ import {
 import EventCalendarCard from '../components/events/EventCalendarCard';
 import RecurrenceSettings from '../components/events/RecurrenceSettings';
 import TimeSlotSuggestions from '../components/events/TimeSlotSuggestions';
+import TimeSlotPollCreator from '../components/events/TimeSlotPollCreator';
+import TimeSlotPollList from '../components/events/TimeSlotPollList';
 import RichTextEventEditor from '../components/events/RichTextEventEditor';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import EmptyState from '../components/common/EmptyState';
 import PageHeader from '../components/common/PageHeader';
 import { useEventActions } from '../components/events/useEventActions';
-import { Calendar as CalendarIcon, Plus } from 'lucide-react';
+import { Calendar as CalendarIcon, Plus, Vote } from 'lucide-react';
 import { toast } from 'sonner';
 import { addDays, addWeeks, addMonths } from 'date-fns';
 
@@ -55,6 +58,8 @@ export default function Calendar() {
     frequency: 'weekly',
     occurrences: 4
   });
+  const [showPollDialog, setShowPollDialog] = useState(false);
+  const [scheduleMode, setScheduleMode] = useState('direct'); // 'direct' or 'poll'
 
   useEffect(() => {
     // Check for pre-selected activity from URL
@@ -166,6 +171,23 @@ export default function Calendar() {
     }
   });
 
+  const createPollMutation = useMutation({
+    mutationFn: async (pollData) => {
+      return base44.entities.TimeSlotPoll.create({
+        ...pollData,
+        organizer_email: user.email,
+        organizer_name: user.full_name,
+        status: 'open',
+        votes: []
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['time-slot-polls']);
+      setShowPollDialog(false);
+      toast.success('Time slot poll created! Share it with your team.');
+    }
+  });
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const selectedActivity = activities.find(a => a.id === formData.activity_id);
@@ -185,14 +207,31 @@ export default function Calendar() {
   return (
     <div className="space-y-8">
       <PageHeader title="Event Calendar" description="Schedule and manage your team activities">
-        <Button
-          onClick={() => setShowScheduleDialog(true)}
-          className="bg-int-orange hover:bg-[#C46322] text-white"
-        >
-          <Plus className="h-4 w-4 mr-2" />
-          Schedule Event
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            onClick={() => setShowPollDialog(true)}
+          >
+            <Vote className="h-4 w-4 mr-2" />
+            Create Poll
+          </Button>
+          <Button
+            onClick={() => setShowScheduleDialog(true)}
+            className="bg-int-orange hover:bg-[#C46322] text-white"
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Schedule Event
+          </Button>
+        </div>
       </PageHeader>
+
+      {/* Active Polls Section */}
+      <TimeSlotPollList 
+        userEmail={user?.email}
+        userName={user?.full_name}
+        isAdmin={user?.role === 'admin'}
+        onEventCreated={() => queryClient.invalidateQueries(['events'])}
+      />
 
       {/* Upcoming Events */}
       <div>
@@ -407,6 +446,23 @@ export default function Calendar() {
               </Button>
             </div>
           </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Create Poll Dialog */}
+      <Dialog open={showPollDialog} onOpenChange={setShowPollDialog}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Create Time Slot Poll</DialogTitle>
+            <DialogDescription>
+              Let participants vote on their preferred meeting time
+            </DialogDescription>
+          </DialogHeader>
+          <TimeSlotPollCreator
+            activities={activities}
+            isSubmitting={createPollMutation.isLoading}
+            onSubmit={(data) => createPollMutation.mutate(data)}
+          />
         </DialogContent>
       </Dialog>
     </div>
