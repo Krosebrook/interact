@@ -4,50 +4,119 @@ import { useUserProfile } from '../components/hooks/useUserProfile';
 import UserProfileCard from '../components/profile/UserProfileCard';
 import ProfilePreferencesEditor from '../components/profile/ProfilePreferencesEditor';
 import ContributionsShowcase from '../components/profile/ContributionsShowcase';
+import ProfileBadgesShowcase from '../components/profile/ProfileBadgesShowcase';
+import ProfileEventsDashboard from '../components/profile/ProfileEventsDashboard';
+import ProfileEventHistory from '../components/profile/ProfileEventHistory';
+import SkillsInterestsManager from '../components/profile/SkillsInterestsManager';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import PageHeader from '../components/common/PageHeader';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { User, Settings, Trophy } from 'lucide-react';
+import { User, Settings, Trophy, Calendar, History, Heart } from 'lucide-react';
 
 export default function UserProfilePage() {
   const { user, loading: userLoading } = useUserData(true, false);
   const { profile, userPoints, refetchProfile } = useUserProfile(user?.email);
-  const [editing, setEditing] = useState(false);
 
   if (userLoading || !user) {
     return <LoadingSpinner className="min-h-[60vh]" />;
   }
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6">
+    <div className="max-w-6xl mx-auto space-y-6">
       <PageHeader 
         title="My Profile" 
-        description="Manage your preferences and view your contributions" 
+        description="View your achievements, manage events, and customize your preferences" 
       />
 
-      <Tabs defaultValue="profile" className="w-full">
-        <TabsList className="grid w-full grid-cols-3 mb-6">
+      <Tabs defaultValue="dashboard" className="w-full">
+        <TabsList className="grid w-full grid-cols-3 lg:grid-cols-6 mb-6">
+          <TabsTrigger value="dashboard" className="flex items-center gap-2">
+            <Calendar className="h-4 w-4" />
+            <span className="hidden sm:inline">Dashboard</span>
+          </TabsTrigger>
+          <TabsTrigger value="badges" className="flex items-center gap-2">
+            <Trophy className="h-4 w-4" />
+            <span className="hidden sm:inline">Badges</span>
+          </TabsTrigger>
+          <TabsTrigger value="history" className="flex items-center gap-2">
+            <History className="h-4 w-4" />
+            <span className="hidden sm:inline">History</span>
+          </TabsTrigger>
+          <TabsTrigger value="interests" className="flex items-center gap-2">
+            <Heart className="h-4 w-4" />
+            <span className="hidden sm:inline">Interests</span>
+          </TabsTrigger>
           <TabsTrigger value="profile" className="flex items-center gap-2">
             <User className="h-4 w-4" />
-            Profile
+            <span className="hidden sm:inline">Profile</span>
           </TabsTrigger>
-          <TabsTrigger value="preferences" className="flex items-center gap-2">
+          <TabsTrigger value="settings" className="flex items-center gap-2">
             <Settings className="h-4 w-4" />
-            Preferences
-          </TabsTrigger>
-          <TabsTrigger value="contributions" className="flex items-center gap-2">
-            <Trophy className="h-4 w-4" />
-            Contributions
+            <span className="hidden sm:inline">Settings</span>
           </TabsTrigger>
         </TabsList>
 
+        {/* Dashboard - Upcoming & Bookmarked Events */}
+        <TabsContent value="dashboard">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-1">
+              <UserProfileCard 
+                profile={profile} 
+                userPoints={userPoints}
+              />
+            </div>
+            <div className="lg:col-span-2">
+              <ProfileEventsDashboard userEmail={user.email} />
+            </div>
+          </div>
+        </TabsContent>
+
+        {/* Badges & Achievements */}
+        <TabsContent value="badges">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-1">
+              <UserProfileCard 
+                profile={profile} 
+                userPoints={userPoints}
+                compact={false}
+              />
+            </div>
+            <div className="lg:col-span-2">
+              <ProfileBadgesShowcase userEmail={user.email} />
+            </div>
+          </div>
+        </TabsContent>
+
+        {/* Event History */}
+        <TabsContent value="history">
+          <ProfileEventHistory userEmail={user.email} />
+        </TabsContent>
+
+        {/* Skills & Interests */}
+        <TabsContent value="interests">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-1">
+              <UserProfileCard 
+                profile={profile} 
+                userPoints={userPoints}
+              />
+            </div>
+            <div className="lg:col-span-2">
+              <SkillsInterestsManager 
+                profile={profile} 
+                onUpdate={refetchProfile}
+              />
+            </div>
+          </div>
+        </TabsContent>
+
+        {/* Profile Overview */}
         <TabsContent value="profile">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-1">
               <UserProfileCard 
                 profile={profile} 
                 userPoints={userPoints}
-                onEdit={() => setEditing(true)}
               />
             </div>
             <div className="lg:col-span-2">
@@ -56,19 +125,13 @@ export default function UserProfilePage() {
           </div>
         </TabsContent>
 
-        <TabsContent value="preferences">
+        {/* Settings & Preferences */}
+        <TabsContent value="settings">
           <ProfilePreferencesEditor
             profile={{ ...profile, user_email: user.email }}
-            onSave={() => {
-              refetchProfile();
-              setEditing(false);
-            }}
-            onCancel={() => setEditing(false)}
+            onSave={() => refetchProfile()}
+            onCancel={() => {}}
           />
-        </TabsContent>
-
-        <TabsContent value="contributions">
-          <ContributionsShowcase userEmail={user.email} />
         </TabsContent>
       </Tabs>
     </div>
