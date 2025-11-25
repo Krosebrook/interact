@@ -23,7 +23,7 @@ import { Card } from '@/components/ui/card';
 import { Sparkles, Loader2, Wand2, Copy } from 'lucide-react';
 import { toast } from 'sonner';
 
-export default function ActivityGenerator({ open, onOpenChange, onActivityCreated }) {
+export default function ActivityGenerator({ open, onOpenChange, onClose, onActivityCreated }) {
   const queryClient = useQueryClient();
   const [step, setStep] = useState(1);
   const [inputs, setInputs] = useState({
@@ -145,7 +145,7 @@ Make it practical for remote teams and achievable within the time limit.`;
       queryClient.invalidateQueries(['activities']);
       queryClient.invalidateQueries(['ai-recommendations']);
       toast.success('Custom activity created! 🎉');
-      onActivityCreated(activity);
+      if (onActivityCreated) onActivityCreated(activity);
       handleClose();
     }
   });
@@ -172,7 +172,8 @@ Make it practical for remote teams and achievable within the time limit.`;
       additional_context: ''
     });
     setGeneratedActivity(null);
-    onOpenChange(false);
+    if (onOpenChange) onOpenChange(false);
+    if (onClose) onClose();
   };
 
   return (
