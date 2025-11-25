@@ -283,18 +283,19 @@ export default function Calendar() {
               const activity = activities.find(a => a.id === event.activity_id);
               return (
                 <EventCalendarCard
-                  key={event.id}
-                  event={event}
-                  activity={activity}
-                  participantCount={getParticipationStats(event.id, participations).total}
-                  onView={() => {}}
-                  onCopyLink={eventActions.handleCopyLink}
-                  onDownloadCalendar={eventActions.handleDownloadCalendar}
-                  onSendReminder={eventActions.handleSendReminder}
-                  onSendRecap={eventActions.handleSendRecap}
-                  onCancel={eventActions.handleCancelEvent}
-                  userEmail={user?.email}
-                />
+                                        key={event.id}
+                                        event={event}
+                                        activity={activity}
+                                        participantCount={getParticipationStats(event.id, participations).total}
+                                        onView={() => {}}
+                                        onCopyLink={eventActions.handleCopyLink}
+                                        onDownloadCalendar={eventActions.handleDownloadCalendar}
+                                        onSendReminder={eventActions.handleSendReminder}
+                                        onSendRecap={eventActions.handleSendRecap}
+                                        onCancel={eventActions.handleCancelEvent}
+                                        onReschedule={setRescheduleEvent}
+                                        userEmail={user?.email}
+                                      />
               );
             })}
           </div>
