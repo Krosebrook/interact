@@ -29,11 +29,13 @@ import TimeSlotPollCreator from '../components/events/TimeSlotPollCreator';
 import TimeSlotPollList from '../components/events/TimeSlotPollList';
 import BookmarkedEventsList from '../components/events/BookmarkedEventsList';
 import RichTextEventEditor from '../components/events/RichTextEventEditor';
+import EventSeriesCreator from '../components/events/EventSeriesCreator';
+import RegistrationFormBuilder from '../components/events/RegistrationFormBuilder';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import EmptyState from '../components/common/EmptyState';
 import PageHeader from '../components/common/PageHeader';
 import { useEventActions } from '../components/events/useEventActions';
-import { Calendar as CalendarIcon, Plus, Vote } from 'lucide-react';
+import { Calendar as CalendarIcon, Plus, Vote, Layers, ClipboardList } from 'lucide-react';
 import { toast } from 'sonner';
 import { addDays, addWeeks, addMonths } from 'date-fns';
 
