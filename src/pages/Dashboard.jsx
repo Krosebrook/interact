@@ -130,6 +130,7 @@ export default function Dashboard() {
                 onSendReminder={eventActions.handleSendReminder}
                 onSendRecap={eventActions.handleSendRecap}
                 onCancel={eventActions.handleCancelEvent}
+                userEmail={user?.email}
               />
             ))}
           </div>

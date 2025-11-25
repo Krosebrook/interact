@@ -3,6 +3,7 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import EventActionsMenu from './EventActionsMenu';
+import BookmarkButton from './BookmarkButton';
 import { Calendar, Clock, Users, ExternalLink } from 'lucide-react';
 import { format } from 'date-fns';
 import { motion } from 'framer-motion';
@@ -23,7 +24,8 @@ export default function EventCalendarCard({
   onDownloadCalendar,
   onSendReminder,
   onSendRecap,
-  onCancel 
+  onCancel,
+  userEmail
 }) {
   return (
     <motion.div
@@ -77,6 +79,7 @@ export default function EventCalendarCard({
               <ExternalLink className="h-4 w-4 mr-1" />
               Facilitate
             </Button>
+            {userEmail && <BookmarkButton eventId={event.id} userEmail={userEmail} />}
             <EventActionsMenu
               event={event}
               onCopyLink={onCopyLink}

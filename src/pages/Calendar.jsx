@@ -27,6 +27,7 @@ import RecurrenceSettings from '../components/events/RecurrenceSettings';
 import TimeSlotSuggestions from '../components/events/TimeSlotSuggestions';
 import TimeSlotPollCreator from '../components/events/TimeSlotPollCreator';
 import TimeSlotPollList from '../components/events/TimeSlotPollList';
+import BookmarkedEventsList from '../components/events/BookmarkedEventsList';
 import RichTextEventEditor from '../components/events/RichTextEventEditor';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import EmptyState from '../components/common/EmptyState';
@@ -225,6 +226,9 @@ export default function Calendar() {
         </div>
       </PageHeader>
 
+      {/* Bookmarked Events */}
+      <BookmarkedEventsList userEmail={user?.email} />
+
       {/* Active Polls Section */}
       <TimeSlotPollList 
         userEmail={user?.email}
@@ -266,6 +270,7 @@ export default function Calendar() {
                   onSendReminder={eventActions.handleSendReminder}
                   onSendRecap={eventActions.handleSendRecap}
                   onCancel={eventActions.handleCancelEvent}
+                  userEmail={user?.email}
                 />
               );
             })}
@@ -290,6 +295,7 @@ export default function Calendar() {
                 onSendReminder={() => {}}
                 onSendRecap={eventActions.handleSendRecap}
                 onCancel={() => {}}
+                userEmail={user?.email}
               />
             ))}
           </div>

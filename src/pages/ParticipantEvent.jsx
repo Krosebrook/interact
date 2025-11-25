@@ -12,6 +12,9 @@ import CollaborativeWhiteboard from '../components/interactive/CollaborativeWhit
 import BreakoutRooms from '../components/interactive/BreakoutRooms';
 import MultiplayerGame from '../components/interactive/MultiplayerGame';
 import EventMediaGallery from '../components/events/EventMediaGallery';
+import LiveQASection from '../components/events/LiveQASection';
+import EventRecordingPlayer from '../components/events/EventRecordingPlayer';
+import BookmarkButton from '../components/events/BookmarkButton';
 import { 
   Calendar, 
   Clock, 
@@ -20,7 +23,8 @@ import {
   Star,
   Upload,
   Send,
-  Sparkles
+  Sparkles,
+  MessageCircle
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -39,7 +43,7 @@ export default function ParticipantEvent() {
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
-    const eventParam = urlParams.get('event');
+    const eventParam = urlParams.get('event') || urlParams.get('link');
     setEventId(eventParam);
   }, []);
 
@@ -224,6 +228,19 @@ export default function ParticipantEvent() {
                 </a>
               </div>
             )}
+
+            {/* Bookmark Button */}
+            {participantData.participant_email && (
+              <div className="mt-4">
+                <BookmarkButton 
+                  eventId={event.id} 
+                  userEmail={participantData.participant_email}
+                  variant="outline"
+                  size="default"
+                  showLabel={true}
+                />
+              </div>
+            )}
           </div>
         </Card>
 
@@ -345,12 +362,44 @@ export default function ParticipantEvent() {
           </>
         )}
 
+        {/* Live Q&A Section - Show during active events */}
+        {myParticipation && (event.status === 'in_progress' || event.status === 'scheduled') && (
+          <Card className="border-0 shadow-lg overflow-hidden">
+            <div className="p-4 bg-gradient-to-r from-purple-50 to-indigo-50 border-b">
+              <h2 className="font-bold text-lg flex items-center gap-2">
+                <MessageCircle className="h-5 w-5 text-purple-600" />
+                Live Chat & Q&A
+              </h2>
+            </div>
+            <div className="h-[400px]">
+              <LiveQASection
+                eventId={event.id}
+                userEmail={participantData.participant_email}
+                userName={participantData.participant_name}
+                isHost={false}
+              />
+            </div>
+          </Card>
+        )}
+
         {/* Event Media Gallery */}
         {myParticipation && (event.status === 'in_progress' || event.status === 'completed') && (
           <EventMediaGallery 
             eventId={event.id}
             canUpload={true}
           />
+        )}
+
+        {/* Event Recordings - Show for past events */}
+        {event.status === 'completed' && (
+          <Card className="p-6 border-0 shadow-lg">
+            <EventRecordingPlayer
+              eventId={event.id}
+              eventTitle={event.title}
+              isHost={false}
+              userEmail={participantData.participant_email}
+            />
+          </Card>
         )}
 
         {/* Feedback Form */}
