@@ -16,6 +16,7 @@ import Teams from './pages/Teams';
 import TeamDashboard from './pages/TeamDashboard';
 import UserProfile from './pages/UserProfile';
 import EventTemplates from './pages/EventTemplates';
+import TeamPerformanceDashboard from './pages/TeamPerformanceDashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -38,6 +39,7 @@ export const PAGES = {
     "TeamDashboard": TeamDashboard,
     "UserProfile": UserProfile,
     "EventTemplates": EventTemplates,
+    "TeamPerformanceDashboard": TeamPerformanceDashboard,
 }
 
 export const pagesConfig = {
