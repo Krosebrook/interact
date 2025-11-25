@@ -16,7 +16,10 @@ import ParticipantManager from '../components/facilitator/ParticipantManager';
 import QAModerator from '../components/facilitator/QAModerator';
 import RecordingUploader from '../components/facilitator/RecordingUploader';
 import CommunicationHub from '../components/facilitator/CommunicationHub';
-import { Calendar, Users, Clock, ArrowLeft, MessageCircle, Video, Mail, Settings } from 'lucide-react';
+import AIQAModerator from '../components/facilitator/AIQAModerator';
+import AIEventSummarizer from '../components/facilitator/AIEventSummarizer';
+import AIBreakoutSuggester from '../components/facilitator/AIBreakoutSuggester';
+import { Calendar, Users, Clock, ArrowLeft, MessageCircle, Video, Mail, Brain } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { format } from 'date-fns';
@@ -124,13 +127,17 @@ export default function FacilitatorView() {
 
         {/* Facilitator Assistant */}
         <Tabs defaultValue={isCompleted ? 'recap' : isUpcoming ? 'participants' : 'live'} className="w-full">
-          <TabsList className="grid w-full grid-cols-4 lg:grid-cols-8 mb-6">
+          <TabsList className="grid w-full grid-cols-5 lg:grid-cols-9 mb-6">
             <TabsTrigger value="participants" className="text-xs">
               <Users className="h-3.5 w-3.5 mr-1 hidden sm:inline" />
               Participants
             </TabsTrigger>
             <TabsTrigger value="prep" className="text-xs">Pre-Event</TabsTrigger>
             <TabsTrigger value="live" className="text-xs">Live</TabsTrigger>
+            <TabsTrigger value="ai" className="text-xs">
+              <Brain className="h-3.5 w-3.5 mr-1 hidden sm:inline" />
+              AI Tools
+            </TabsTrigger>
             <TabsTrigger value="qa" className="text-xs">
               <MessageCircle className="h-3.5 w-3.5 mr-1 hidden sm:inline" />
               Q&A
@@ -191,6 +198,17 @@ export default function FacilitatorView() {
               </div>
               <div>
                 <RealTimeTips eventId={eventId} />
+              </div>
+            </div>
+          </TabsContent>
+
+          {/* AI Tools Tab */}
+          <TabsContent value="ai">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <AIQAModerator eventId={eventId} eventTitle={event.title} />
+              <AIEventSummarizer eventId={eventId} eventTitle={event.title} />
+              <div className="lg:col-span-2">
+                <AIBreakoutSuggester eventId={eventId} eventTitle={event.title} />
               </div>
             </div>
           </TabsContent>
