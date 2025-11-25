@@ -89,6 +89,20 @@ const INTEGRATION_INFO = {
     color: 'bg-green-600',
     description: 'Place search and details',
     docs: 'https://developers.google.com/maps/documentation/places'
+  },
+  cloudflare: { 
+    name: 'Cloudflare', 
+    icon: '☁️', 
+    color: 'bg-orange-500',
+    description: 'DNS, CDN, cache management',
+    docs: 'https://developers.cloudflare.com'
+  },
+  vercel: { 
+    name: 'Vercel', 
+    icon: '▲', 
+    color: 'bg-black',
+    description: 'Deployments, domains, projects',
+    docs: 'https://vercel.com/docs'
   }
 };
 

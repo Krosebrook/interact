@@ -58,6 +58,11 @@ const INTEGRATION_CATEGORIES = {
     name: 'Media & Voice',
     icon: Image,
     keys: ['elevenlabs', 'cloudinary']
+  },
+  devops: {
+    name: 'DevOps & Hosting',
+    icon: Zap,
+    keys: ['cloudflare', 'vercel']
   }
 };
 
@@ -72,7 +77,9 @@ const DEFAULT_INTEGRATIONS = [
   { integration_name: 'Google Maps', integration_key: 'google_maps', is_enabled: false, status: 'disabled' },
   { integration_name: 'Google Places', integration_key: 'google_places', is_enabled: false, status: 'disabled' },
   { integration_name: 'ElevenLabs', integration_key: 'elevenlabs', is_enabled: false, status: 'disabled' },
-  { integration_name: 'Cloudinary', integration_key: 'cloudinary', is_enabled: false, status: 'disabled' }
+  { integration_name: 'Cloudinary', integration_key: 'cloudinary', is_enabled: false, status: 'disabled' },
+  { integration_name: 'Cloudflare', integration_key: 'cloudflare', is_enabled: false, status: 'disabled' },
+  { integration_name: 'Vercel', integration_key: 'vercel', is_enabled: false, status: 'disabled' }
 ];
 
 export default function Integrations() {
@@ -312,6 +319,13 @@ export default function Integrations() {
                     <li>• CLOUDINARY_API_SECRET</li>
                   </>
                 )}
+                {configuring?.integration_key === 'cloudflare' && (
+                  <>
+                    <li>• CLOUDFLARE_API_KEY</li>
+                    <li>• CLOUDFLARE_ACCOUNT_ID (optional)</li>
+                  </>
+                )}
+                {configuring?.integration_key === 'vercel' && <li>• VERCEL_TOKEN</li>}
               </ul>
             </div>
 
