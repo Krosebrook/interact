@@ -31,11 +31,14 @@ import BookmarkedEventsList from '../components/events/BookmarkedEventsList';
 import RichTextEventEditor from '../components/events/RichTextEventEditor';
 import EventSeriesCreator from '../components/events/EventSeriesCreator';
 import RegistrationFormBuilder from '../components/events/RegistrationFormBuilder';
+import BulkEventScheduler from '../components/events/BulkEventScheduler';
+import EventRescheduleDialog from '../components/events/EventRescheduleDialog';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import EmptyState from '../components/common/EmptyState';
 import PageHeader from '../components/common/PageHeader';
 import { useEventActions } from '../components/events/useEventActions';
-import { Calendar as CalendarIcon, Plus, Vote, Layers, ClipboardList } from 'lucide-react';
+import { useTeamData } from '../components/hooks/useTeamData';
+import { Calendar as CalendarIcon, Plus, Vote, Layers, ClipboardList, CalendarPlus } from 'lucide-react';
 import { toast } from 'sonner';
 import { addDays, addWeeks, addMonths } from 'date-fns';
 
@@ -62,8 +65,11 @@ export default function Calendar() {
     occurrences: 4
   });
   const [showPollDialog, setShowPollDialog] = useState(false);
-  const [showSeriesCreator, setShowSeriesCreator] = useState(false);
-  const [scheduleMode, setScheduleMode] = useState('direct'); // 'direct' or 'poll'
+      const [showSeriesCreator, setShowSeriesCreator] = useState(false);
+      const [showBulkScheduler, setShowBulkScheduler] = useState(false);
+      const [rescheduleEvent, setRescheduleEvent] = useState(null);
+      const [scheduleMode, setScheduleMode] = useState('direct'); // 'direct' or 'poll'
+      const { teams } = useTeamData();
 
   useEffect(() => {
     // Check for pre-selected activity from URL
@@ -211,30 +217,37 @@ export default function Calendar() {
   return (
     <div className="space-y-8">
       <PageHeader title="Event Calendar" description="Schedule and manage your team activities">
-        <div className="flex flex-wrap gap-2">
-          <Button
-            variant="outline"
-            onClick={() => setShowSeriesCreator(true)}
-          >
-            <Layers className="h-4 w-4 mr-2" />
-            Create Series
-          </Button>
-          <Button
-            variant="outline"
-            onClick={() => setShowPollDialog(true)}
-          >
-            <Vote className="h-4 w-4 mr-2" />
-            Create Poll
-          </Button>
-          <Button
-            onClick={() => setShowScheduleDialog(true)}
-            className="bg-int-orange hover:bg-[#C46322] text-white"
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            Schedule Event
-          </Button>
-        </div>
-      </PageHeader>
+                    <div className="flex flex-wrap gap-2">
+                      <Button
+                        variant="outline"
+                        onClick={() => setShowBulkScheduler(true)}
+                      >
+                        <CalendarPlus className="h-4 w-4 mr-2" />
+                        Bulk Schedule
+                      </Button>
+                      <Button
+                        variant="outline"
+                        onClick={() => setShowSeriesCreator(true)}
+                      >
+                        <Layers className="h-4 w-4 mr-2" />
+                        Create Series
+                      </Button>
+                      <Button
+                        variant="outline"
+                        onClick={() => setShowPollDialog(true)}
+                      >
+                        <Vote className="h-4 w-4 mr-2" />
+                        Create Poll
+                      </Button>
+                      <Button
+                        onClick={() => setShowScheduleDialog(true)}
+                        className="bg-int-orange hover:bg-[#C46322] text-white"
+                      >
+                        <Plus className="h-4 w-4 mr-2" />
+                        Schedule Event
+                      </Button>
+                    </div>
+                  </PageHeader>
 
       {/* Bookmarked Events */}
       <BookmarkedEventsList userEmail={user?.email} />
@@ -483,11 +496,28 @@ export default function Calendar() {
       </Dialog>
 
       {/* Event Series Creator */}
-      <EventSeriesCreator
-        open={showSeriesCreator}
-        onOpenChange={setShowSeriesCreator}
-        onSeriesCreated={() => queryClient.invalidateQueries(['events'])}
-      />
-    </div>
-  );
-}
+                  <EventSeriesCreator
+                    open={showSeriesCreator}
+                    onOpenChange={setShowSeriesCreator}
+                    onSeriesCreated={() => queryClient.invalidateQueries(['events'])}
+                  />
+
+                  {/* Bulk Event Scheduler */}
+                  <BulkEventScheduler
+                    open={showBulkScheduler}
+                    onOpenChange={setShowBulkScheduler}
+                    activities={activities}
+                    teams={teams}
+                    onScheduleComplete={() => queryClient.invalidateQueries(['events'])}
+                  />
+
+                  {/* Reschedule Dialog */}
+                  <EventRescheduleDialog
+                    open={!!rescheduleEvent}
+                    onOpenChange={(open) => !open && setRescheduleEvent(null)}
+                    event={rescheduleEvent}
+                    onRescheduleComplete={() => queryClient.invalidateQueries(['events'])}
+                  />
+                </div>
+              );
+            }
