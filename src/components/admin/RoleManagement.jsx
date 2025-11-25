@@ -226,6 +226,16 @@ export default function RoleManagement() {
       </div>
 
       {/* Roles Grid */}
+      {rolesLoading ? (
+        <div className="flex items-center justify-center py-8">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-int-orange"></div>
+        </div>
+      ) : roles.length === 0 ? (
+        <Card className="p-8 text-center border-0 shadow-lg">
+          <Shield className="h-12 w-12 text-slate-300 mx-auto mb-3" />
+          <p className="text-slate-500">No roles defined yet. Create your first role to get started.</p>
+        </Card>
+      ) : (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {roles.map(role => {
           const roleAssignments = getRoleAssignments(role.id);
@@ -287,6 +297,7 @@ export default function RoleManagement() {
           );
         })}
       </div>
+      )}
 
       {/* User Assignments Table */}
       <Card className="border-0 shadow-lg">
@@ -306,41 +317,49 @@ export default function RoleManagement() {
                 </tr>
               </thead>
               <tbody>
-                {assignments.map(assignment => {
-                  const role = roles.find(r => r.id === assignment.role_id);
-                  const user = users.find(u => u.email === assignment.user_email);
-                  return (
-                    <tr key={assignment.id} className="border-b hover:bg-slate-50">
-                      <td className="py-3 px-4">
-                        <div>
-                          <p className="font-medium">{user?.full_name || assignment.user_email}</p>
-                          <p className="text-xs text-slate-500">{assignment.user_email}</p>
-                        </div>
-                      </td>
-                      <td className="py-3 px-4">
-                        <Badge className="bg-int-navy">{role?.role_name || assignment.role_key}</Badge>
-                      </td>
-                      <td className="py-3 px-4 text-sm text-slate-600">
-                        {assignment.assigned_by || 'System'}
-                      </td>
-                      <td className="py-3 px-4">
-                        <Badge variant={assignment.is_active ? "default" : "secondary"}>
-                          {assignment.is_active ? 'Active' : 'Inactive'}
-                        </Badge>
-                      </td>
-                      <td className="py-3 px-4 text-right">
-                        <Button 
-                          size="sm" 
-                          variant="ghost" 
-                          className="text-red-600"
-                          onClick={() => removeAssignmentMutation.mutate(assignment.id)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </td>
-                    </tr>
-                  );
-                })}
+                {assignments.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} className="py-8 text-center text-slate-500">
+                      No role assignments yet. Assign roles to users to get started.
+                    </td>
+                  </tr>
+                ) : (
+                  assignments.map(assignment => {
+                    const role = roles.find(r => r.id === assignment.role_id);
+                    const assignedUser = users.find(u => u.email === assignment.user_email);
+                    return (
+                      <tr key={assignment.id} className="border-b hover:bg-slate-50">
+                        <td className="py-3 px-4">
+                          <div>
+                            <p className="font-medium">{assignedUser?.full_name || assignment.user_email}</p>
+                            <p className="text-xs text-slate-500">{assignment.user_email}</p>
+                          </div>
+                        </td>
+                        <td className="py-3 px-4">
+                          <Badge className="bg-int-navy">{role?.role_name || assignment.role_key}</Badge>
+                        </td>
+                        <td className="py-3 px-4 text-sm text-slate-600">
+                          {assignment.assigned_by || 'System'}
+                        </td>
+                        <td className="py-3 px-4">
+                          <Badge variant={assignment.is_active ? "default" : "secondary"}>
+                            {assignment.is_active ? 'Active' : 'Inactive'}
+                          </Badge>
+                        </td>
+                        <td className="py-3 px-4 text-right">
+                          <Button 
+                            size="sm" 
+                            variant="ghost" 
+                            className="text-red-600"
+                            onClick={() => removeAssignmentMutation.mutate(assignment.id)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </td>
+                      </tr>
+                    );
+                  })
+                )}
               </tbody>
             </table>
           </div>
