@@ -15,6 +15,7 @@ import GamificationDashboard from './pages/GamificationDashboard';
 import Teams from './pages/Teams';
 import TeamDashboard from './pages/TeamDashboard';
 import UserProfile from './pages/UserProfile';
+import EventTemplates from './pages/EventTemplates';
 import __Layout from './Layout.jsx';
 
 
@@ -36,6 +37,7 @@ export const PAGES = {
     "Teams": Teams,
     "TeamDashboard": TeamDashboard,
     "UserProfile": UserProfile,
+    "EventTemplates": EventTemplates,
 }
 
 export const pagesConfig = {
