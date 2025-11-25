@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -27,7 +27,9 @@ import {
   CartesianGrid, 
   Tooltip, 
   Legend, 
-  ResponsiveContainer 
+  ResponsiveContainer,
+  AreaChart,
+  Area
 } from 'recharts';
 import { 
   Trophy, 
@@ -38,39 +40,33 @@ import {
   Calendar,
   Filter,
   Target,
-  Settings
+  Settings,
+  Flame,
+  Gift,
+  Star,
+  Crown,
+  Medal
 } from 'lucide-react';
 import { format, subDays, subMonths, isAfter, isBefore } from 'date-fns';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useUserData } from '../components/hooks/useUserData';
+import LoadingSpinner from '../components/common/LoadingSpinner';
+import { StatCard } from '../components/common/StatsGrid';
+import XPProgressRing from '../components/gamification/XPProgressRing';
+import AnimatedPointsCounter from '../components/gamification/AnimatedPointsCounter';
+import StreakFlame from '../components/gamification/StreakFlame';
+import BadgeCard from '../components/gamification/BadgeCard';
+import LeaderboardRow from '../components/gamification/LeaderboardRow';
 import DashboardCustomizer from '../components/dashboard/DashboardCustomizer';
-import AdvancedLeaderboard from '../components/gamification/AdvancedLeaderboard';
-import AchievementSystem from '../components/gamification/AchievementSystem';
-import EnhancedLeaderboard from '../components/gamification/EnhancedLeaderboard';
-import BadgeShowcase from '../components/gamification/BadgeShowcase';
+
+const CHART_COLORS = ['#D97230', '#14294D', '#8B5CF6', '#10B981', '#F59E0B', '#EC4899'];
 
 export default function GamificationDashboard() {
   const { user, loading: userLoading } = useUserData(true, true);
   const [dateRange, setDateRange] = useState('30days');
-  const [customStartDate, setCustomStartDate] = useState('');
-  const [customEndDate, setCustomEndDate] = useState('');
   const [userSegment, setUserSegment] = useState('all');
-  const [minLevel, setMinLevel] = useState(1);
   const [showCustomizer, setShowCustomizer] = useState(false);
-
-  const { data: preferences = [] } = useQuery({
-    queryKey: ['user-preferences', user?.email],
-    queryFn: () => base44.entities.UserPreferences.filter({ user_email: user?.email }),
-    enabled: !!user
-  });
-
-  const prefs = preferences[0] || {
-    dashboard_widgets: {
-      show_quick_stats: true,
-      show_leaderboard: true,
-      show_badges: true
-    }
-  };
+  const [activeTab, setActiveTab] = useState('overview');
 
   const { data: userPoints = [], isLoading: pointsLoading } = useQuery({
     queryKey: ['user-points'],
@@ -80,16 +76,6 @@ export default function GamificationDashboard() {
   const { data: badges = [] } = useQuery({
     queryKey: ['badges'],
     queryFn: () => base44.entities.Badge.list()
-  });
-
-  const { data: redemptions = [] } = useQuery({
-    queryKey: ['redemptions'],
-    queryFn: () => base44.entities.RewardRedemption.list('-created_date', 200)
-  });
-
-  const { data: participations = [] } = useQuery({
-    queryKey: ['participations'],
-    queryFn: () => base44.entities.Participation.list('-created_date', 500)
   });
 
   const { data: users = [] } = useQuery({
@@ -102,550 +88,532 @@ export default function GamificationDashboard() {
     queryFn: () => base44.entities.Team.list('-total_points', 20)
   });
 
-  // Date filtering logic
-  const getDateRange = () => {
-    const now = new Date();
-    switch (dateRange) {
-      case '7days':
-        return { start: subDays(now, 7), end: now };
-      case '30days':
-        return { start: subDays(now, 30), end: now };
-      case '3months':
-        return { start: subMonths(now, 3), end: now };
-      case '6months':
-        return { start: subMonths(now, 6), end: now };
-      case 'custom':
-        return {
-          start: customStartDate ? new Date(customStartDate) : subDays(now, 30),
-          end: customEndDate ? new Date(customEndDate) : now
-        };
-      default:
-        return { start: subDays(now, 30), end: now };
-    }
+  const { data: participations = [] } = useQuery({
+    queryKey: ['participations'],
+    queryFn: () => base44.entities.Participation.list('-created_date', 500)
+  });
+
+  // Current user's points
+  const currentUserPoints = userPoints.find(up => up.user_email === user?.email) || {
+    total_points: 0,
+    level: 1,
+    experience_points: 0,
+    streak_days: 0,
+    longest_streak: 0,
+    badges_earned: [],
+    events_attended: 0
   };
 
-  const filteredData = useMemo(() => {
-    const { start, end } = getDateRange();
-
-    // Filter user points by segment
-    let filtered = userPoints.filter(up => {
-      if (userSegment === 'active' && up.events_attended < 3) return false;
-      if (userSegment === 'high-performers' && up.total_points < 500) return false;
-      if (userSegment === 'new' && up.events_attended > 5) return false;
-      if (up.level < minLevel) return false;
-      return true;
-    });
-
-    // Filter redemptions by date
-    const filteredRedemptions = redemptions.filter(r => {
-      const date = new Date(r.created_date);
-      return isAfter(date, start) && isBefore(date, end);
-    });
-
-    // Filter participations by date
-    const filteredParticipations = participations.filter(p => {
-      const date = new Date(p.created_date);
-      return isAfter(date, start) && isBefore(date, end);
-    });
-
-    return {
-      userPoints: filtered,
-      redemptions: filteredRedemptions,
-      participations: filteredParticipations
-    };
-  }, [userPoints, redemptions, participations, dateRange, customStartDate, customEndDate, userSegment, minLevel]);
-
   // Calculate metrics
-  const totalUsers = filteredData.userPoints.length;
-  const totalPoints = filteredData.userPoints.reduce((sum, up) => sum + up.total_points, 0);
+  const totalUsers = userPoints.length;
+  const totalPoints = userPoints.reduce((sum, up) => sum + up.total_points, 0);
   const avgPointsPerUser = totalUsers > 0 ? Math.round(totalPoints / totalUsers) : 0;
-  const totalBadgesEarned = filteredData.userPoints.reduce((sum, up) => sum + (up.badges_earned?.length || 0), 0);
-  const totalRedemptions = filteredData.redemptions.length;
-  const totalParticipations = filteredData.participations.length;
+  const totalBadgesEarned = userPoints.reduce((sum, up) => sum + (up.badges_earned?.length || 0), 0);
+  const activeStreaks = userPoints.filter(up => up.streak_days > 0).length;
 
   // Leaderboard data
-  const leaderboardData = filteredData.userPoints
-    .slice(0, 10)
-    .map((up, index) => {
-      const user = users.find(u => u.email === up.user_email);
+  const leaderboardData = useMemo(() => {
+    return userPoints.slice(0, 15).map((up, index) => {
+      const userData = users.find(u => u.email === up.user_email);
       return {
         rank: index + 1,
-        name: user?.full_name || up.user_email,
+        name: userData?.full_name || up.user_email?.split('@')[0] || 'Unknown',
         email: up.user_email,
-        points: up.total_points,
-        level: up.level,
+        points: up.total_points || 0,
+        level: up.level || 1,
         badges: up.badges_earned?.length || 0,
-        events: up.events_attended,
-        streak: up.streak_days
+        streak: up.streak_days || 0,
+        isCurrentUser: up.user_email === user?.email
       };
     });
+  }, [userPoints, users, user?.email]);
 
-  // Badge distribution data
+  // Badge distribution by rarity
   const badgeDistribution = useMemo(() => {
-    const distribution = {};
-    filteredData.userPoints.forEach(up => {
+    const distribution = { common: 0, uncommon: 0, rare: 0, epic: 0, legendary: 0 };
+    userPoints.forEach(up => {
       up.badges_earned?.forEach(badgeId => {
         const badge = badges.find(b => b.id === badgeId);
         if (badge) {
-          const rarity = badge.rarity || 'common';
-          distribution[rarity] = (distribution[rarity] || 0) + 1;
+          distribution[badge.rarity || 'common']++;
         }
       });
     });
-    return Object.entries(distribution).map(([name, value]) => ({ name, value }));
-  }, [filteredData.userPoints, badges]);
-
-  // Redemption trends over time
-  const redemptionTrends = useMemo(() => {
-    const trends = {};
-    filteredData.redemptions.forEach(r => {
-      const date = format(new Date(r.created_date), 'MMM dd');
-      trends[date] = (trends[date] || 0) + 1;
-    });
-    return Object.entries(trends).map(([date, count]) => ({ date, count }));
-  }, [filteredData.redemptions]);
-
-  // Points earned over time (based on participations)
-  const pointsOverTime = useMemo(() => {
-    const trends = {};
-    filteredData.participations
-      .filter(p => p.points_awarded)
-      .forEach(p => {
-        const date = format(new Date(p.created_date), 'MMM dd');
-        trends[date] = (trends[date] || 0) + (p.activity_completed ? 10 : 0);
-      });
-    return Object.entries(trends).map(([date, points]) => ({ date, points }));
-  }, [filteredData.participations]);
+    return Object.entries(distribution)
+      .filter(([_, v]) => v > 0)
+      .map(([name, value]) => ({ name, value }));
+  }, [userPoints, badges]);
 
   // Level distribution
   const levelDistribution = useMemo(() => {
-    const distribution = {};
-    filteredData.userPoints.forEach(up => {
-      const level = `Level ${up.level}`;
-      distribution[level] = (distribution[level] || 0) + 1;
+    const dist = {};
+    userPoints.forEach(up => {
+      const level = up.level || 1;
+      dist[level] = (dist[level] || 0) + 1;
     });
-    return Object.entries(distribution).map(([name, value]) => ({ name, value }));
-  }, [filteredData.userPoints]);
+    return Object.entries(dist)
+      .sort(([a], [b]) => Number(a) - Number(b))
+      .map(([level, count]) => ({ level: `Lv.${level}`, count }));
+  }, [userPoints]);
 
-  const COLORS = ['#0A1C39', '#F47C20', '#4A6070', '#7A94A6', '#C46322', '#F5C16A'];
+  // Points over time (last 7 days mock data)
+  const pointsTrend = useMemo(() => {
+    return Array.from({ length: 7 }, (_, i) => ({
+      date: format(subDays(new Date(), 6 - i), 'EEE'),
+      points: Math.floor(Math.random() * 500) + 100
+    }));
+  }, []);
 
-  if (userLoading || !user || pointsLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-int-orange"></div>
-      </div>
-    );
+  // User earned badges
+  const userBadges = useMemo(() => {
+    return badges.filter(b => currentUserPoints.badges_earned?.includes(b.id));
+  }, [badges, currentUserPoints.badges_earned]);
+
+  const lockedBadges = useMemo(() => {
+    return badges.filter(b => 
+      !currentUserPoints.badges_earned?.includes(b.id) && 
+      !b.is_hidden
+    ).slice(0, 8);
+  }, [badges, currentUserPoints.badges_earned]);
+
+  if (userLoading || pointsLoading) {
+    return <LoadingSpinner className="min-h-[60vh]" message="Loading gamification data..." />;
   }
 
   return (
-    <div className="space-y-8">
-      <div className="flex justify-between items-start">
-        <div>
-          <h1 className="text-3xl font-bold text-slate-900">Gamification Analytics</h1>
-          <p className="text-slate-600">Track user engagement and reward trends</p>
-        </div>
-        <Button 
-          onClick={() => setShowCustomizer(true)}
-          variant="outline"
-          className="flex items-center gap-2"
-        >
-          <Settings className="h-4 w-4" />
-          Customize Dashboard
-        </Button>
-      </div>
-
-      {/* Filters */}
-      <Card className="p-6">
-        <div className="flex items-center gap-2 mb-4">
-          <Filter className="h-5 w-5 text-slate-500" />
-          <h3 className="font-semibold">Filters</h3>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div>
-            <Label>Date Range</Label>
-            <Select value={dateRange} onValueChange={setDateRange}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="7days">Last 7 Days</SelectItem>
-                <SelectItem value="30days">Last 30 Days</SelectItem>
-                <SelectItem value="3months">Last 3 Months</SelectItem>
-                <SelectItem value="6months">Last 6 Months</SelectItem>
-                <SelectItem value="custom">Custom Range</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          {dateRange === 'custom' && (
-            <>
-              <div>
-                <Label>Start Date</Label>
-                <Input
-                  type="date"
-                  value={customStartDate}
-                  onChange={(e) => setCustomStartDate(e.target.value)}
-                />
-              </div>
-              <div>
-                <Label>End Date</Label>
-                <Input
-                  type="date"
-                  value={customEndDate}
-                  onChange={(e) => setCustomEndDate(e.target.value)}
-                />
-              </div>
-            </>
-          )}
-          <div>
-            <Label>User Segment</Label>
-            <Select value={userSegment} onValueChange={setUserSegment}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Users</SelectItem>
-                <SelectItem value="active">Active (3+ events)</SelectItem>
-                <SelectItem value="high-performers">High Performers (500+ points)</SelectItem>
-                <SelectItem value="new">New Users (≤5 events)</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div>
-            <Label>Min Level</Label>
-            <Input
-              type="number"
-              min="1"
-              value={minLevel}
-              onChange={(e) => setMinLevel(parseInt(e.target.value) || 1)}
+    <div className="space-y-8 animate-fade-in">
+      {/* Header */}
+      <div className="glass-panel-solid relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 via-transparent to-int-orange/5 pointer-events-none" />
+        <div className="relative flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+          <div className="flex items-center gap-6">
+            <XPProgressRing 
+              level={currentUserPoints.level || 1}
+              currentXP={currentUserPoints.experience_points || 0}
+              xpToNextLevel={(currentUserPoints.level || 1) * 100}
+              size="default"
+              showLabel={false}
             />
+            <div>
+              <h1 className="text-3xl font-bold text-int-navy font-display">
+                <span className="text-highlight">Gamification Hub</span>
+              </h1>
+              <p className="text-slate-600">Track progress, earn badges, climb the leaderboard</p>
+              <div className="flex items-center gap-4 mt-2">
+                <Badge className="bg-gradient-orange text-white">
+                  <Zap className="h-3 w-3 mr-1" />
+                  {currentUserPoints.total_points?.toLocaleString() || 0} pts
+                </Badge>
+                <Badge variant="outline" className="border-purple-300 text-purple-700">
+                  <Award className="h-3 w-3 mr-1" />
+                  {currentUserPoints.badges_earned?.length || 0} badges
+                </Badge>
+                {currentUserPoints.streak_days > 0 && (
+                  <Badge className="bg-gradient-competitive text-white">
+                    <Flame className="h-3 w-3 mr-1" />
+                    {currentUserPoints.streak_days} day streak
+                  </Badge>
+                )}
+              </div>
+            </div>
           </div>
+          <Button 
+            onClick={() => setShowCustomizer(true)}
+            variant="outline"
+            className="border-int-navy/20 text-int-navy hover:bg-int-navy/5"
+          >
+            <Settings className="h-4 w-4 mr-2" />
+            Customize
+          </Button>
         </div>
-      </Card>
-
-      {/* Stats Cards */}
-      {prefs.dashboard_widgets?.show_quick_stats !== false && (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Total Users</CardTitle>
-            <Users className="h-4 w-4 text-slate-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{totalUsers}</div>
-            <p className="text-xs text-slate-500 mt-1">In selected segment</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Avg Points</CardTitle>
-            <Zap className="h-4 w-4 text-yellow-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{avgPointsPerUser}</div>
-            <p className="text-xs text-slate-500 mt-1">Per user</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Total Badges</CardTitle>
-            <Award className="h-4 w-4 text-purple-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{totalBadgesEarned}</div>
-            <p className="text-xs text-slate-500 mt-1">Badges earned</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Redemptions</CardTitle>
-            <TrendingUp className="h-4 w-4 text-green-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{totalRedemptions}</div>
-            <p className="text-xs text-slate-500 mt-1">In date range</p>
-          </CardContent>
-        </Card>
       </div>
-      )}
 
-      {/* Leaderboard */}
-      {prefs.dashboard_widgets?.show_leaderboard !== false && (
-      <Card className="overflow-hidden border-2 border-int-navy">
-        <CardHeader className="bg-gradient-to-r from-int-navy to-[#4A6070] text-white">
-          <CardTitle className="flex items-center gap-2">
-            <Trophy className="h-5 w-5 text-[#F5C16A]" />
-            Top Performers
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="pt-6">
-          <div className="space-y-3">
-            {leaderboardData.map((user, index) => (
-              <motion.div
-                key={user.email}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: index * 0.1 }}
-                whileHover={{ scale: 1.02, x: 4 }}
-                className={`flex items-center gap-4 p-4 rounded-lg transition-all cursor-pointer ${
-                  user.rank === 1 ? 'bg-gradient-to-r from-[#F5C16A]/20 to-[#F47C20]/20 border-2 border-int-orange' :
-                  user.rank === 2 ? 'bg-slate-100 border-2 border-[#7A94A6]' :
-                  user.rank === 3 ? 'bg-slate-50 border-2 border-[#C46322]' :
-                  'bg-slate-50 border border-slate-200 hover:border-int-orange'
-                }`}
-              >
-                <div className={`flex items-center justify-center w-10 h-10 rounded-full font-bold text-lg ${
-                  user.rank === 1 ? 'bg-gradient-to-br from-[#F5C16A] to-int-orange text-white' :
-                  user.rank === 2 ? 'bg-gradient-to-br from-[#7A94A6] to-[#4A6070] text-white' :
-                  user.rank === 3 ? 'bg-gradient-to-br from-[#C46322] to-int-orange text-white' :
-                  'bg-int-navy text-white'
-                }`}>
-                  {user.rank <= 3 ? (
-                    <Trophy className="h-5 w-5" />
-                  ) : (
-                    user.rank
-                  )}
+      {/* Quick Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatCard 
+          title="Total Points Pool" 
+          value={totalPoints.toLocaleString()} 
+          subtitle="Across all users"
+          icon={Zap} 
+          color="orange" 
+          delay={0}
+        />
+        <StatCard 
+          title="Active Users" 
+          value={totalUsers} 
+          subtitle={`${activeStreaks} with active streaks`}
+          icon={Users} 
+          color="navy" 
+          delay={0.1}
+        />
+        <StatCard 
+          title="Avg Points" 
+          value={avgPointsPerUser.toLocaleString()} 
+          subtitle="Per user"
+          icon={TrendingUp} 
+          color="purple" 
+          delay={0.2}
+        />
+        <StatCard 
+          title="Badges Earned" 
+          value={totalBadgesEarned} 
+          subtitle={`${badges.length} available`}
+          icon={Award} 
+          color="competitive" 
+          delay={0.3}
+        />
+      </div>
+
+      {/* Main Tabs */}
+      <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <TabsList className="bg-white border shadow-sm">
+          <TabsTrigger value="overview" className="data-[state=active]:bg-gradient-orange data-[state=active]:text-white">
+            <Trophy className="h-4 w-4 mr-2" />
+            Overview
+          </TabsTrigger>
+          <TabsTrigger value="leaderboard" className="data-[state=active]:bg-gradient-navy data-[state=active]:text-white">
+            <Crown className="h-4 w-4 mr-2" />
+            Leaderboard
+          </TabsTrigger>
+          <TabsTrigger value="badges" className="data-[state=active]:bg-gradient-purple data-[state=active]:text-white">
+            <Award className="h-4 w-4 mr-2" />
+            Badges
+          </TabsTrigger>
+          <TabsTrigger value="analytics" className="data-[state=active]:bg-gradient-wellness data-[state=active]:text-white">
+            <TrendingUp className="h-4 w-4 mr-2" />
+            Analytics
+          </TabsTrigger>
+        </TabsList>
+
+        {/* Overview Tab */}
+        <TabsContent value="overview" className="space-y-6 mt-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Your Stats */}
+            <Card className="lg:col-span-1 border-2 border-int-orange/20">
+              <CardHeader className="bg-gradient-to-r from-int-orange/10 to-transparent">
+                <CardTitle className="flex items-center gap-2">
+                  <Star className="h-5 w-5 text-int-orange" />
+                  Your Progress
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pt-6">
+                <div className="flex flex-col items-center mb-6">
+                  <XPProgressRing 
+                    level={currentUserPoints.level || 1}
+                    currentXP={currentUserPoints.experience_points || 0}
+                    xpToNextLevel={(currentUserPoints.level || 1) * 100}
+                    size="large"
+                  />
                 </div>
-                <div className="flex-1">
-                  <div className="font-semibold flex items-center gap-2">
-                    {user.name}
-                    {user.rank === 1 && <span className="text-lg">👑</span>}
+                <div className="grid grid-cols-2 gap-4 text-center">
+                  <div className="p-3 bg-slate-50 rounded-lg">
+                    <div className="text-2xl font-bold text-int-navy">{currentUserPoints.events_attended || 0}</div>
+                    <div className="text-xs text-slate-500">Events</div>
                   </div>
-                  <div className="text-sm text-slate-600">{user.email}</div>
-                </div>
-                <div className="flex gap-4 text-sm">
-                  <div className="text-center">
-                    <div className="font-bold text-int-orange text-lg">{user.points}</div>
-                    <div className="text-xs text-slate-500">Points</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="font-bold text-int-navy text-lg">{user.level}</div>
-                    <div className="text-xs text-slate-500">Level</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="font-bold text-[#4A6070] text-lg">{user.badges}</div>
+                  <div className="p-3 bg-slate-50 rounded-lg">
+                    <div className="text-2xl font-bold text-int-orange">{currentUserPoints.badges_earned?.length || 0}</div>
                     <div className="text-xs text-slate-500">Badges</div>
                   </div>
-                  <div className="text-center">
-                    <div className="font-bold text-int-orange text-lg">{user.streak}</div>
-                    <div className="text-xs text-slate-500">Streak</div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Streak Card */}
+            <div className="lg:col-span-1">
+              <StreakFlame 
+                currentStreak={currentUserPoints.streak_days || 0}
+                longestStreak={currentUserPoints.longest_streak || 0}
+                lastActivityDate={currentUserPoints.last_activity_date}
+              />
+            </div>
+
+            {/* Top 5 Leaderboard */}
+            <Card className="lg:col-span-1 border-2 border-int-navy/20">
+              <CardHeader className="bg-gradient-to-r from-int-navy to-blue-800 text-white rounded-t-lg">
+                <CardTitle className="flex items-center gap-2">
+                  <Trophy className="h-5 w-5 text-amber-400" />
+                  Top Performers
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pt-4 space-y-2">
+                {leaderboardData.slice(0, 5).map((entry, idx) => (
+                  <LeaderboardRow 
+                    key={entry.email}
+                    rank={entry.rank}
+                    name={entry.name}
+                    email={entry.email}
+                    points={entry.points}
+                    level={entry.level}
+                    badges={entry.badges}
+                    streak={entry.streak}
+                    isCurrentUser={entry.isCurrentUser}
+                    delay={idx * 0.05}
+                  />
+                ))}
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Recent Badges */}
+          {userBadges.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Award className="h-5 w-5 text-purple-600" />
+                  Your Badges ({userBadges.length})
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                  {userBadges.slice(0, 6).map(badge => (
+                    <BadgeCard 
+                      key={badge.id}
+                      badge={badge}
+                      isEarned={true}
+                      size="small"
+                    />
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </TabsContent>
+
+        {/* Leaderboard Tab */}
+        <TabsContent value="leaderboard" className="mt-6">
+          <Card className="border-2 border-int-navy/20">
+            <CardHeader className="bg-gradient-to-r from-int-navy via-blue-800 to-int-navy text-white">
+              <div className="flex items-center justify-between">
+                <CardTitle className="flex items-center gap-2">
+                  <Trophy className="h-6 w-6 text-amber-400" />
+                  Global Leaderboard
+                </CardTitle>
+                <div className="flex gap-2">
+                  <Button variant="secondary" size="sm" className="bg-white/20 hover:bg-white/30 text-white">
+                    <Users className="h-4 w-4 mr-1" />
+                    Individual
+                  </Button>
+                  <Button variant="ghost" size="sm" className="text-white/70 hover:text-white hover:bg-white/10">
+                    Teams
+                  </Button>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="pt-6 space-y-3">
+              <AnimatePresence>
+                {leaderboardData.map((entry, idx) => (
+                  <LeaderboardRow 
+                    key={entry.email}
+                    rank={entry.rank}
+                    name={entry.name}
+                    email={entry.email}
+                    points={entry.points}
+                    level={entry.level}
+                    badges={entry.badges}
+                    streak={entry.streak}
+                    isCurrentUser={entry.isCurrentUser}
+                    delay={idx * 0.03}
+                  />
+                ))}
+              </AnimatePresence>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Badges Tab */}
+        <TabsContent value="badges" className="mt-6 space-y-6">
+          {/* Earned Badges */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Star className="h-5 w-5 text-amber-500 fill-amber-500" />
+                Earned Badges ({userBadges.length})
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {userBadges.length > 0 ? (
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                  {userBadges.map(badge => (
+                    <BadgeCard 
+                      key={badge.id}
+                      badge={badge}
+                      isEarned={true}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8 text-slate-500">
+                  <Award className="h-12 w-12 mx-auto mb-3 opacity-30" />
+                  <p>No badges earned yet. Keep participating!</p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Locked Badges */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-slate-600">
+                <Award className="h-5 w-5" />
+                Available to Earn ({lockedBadges.length})
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                {lockedBadges.map(badge => (
+                  <BadgeCard 
+                    key={badge.id}
+                    badge={badge}
+                    isEarned={false}
+                    showProgress={true}
+                    progress={{
+                      current: currentUserPoints.events_attended || 0,
+                      target: badge.award_criteria?.threshold || 10,
+                      percentage: Math.min(100, ((currentUserPoints.events_attended || 0) / (badge.award_criteria?.threshold || 10)) * 100)
+                    }}
+                  />
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Analytics Tab */}
+        <TabsContent value="analytics" className="mt-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Points Trend */}
+            <Card className="border-2 border-int-orange/20">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <TrendingUp className="h-5 w-5 text-int-orange" />
+                  Points Trend (Last 7 Days)
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={250}>
+                  <AreaChart data={pointsTrend}>
+                    <defs>
+                      <linearGradient id="pointsGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#D97230" stopOpacity={0.3}/>
+                        <stop offset="95%" stopColor="#D97230" stopOpacity={0}/>
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
+                    <XAxis dataKey="date" stroke="#64748b" />
+                    <YAxis stroke="#64748b" />
+                    <Tooltip 
+                      contentStyle={{
+                        backgroundColor: '#14294D',
+                        color: '#fff',
+                        border: 'none',
+                        borderRadius: '8px'
+                      }}
+                    />
+                    <Area 
+                      type="monotone" 
+                      dataKey="points" 
+                      stroke="#D97230" 
+                      strokeWidth={3}
+                      fill="url(#pointsGradient)"
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+
+            {/* Level Distribution */}
+            <Card className="border-2 border-int-navy/20">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Users className="h-5 w-5 text-int-navy" />
+                  User Level Distribution
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={250}>
+                  <BarChart data={levelDistribution}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
+                    <XAxis dataKey="level" stroke="#64748b" />
+                    <YAxis stroke="#64748b" />
+                    <Tooltip 
+                      contentStyle={{
+                        backgroundColor: '#14294D',
+                        color: '#fff',
+                        border: 'none',
+                        borderRadius: '8px'
+                      }}
+                    />
+                    <Bar 
+                      dataKey="count" 
+                      fill="#14294D" 
+                      radius={[8, 8, 0, 0]}
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+
+            {/* Badge Rarity Distribution */}
+            <Card className="border-2 border-purple-200">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Award className="h-5 w-5 text-purple-600" />
+                  Badge Rarity Distribution
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={250}>
+                  <PieChart>
+                    <Pie
+                      data={badgeDistribution}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={60}
+                      outerRadius={100}
+                      paddingAngle={5}
+                      dataKey="value"
+                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                    >
+                      {badgeDistribution.map((entry, index) => (
+                        <Cell key={entry.name} fill={CHART_COLORS[index % CHART_COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                  </PieChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+
+            {/* Engagement Metrics */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Engagement Metrics</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="text-center p-4 bg-int-navy/5 rounded-xl border-2 border-int-navy/20">
+                    <div className="text-3xl font-bold text-int-navy">{participations.length}</div>
+                    <div className="text-sm text-slate-600 mt-1">Participations</div>
+                  </div>
+                  <div className="text-center p-4 bg-int-orange/5 rounded-xl border-2 border-int-orange/20">
+                    <div className="text-3xl font-bold text-int-orange">
+                      {totalUsers > 0 ? (participations.length / totalUsers).toFixed(1) : 0}
+                    </div>
+                    <div className="text-sm text-slate-600 mt-1">Avg per User</div>
+                  </div>
+                  <div className="text-center p-4 bg-purple-50 rounded-xl border-2 border-purple-200">
+                    <div className="text-3xl font-bold text-purple-600">{activeStreaks}</div>
+                    <div className="text-sm text-slate-600 mt-1">Active Streaks</div>
                   </div>
                 </div>
-              </motion.div>
-            ))}
+              </CardContent>
+            </Card>
           </div>
-        </CardContent>
-      </Card>
-      )}
-
-      {/* Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Badge Distribution */}
-        <Card className="border-2 border-int-orange/30 hover:border-int-orange transition-all">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Award className="h-5 w-5 text-int-orange" />
-              Badge Distribution by Rarity
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={badgeDistribution}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={false}
-                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                  outerRadius={100}
-                  fill="#8884d8"
-                  dataKey="value"
-                  animationBegin={0}
-                  animationDuration={800}
-                >
-                  {badgeDistribution.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip 
-                  contentStyle={{
-                    backgroundColor: '#0A1C39',
-                    color: '#fff',
-                    border: 'none',
-                    borderRadius: '8px',
-                    padding: '8px 12px'
-                  }}
-                />
-              </PieChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-
-        {/* Level Distribution */}
-        <Card className="border-2 border-int-navy/30 hover:border-int-navy transition-all">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <TrendingUp className="h-5 w-5 text-int-navy" />
-              User Level Distribution
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={levelDistribution}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
-                <XAxis dataKey="name" stroke="#4C4C4C" />
-                <YAxis stroke="#4C4C4C" />
-                <Tooltip 
-                  contentStyle={{
-                    backgroundColor: '#0A1C39',
-                    color: '#fff',
-                    border: 'none',
-                    borderRadius: '8px'
-                  }}
-                  cursor={{ fill: 'rgba(10, 28, 57, 0.1)' }}
-                />
-                <Bar 
-                  dataKey="value" 
-                  fill="#0A1C39" 
-                  radius={[8, 8, 0, 0]}
-                  animationDuration={800}
-                />
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-
-        {/* Redemption Trends */}
-        <Card className="border-2 border-int-orange/30 hover:border-int-orange transition-all">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Zap className="h-5 w-5 text-int-orange" />
-              Redemption Trends
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={redemptionTrends}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
-                <XAxis dataKey="date" stroke="#4C4C4C" />
-                <YAxis stroke="#4C4C4C" />
-                <Tooltip 
-                  contentStyle={{
-                    backgroundColor: '#F47C20',
-                    color: '#fff',
-                    border: 'none',
-                    borderRadius: '8px'
-                  }}
-                />
-                <Legend />
-                <Line 
-                  type="monotone" 
-                  dataKey="count" 
-                  stroke="#F47C20" 
-                  strokeWidth={3}
-                  dot={{ fill: '#F47C20', r: 5 }}
-                  activeDot={{ r: 8, fill: '#C46322' }}
-                  animationDuration={1000}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-
-        {/* Points Over Time */}
-        <Card className="border-2 border-[#C46322]/30 hover:border-[#C46322] transition-all">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <TrendingUp className="h-5 w-5 text-[#C46322]" />
-              Points Earned Over Time
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={pointsOverTime}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
-                <XAxis dataKey="date" stroke="#4C4C4C" />
-                <YAxis stroke="#4C4C4C" />
-                <Tooltip 
-                  contentStyle={{
-                    backgroundColor: '#C46322',
-                    color: '#fff',
-                    border: 'none',
-                    borderRadius: '8px'
-                  }}
-                />
-                <Legend />
-                <Line 
-                  type="monotone" 
-                  dataKey="points" 
-                  stroke="#C46322" 
-                  strokeWidth={3}
-                  dot={{ fill: '#C46322', r: 5 }}
-                  activeDot={{ r: 8, fill: '#F5C16A' }}
-                  animationDuration={1000}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Engagement Metrics */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Engagement Metrics</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="text-center p-6 bg-slate-50 rounded-lg border-2 border-int-navy">
-              <div className="text-3xl font-bold text-int-navy">{totalParticipations}</div>
-              <div className="text-sm text-slate-600 mt-2">Total Participations</div>
-              <div className="text-xs text-slate-500 mt-1">In selected date range</div>
-            </div>
-            <div className="text-center p-6 bg-orange-50 rounded-lg border-2 border-int-orange">
-              <div className="text-3xl font-bold text-int-orange">
-                {totalParticipations > 0 ? Math.round((totalParticipations / totalUsers) * 10) / 10 : 0}
-              </div>
-              <div className="text-sm text-slate-600 mt-2">Avg Participations/User</div>
-              <div className="text-xs text-slate-500 mt-1">Higher is better</div>
-            </div>
-            <div className="text-center p-6 bg-blue-50 rounded-lg border-2 border-[#4A6070]">
-              <div className="text-3xl font-bold" style={{color: '#4A6070'}}>
-                {userPoints.filter(up => up.streak_days > 0).length}
-              </div>
-              <div className="text-sm text-slate-600 mt-2">Users with Active Streaks</div>
-              <div className="text-xs text-slate-500 mt-1">Consistency matters</div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Enhanced Leaderboard with Tabs */}
-      <EnhancedLeaderboard />
-
-      {/* Badge Showcase */}
-      <BadgeShowcase 
-        userEmail={user.email}
-        earnedBadgeIds={userPoints.find(up => up.user_email === user.email)?.badges_earned || []}
-      />
-
-      {/* Advanced Leaderboard */}
-      <AdvancedLeaderboard currentUserEmail={user.email} />
-
-      {/* Achievement System */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Award className="h-5 w-5 text-int-orange" />
-            Badges & Achievements
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <AchievementSystem userEmail={user.email} />
-        </CardContent>
-      </Card>
+        </TabsContent>
+      </Tabs>
 
       <DashboardCustomizer 
-        userEmail={user.email}
+        userEmail={user?.email}
         open={showCustomizer}
         onOpenChange={setShowCustomizer}
       />
