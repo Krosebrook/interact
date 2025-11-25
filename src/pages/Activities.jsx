@@ -1,18 +1,17 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { useUserData } from '../components/hooks/useUserData';
+import { useActivities } from '../components/hooks/useActivities';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import LoadingSpinner from '../components/ui/LoadingSpinner';
-import EmptyState from '../components/ui/EmptyState';
-import PageHeader from '../components/ui/PageHeader';
-import SkeletonGrid from '../components/ui/SkeletonGrid';
 import ActivityCard from '../components/activities/ActivityCard';
 import ActivityGenerator from '../components/ai/ActivityGenerator';
 import AIActivitySuggester from '../components/activities/AIActivitySuggester';
 import ModuleBuilder from '../components/activities/ModuleBuilder';
+import LoadingSpinner from '../components/common/LoadingSpinner';
+import EmptyState from '../components/common/EmptyState';
+import SkeletonGrid from '../components/common/SkeletonGrid';
 import {
   Dialog,
   DialogContent,
@@ -29,6 +28,7 @@ export default function Activities() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { user, loading } = useUserData(true, true);
+  const { activities, isLoading, duplicateActivity, filterActivities } = useActivities();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedType, setSelectedType] = useState('all');
   const [selectedDuration, setSelectedDuration] = useState('all');
@@ -37,33 +37,10 @@ export default function Activities() {
   const [showSuggester, setShowSuggester] = useState(false);
   const [showModuleBuilder, setShowModuleBuilder] = useState(false);
 
-  const { data: activities = [], isLoading } = useQuery({
-    queryKey: ['activities'],
-    queryFn: () => base44.entities.Activity.list()
-  });
-
-  const duplicateMutation = useMutation({
-    mutationFn: (activity) => {
-      const { id, created_date, updated_date, created_by, ...activityData } = activity;
-      return base44.entities.Activity.create({
-        ...activityData,
-        title: `${activity.title} (Copy)`,
-        is_template: false
-      });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries(['activities']);
-      toast.success('Activity duplicated!');
-    }
-  });
-
-  // Filter activities
-  const filteredActivities = activities.filter(activity => {
-    const matchesSearch = activity.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         activity.description.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesType = selectedType === 'all' || activity.type === selectedType;
-    const matchesDuration = selectedDuration === 'all' || activity.duration === selectedDuration;
-    return matchesSearch && matchesType && matchesDuration;
+  const filteredActivities = filterActivities({ 
+    search: searchQuery, 
+    type: selectedType, 
+    duration: selectedDuration 
   });
 
   const types = ['all', 'icebreaker', 'creative', 'competitive', 'wellness', 'learning', 'social'];
@@ -74,44 +51,49 @@ export default function Activities() {
   };
 
   const handleDuplicate = (activity) => {
-    duplicateMutation.mutate(activity);
+    duplicateActivity(activity);
   };
 
   if (loading || !user) {
-    return <LoadingSpinner color="orange" />;
+    return <LoadingSpinner className="min-h-[60vh]" />;
   }
 
   return (
     <div className="space-y-6">
       {/* Header */}
-      <PageHeader
-        title="Activity Library"
-        description={`${filteredActivities.length} activities available`}
-      >
-        <Button 
-          onClick={() => setShowSuggester(true)}
-          variant="outline"
-          className="border-[#4A6070] text-[#4A6070] hover:bg-slate-50"
-        >
-          <Plus className="h-4 w-4 mr-2" />
-          AI Suggestions
-        </Button>
-        <Button 
-          onClick={() => setShowModuleBuilder(true)}
-          variant="outline"
-          className="border-int-navy text-int-navy hover:bg-slate-50"
-        >
-          <Plus className="h-4 w-4 mr-2" />
-          Build from Modules
-        </Button>
-        <Button 
-          onClick={() => setShowGenerator(true)}
-          className="bg-int-orange hover:bg-[#C46322] text-white"
-        >
-          <Plus className="h-4 w-4 mr-2" />
-          Generate Custom
-        </Button>
-      </PageHeader>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <h1 className="text-3xl font-bold text-slate-900 mb-2">Activity Library</h1>
+          <p className="text-slate-600">
+            {filteredActivities.length} activities available
+          </p>
+        </div>
+        <div className="flex gap-2">
+          <Button 
+            onClick={() => setShowSuggester(true)}
+            variant="outline"
+            className="border-[#4A6070] text-[#4A6070] hover:bg-slate-50"
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            AI Suggestions
+          </Button>
+          <Button 
+            onClick={() => setShowModuleBuilder(true)}
+            variant="outline"
+            className="border-int-navy text-int-navy hover:bg-slate-50"
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Build from Modules
+          </Button>
+          <Button 
+            onClick={() => setShowGenerator(true)}
+            className="bg-int-orange hover:bg-[#C46322] text-white"
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Generate Custom
+          </Button>
+        </div>
+      </div>
 
       {/* Search and Filters */}
       <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-200">

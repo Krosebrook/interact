@@ -6,6 +6,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import StatsGrid from '../components/common/StatsGrid';
+import EmptyState from '../components/common/EmptyState';
 import ParticipantEventCard from '../components/participant/ParticipantEventCard';
 import PersonalizedRecommendations from '../components/participant/PersonalizedRecommendations';
 import PersonalizedCoachWidget from '../components/gamification/PersonalizedCoachWidget';
@@ -70,12 +72,7 @@ export default function ParticipantPortal() {
     return <LoadingSpinner className="min-h-[60vh]" />;
   }
 
-  const statsData = {
-    upcoming: upcomingEvents.length,
-    past: pastEvents.length,
-    pendingFeedback: pendingFeedbackEvents.length,
-    attended: myParticipations.filter(p => p.attended).length
-  };
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 py-8 px-4">
@@ -89,48 +86,13 @@ export default function ParticipantPortal() {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card className="p-6 bg-white border-0 shadow-lg">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-slate-600 mb-1">Upcoming</p>
-                <p className="text-3xl font-bold text-int-navy">{upcomingEvents.length}</p>
-              </div>
-              <Calendar className="h-8 w-8 text-int-navy" />
-            </div>
-          </Card>
-
-          <Card className="p-6 bg-white border-0 shadow-lg">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-slate-600 mb-1">Past Events</p>
-                <p className="text-3xl font-bold" style={{color: '#4A6070'}}>{pastEvents.length}</p>
-              </div>
-              <TrendingUp className="h-8 w-8" style={{color: '#4A6070'}} />
-            </div>
-          </Card>
-
-          <Card className="p-6 bg-white border-0 shadow-lg">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-slate-600 mb-1">Pending Feedback</p>
-                <p className="text-3xl font-bold text-int-orange">{pendingFeedbackEvents.length}</p>
-              </div>
-              <MessageSquare className="h-8 w-8 text-int-orange" />
-            </div>
-          </Card>
-
-          <Card className="p-6 bg-white border-0 shadow-lg">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-slate-600 mb-1">Total Attended</p>
-                <p className="text-3xl font-bold text-int-orange">
-                  {myParticipations.filter(p => p.attended).length}
-                </p>
-              </div>
-              <Sparkles className="h-8 w-8 text-int-orange" />
-            </div>
-          </Card>
+        <div className="mb-8">
+          <StatsGrid stats={[
+            { title: 'Upcoming', value: upcomingEvents.length, icon: Calendar, color: 'navy' },
+            { title: 'Past Events', value: pastEvents.length, icon: TrendingUp, color: 'slate' },
+            { title: 'Pending Feedback', value: pendingFeedbackEvents.length, icon: MessageSquare, color: 'orange' },
+            { title: 'Total Attended', value: myParticipations.filter(p => p.attended).length, icon: Sparkles, color: 'orange' }
+          ]} />
         </div>
 
         <Tabs defaultValue="upcoming" className="w-full">
@@ -151,11 +113,11 @@ export default function ParticipantPortal() {
 
           <TabsContent value="upcoming" className="space-y-6">
             {upcomingEvents.length === 0 ? (
-              <Card className="p-12 text-center border-2 border-dashed">
-                <Calendar className="h-12 w-12 text-slate-400 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-slate-900 mb-2">No upcoming events</h3>
-                <p className="text-slate-600">Check back later for new activities!</p>
-              </Card>
+              <EmptyState
+                icon={Calendar}
+                title="No upcoming events"
+                description="Check back later for new activities!"
+              />
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {upcomingEvents.map(event => {
@@ -177,11 +139,11 @@ export default function ParticipantPortal() {
 
           <TabsContent value="past" className="space-y-6">
             {pastEvents.length === 0 ? (
-              <Card className="p-12 text-center border-2 border-dashed">
-                <TrendingUp className="h-12 w-12 text-slate-400 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-slate-900 mb-2">No past events yet</h3>
-                <p className="text-slate-600">Your event history will appear here</p>
-              </Card>
+              <EmptyState
+                icon={TrendingUp}
+                title="No past events yet"
+                description="Your event history will appear here"
+              />
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {pastEvents.map(event => {
@@ -229,11 +191,11 @@ export default function ParticipantPortal() {
 
           <TabsContent value="feedback" className="space-y-6">
             {pendingFeedbackEvents.length === 0 ? (
-              <Card className="p-12 text-center border-2 border-dashed">
-                <MessageSquare className="h-12 w-12 text-slate-400 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-slate-900 mb-2">All caught up!</h3>
-                <p className="text-slate-600">No pending feedback to provide</p>
-              </Card>
+              <EmptyState
+                icon={MessageSquare}
+                title="All caught up!"
+                description="No pending feedback to provide"
+              />
             ) : (
               <div className="space-y-4">
                 {pendingFeedbackEvents.map(event => {

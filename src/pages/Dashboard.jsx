@@ -5,21 +5,20 @@ import { useUserData } from '../components/hooks/useUserData';
 import { useEventData } from '../components/hooks/useEventData';
 import { filterUpcomingEvents, getParticipationStats, getActivityForEvent } from '../components/utils/eventFilters';
 import { Button } from '@/components/ui/button';
-import LoadingSpinner from '../components/ui/LoadingSpinner';
-import EmptyState from '../components/ui/EmptyState';
-import PageHeader from '../components/ui/PageHeader';
-import SkeletonGrid from '../components/ui/SkeletonGrid';
-import QuickStats from '../components/dashboard/QuickStats';
+import StatsGrid from '../components/common/StatsGrid';
+import SkeletonGrid from '../components/common/SkeletonGrid';
+import QuickActionCard from '../components/common/QuickActionCard';
 import EventCalendarCard from '../components/events/EventCalendarCard';
 import AISuggestionsWidget from '../components/ai/AISuggestionsWidget';
 import ActivityGenerator from '../components/ai/ActivityGenerator';
+import LoadingSpinner from '../components/common/LoadingSpinner';
+import EmptyState from '../components/common/EmptyState';
 import { useEventActions } from '../components/events/useEventActions';
 import { 
   Calendar, 
   Users, 
   Sparkles, 
   TrendingUp, 
-  Plus,
   ArrowRight
 } from 'lucide-react';
 
@@ -54,58 +53,44 @@ export default function Dashboard() {
   };
 
   if (userLoading || isLoading || !user) {
-    return <LoadingSpinner />;
+    return <LoadingSpinner className="min-h-[60vh]" />;
   }
 
   return (
     <div className="space-y-8">
       {/* Welcome Header */}
-      <PageHeader 
-        title={`Welcome back, ${user.full_name}! 👋`}
-        description="Here's what's happening with your team activities"
-      >
-        <Link to={createPageUrl('Activities')}>
-          <Button className="bg-int-orange hover:bg-[#C46322] text-white shadow-lg">
-            <Sparkles className="h-4 w-4 mr-2" />
-            Browse Activities
-          </Button>
-        </Link>
-        <Link to={createPageUrl('Calendar')}>
-          <Button variant="outline">
-            <Calendar className="h-4 w-4 mr-2" />
-            Schedule Event
-          </Button>
-        </Link>
-      </PageHeader>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <h1 className="text-3xl font-bold text-slate-900 mb-2">
+            Welcome back, {user.full_name}! 👋
+          </h1>
+          <p className="text-slate-600">
+            Here's what's happening with your team activities
+          </p>
+        </div>
+        <div className="flex gap-3">
+          <Link to={createPageUrl('Activities')}>
+            <Button className="bg-int-orange hover:bg-[#C46322] text-white shadow-lg">
+              <Sparkles className="h-4 w-4 mr-2" />
+              Browse Activities
+            </Button>
+          </Link>
+          <Link to={createPageUrl('Calendar')}>
+            <Button variant="outline">
+              <Calendar className="h-4 w-4 mr-2" />
+              Schedule Event
+            </Button>
+          </Link>
+        </div>
+      </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <QuickStats 
-          stats={{ title: 'Upcoming Events', value: upcomingEvents.length, subtitle: 'Scheduled activities' }}
-          icon={Calendar}
-          color="navy"
-        />
-        <QuickStats 
-          stats={{ title: 'Total Activities', value: activities.length, subtitle: 'In your library' }}
-          icon={Sparkles}
-          color="orange"
-        />
-        <QuickStats 
-          stats={{ 
-            title: 'This Month', 
-            value: completedThisMonth, 
-            subtitle: 'Events completed',
-            trend: completedThisMonth > 0 ? `${Math.round((completedThisMonth / upcomingEvents.length) * 100)}% completion rate` : 'Let\'s schedule more!'
-          }}
-          icon={TrendingUp}
-          color="orange"
-        />
-        <QuickStats 
-          stats={{ title: 'Avg Participation', value: avgParticipation, subtitle: 'People per event' }}
-          icon={Users}
-          color="navy"
-        />
-      </div>
+      <StatsGrid stats={[
+        { title: 'Upcoming Events', value: upcomingEvents.length, subtitle: 'Scheduled activities', icon: Calendar, color: 'navy' },
+        { title: 'Total Activities', value: activities.length, subtitle: 'In your library', icon: Sparkles, color: 'orange' },
+        { title: 'This Month', value: completedThisMonth, subtitle: 'Events completed', trend: completedThisMonth > 0 ? `${Math.round((completedThisMonth / Math.max(upcomingEvents.length, 1)) * 100)}% completion rate` : "Let's schedule more!", icon: TrendingUp, color: 'orange' },
+        { title: 'Avg Participation', value: avgParticipation, subtitle: 'People per event', icon: Users, color: 'navy' }
+      ]} />
 
       {/* Upcoming Events */}
       <div>
@@ -129,7 +114,6 @@ export default function Dashboard() {
             title="No upcoming events"
             description="Get started by scheduling your first activity"
             actionLabel="Schedule Event"
-            actionIcon={Plus}
             onAction={() => navigate(createPageUrl('Calendar'))}
           />
         ) : (
@@ -160,30 +144,27 @@ export default function Dashboard() {
 
       {/* Quick Actions */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Link to={createPageUrl('Activities')} className="group">
-          <div className="bg-int-navy rounded-xl p-6 text-white hover:shadow-xl transition-shadow relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-20 h-20 bg-int-orange opacity-20 rounded-full -mr-10 -mt-10"></div>
-            <Sparkles className="h-8 w-8 mb-3" />
-            <h3 className="text-lg font-bold mb-2">Browse Activities</h3>
-            <p className="text-sky-blue-gray text-sm">Explore {activities.length} activity templates</p>
-          </div>
-        </Link>
-
-        <Link to={createPageUrl('Calendar')} className="group">
-          <div className="bg-int-orange rounded-xl p-6 text-white hover:shadow-xl transition-shadow">
-            <Calendar className="h-8 w-8 mb-3" />
-            <h3 className="text-lg font-bold mb-2">Schedule Event</h3>
-            <p className="text-orange-100 text-sm">Plan your next team activity</p>
-          </div>
-        </Link>
-
-        <Link to={createPageUrl('Analytics')} className="group">
-          <div className="bg-[#4A6070] rounded-xl p-6 text-white hover:shadow-xl transition-shadow">
-            <TrendingUp className="h-8 w-8 mb-3" />
-            <h3 className="text-lg font-bold mb-2">View Analytics</h3>
-            <p className="text-slate-200 text-sm">Track engagement & trends</p>
-          </div>
-        </Link>
+        <QuickActionCard 
+          title="Browse Activities" 
+          subtitle={`Explore ${activities.length} activity templates`}
+          icon={Sparkles}
+          page="Activities"
+          color="navy"
+        />
+        <QuickActionCard 
+          title="Schedule Event" 
+          subtitle="Plan your next team activity"
+          icon={Calendar}
+          page="Calendar"
+          color="orange"
+        />
+        <QuickActionCard 
+          title="View Analytics" 
+          subtitle="Track engagement & trends"
+          icon={TrendingUp}
+          page="Analytics"
+          color="slate"
+        />
       </div>
 
       {/* Activity Generator Dialog */}
