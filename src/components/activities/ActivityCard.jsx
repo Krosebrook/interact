@@ -2,7 +2,7 @@ import React from 'react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Clock, Users, Calendar, Copy } from 'lucide-react';
+import { Clock, Users, Calendar, Copy, GraduationCap } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const typeColors = {
@@ -86,6 +86,23 @@ export default function ActivityCard({ activity, onSchedule, onDuplicate, onView
               </div>
             )}
           </div>
+          
+          {/* Skills Tags */}
+          {activity.skills_developed?.length > 0 && (
+            <div className="flex flex-wrap gap-1 mb-4">
+              <GraduationCap className="h-3.5 w-3.5 text-slate-400" />
+              {activity.skills_developed.slice(0, 3).map(skill => (
+                <Badge key={skill} variant="outline" className="text-xs py-0 px-1.5">
+                  {skill}
+                </Badge>
+              ))}
+              {activity.skills_developed.length > 3 && (
+                <Badge variant="outline" className="text-xs py-0 px-1.5">
+                  +{activity.skills_developed.length - 3}
+                </Badge>
+              )}
+            </div>
+          )}
           
           <div className="flex gap-2">
             <Button 
