@@ -21,8 +21,10 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import AIEventThemeGenerator from './AIEventThemeGenerator';
 
 export default function AISuggestionsWidget({ onScheduleActivity, onGenerateCustom }) {
+  const [showThemeGenerator, setShowThemeGenerator] = useState(false);
   const queryClient = useQueryClient();
   const [generating, setGenerating] = useState(false);
 
@@ -110,14 +112,25 @@ export default function AISuggestionsWidget({ onScheduleActivity, onGenerateCust
           <Sparkles className="h-6 w-6 text-indigo-600" />
           <h3 className="text-lg font-bold text-slate-900">AI Suggestions</h3>
         </div>
-        <Button
-          onClick={onGenerateCustom}
-          size="sm"
-          className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700"
-        >
-          <Sparkles className="h-4 w-4 mr-1" />
-          Generate Custom
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            onClick={() => setShowThemeGenerator(true)}
+            size="sm"
+            variant="outline"
+            className="border-purple-300 text-purple-700 hover:bg-purple-50"
+          >
+            <Sparkles className="h-4 w-4 mr-1" />
+            Theme Generator
+          </Button>
+          <Button
+            onClick={onGenerateCustom}
+            size="sm"
+            className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700"
+          >
+            <Sparkles className="h-4 w-4 mr-1" />
+            Quick Generate
+          </Button>
+        </div>
       </div>
 
       <AnimatePresence mode="popLayout">
@@ -213,6 +226,16 @@ export default function AISuggestionsWidget({ onScheduleActivity, onGenerateCust
           </div>
         )}
       </AnimatePresence>
+
+      <AIEventThemeGenerator
+        open={showThemeGenerator}
+        onOpenChange={setShowThemeGenerator}
+        onThemeGenerated={(activity) => {
+          if (activity) {
+            onScheduleActivity(activity);
+          }
+        }}
+      />
     </Card>
   );
 }
