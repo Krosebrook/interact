@@ -147,10 +147,10 @@ export default function Layout({ children, currentPageName }) {
                 <Sparkles className="h-6 w-6 text-white" />
               </div>
               <div className="hidden sm:block">
-                <h1 className="text-xl font-bold text-white text-shadow">
+                <h1 className="text-xl font-bold text-slate-900">
                   Team Engage
                 </h1>
-                <p className="text-xs text-white/70">Activity Hub</p>
+                <p className="text-xs text-slate-500">Activity Hub</p>
               </div>
             </Link>
 
@@ -165,8 +165,8 @@ export default function Layout({ children, currentPageName }) {
                     to={createPageUrl(item.page)}
                     className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all ${
                       isActive
-                        ? 'bg-white/25 text-white font-medium shadow-lg'
-                        : 'text-white/80 hover:bg-white/15 hover:text-white'
+                        ? 'bg-int-orange text-white font-medium shadow-lg'
+                        : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900'
                     }`}
                   >
                     <Icon className="h-4 w-4" />
@@ -182,14 +182,14 @@ export default function Layout({ children, currentPageName }) {
                 <>
                   <NotificationBell userEmail={user.email} />
                   <div className="hidden sm:block text-right">
-                    <p className="text-sm font-medium text-white">{user.full_name}</p>
-                    <p className="text-xs text-white/70">{user.role}</p>
+                    <p className="text-sm font-medium text-slate-900">{user.full_name}</p>
+                    <p className="text-xs text-slate-500">{user.role}</p>
                   </div>
                   <Button
                     variant="ghost"
                     size="icon"
                     onClick={handleLogout}
-                    className="text-white/80 hover:text-white hover:bg-white/15"
+                    className="text-slate-600 hover:text-slate-900 hover:bg-slate-100"
                   >
                     <LogOut className="h-5 w-5" />
                   </Button>
@@ -200,7 +200,7 @@ export default function Layout({ children, currentPageName }) {
               <Button
                 variant="ghost"
                 size="icon"
-                className="lg:hidden text-white hover:bg-white/15"
+                className="lg:hidden text-slate-700 hover:bg-slate-100"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               >
                 {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -211,7 +211,7 @@ export default function Layout({ children, currentPageName }) {
 
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
-          <div className="lg:hidden glass-panel-dark mx-4 mb-4 rounded-xl">
+          <div className="lg:hidden bg-white shadow-lg mx-4 mb-4 rounded-xl border border-slate-200">
             <nav className="p-3 space-y-1">
               {filteredNav.map((item) => {
                 const Icon = item.icon;
@@ -223,8 +223,8 @@ export default function Layout({ children, currentPageName }) {
                     onClick={() => setMobileMenuOpen(false)}
                     className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
                       isActive
-                        ? 'bg-white/25 text-white font-medium'
-                        : 'text-white/80 hover:bg-white/15 hover:text-white'
+                        ? 'bg-int-orange text-white font-medium'
+                        : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900'
                     }`}
                   >
                     <Icon className="h-5 w-5" />

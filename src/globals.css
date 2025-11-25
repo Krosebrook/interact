@@ -119,20 +119,20 @@ body {
 
 /* Glass card (smaller padding) */
 .glass-card {
-  background: var(--glass-bg-light);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-radius: 12px;
-  border: 1px solid var(--glass-border);
+  border: 1px solid rgba(255, 255, 255, 0.5);
   padding: 16px;
-  color: #fff;
+  color: #1e293b;
   transition: all 0.3s ease;
 }
 
 .glass-card:hover {
-  background: var(--glass-bg-light);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
   transform: translateY(-2px);
 }
 
@@ -209,10 +209,10 @@ body {
 
 /* Glass header/nav */
 .glass-header {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 /* ===== IMMERSIVE BACKGROUND ===== */

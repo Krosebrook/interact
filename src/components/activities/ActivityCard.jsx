@@ -5,12 +5,12 @@ import { Clock, Users, Calendar, Copy, GraduationCap, ChevronRight } from 'lucid
 import { motion } from 'framer-motion';
 
 const typeConfig = {
-  icebreaker: { emoji: '❄️', label: 'Icebreaker', color: 'bg-blue-500/20 text-blue-200 border-blue-400/30' },
-  creative: { emoji: '🎨', label: 'Creative', color: 'bg-purple-500/20 text-purple-200 border-purple-400/30' },
-  competitive: { emoji: '🏆', label: 'Competitive', color: 'bg-yellow-500/20 text-yellow-200 border-yellow-400/30' },
-  wellness: { emoji: '🧘', label: 'Wellness', color: 'bg-emerald-500/20 text-emerald-200 border-emerald-400/30' },
-  learning: { emoji: '📚', label: 'Learning', color: 'bg-cyan-500/20 text-cyan-200 border-cyan-400/30' },
-  social: { emoji: '🎉', label: 'Social', color: 'bg-pink-500/20 text-pink-200 border-pink-400/30' }
+  icebreaker: { emoji: '❄️', label: 'Icebreaker', color: 'bg-blue-100 text-blue-700 border-blue-200' },
+  creative: { emoji: '🎨', label: 'Creative', color: 'bg-purple-100 text-purple-700 border-purple-200' },
+  competitive: { emoji: '🏆', label: 'Competitive', color: 'bg-yellow-100 text-yellow-700 border-yellow-200' },
+  wellness: { emoji: '🧘', label: 'Wellness', color: 'bg-emerald-100 text-emerald-700 border-emerald-200' },
+  learning: { emoji: '📚', label: 'Learning', color: 'bg-cyan-100 text-cyan-700 border-cyan-200' },
+  social: { emoji: '🎉', label: 'Social', color: 'bg-pink-100 text-pink-700 border-pink-200' }
 };
 
 const gradientBgs = {
@@ -60,15 +60,15 @@ export default function ActivityCard({ activity, onSchedule, onDuplicate, onView
         
         {/* Content */}
         <div className="flex-1 flex flex-col">
-          <h3 className="font-bold text-lg text-white mb-2 line-clamp-1 group-hover:text-int-orange transition-colors">
+          <h3 className="font-bold text-lg text-slate-900 mb-2 line-clamp-1 group-hover:text-int-orange transition-colors">
             {activity.title}
           </h3>
-          <p className="text-sm text-white/70 mb-4 line-clamp-2 flex-1">
+          <p className="text-sm text-slate-600 mb-4 line-clamp-2 flex-1">
             {activity.description}
           </p>
           
           {/* Meta info */}
-          <div className="flex flex-wrap gap-3 mb-4 text-xs text-white/60">
+          <div className="flex flex-wrap gap-3 mb-4 text-xs text-slate-500">
             <div className="flex items-center gap-1">
               <Clock className="h-3.5 w-3.5" />
               <span>{activity.duration}</span>
@@ -89,14 +89,14 @@ export default function ActivityCard({ activity, onSchedule, onDuplicate, onView
           {/* Skills Tags */}
           {activity.skills_developed?.length > 0 && (
             <div className="flex flex-wrap gap-1 mb-4">
-              <GraduationCap className="h-3.5 w-3.5 text-white/50" />
+              <GraduationCap className="h-3.5 w-3.5 text-slate-400" />
               {activity.skills_developed.slice(0, 2).map(skill => (
-                <Badge key={skill} variant="outline" className="text-xs py-0 px-1.5 border-white/20 text-white/70 bg-white/5">
+                <Badge key={skill} variant="outline" className="text-xs py-0 px-1.5 border-slate-200 text-slate-600 bg-slate-50">
                   {skill}
                 </Badge>
               ))}
               {activity.skills_developed.length > 2 && (
-                <Badge variant="outline" className="text-xs py-0 px-1.5 border-white/20 text-white/70 bg-white/5">
+                <Badge variant="outline" className="text-xs py-0 px-1.5 border-slate-200 text-slate-600 bg-slate-50">
                   +{activity.skills_developed.length - 2}
                 </Badge>
               )}
@@ -123,7 +123,7 @@ export default function ActivityCard({ activity, onSchedule, onDuplicate, onView
               }}
               variant="outline"
               size="sm"
-              className="border-white/20 text-white hover:bg-white/10"
+              className="border-slate-200 text-slate-700 hover:bg-slate-100"
             >
               <ChevronRight className="h-4 w-4" />
             </Button>
@@ -134,7 +134,7 @@ export default function ActivityCard({ activity, onSchedule, onDuplicate, onView
               }}
               variant="outline"
               size="sm"
-              className="border-white/20 text-white hover:bg-white/10"
+              className="border-slate-200 text-slate-700 hover:bg-slate-100"
             >
               <Copy className="h-4 w-4" />
             </Button>

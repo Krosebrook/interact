@@ -30,17 +30,17 @@ import { format, isPast } from 'date-fns';
 import { motion } from 'framer-motion';
 
 const statusStyles = {
-  scheduled: 'bg-blue-500/20 text-blue-200 border-blue-400/30',
-  in_progress: 'bg-emerald-500/20 text-emerald-200 border-emerald-400/30',
-  completed: 'bg-slate-500/20 text-slate-200 border-slate-400/30',
-  cancelled: 'bg-red-500/20 text-red-200 border-red-400/30',
-  rescheduled: 'bg-amber-500/20 text-amber-200 border-amber-400/30'
+  scheduled: 'bg-blue-100 text-blue-700 border-blue-200',
+  in_progress: 'bg-emerald-100 text-emerald-700 border-emerald-200',
+  completed: 'bg-slate-100 text-slate-700 border-slate-200',
+  cancelled: 'bg-red-100 text-red-700 border-red-200',
+  rescheduled: 'bg-amber-100 text-amber-700 border-amber-200'
 };
 
 const formatStyles = {
-  online: { icon: Video, label: 'Online', color: 'text-blue-300' },
-  offline: { icon: MapPin, label: 'In-Person', color: 'text-emerald-300' },
-  hybrid: { icon: Users, label: 'Hybrid', color: 'text-purple-300' }
+  online: { icon: Video, label: 'Online', color: 'text-blue-600' },
+  offline: { icon: MapPin, label: 'In-Person', color: 'text-emerald-600' },
+  hybrid: { icon: Users, label: 'Hybrid', color: 'text-purple-600' }
 };
 
 export default function EventCalendarCard({ 
@@ -78,17 +78,17 @@ export default function EventCalendarCard({
               {event.status.replace('_', ' ')}
             </Badge>
             {event.is_recurring && (
-              <Badge variant="outline" className="border-white/20 text-white/70 text-xs">
+              <Badge variant="outline" className="border-slate-200 text-slate-600 text-xs">
                 <RefreshCw className="h-3 w-3 mr-1" />
                 Recurring
               </Badge>
             )}
           </div>
-          <h3 className="font-semibold text-white truncate group-hover:text-int-orange transition-colors">
+          <h3 className="font-semibold text-slate-900 truncate group-hover:text-int-orange transition-colors">
             {event.title}
           </h3>
           {activity && (
-            <p className="text-sm text-white/60 truncate">{activity.title}</p>
+            <p className="text-sm text-slate-500 truncate">{activity.title}</p>
           )}
         </div>
         
@@ -96,7 +96,7 @@ export default function EventCalendarCard({
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8 text-white/50 hover:text-white hover:bg-white/10"
+            className="h-8 w-8 text-slate-400 hover:text-slate-700 hover:bg-slate-100"
             onClick={() => setIsBookmarked(!isBookmarked)}
           >
             {isBookmarked ? (
@@ -108,7 +108,7 @@ export default function EventCalendarCard({
           
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-8 w-8 text-white/50 hover:text-white hover:bg-white/10">
+              <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400 hover:text-slate-700 hover:bg-slate-100">
                 <MoreVertical className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
@@ -161,33 +161,33 @@ export default function EventCalendarCard({
 
       {/* Event Details */}
       <div className="space-y-2 mb-4">
-        <div className="flex items-center gap-2 text-sm text-white/70">
+        <div className="flex items-center gap-2 text-sm text-slate-600">
           <Calendar className="h-4 w-4 text-int-orange" />
           <span>{format(eventDate, 'EEE, MMM d, yyyy')}</span>
         </div>
-        <div className="flex items-center gap-2 text-sm text-white/70">
+        <div className="flex items-center gap-2 text-sm text-slate-600">
           <Clock className="h-4 w-4 text-int-orange" />
           <span>{format(eventDate, 'h:mm a')}</span>
           {event.duration_minutes && (
-            <span className="text-white/50">• {event.duration_minutes} min</span>
+            <span className="text-slate-400">• {event.duration_minutes} min</span>
           )}
         </div>
-        <div className="flex items-center gap-2 text-sm text-white/70">
+        <div className="flex items-center gap-2 text-sm text-slate-600">
           <FormatIcon className={`h-4 w-4 ${formatConfig.color}`} />
           <span>{formatConfig.label}</span>
           {event.location && (
-            <span className="text-white/50 truncate">• {event.location}</span>
+            <span className="text-slate-400 truncate">• {event.location}</span>
           )}
         </div>
       </div>
 
       {/* Participants */}
-      <div className="flex items-center justify-between pt-3 border-t border-white/10">
-        <div className="flex items-center gap-2 text-sm text-white/60">
+      <div className="flex items-center justify-between pt-3 border-t border-slate-200">
+        <div className="flex items-center gap-2 text-sm text-slate-500">
           <Users className="h-4 w-4" />
           <span>{participantCount} participant{participantCount !== 1 ? 's' : ''}</span>
           {event.max_participants && (
-            <span className="text-white/40">/ {event.max_participants}</span>
+            <span className="text-slate-400">/ {event.max_participants}</span>
           )}
         </div>
         
