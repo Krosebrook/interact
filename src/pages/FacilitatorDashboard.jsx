@@ -44,6 +44,9 @@ export default function FacilitatorDashboard() {
   const { user, loading: userLoading } = useAuth(true);
   const { events, activities, participations, isLoading } = useEventData();
   const [showSupport, setShowSupport] = useState(false);
+  const [showAgentChat, setShowAgentChat] = useState(false);
+  const [showActivityGenerator, setShowActivityGenerator] = useState(false);
+  const [activeTab, setActiveTab] = useState('overview');
 
   const sendReminderMutation = useMutation({
     mutationFn: async (eventId) => {
