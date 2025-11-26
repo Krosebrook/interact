@@ -21,6 +21,7 @@ import SkillsDashboard from './pages/SkillsDashboard';
 import Integrations from './pages/Integrations';
 import ProjectPlan from './pages/ProjectPlan';
 import GamificationSettings from './pages/GamificationSettings';
+import TeamCompetition from './pages/TeamCompetition';
 import __Layout from './Layout.jsx';
 
 
@@ -48,6 +49,7 @@ export const PAGES = {
     "Integrations": Integrations,
     "ProjectPlan": ProjectPlan,
     "GamificationSettings": GamificationSettings,
+    "TeamCompetition": TeamCompetition,
 }
 
 export const pagesConfig = {
