@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import NotificationBell from './components/notifications/NotificationBell';
+import PWAInstallPrompt from './components/pwa/PWAInstallPrompt';
 
 const HEADER_IMAGE = 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/691e3ae3bd4916f2e05ae35e/1b2b117bd_ChatGPTImageNov25202503_31_49PM.png';
 
@@ -159,33 +160,8 @@ export default function Layout({ children, currentPageName }) {
         </div>
       </header>
 
-      {/* PWA Install Banner */}
-      {showInstallBanner && (
-        <div className="bg-int-orange text-white px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Download className="h-5 w-5" />
-            <span className="text-sm font-medium">Install Team Engage for a better experience</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Button 
-              size="sm" 
-              variant="secondary" 
-              className="bg-white text-int-orange hover:bg-white/90"
-              onClick={handleInstallClick}
-            >
-              Install
-            </Button>
-            <Button 
-              size="sm" 
-              variant="ghost" 
-              className="text-white hover:bg-white/20"
-              onClick={dismissInstallBanner}
-            >
-              <X className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
-      )}
+      {/* PWA Install Prompt */}
+                  <PWAInstallPrompt />
 
       {/* Main Content */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
