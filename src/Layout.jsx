@@ -92,6 +92,7 @@ export default function Layout({ children, currentPageName }) {
         { name: 'Teams', icon: Users, page: 'Teams' },
         { name: 'Skills', icon: BarChart3, page: 'SkillsDashboard' },
         { name: 'Gamification', icon: Gift, page: 'GamificationDashboard' },
+      { name: 'Gamification Settings', icon: SettingsIcon, page: 'GamificationSettings' },
         { name: 'Analytics', icon: BarChart3, page: 'Analytics' },
         { name: 'Integrations', icon: Plug, page: 'Integrations' },
         { name: 'Project Plan', icon: LayoutDashboard, page: 'ProjectPlan' },
