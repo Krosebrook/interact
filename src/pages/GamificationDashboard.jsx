@@ -58,6 +58,9 @@ import StreakFlame from '../components/gamification/StreakFlame';
 import BadgeCard from '../components/gamification/BadgeCard';
 import LeaderboardRow from '../components/gamification/LeaderboardRow';
 import DashboardCustomizer from '../components/dashboard/DashboardCustomizer';
+import GamificationAnalyticsDashboard from '../components/gamification/GamificationAnalyticsDashboard';
+import ChallengeCard from '../components/gamification/ChallengeCard';
+import RewardCard from '../components/gamification/RewardCard';
 
 const CHART_COLORS = ['#D97230', '#14294D', '#8B5CF6', '#10B981', '#F59E0B', '#EC4899'];
 
@@ -279,7 +282,15 @@ export default function GamificationDashboard() {
             <Award className="h-4 w-4 mr-2" />
             Badges
           </TabsTrigger>
-          <TabsTrigger value="analytics" className="data-[state=active]:bg-gradient-wellness data-[state=active]:text-white">
+          <TabsTrigger value="challenges" className="data-[state=active]:bg-gradient-competitive data-[state=active]:text-white">
+            <Target className="h-4 w-4 mr-2" />
+            Challenges
+          </TabsTrigger>
+          <TabsTrigger value="rewards" className="data-[state=active]:bg-gradient-wellness data-[state=active]:text-white">
+            <Gift className="h-4 w-4 mr-2" />
+            Rewards
+          </TabsTrigger>
+          <TabsTrigger value="analytics" className="data-[state=active]:bg-slate-700 data-[state=active]:text-white">
             <TrendingUp className="h-4 w-4 mr-2" />
             Analytics
           </TabsTrigger>
@@ -478,9 +489,19 @@ export default function GamificationDashboard() {
           </Card>
         </TabsContent>
 
+        {/* Challenges Tab */}
+        <TabsContent value="challenges" className="mt-6">
+          <ChallengesSection userEmail={user?.email} />
+        </TabsContent>
+
+        {/* Rewards Tab */}
+        <TabsContent value="rewards" className="mt-6">
+          <RewardsSection userPoints={currentUserPoints} />
+        </TabsContent>
+
         {/* Analytics Tab */}
         <TabsContent value="analytics" className="mt-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <GamificationAnalyticsDashboard />
             {/* Points Trend */}
             <Card className="border-2 border-int-orange/20">
               <CardHeader>
@@ -606,10 +627,7 @@ export default function GamificationDashboard() {
                     <div className="text-sm text-slate-600 mt-1">Active Streaks</div>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
+              </TabsContent>
       </Tabs>
 
       <DashboardCustomizer 
@@ -617,6 +635,144 @@ export default function GamificationDashboard() {
         open={showCustomizer}
         onOpenChange={setShowCustomizer}
       />
+    </div>
+  );
+}
+
+// Challenges Section Component
+function ChallengesSection({ userEmail }) {
+  const { data: challenges = [] } = useQuery({
+    queryKey: ['team-challenges'],
+    queryFn: () => base44.entities.TeamChallenge.list('-created_date')
+  });
+
+  const { data: memberships = [] } = useQuery({
+    queryKey: ['team-memberships', userEmail],
+    queryFn: () => base44.entities.TeamMembership.filter({ user_email: userEmail }),
+    enabled: !!userEmail
+  });
+
+  const userTeamId = memberships[0]?.team_id;
+  const activeChallenges = challenges.filter(c => c.status === 'active');
+  const completedChallenges = challenges.filter(c => c.status === 'completed');
+
+  return (
+    <div className="space-y-6">
+      {/* Active Challenges */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Target className="h-5 w-5 text-int-orange" />
+            Active Challenges ({activeChallenges.length})
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          {activeChallenges.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {activeChallenges.map(challenge => (
+                <ChallengeCard 
+                  key={challenge.id}
+                  challenge={challenge}
+                  userTeamId={userTeamId}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-8 text-slate-500">
+              <Target className="h-12 w-12 mx-auto mb-3 opacity-30" />
+              <p>No active challenges right now</p>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Completed Challenges */}
+      {completedChallenges.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-slate-600">
+              <Trophy className="h-5 w-5" />
+              Past Challenges ({completedChallenges.length})
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {completedChallenges.slice(0, 4).map(challenge => (
+                <ChallengeCard 
+                  key={challenge.id}
+                  challenge={challenge}
+                  userTeamId={userTeamId}
+                />
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+    </div>
+  );
+}
+
+// Rewards Section Component
+function RewardsSection({ userPoints }) {
+  const { data: rewards = [] } = useQuery({
+    queryKey: ['rewards'],
+    queryFn: () => base44.entities.Reward.list('-created_date')
+  });
+
+  const availableRewards = rewards.filter(r => r.is_available);
+  const affordableRewards = availableRewards.filter(r => r.points_cost <= (userPoints?.available_points || 0));
+
+  return (
+    <div className="space-y-6">
+      {/* Points Balance */}
+      <Card className="bg-gradient-to-br from-int-orange/10 to-amber-50 border-int-orange/30">
+        <CardContent className="p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-slate-600 mb-1">Available Points</p>
+              <p className="text-4xl font-bold text-int-orange">
+                {(userPoints?.available_points || 0).toLocaleString()}
+              </p>
+            </div>
+            <div className="p-4 rounded-2xl bg-gradient-orange shadow-lg">
+              <Gift className="h-8 w-8 text-white" />
+            </div>
+          </div>
+          {affordableRewards.length > 0 && (
+            <p className="mt-3 text-sm text-emerald-600">
+              ✨ You can afford {affordableRewards.length} reward{affordableRewards.length > 1 ? 's' : ''}!
+            </p>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Available Rewards */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Gift className="h-5 w-5 text-emerald-600" />
+            Available Rewards
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          {availableRewards.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {availableRewards.map(reward => (
+                <RewardCard 
+                  key={reward.id}
+                  reward={reward}
+                  userPoints={userPoints?.available_points || 0}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-8 text-slate-500">
+              <Gift className="h-12 w-12 mx-auto mb-3 opacity-30" />
+              <p>No rewards available at the moment</p>
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }

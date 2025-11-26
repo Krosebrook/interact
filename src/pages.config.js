@@ -22,6 +22,7 @@ import Integrations from './pages/Integrations';
 import ProjectPlan from './pages/ProjectPlan';
 import GamificationSettings from './pages/GamificationSettings';
 import TeamCompetition from './pages/TeamCompetition';
+import AIEventPlanner from './pages/AIEventPlanner';
 import __Layout from './Layout.jsx';
 
 
@@ -50,6 +51,7 @@ export const PAGES = {
     "ProjectPlan": ProjectPlan,
     "GamificationSettings": GamificationSettings,
     "TeamCompetition": TeamCompetition,
+    "AIEventPlanner": AIEventPlanner,
 }
 
 export const pagesConfig = {
