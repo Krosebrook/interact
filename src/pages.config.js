@@ -20,6 +20,7 @@ import TeamPerformanceDashboard from './pages/TeamPerformanceDashboard';
 import SkillsDashboard from './pages/SkillsDashboard';
 import Integrations from './pages/Integrations';
 import ProjectPlan from './pages/ProjectPlan';
+import GamificationSettings from './pages/GamificationSettings';
 import __Layout from './Layout.jsx';
 
 
@@ -46,6 +47,7 @@ export const PAGES = {
     "SkillsDashboard": SkillsDashboard,
     "Integrations": Integrations,
     "ProjectPlan": ProjectPlan,
+    "GamificationSettings": GamificationSettings,
 }
 
 export const pagesConfig = {
