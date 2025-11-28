@@ -1,8 +1,18 @@
 # Point Store - Feature Specification
+## Employee Engagement Platform - Intinc
+
+---
 
 ## 1. Overview
 
+### 1.1 Purpose
 The Point Store allows employees to spend earned points on avatar customizations, power-ups, and exclusive items. Premium items can be purchased with real money via Stripe integration.
+
+### 1.2 Business Goals
+- **Engagement Loop**: Create a compelling reason to earn points
+- **Personalization**: Let employees express themselves
+- **Revenue Option**: Premium items for additional revenue
+- **Fun Factor**: Add gamification elements that drive participation
 
 ---
 

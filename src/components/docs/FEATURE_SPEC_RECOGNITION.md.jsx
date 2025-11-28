@@ -1,8 +1,18 @@
 # Peer-to-Peer Recognition System - Feature Specification
+## Employee Engagement Platform - Intinc
+
+---
 
 ## 1. Overview
 
+### 1.1 Purpose
 The Recognition System enables employees to publicly acknowledge colleagues' contributions, tag relevant skills/projects, and optionally award points. Admins can moderate before publishing to maintain quality and appropriateness.
+
+### 1.2 Key Benefits
+- **Culture Building**: Reinforce company values through recognition
+- **Engagement**: Increase employee engagement and retention
+- **Visibility**: Make great work visible across the organization
+- **Motivation**: Points and badges incentivize participation
 
 ---
 

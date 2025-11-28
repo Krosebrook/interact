@@ -1,8 +1,18 @@
 # Pulse Surveys - Feature Specification
+## Employee Engagement Platform - Intinc
+
+---
 
 ## 1. Overview
 
+### 1.1 Purpose
 Pulse Surveys enable HR to gather anonymous, recurring feedback from employees. The system ensures true anonymity by never storing respondent identifiers and only displaying results after a minimum response threshold is met.
+
+### 1.2 Key Principles
+- **True Anonymity**: No user identifier stored with responses
+- **Privacy First**: Minimum 5 responses before results shown
+- **Ease of Use**: <2 minute completion time
+- **Actionable Insights**: AI-powered sentiment analysis
 
 ---
 

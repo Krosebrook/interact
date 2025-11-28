@@ -1,4 +1,11 @@
 # Interconnected Features - System Overview
+## Employee Engagement Platform - Intinc
+
+---
+
+## Executive Summary
+
+This document provides a comprehensive overview of how the three core engagement modules (Pulse Surveys, Peer Recognition, and Point Store) work together to create a cohesive employee engagement experience. Each module reinforces the others through shared points economy and cross-feature integrations.
 
 ## 1. High-Level Architecture
 
