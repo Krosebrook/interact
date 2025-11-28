@@ -387,12 +387,47 @@ See [FEATURE_SPEC_POINT_STORE.md](./FEATURE_SPEC_POINT_STORE.md) for implementat
 | recognition.moderation | hybrid | Moderation mode |
 | surveys.enabled | true | Survey feature |
 | surveys.anonymous | true | Force anonymity |
+| surveys.min_threshold | 5 | Min responses for results |
 | store.enabled | true | Point store |
-| store.stripe | false | Real-money purchases |
+| store.stripe | true | Real-money purchases (keys set) |
 | gamification.badges | true | Badge system |
 | gamification.leaderboard | true | Public leaderboard |
+| gamification.streaks | true | Streak tracking |
+| gamification.teams | true | Team competitions |
+| channels.enabled | true | Team channels |
+| channels.private | true | Private channels |
+| events.recurring | true | Recurring events |
+| events.templates | true | Event templates |
+| ai.suggestions | true | AI recommendations |
+| ai.sentiment | true | Sentiment analysis |
 
 ---
 
-*Document Version: 1.0*
+## 11. Activity Types (Live)
+
+| Type | Icon | Color | Templates |
+|------|------|-------|-----------|
+| Icebreaker | 🎭 | Blue | Two Truths, Show & Tell |
+| Creative | 🎨 | Purple | Caption Contest, Pictionary |
+| Competitive | 🏆 | Amber | Trivia, Scavenger Hunt |
+| Wellness | 🧘 | Green | Desk Yoga, Meditation |
+| Learning | 📚 | Cyan | Training, Workshops |
+| Social | 🎉 | Pink | Coffee Chat, Happy Hour |
+
+---
+
+## 12. Badge Rarities (Configured)
+
+| Rarity | Color | Points Multiplier | Badges |
+|--------|-------|-------------------|--------|
+| Common | Gray | 1x | First Steps, Team Player |
+| Uncommon | Green | 1.5x | Dedicated, Feedback Hero |
+| Rare | Blue | 2x | Activity Master, Champion |
+| Epic | Purple | 3x | Streak Master, Facilitator |
+| Legendary | Gold | 5x | Early Adopter |
+
+---
+
+*Document Version: 2.0*
 *Last Updated: 2025-11-28*
+*Status: Active Development*

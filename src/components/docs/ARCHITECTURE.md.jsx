@@ -483,7 +483,32 @@ Deno.serve(async (req) => {
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-### 4.2 Data Flow
+### 4.2 Live Entity Data
+
+Based on current platform data:
+
+**Activities (15+ templates)**
+- Two Truths and a Lie (Icebreaker, 15-30min)
+- Virtual Coffee Chat (Social, 15-30min)
+- Quick Desk Yoga (Wellness, 5-15min)
+- Virtual Trivia Challenge (Competitive, 30+min)
+- AI Training Class Activity Flow (Learning, 15-30min)
+
+**Badges (10 configured)**
+| Badge | Rarity | Points | Criteria |
+|-------|--------|--------|----------|
+| First Steps | Common | 10 | Attend 1 event |
+| Team Player | Common | 25 | Attend 5 events |
+| Dedicated Member | Uncommon | 50 | Attend 10 events |
+| Feedback Hero | Uncommon | 30 | Submit 20 feedbacks |
+| Activity Master | Rare | 50 | Complete 25 activities |
+| Engagement Champion | Rare | 75 | 90%+ engagement |
+| Streak Master | Epic | 100 | 30-day streak |
+| Top Facilitator | Epic | 100 | Facilitate 10 events |
+| Early Adopter | Legendary | 150 | First 50 users |
+| Team Player (Collab) | Uncommon | 40 | 500 team points |
+
+### 4.3 Data Flow
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
