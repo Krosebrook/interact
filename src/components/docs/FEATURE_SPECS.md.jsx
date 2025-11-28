@@ -1,386 +1,396 @@
 # Feature Specifications
-
-## 1. Peer-to-Peer Recognition
-
-### Overview
-Allow employees to publicly recognize colleagues for their contributions.
-
-### User Stories
-- As an employee, I want to send a public shoutout to a colleague
-- As an employee, I want to see a feed of recent recognitions
-- As an admin, I want to moderate recognition posts
-
-### Technical Requirements
-**Entity: `Recognition`**
-```json
-{
-  "sender_email": "string",
-  "recipient_emails": ["string"],
-  "message": "string (max 500 chars)",
-  "tags": ["string"],
-  "is_public": "boolean (default: true)",
-  "status": "enum: pending, approved, rejected",
-  "reactions": [{ "emoji": "string", "user_email": "string" }],
-  "points_awarded": "number (default: 5)"
-}
-```
-
-**Components:**
-- `RecognitionForm.jsx` - Create recognition
-- `RecognitionFeed.jsx` - Display feed
-- `RecognitionCard.jsx` - Individual recognition
-
-**Backend Functions:**
-- `createRecognition` - Create & notify recipient
-- `moderateRecognition` - Admin moderation
+## Employee Engagement Platform
 
 ---
 
-## 2. Pulse Surveys
+## 1. Feature Overview Matrix
 
-### Overview
-Anonymous, recurring surveys for employee feedback.
-
-### User Stories
-- As HR, I want to create anonymous surveys
-- As an employee, I want to submit anonymous feedback
-- As HR, I want to see aggregated results (min 5 responses)
-
-### Technical Requirements
-**Entity: `Survey`**
-```json
-{
-  "title": "string",
-  "description": "string",
-  "questions": [{
-    "id": "string",
-    "type": "enum: rating, text, multiple_choice",
-    "text": "string",
-    "options": ["string"],
-    "required": "boolean"
-  }],
-  "status": "enum: draft, active, closed",
-  "recurrence": "enum: once, weekly, biweekly, monthly",
-  "target_audience": "enum: all, team, department",
-  "target_ids": ["string"],
-  "response_count": "number",
-  "min_responses_for_results": "number (default: 5)"
-}
-```
-
-**Entity: `SurveyResponse`**
-```json
-{
-  "survey_id": "string",
-  "answers": [{
-    "question_id": "string",
-    "value": "string | number | [string]"
-  }],
-  "submitted_at": "datetime"
-}
-```
-
-**Note:** No `respondent_email` field to ensure anonymity.
+| Feature | Status | Priority | Module |
+|---------|--------|----------|--------|
+| Peer Recognition | ✅ Built | P0 | Recognition |
+| Recognition Feed | ✅ Built | P0 | Recognition |
+| Moderation Queue | ✅ Built | P0 | Recognition |
+| Pulse Surveys | 🔄 Spec'd | P0 | Surveys |
+| Anonymous Responses | 🔄 Spec'd | P0 | Surveys |
+| Team Channels | ✅ Built | P0 | Channels |
+| Channel Messaging | ✅ Built | P0 | Channels |
+| Points System | ✅ Built | P0 | Gamification |
+| Badges | ✅ Built | P1 | Gamification |
+| Leaderboards | ✅ Built | P1 | Gamification |
+| Point Store | 🔄 Spec'd | P1 | Store |
+| Avatar Customization | 🔄 Spec'd | P1 | Store |
+| Stripe Integration | 🔄 Spec'd | P1 | Store |
+| Milestone Celebrations | ⏳ Planned | P2 | Celebrations |
+| Wellness Challenges | ⏳ Planned | P2 | Wellness |
+| Analytics Dashboard | ✅ Built | P1 | Analytics |
 
 ---
 
-## 3. Point Store
+## 2. Recognition System
 
-### Overview
-In-app store for spending earned points on rewards and avatar items.
+### 2.1 Feature Description
+Peer-to-peer recognition allowing employees to publicly acknowledge colleagues' contributions with optional point bonuses.
 
-### User Stories
-- As an employee, I want to browse available items
-- As an employee, I want to purchase avatar power-ups
-- As an admin, I want to manage store inventory
+### 2.2 User Stories
 
-### Technical Requirements
-**Entity: `StoreItem`**
-```json
-{
-  "name": "string",
-  "description": "string",
-  "category": "enum: avatar, power_up, effect, badge, physical",
-  "points_cost": "number",
-  "image_url": "string",
-  "rarity": "enum: common, uncommon, rare, epic, legendary",
-  "stock_quantity": "number (null = unlimited)",
-  "is_available": "boolean",
-  "item_data": {
-    "avatar_slot": "string",
-    "effect_type": "string",
-    "duration_hours": "number"
-  }
-}
+| ID | As a... | I want to... | So that... |
+|----|---------|--------------|------------|
+| REC-01 | Employee | Give recognition to colleague | I can acknowledge their work |
+| REC-02 | Employee | Add points to recognition | I can reward exceptional work |
+| REC-03 | Employee | Tag skills/projects | Context is preserved |
+| REC-04 | Employee | React to recognitions | I can show appreciation |
+| REC-05 | Admin | Moderate recognitions | Quality is maintained |
+| REC-06 | Admin | Feature recognitions | Best ones are highlighted |
+
+### 2.3 Functional Requirements
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    RECOGNITION WORKFLOW                          │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  USER CREATES                                                    │
+│       │                                                          │
+│       ▼                                                          │
+│  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐         │
+│  │ Validation  │───▶│ AI Filter   │───▶│ Status Set  │         │
+│  │ - 20-500chr │    │ - Toxicity  │    │             │         │
+│  │ - Recipient │    │ - PII       │    │ pending OR  │         │
+│  │ - Points    │    │ - Spam      │    │ auto-approve│         │
+│  └─────────────┘    └─────────────┘    └──────┬──────┘         │
+│                                               │                  │
+│                      ┌────────────────────────┴───────┐         │
+│                      │                                │         │
+│                      ▼                                ▼         │
+│               ┌─────────────┐                  ┌─────────────┐  │
+│               │ MODERATION  │                  │  PUBLISHED  │  │
+│               │    QUEUE    │                  │             │  │
+│               │             │──── approve ────▶│ • Feed      │  │
+│               │ Admin sees  │                  │ • Notify    │  │
+│               │ flagged     │                  │ • Points    │  │
+│               └─────────────┘                  └─────────────┘  │
+│                     │                                           │
+│                     │ reject                                    │
+│                     ▼                                           │
+│               ┌─────────────┐                                   │
+│               │  REJECTED   │                                   │
+│               │ Notify user │                                   │
+│               └─────────────┘                                   │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
-**Entity: `UserInventory`**
-```json
-{
-  "user_email": "string",
-  "item_id": "string",
-  "quantity": "number",
-  "equipped": "boolean",
-  "acquired_at": "datetime"
-}
-```
+### 2.4 Data Model
 
-**Backend Functions:**
-- `purchaseItem` - Deduct points, add to inventory
-- `equipItem` - Set item as equipped
+See [FEATURE_SPEC_RECOGNITION.md](./FEATURE_SPEC_RECOGNITION.md) for complete schema.
+
+### 2.5 UI Components
+
+| Component | Purpose | Location |
+|-----------|---------|----------|
+| RecognitionComposer | Create recognition | Modal |
+| RecognitionFeed | Display stream | Main page |
+| RecognitionCard | Single item | Feed |
+| ModerationQueue | Admin review | Admin page |
+| RecognitionStats | Analytics | Dashboard |
+
+### 2.6 Business Rules
+
+| Rule | Description |
+|------|-------------|
+| Daily Limit | Max 5 recognitions per day |
+| Point Pool | 50 points daily allowance |
+| Self-Recognition | Not allowed |
+| Min Message | 20 characters |
+| Max Points | 25 per recognition |
 
 ---
 
-## 4. Wellness Challenges
+## 3. Pulse Surveys
 
-### Overview
-Opt-in wellness challenges with progress tracking.
+### 3.1 Feature Description
+Anonymous, recurring surveys for HR to gather employee feedback with privacy-preserving response handling.
 
-### User Stories
-- As an employee, I want to join wellness challenges
-- As an employee, I want to track my progress
-- As an admin, I want to create new challenges
+### 3.2 User Stories
 
-### Technical Requirements
-**Entity: `WellnessChallenge`**
-```json
-{
-  "title": "string",
-  "description": "string",
-  "challenge_type": "enum: steps, meditation, water, exercise, sleep",
-  "goal_value": "number",
-  "goal_unit": "string",
-  "duration_days": "number",
-  "start_date": "date",
-  "end_date": "date",
-  "points_reward": "number",
-  "badge_reward_id": "string",
-  "participant_count": "number"
-}
+| ID | As a... | I want to... | So that... |
+|----|---------|--------------|------------|
+| SRV-01 | HR | Create surveys | I can gather feedback |
+| SRV-02 | HR | Schedule recurring surveys | Feedback is continuous |
+| SRV-03 | HR | View aggregated results | I can identify trends |
+| SRV-04 | Employee | Respond anonymously | I can be honest |
+| SRV-05 | Employee | See my response was recorded | I trust the system |
+| SRV-06 | HR | Set minimum threshold | Small groups stay anonymous |
+
+### 3.3 Anonymity Implementation
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    ANONYMITY ARCHITECTURE                        │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │              SURVEY INVITATION TRACKING                  │    │
+│  │  ────────────────────────────────────────────────────── │    │
+│  │  user_email: alex@intinc.com                            │    │
+│  │  survey_id: survey_123                                  │    │
+│  │  status: completed ✓                                    │    │
+│  │  sent_at: 2025-11-01                                    │    │
+│  │                                                          │    │
+│  │  ⚠️ NO LINK to which response belongs to this user      │    │
+│  └─────────────────────────────────────────────────────────┘    │
+│                                                                  │
+│                         🔒 WALL 🔒                               │
+│                                                                  │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │              SURVEY RESPONSE DATA                        │    │
+│  │  ────────────────────────────────────────────────────── │    │
+│  │  survey_id: survey_123                                  │    │
+│  │  answers: [{ q1: 4 }, { q2: "feedback..." }]           │    │
+│  │  completed_at: [randomized timestamp]                   │    │
+│  │                                                          │    │
+│  │  ❌ NO user_email field                                  │    │
+│  │  ❌ NO created_by tracking                               │    │
+│  │  ✓ Only aggregates shown if responses >= 5              │    │
+│  └─────────────────────────────────────────────────────────┘    │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
-**Entity: `ChallengeParticipation`**
-```json
-{
-  "challenge_id": "string",
-  "user_email": "string",
-  "current_progress": "number",
-  "daily_logs": [{
-    "date": "date",
-    "value": "number",
-    "notes": "string"
-  }],
-  "completed": "boolean",
-  "completed_at": "datetime"
-}
-```
+### 3.4 Data Model
+
+See [FEATURE_SPEC_PULSE_SURVEYS.md](./FEATURE_SPEC_PULSE_SURVEYS.md) for complete schema.
+
+### 3.5 Question Types
+
+| Type | Use Case | Config |
+|------|----------|--------|
+| rating | 1-5 star rating | scale_min, scale_max |
+| nps | Net Promoter Score | 0-10 scale |
+| text | Open feedback | max_length |
+| multiple_choice | Single select | options array |
+| checkbox | Multi-select | options array |
+| scale | Likert scale | labels |
 
 ---
 
-## 5. Milestone Celebrations
+## 4. Team Channels
 
-### Overview
-Automated celebration of birthdays and work anniversaries.
+### 4.1 Feature Description
+Real-time messaging channels for teams, projects, and interest groups.
 
-### User Stories
-- As an employee, I want to receive birthday wishes
-- As an employee, I want work anniversaries recognized
-- As a manager, I want to be notified of upcoming milestones
+### 4.2 User Stories
 
-### Technical Requirements
-**Entity: `Milestone`**
-```json
-{
-  "user_email": "string",
-  "type": "enum: birthday, work_anniversary, promotion, achievement",
-  "date": "date",
-  "years": "number (for anniversaries)",
-  "is_public": "boolean",
-  "celebration_posted": "boolean",
-  "notified_manager": "boolean"
-}
-```
+| ID | As a... | I want to... | So that... |
+|----|---------|--------------|------------|
+| CHN-01 | Employee | Create channel | Teams can communicate |
+| CHN-02 | Employee | Send messages | I can share updates |
+| CHN-03 | Employee | React to messages | Quick acknowledgment |
+| CHN-04 | Admin | Manage members | Control access |
+| CHN-05 | Employee | Search channels | I find relevant ones |
 
-**Backend Functions:**
-- `checkUpcomingMilestones` - Daily cron job
-- `postMilestoneCelebration` - Auto-post recognition
-- `sendMilestoneReminder` - Notify managers
+### 4.3 Channel Types
 
----
+| Type | Icon | Use Case |
+|------|------|----------|
+| team | 👥 | Department communication |
+| project | 📁 | Project-specific |
+| interest | 💡 | Hobbies, social |
+| announcement | 📢 | Company-wide updates |
 
-## 6. Team Channels
+### 4.4 Visibility Levels
 
-### Overview
-Communication channels organized by team/project/interest.
-
-### User Stories
-- As an employee, I want to join interest-based channels
-- As a team lead, I want a private team channel
-- As an employee, I want to post updates to channels
-
-### Technical Requirements
-**Entity: `Channel`**
-```json
-{
-  "name": "string",
-  "description": "string",
-  "type": "enum: team, project, interest, announcement",
-  "visibility": "enum: public, private, invite_only",
-  "owner_email": "string",
-  "member_emails": ["string"],
-  "is_archived": "boolean"
-}
-```
-
-**Entity: `ChannelMessage`**
-```json
-{
-  "channel_id": "string",
-  "sender_email": "string",
-  "content": "string",
-  "attachments": [{
-    "type": "string",
-    "url": "string",
-    "name": "string"
-  }],
-  "reactions": [{ "emoji": "string", "user_email": "string" }],
-  "is_pinned": "boolean"
-}
-```
+| Level | Who Can See | Who Can Join |
+|-------|-------------|--------------|
+| public | Everyone | Anyone |
+| private | Members only | Invite only |
+| invite_only | Members only | Admin invite |
 
 ---
 
-## 7. HR Analytics Dashboard
+## 5. Gamification System
 
-### Overview
-Comprehensive analytics for HR and leadership.
+### 5.1 Feature Description
+Points, badges, levels, and leaderboards to incentivize engagement.
 
-### Metrics
-- **Engagement Score:** Weighted composite of participation, feedback, recognition
-- **Attendance Rate:** Events attended / Events invited
-- **Recognition Flow:** Who recognizes whom (anonymized graph)
-- **Survey Trends:** Sentiment over time
-- **Skill Distribution:** Team skills heatmap
-- **Retention Indicators:** Early warning signals
+### 5.2 Points Economy
 
-### Components
-- `EngagementOverview.jsx` - High-level KPIs
-- `AttendanceTrends.jsx` - Time-series charts
-- `RecognitionNetwork.jsx` - Network visualization
-- `SurveySentiment.jsx` - Sentiment analysis
-- `SkillHeatmap.jsx` - Team capabilities
-- `RetentionRisk.jsx` - Risk indicators
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    POINTS ECONOMY                                │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  EARNING POINTS                     SPENDING POINTS             │
+│  ══════════════                     ═══════════════             │
+│                                                                  │
+│  ┌─────────────────────┐           ┌─────────────────────┐     │
+│  │ Event Attendance    │ +10       │ Store Items         │     │
+│  │ Survey Completion   │ +10       │ • Avatar hats       │     │
+│  │ Give Recognition    │ +5        │ • Glasses           │     │
+│  │ Receive Recognition │ +10-35    │ • Backgrounds       │     │
+│  │ Activity Completion │ +15       │ • Effects           │     │
+│  │ Streak Bonus (7d)   │ +25       │                     │     │
+│  │ Badge Earned        │ varies    │ Power-Ups           │     │
+│  │ Team Challenge Win  │ +100      │ • 2X Points         │     │
+│  └─────────────────────┘           │ • Visibility Boost  │     │
+│                                     └─────────────────────┘     │
+│                                                                  │
+│  POINTS TRACKING                                                │
+│  ════════════════                                               │
+│  total_points:     All points ever earned (never decreases)    │
+│  available_points: Points available to spend                   │
+│  lifetime_points:  Same as total, for display                  │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### 5.3 Level Progression
+
+| Level | XP Required | Title |
+|-------|-------------|-------|
+| 1 | 0 | Newcomer |
+| 2 | 100 | Explorer |
+| 3 | 250 | Contributor |
+| 4 | 500 | Connector |
+| 5 | 1000 | Champion |
+| 10 | 5000 | Ambassador |
+| 15 | 15000 | Legend |
+| 20 | 50000 | Icon |
+
+### 5.4 Badge Categories
+
+| Category | Examples | Criteria |
+|----------|----------|----------|
+| Engagement | First Event, Weekly Active | Attendance |
+| Collaboration | Team Player, Mentor | Recognition |
+| Innovation | Idea Champion, Pioneer | Contributions |
+| Leadership | Rising Star, Community Builder | Impact |
+| Special | Early Adopter, Anniversary | Time-based |
 
 ---
 
-## 8. Interactive Event Games
+## 6. Point Store
 
-### Overview
-Built-in interactive games for event templates.
+### 6.1 Feature Description
+Marketplace where employees can spend points on avatar customizations and power-ups, with optional premium purchases via Stripe.
 
-### Game Types
+### 6.2 Item Categories
 
-#### Trivia Game
-- Multiple rounds with categories
-- Real-time scoring
-- Team-based competition
-- Timer per question
+| Category | Description | Price Range |
+|----------|-------------|-------------|
+| avatar_hat | Head accessories | 100-1000 pts |
+| avatar_glasses | Eyewear | 50-500 pts |
+| avatar_background | Profile backgrounds | 200-2000 pts |
+| avatar_frame | Profile borders | 300-3000 pts |
+| avatar_effect | Animated effects | 500-5000 pts |
+| power_up | Temporary boosts | 100-500 pts |
 
-**Config:**
-```json
-{
-  "type": "trivia",
-  "rounds": 4,
-  "questions_per_round": 10,
-  "time_per_question": 30,
-  "categories": ["general", "company", "pop_culture"]
-}
-```
+### 6.3 Rarity System
 
-#### Virtual Escape Room
-- Collaborative puzzle solving
-- Hint system
-- Progress tracking
-- Time limit
+| Rarity | Drop Rate | Point Multiplier |
+|--------|-----------|------------------|
+| Common | 50% | 1x |
+| Uncommon | 25% | 1.5x |
+| Rare | 15% | 2x |
+| Epic | 8% | 3x |
+| Legendary | 2% | 5x |
 
-**Config:**
-```json
-{
-  "type": "escape_room",
-  "puzzles": 5,
-  "hints_allowed": 3,
-  "time_limit_minutes": 45
-}
-```
+### 6.4 Stripe Integration
 
-#### Caption Contest
-- Image display
-- Anonymous submissions
-- Voting mechanism
-- Winner announcement
-
-#### Scavenger Hunt
-- Item/challenge list
-- Photo verification
-- Point scoring
-- Time-based
+See [FEATURE_SPEC_POINT_STORE.md](./FEATURE_SPEC_POINT_STORE.md) for implementation details.
 
 ---
 
-## 9. Sound Effects System
+## 7. Analytics Dashboard
 
-### Overview
-Audio feedback for enhanced interactivity.
+### 7.1 HR Metrics
 
-### Sound Types
-| Sound | Trigger |
-|-------|---------|
-| `click` | Button press |
-| `pop` | Card selection |
-| `sparkle` | Navigation transition |
-| `zap` | Quick action |
-| `success` | Completion/achievement |
-| `whoosh` | Page transition |
-| `levelUp` | Level progression |
-| `badgeEarned` | Badge award |
-| `notification` | New notification |
+| Metric | Calculation | Visualization |
+|--------|-------------|---------------|
+| DAU | Daily unique logins | Line chart |
+| Recognition Rate | Recog/employee/week | Bar chart |
+| Survey Response | Responses/invites | Percentage |
+| Team Health | Recognition flow | Network graph |
+| Sentiment Trend | Survey analysis | Line chart |
 
-### Implementation
-```javascript
-import { playSound, initAudio } from '../components/utils/soundEffects';
+### 7.2 Individual Metrics
 
-// Initialize on user interaction
-onClick={() => {
-  initAudio();
-  playSound('click');
-}}
-```
+| Metric | Description |
+|--------|-------------|
+| Points Earned | This week/month/all-time |
+| Recognition Given | Count and recipients |
+| Recognition Received | Count and senders |
+| Events Attended | Participation rate |
+| Streak | Current and longest |
 
 ---
 
-## 10. PWA Features
+## 8. Integration Points
 
-### Overview
-Progressive Web App capabilities for mobile experience.
+### 8.1 Slack
 
-### Features
-- **Install Prompt:** Native-like install experience
-- **Offline Support:** Basic offline functionality
-- **Push Notifications:** Real-time alerts
-- **Background Sync:** Queue actions when offline
+| Event | Slack Action |
+|-------|--------------|
+| Recognition received | DM to recipient |
+| Survey available | Channel post |
+| Badge earned | DM to recipient |
+| Event reminder | Channel post |
 
-### Components
-- `PWAInstallPrompt.jsx` - Install banner
-- Service worker registration in Layout
+### 8.2 Microsoft Teams
 
-### Manifest
-```json
-{
-  "name": "Team Engage",
-  "short_name": "TeamEngage",
-  "start_url": "/",
-  "display": "standalone",
-  "theme_color": "#14294D",
-  "background_color": "#ffffff"
-}
-``
+| Event | Teams Action |
+|-------|--------------|
+| Recognition received | Adaptive card DM |
+| Survey available | Channel message |
+| Event reminder | Calendar invite |
+
+### 8.3 Google Calendar
+
+| Event | Calendar Action |
+|-------|-----------------|
+| Event RSVP | Create calendar event |
+| Event update | Update calendar event |
+| Event cancel | Remove calendar event |
+
+---
+
+## 9. Security Features
+
+### 9.1 Role-Based Access Control
+
+| Role | Capabilities |
+|------|--------------|
+| admin | Full access, user management, analytics |
+| hr | Survey management, analytics, moderation |
+| manager | Team analytics, recognition approval |
+| user | Standard features, own data |
+
+### 9.2 Data Protection
+
+| Data Type | Protection |
+|-----------|------------|
+| Survey responses | Anonymous, no user link |
+| Recognition | Public by default, private option |
+| Points/Badges | Public leaderboard, private history |
+| Messages | Visible to channel members only |
+
+---
+
+## 10. Feature Flags
+
+| Flag | Default | Description |
+|------|---------|-------------|
+| recognition.enabled | true | Master toggle |
+| recognition.points | true | Points with recognition |
+| recognition.moderation | hybrid | Moderation mode |
+| surveys.enabled | true | Survey feature |
+| surveys.anonymous | true | Force anonymity |
+| store.enabled | true | Point store |
+| store.stripe | false | Real-money purchases |
+| gamification.badges | true | Badge system |
+| gamification.leaderboard | true | Public leaderboard |
+
+---
+
+*Document Version: 1.0*
+*Last Updated: 2025-11-28*

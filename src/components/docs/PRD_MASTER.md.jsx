@@ -1,251 +1,344 @@
-# Employee Engagement Platform - Master PRD
+# Product Requirements Document (PRD)
+## Employee Engagement Platform - Intinc
+
+---
 
 ## 1. Executive Summary
 
-**Product Name:** Team Engage (Employee Engagement Platform)
-**Company:** Intinc (Remote-First Tech Company, 50-200 employees)
-**Target Users:** Remote Employees, Team Leads, HR/People Ops
+### 1.1 Product Vision
+Build a comprehensive employee engagement platform for Intinc, a remote-first tech company (50-200 employees), that fosters connection, recognition, and continuous feedback across distributed teams.
 
-### Vision
-Create a vibrant, intuitive platform that empowers employees to connect, grow, and thrive through gamified engagement, AI-powered suggestions, and seamless integrations.
+### 1.2 Mission Statement
+Empower remote employees to feel connected, valued, and engaged through meaningful recognition, transparent feedback, and gamified experiences that strengthen company culture.
+
+### 1.3 Success Metrics
+| Metric | Target | Timeframe |
+|--------|--------|-----------|
+| Daily Active Users | >60% of employees | 6 months |
+| Recognition Given | >80% employees monthly | 3 months |
+| Survey Response Rate | >70% | Ongoing |
+| Employee NPS | >50 | Quarterly |
+| Platform Adoption | 90% | 3 months |
 
 ---
 
-## 2. Architecture Overview
+## 2. Target Users
 
-### 2.1 Technology Stack
-- **Frontend:** React 18, TailwindCSS, shadcn/ui, Framer Motion
-- **State Management:** TanStack Query (React Query)
-- **Backend:** Base44 Platform (Entities, Functions, Agents)
-- **Integrations:** Slack, MS Teams, Google Calendar, Stripe, Email
+### 2.1 Primary Personas
 
-### 2.2 File Structure
+#### Remote Employee (IC)
+- **Demographics**: 25-45 years, tech-savvy, works from home/co-working
+- **Goals**: Feel connected to team, get recognized for work, have voice heard
+- **Pain Points**: Isolation, lack of visibility, missing watercooler moments
+- **Device Usage**: 60% desktop, 40% mobile
+
+#### Team Lead / Manager
+- **Demographics**: 30-50 years, manages 5-15 direct reports
+- **Goals**: Keep team engaged, identify issues early, celebrate wins
+- **Pain Points**: Hard to gauge remote team morale, recognition feels forced
+- **Device Usage**: 70% desktop, 30% mobile
+
+#### HR / People Ops
+- **Demographics**: 28-45 years, responsible for culture initiatives
+- **Goals**: Measure engagement, identify trends, reduce turnover
+- **Pain Points**: Lack of actionable data, survey fatigue, manual processes
+- **Device Usage**: 90% desktop, 10% mobile
+
+### 2.2 User Journey Map
+
 ```
-├── entities/           # JSON Schema definitions
-├── pages/              # Top-level route components
-├── components/
-│   ├── common/         # Shared UI components
-│   ├── hooks/          # Custom React hooks
-│   ├── utils/          # Utility functions & constants
-│   ├── gamification/   # Points, badges, leaderboards
-│   ├── events/         # Event management
-│   ├── teams/          # Team features
-│   ├── ai/             # AI-powered features
-│   ├── analytics/      # Dashboards & charts
-│   ├── facilitator/    # Facilitator tools
-│   ├── participant/    # Participant views
-│   ├── profile/        # User profiles
-│   ├── settings/       # Configuration panels
-│   ├── notifications/  # Notification components
-│   ├── templates/      # Event templates data
-│   ├── docs/           # Documentation
-│   └── pwa/            # PWA components
-├── functions/          # Backend functions (Deno)
-├── agents/             # AI Agent configurations
-└── Layout.js           # App shell layout
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                        EMPLOYEE DAILY JOURNEY                                │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  MORNING                    MIDDAY                      EVENING             │
+│  ════════                   ══════                      ═══════             │
+│                                                                              │
+│  ┌─────────────┐           ┌─────────────┐           ┌─────────────┐       │
+│  │ Check Feed  │           │ Give Recog. │           │ Complete    │       │
+│  │ See recog.  │           │ to teammate │           │ Pulse Survey│       │
+│  │ received    │           │ after mtg   │           │ (2 min)     │       │
+│  └──────┬──────┘           └──────┬──────┘           └──────┬──────┘       │
+│         │                         │                         │               │
+│         ▼                         ▼                         ▼               │
+│  ┌─────────────┐           ┌─────────────┐           ┌─────────────┐       │
+│  │ React to    │           │ Join Team   │           │ Check       │       │
+│  │ colleague's │           │ Channel     │           │ Leaderboard │       │
+│  │ shoutout    │           │ Discussion  │           │ & Points    │       │
+│  └──────┬──────┘           └──────┬──────┘           └──────┬──────┘       │
+│         │                         │                         │               │
+│         ▼                         ▼                         ▼               │
+│  ┌─────────────┐           ┌─────────────┐           ┌─────────────┐       │
+│  │ Browse      │           │ Participate │           │ Redeem      │       │
+│  │ Point Store │           │ in Wellness │           │ Points for  │       │
+│  │ (if time)   │           │ Challenge   │           │ Avatar Item │       │
+│  └─────────────┘           └─────────────┘           └─────────────┘       │
+│                                                                              │
+│  TOUCHPOINTS: Email (AM) → Slack (Midday) → In-App (PM)                    │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-### 2.3 Core Entities
-| Entity | Purpose | Key Fields |
-|--------|---------|------------|
-| `User` | Built-in user management | email, full_name, role |
-| `Activity` | Activity templates | title, type, duration, instructions |
-| `Event` | Scheduled events | activity_id, scheduled_date, status |
-| `Participation` | User event attendance | event_id, participant_email, attended |
-| `UserPoints` | Gamification points | user_email, total_points, level |
-| `Badge` | Achievement definitions | badge_name, award_criteria, rarity |
-| `BadgeAward` | User badge awards | user_email, badge_id |
-| `Team` | Team groupings | name, description, members |
-| `TeamChallenge` | Team competitions | title, metric_type, participating_teams |
-| `Reward` | Redeemable rewards | reward_name, points_cost, category |
-| `EventTemplate` | Pre-built event templates | name, category, agenda, game_config |
+---
+
+## 3. Feature Requirements
+
+### 3.1 Core Features (P0 - Must Have)
+
+#### 3.1.1 Peer-to-Peer Recognition
+| Requirement | Description | Acceptance Criteria |
+|-------------|-------------|---------------------|
+| Give Recognition | Users can send shoutouts | Message 20-500 chars, 1+ recipients |
+| Tag Skills/Projects | Add context to recognition | Select from predefined + custom tags |
+| Award Points | Optional point bonus | 0-25 points from daily allowance |
+| Company Feed | Public recognition stream | Real-time, filterable, searchable |
+| Moderation | Admin review queue | AI pre-filter + manual approval |
+| Reactions | Engage with recognitions | Emoji reactions, comments |
+
+#### 3.1.2 Pulse Surveys
+| Requirement | Description | Acceptance Criteria |
+|-------------|-------------|---------------------|
+| Create Survey | HR builds surveys | Drag-drop builder, templates |
+| Anonymous Responses | No user attribution | Zero PII in response storage |
+| Minimum Threshold | Privacy protection | Results hidden until 5+ responses |
+| Recurring Surveys | Automated scheduling | Weekly, bi-weekly, monthly options |
+| Results Dashboard | Aggregated insights | Charts, trends, sentiment analysis |
+| Reminders | Boost completion | Email + in-app nudges |
+
+#### 3.1.3 Team Channels
+| Requirement | Description | Acceptance Criteria |
+|-------------|-------------|---------------------|
+| Create Channels | Team/project/interest groups | Public or private visibility |
+| Real-time Messaging | Chat functionality | Text, reactions, mentions |
+| Member Management | Invite/remove members | Owner and admin roles |
+| Channel Types | Categorization | Team, project, interest, announcement |
+
+#### 3.1.4 Gamification System
+| Requirement | Description | Acceptance Criteria |
+|-------------|-------------|---------------------|
+| Points Economy | Earn and spend points | Attendance, recognition, surveys |
+| Levels & XP | Progression system | 20 levels with increasing thresholds |
+| Badges | Achievement recognition | Auto-award based on criteria |
+| Leaderboards | Competition | Individual, team, time-based |
+| Streaks | Encourage consistency | Daily participation tracking |
+
+### 3.2 Secondary Features (P1 - Should Have)
+
+#### 3.2.1 Point Store
+| Requirement | Description | Acceptance Criteria |
+|-------------|-------------|---------------------|
+| Avatar Customization | Hats, glasses, backgrounds | 50+ items at launch |
+| Power-Ups | Temporary boosts | 2X points, visibility boost |
+| Stripe Integration | Real-money purchases | Premium items, secure checkout |
+| Inventory System | Track owned items | Equip/unequip functionality |
+
+#### 3.2.2 Milestone Celebrations
+| Requirement | Description | Acceptance Criteria |
+|-------------|-------------|---------------------|
+| Birthdays | Auto-celebrate | Card signing, notifications |
+| Work Anniversaries | Tenure recognition | Auto-badge, announcement |
+| Custom Milestones | Project completions | Manual trigger by managers |
+
+#### 3.2.3 Wellness Challenges
+| Requirement | Description | Acceptance Criteria |
+|-------------|-------------|---------------------|
+| Challenge Creation | Admin creates challenges | Steps, meditation, etc. |
+| Progress Tracking | Log daily progress | Manual entry or integration |
+| Team Competitions | Group challenges | Aggregate team scores |
+| Opt-in Only | Respect privacy | No pressure to participate |
+
+### 3.3 Analytics & Reporting (P1)
+
+| Requirement | Description | Acceptance Criteria |
+|-------------|-------------|---------------------|
+| Engagement Dashboard | HR overview | DAU, recognition volume, survey trends |
+| Team Health | Per-team metrics | Recognition flow, participation |
+| Sentiment Analysis | AI-powered insights | Survey text analysis, trends |
+| Export Reports | Data portability | PDF, CSV, scheduled delivery |
+| Anomaly Detection | Early warning | Flag disengaged employees/teams |
+
+### 3.4 Future Features (P2 - Nice to Have)
+
+- **1:1 Meeting Tools**: Agenda templates, action items
+- **OKR Integration**: Link recognition to goals
+- **Peer Feedback**: 360 feedback system
+- **Learning Paths**: Skill development tracking
+- **Virtual Events**: Built-in video for team events
 
 ---
 
-## 3. Feature Modules
+## 4. Technical Requirements
 
-### 3.1 Core Features (Phase 1 - Complete)
-- [x] Event scheduling & calendar
-- [x] Activity library with templates
-- [x] Participant RSVP & attendance
-- [x] Facilitator dashboard
-- [x] Basic gamification (points, badges)
+### 4.1 Platform Requirements
 
-### 3.2 Gamification System (Phase 2 - Complete)
-- [x] Points tracking & history
-- [x] Level progression with XP
-- [x] Badge system with rarities
-- [x] Leaderboards (individual & team)
-- [x] Streak tracking
-- [x] Team challenges
+| Requirement | Specification |
+|-------------|---------------|
+| Browser Support | Chrome 90+, Firefox 88+, Safari 14+, Edge 90+ |
+| Mobile Support | Responsive web (iOS Safari, Android Chrome) |
+| Performance | <3s initial load, <500ms interactions |
+| Uptime | 99.9% availability |
+| Data Retention | 3 years for analytics, 1 year for messages |
 
-### 3.3 AI & Analytics (Phase 3 - Complete)
-- [x] AI event suggestions
-- [x] Feedback analysis
-- [x] Skill tracking & trends
-- [x] HR analytics dashboard
-- [x] Engagement metrics
+### 4.2 Security Requirements
 
-### 3.4 Enhanced Engagement (Phase 4 - In Progress)
-- [x] 30 production-ready event templates
-- [x] Sound effects system
-- [x] PWA support
-- [ ] Point store for avatar power-ups
-- [ ] Peer-to-peer recognition
-- [ ] Pulse surveys
+| Requirement | Specification |
+|-------------|---------------|
+| Authentication | SSO (Azure AD, Google, Okta) required |
+| Session Management | 8-hour timeout, refresh tokens |
+| Data Encryption | TLS 1.3 in transit, AES-256 at rest |
+| RBAC | Role-based access control |
+| Audit Logging | All admin actions logged |
+| PII Handling | Survey responses anonymized |
+| File Uploads | Max 10MB, image/PDF only |
 
-### 3.5 Integrations (Phase 5 - Planned)
-- [x] Slack notifications (webhook configured)
-- [x] MS Teams notifications (webhook configured)
-- [ ] Google Calendar sync (OAuth pending)
-- [x] Email notifications (built-in)
-- [x] Stripe integration (API key configured)
+### 4.3 Compliance Requirements
 
----
+| Standard | Requirement |
+|----------|-------------|
+| WCAG 2.1 AA | Accessibility compliance |
+| GDPR | Data privacy for EU employees |
+| SOC 2 Type II | Security controls (future) |
 
-## 4. API & Backend Functions
+### 4.4 Integration Requirements
 
-### 4.1 Active Backend Functions
-| Function | Purpose | Status |
-|----------|---------|--------|
-| `slackNotifications` | Send Slack webhook messages | ✅ Ready |
-| `teamsNotifications` | Send MS Teams adaptive cards | ✅ Ready |
-| `googleCalendarSync` | Sync events to Google Calendar | ⚠️ Needs OAuth |
-| `gamificationEmails` | Send engagement emails | ✅ Ready |
-| `awardPoints` | Award points to users | ✅ Ready |
-| `generateRecommendations` | AI event suggestions | ✅ Ready |
-| `redeemReward` | Process reward redemptions | ✅ Ready |
-| `openaiIntegration` | OpenAI API wrapper | ✅ Ready |
-| `claudeIntegration` | Claude API wrapper | ✅ Ready |
-
-### 4.2 Required Secrets (Set in Dashboard)
-| Secret | Purpose | Status |
-|--------|---------|--------|
-| `OPENAI_API_KEY` | AI features | ✅ Set |
-| `ANTHROPIC_API_KEY` | Claude AI | ✅ Set |
-| `STRIPE_SECRET_KEY` | Payments | ✅ Set |
-| `STRIPE_SIGNING_SECRET` | Webhooks | ✅ Set |
-| `SLACK_WEBHOOK_URL` | Slack notifications | ⚠️ Need to set |
-| `TEAMS_WEBHOOK_URL` | Teams notifications | ⚠️ Need to set |
-| `GOOGLE_API_KEY` | Calendar sync | ✅ Set |
+| Integration | Purpose | Priority |
+|-------------|---------|----------|
+| Slack | Notifications, recognition sharing | P0 |
+| Microsoft Teams | Notifications, recognition sharing | P0 |
+| Google Calendar | Event reminders | P1 |
+| Email (SendGrid) | Notifications, digests | P0 |
+| Stripe | Premium purchases | P1 |
+| HRIS (API) | Employee data sync | P2 |
 
 ---
 
-## 5. AI Agents
+## 5. Design Requirements
 
-### 5.1 Configured Agents
-| Agent | Purpose | Tools |
-|-------|---------|-------|
-| `EventManagerAgent` | Event planning assistance | Event, Activity, Participation CRUD |
-| `GamificationAssistant` | Points & badges guidance | UserPoints, Badge read |
-| `RewardsManagerAgent` | Reward management | Reward, RewardRedemption CRUD |
-| `FacilitatorAssistant` | Live event facilitation | Event, Participation, Poll CRUD |
+### 5.1 Design Principles
 
-### 5.2 Planned Agents
-| Agent | Purpose | Status |
-|-------|---------|--------|
-| `HRAnalyticsAgent` | HR insights & reports | Planned |
-| `PersonalCoachAgent` | Individual engagement coaching | Planned |
-| `RecognitionAgent` | Peer recognition management | Planned |
+1. **Mobile-First**: Design for smallest screen first
+2. **Accessible**: WCAG 2.1 AA minimum
+3. **Delightful**: Micro-interactions, celebrations
+4. **Intuitive**: <5 min learning curve
+5. **Consistent**: Design system adherence
 
----
+### 5.2 Visual Design
 
-## 6. UI/UX Guidelines
+| Element | Specification |
+|---------|---------------|
+| Style | Modern SaaS, glassmorphism accents |
+| Color Palette | Energetic but professional |
+| Typography | Inter font family |
+| Iconography | Lucide React icons |
+| Touch Targets | Min 44x44px for mobile |
+| Animations | Framer Motion, subtle |
 
-### 6.1 Design System
-- **Primary Colors:** Navy (#14294D), Orange (#D97230)
-- **Accent Colors:** Gold (#F5C16A), Teal (#2DD4BF)
-- **Typography:** Inter (display & body)
-- **Icons:** Lucide React
-- **Animations:** Framer Motion
+### 5.3 Brand Colors
 
-### 6.2 Component Patterns
-- Glass morphism for cards and panels
-- Gradient headers for visual hierarchy
-- Sound effects for key interactions
-- Responsive grid layouts (mobile-first)
-- Skeleton loading states
-
-### 6.3 Accessibility
-- WCAG 2.1 AA compliance minimum
-- Large touch targets (44px+)
-- Sufficient color contrast
-- Keyboard navigation support
-- Screen reader compatible
+```
+Primary:    #14294D (Navy)      - Headers, primary actions
+Secondary:  #D97230 (Orange)    - CTAs, highlights
+Accent:     #F5C16A (Gold)      - Rewards, achievements
+Success:    #10B981 (Emerald)   - Positive feedback
+Warning:    #F59E0B (Amber)     - Alerts
+Error:      #EF4444 (Red)       - Errors
+```
 
 ---
 
-## 7. Security & Privacy
+## 6. Success Criteria
 
-### 7.1 Authentication
-- SSO support (Azure AD, Google Workspace, Okta)
-- Session timeout: 8 hours
-- Role-based access control (RBAC)
+### 6.1 Launch Criteria (MVP)
 
-### 7.2 Data Privacy
-- PII never exposed to non-HR roles
-- Survey responses anonymized (min 5 responses)
-- File uploads: max 10MB, image/PDF only
-- All API endpoints require authentication
+- [ ] 100% of P0 features functional
+- [ ] <3 critical bugs
+- [ ] Performance benchmarks met
+- [ ] Security audit passed
+- [ ] 10 beta testers completed UAT
 
-### 7.3 Roles & Permissions
-| Role | Permissions |
-|------|-------------|
-| `admin` | Full access to all features |
-| `organizer` | Create/manage events and activities |
-| `team_lead` | Manage team, view team analytics |
-| `facilitator` | Run events, access facilitator tools |
-| `participant` | Join events, view own data |
+### 6.2 Post-Launch KPIs
+
+| KPI | Week 1 | Month 1 | Month 3 |
+|-----|--------|---------|---------|
+| Registered Users | 80% | 95% | 100% |
+| DAU | 30% | 50% | 60% |
+| Recognition/Week | 50 | 150 | 300 |
+| Survey Response | 50% | 65% | 75% |
+| NPS | 30 | 40 | 50 |
 
 ---
 
-## 8. Deliverables Checklist
+## 7. Risks & Mitigations
 
-### 8.1 Completed
-- [x] Core event management system
-- [x] Activity library with 30+ templates
-- [x] Gamification engine (points, badges, levels)
-- [x] Team management & challenges
-- [x] AI-powered suggestions
-- [x] Analytics dashboards
-- [x] PWA support
-- [x] Sound effects system
-- [x] Responsive design
-
-### 8.2 In Progress
-- [ ] Point store for avatar power-ups
-- [ ] Peer-to-peer recognition system
-- [ ] Pulse survey functionality
-- [ ] Milestone celebrations
-
-### 8.3 Pending
-- [ ] Google Calendar OAuth integration
-- [ ] Stripe checkout for point store
-- [ ] Wellness challenges module
-- [ ] Advanced HR analytics
+| Risk | Likelihood | Impact | Mitigation |
+|------|------------|--------|------------|
+| Low adoption | Medium | High | Gamification, manager buy-in |
+| Survey fatigue | Medium | Medium | Limit frequency, short surveys |
+| Recognition spam | Low | Medium | Moderation, daily limits |
+| Data breach | Low | Critical | Encryption, access controls |
+| Performance issues | Medium | Medium | Caching, optimization |
 
 ---
 
-## 9. Testing & Quality
+## 8. Timeline
 
-### 9.1 Component Testing
-- UI components should render without errors
-- Forms should validate inputs
-- API calls should handle loading/error states
+### Phase 1: Foundation (Weeks 1-4)
+- Core entities and data model
+- Authentication and RBAC
+- Basic UI framework
 
-### 9.2 Integration Testing
-- Backend functions should return expected data
-- Webhook integrations should send correctly
-- OAuth flows should complete successfully
+### Phase 2: Recognition & Channels (Weeks 5-8)
+- Peer recognition system
+- Team channels
+- Notifications
+
+### Phase 3: Surveys & Gamification (Weeks 9-12)
+- Pulse surveys
+- Points and badges
+- Leaderboards
+
+### Phase 4: Store & Polish (Weeks 13-16)
+- Point store
+- Stripe integration
+- Performance optimization
+
+### Phase 5: Analytics & Launch (Weeks 17-20)
+- Analytics dashboards
+- Beta testing
+- Production launch
 
 ---
 
-## 10. Changelog
+## 9. Stakeholders
 
-| Version | Date | Changes |
-|---------|------|---------|
-| 1.0.0 | Nov 2024 | Initial release - Core features |
-| 1.1.0 | Nov 2024 | Gamification system |
-| 1.2.0 | Nov 2024 | AI & Analytics |
-| 1.3.0 | Nov 2024 | Templates & Sound effects |
-| 1.4.0 | TBD | Point store & Recognition |
+| Role | Name | Responsibility |
+|------|------|----------------|
+| Product Owner | [TBD] | Requirements, prioritization |
+| Engineering Lead | [TBD] | Technical decisions |
+| Design Lead | [TBD] | UX/UI design |
+| HR Sponsor | [TBD] | Business requirements |
+| QA Lead | [TBD] | Testing strategy |
+
+---
+
+## 10. Appendices
+
+### A. Glossary
+- **Recognition**: Public acknowledgment of colleague's contribution
+- **Pulse Survey**: Short, recurring feedback survey
+- **Points**: Virtual currency earned through engagement
+- **Badge**: Achievement award for specific accomplishments
+- **Power-Up**: Temporary boost purchased from store
+
+### B. Related Documents
+- [API Reference](./API_REFERENCE.md)
+- [Feature Specifications](./FEATURE_SPECS.md)
+- [Architecture Document](./ARCHITECTURE.md)
+- [Integration Guide](./INTEGRATION_GUIDE.md)
+- [Completion Checklist](./COMPLETION_CHECKLIST.md)
+
+---
+
+*Document Version: 1.0*
+*Last Updated: 2025-11-28*
+*Status: Active*
