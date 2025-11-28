@@ -5,24 +5,26 @@
 
 ## 1. Feature Overview Matrix
 
-| Feature | Status | Priority | Module |
-|---------|--------|----------|--------|
-| Peer Recognition | ✅ Built | P0 | Recognition |
-| Recognition Feed | ✅ Built | P0 | Recognition |
-| Moderation Queue | ✅ Built | P0 | Recognition |
-| Pulse Surveys | 🔄 Spec'd | P0 | Surveys |
-| Anonymous Responses | 🔄 Spec'd | P0 | Surveys |
-| Team Channels | ✅ Built | P0 | Channels |
-| Channel Messaging | ✅ Built | P0 | Channels |
-| Points System | ✅ Built | P0 | Gamification |
-| Badges | ✅ Built | P1 | Gamification |
-| Leaderboards | ✅ Built | P1 | Gamification |
-| Point Store | 🔄 Spec'd | P1 | Store |
-| Avatar Customization | 🔄 Spec'd | P1 | Store |
-| Stripe Integration | 🔄 Spec'd | P1 | Store |
-| Milestone Celebrations | ⏳ Planned | P2 | Celebrations |
-| Wellness Challenges | ⏳ Planned | P2 | Wellness |
-| Analytics Dashboard | ✅ Built | P1 | Analytics |
+| Feature | Status | Priority | Module | Details |
+|---------|--------|----------|--------|---------|
+| Activity Library | ✅ Built | P0 | Activities | 15+ templates, 6 types |
+| Event Scheduling | ✅ Built | P0 | Events | Recurring, bulk, wizard |
+| Event Templates | ✅ Built | P0 | Events | 30+ pre-built templates |
+| Team Channels | ✅ Built | P0 | Channels | Public/private messaging |
+| Channel Messaging | ✅ Built | P0 | Channels | Reactions, real-time |
+| Points System | ✅ Built | P0 | Gamification | Earn/spend economy |
+| Badges | ✅ Built | P1 | Gamification | 10 badges, 5 rarities |
+| Leaderboards | ✅ Built | P1 | Gamification | Individual + team |
+| Team Challenges | ✅ Built | P1 | Gamification | Head-to-head, league |
+| Skill Tracking | ✅ Built | P1 | Skills | Progress, mentorship |
+| Analytics Dashboard | ✅ Built | P1 | Analytics | HR insights, AI |
+| Facilitator Tools | ✅ Built | P1 | Events | Live event management |
+| AI Event Planner | ✅ Built | P1 | AI | Smart scheduling |
+| Pulse Surveys | 📋 Spec'd | P0 | Surveys | Anonymous responses |
+| Point Store | 📋 Spec'd | P1 | Store | Avatar customization |
+| Stripe Integration | 🔧 Ready | P1 | Store | Keys configured |
+| Peer Recognition | 📋 Spec'd | P0 | Recognition | Shoutouts, tags |
+| Milestone Celebrations | ⏳ Planned | P2 | Celebrations | Birthdays, anniversaries |
 
 ---
 

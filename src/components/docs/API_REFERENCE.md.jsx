@@ -44,9 +44,23 @@ All entity operations return:
 
 ---
 
-## 2. Entity APIs
+## 2. Platform Statistics (Live Data)
 
-### 2.1 User Entity (Built-in)
+| Entity | Records | Description |
+|--------|---------|-------------|
+| Activity | 15+ | Activity templates |
+| Event | Active | Scheduled events |
+| Badge | 10 | Achievement badges |
+| EventTemplate | 30+ | Pre-built templates |
+| Channel | Dynamic | Team messaging |
+| Team | Dynamic | Organization structure |
+| UserPoints | Per-user | Gamification data |
+
+---
+
+## 3. Entity APIs
+
+### 3.1 User Entity (Built-in)
 
 ```javascript
 // List all users (admin only)

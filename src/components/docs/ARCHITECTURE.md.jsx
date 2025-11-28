@@ -74,15 +74,31 @@
 ### 2.1 Directory Structure
 
 ```
-├── pages/                      # Route pages
-│   ├── Dashboard.jsx           # Main dashboard
-│   ├── Activities.jsx          # Activity library
-│   ├── Calendar.jsx            # Event calendar
+├── pages/                      # Route pages (25+ pages)
+│   ├── Dashboard.jsx           # Main admin dashboard
+│   ├── Activities.jsx          # Activity library (15+ templates)
+│   ├── Calendar.jsx            # Event calendar with scheduling
+│   ├── EventTemplates.jsx      # 30+ pre-built templates
+│   ├── EventWizard.jsx         # Step-by-step event creation
 │   ├── Teams.jsx               # Team management
-│   ├── Channels.jsx            # Team channels
-│   ├── GamificationDashboard.jsx # Points/badges
-│   ├── Analytics.jsx           # HR analytics
-│   └── Settings.jsx            # Configuration
+│   ├── TeamDashboard.jsx       # Team-specific view
+│   ├── TeamCompetition.jsx     # Team vs team challenges
+│   ├── Channels.jsx            # Team messaging
+│   ├── GamificationDashboard.jsx # Points/badges/levels
+│   ├── GamificationSettings.jsx  # Admin gamification config
+│   ├── Gamification.jsx        # User leaderboard
+│   ├── RewardsStore.jsx        # Redeem rewards
+│   ├── SkillsDashboard.jsx     # Skill tracking
+│   ├── Analytics.jsx           # HR analytics + AI insights
+│   ├── FacilitatorDashboard.jsx # Facilitator overview
+│   ├── FacilitatorView.jsx     # Live event facilitation
+│   ├── ParticipantPortal.jsx   # User's events
+│   ├── ParticipantEvent.jsx    # Event participation
+│   ├── UserProfile.jsx         # User profile page
+│   ├── AIEventPlanner.jsx      # AI-powered scheduling
+│   ├── Integrations.jsx        # Integration configuration
+│   ├── ProjectPlan.jsx         # Development tracking
+│   └── Settings.jsx            # App settings
 │
 ├── components/                 # Reusable components
 │   ├── common/                 # Shared UI components

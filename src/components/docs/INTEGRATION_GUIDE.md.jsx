@@ -776,14 +776,34 @@ await base44.entities.Recognition.update(id, {
 
 ## 10. Environment Variables Reference
 
-| Variable | Service | Required |
-|----------|---------|----------|
-| STRIPE_SECRET_KEY | Stripe | For store |
-| STRIPE_SIGNING_SECRET | Stripe | For webhooks |
-| SLACK_WEBHOOK_URL | Slack | For notifications |
-| SLACK_BOT_TOKEN | Slack | For DMs |
-| OPENAI_API_KEY | OpenAI | For AI features |
-| CLOUDINARY_URL | Cloudinary | For uploads |
+### 10.1 Configured Secrets (Active)
+
+| Variable | Service | Status | Purpose |
+|----------|---------|--------|---------|
+| STRIPE_SECRET_KEY | Stripe | ✅ Set | Payment processing |
+| STRIPE_SIGNING_SECRET | Stripe | ✅ Set | Webhook validation |
+| OPENAI_API_KEY | OpenAI | ✅ Set | AI/LLM features |
+| ANTHROPIC_API_KEY | Anthropic | ✅ Set | Claude AI |
+| PERPLEXITY_API_KEY | Perplexity | ✅ Set | Search AI |
+| CLOUDINARY_URL | Cloudinary | ✅ Set | File uploads |
+| NOTION_API_KEY | Notion | ✅ Set | Documentation sync |
+| HUBSPOT_PERSONAL_ACCESS_KEY | HubSpot | ✅ Set | CRM integration |
+| GOOGLE_API_KEY | Google | ✅ Set | Maps, Calendar |
+| VERCEL_TOKEN | Vercel | ✅ Set | Deployment |
+| CLOUDFLARE_API_KEY | Cloudflare | ✅ Set | CDN/DNS |
+| LINEAR_API_KEY | Linear | ✅ Set | Issue tracking |
+| GITHUB_PERSONAL_ACCESS_TOKEN | GitHub | ✅ Set | Code integration |
+| E2B_API_KEY | E2B | ✅ Set | Code execution |
+| FIRECRAWL_API_KEY | Firecrawl | ✅ Set | Web scraping |
+
+### 10.2 Stripe Product Configuration
+
+| Product | Price ID | Amount | Type |
+|---------|----------|--------|------|
+| FlashFusion Subscription | price_1SMzwuAoyIkjw2kLSCowMTzC | $29/mo | Recurring (7-day trial) |
+| FlashFusion Subscription | price_1SMzwuAoyIkjw2kLqebWycDw | $29/mo | Recurring (metered) |
+| FlashFusion Subscription | price_1SMzwuAoyIkjw2kLaYrgyDQx | $79/mo | Recurring (metered) |
+| FlashFusion Subscription | price_1SMzwuAoyIkjw2kLRl6YUZpZ | $0/mo | Free tier (metered) |
 
 ---
 
