@@ -25,6 +25,7 @@ import TeamCompetition from './pages/TeamCompetition';
 import AIEventPlanner from './pages/AIEventPlanner';
 import Channels from './pages/Channels';
 import Documentation from './pages/Documentation';
+import PointStore from './pages/PointStore';
 import __Layout from './Layout.jsx';
 
 
@@ -56,6 +57,7 @@ export const PAGES = {
     "AIEventPlanner": AIEventPlanner,
     "Channels": Channels,
     "Documentation": Documentation,
+    "PointStore": PointStore,
 }
 
 export const pagesConfig = {
