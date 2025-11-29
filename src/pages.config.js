@@ -26,6 +26,7 @@ import AIEventPlanner from './pages/AIEventPlanner';
 import Channels from './pages/Channels';
 import Documentation from './pages/Documentation';
 import PointStore from './pages/PointStore';
+import Recognition from './pages/Recognition';
 import __Layout from './Layout.jsx';
 
 
@@ -58,6 +59,7 @@ export const PAGES = {
     "Channels": Channels,
     "Documentation": Documentation,
     "PointStore": PointStore,
+    "Recognition": Recognition,
 }
 
 export const pagesConfig = {
