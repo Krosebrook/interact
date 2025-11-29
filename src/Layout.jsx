@@ -100,6 +100,7 @@ export default function Layout({ children, currentPageName }) {
                         { name: 'Analytics', icon: BarChart3, page: 'Analytics' },
         { name: 'Integrations', icon: Plug, page: 'Integrations' },
         { name: 'Project Plan', icon: LayoutDashboard, page: 'ProjectPlan' },
+        { name: 'Documentation', icon: LayoutDashboard, page: 'Documentation' },
         { name: 'Settings', icon: SettingsIcon, page: 'Settings' },
       ] : [
     { name: 'My Events', icon: Calendar, page: 'ParticipantPortal' },
