@@ -27,6 +27,8 @@ import Channels from './pages/Channels';
 import Documentation from './pages/Documentation';
 import PointStore from './pages/PointStore';
 import Recognition from './pages/Recognition';
+import Leaderboards from './pages/Leaderboards';
+import PublicProfile from './pages/PublicProfile';
 import __Layout from './Layout.jsx';
 
 
@@ -60,6 +62,8 @@ export const PAGES = {
     "Documentation": Documentation,
     "PointStore": PointStore,
     "Recognition": Recognition,
+    "Leaderboards": Leaderboards,
+    "PublicProfile": PublicProfile,
 }
 
 export const pagesConfig = {
