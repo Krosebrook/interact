@@ -1,61 +1,50 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.4';
 
+/**
+ * Purchase store items with points
+ * Handles validation, inventory management, and power-up activation
+ */
 Deno.serve(async (req) => {
+  const base44 = createClientFromRequest(req);
+  
   try {
-    const base44 = createClientFromRequest(req);
+    // Authenticate user
     const user = await base44.auth.me();
-
     if (!user) {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const { itemId, quantity = 1 } = await req.json();
-
+    
+    // Validate input
     if (!itemId) {
       return Response.json({ error: 'Item ID required' }, { status: 400 });
     }
 
-    // Get item
-    const items = await base44.entities.StoreItem.filter({ id: itemId });
+    // Fetch item and user points in parallel
+    const [items, userPointsList] = await Promise.all([
+      base44.entities.StoreItem.filter({ id: itemId }),
+      base44.entities.UserPoints.filter({ user_email: user.email })
+    ]);
+
     const item = items[0];
+    const userPoints = userPointsList[0];
 
-    if (!item) {
-      return Response.json({ error: 'Item not found' }, { status: 404 });
+    // Validate item
+    const itemValidation = validateItem(item, quantity);
+    if (itemValidation.error) {
+      return Response.json({ error: itemValidation.error }, { status: 400 });
     }
 
-    if (!item.is_available) {
-      return Response.json({ error: 'Item not available' }, { status: 400 });
-    }
-
-    if (item.is_premium && !item.points_cost) {
-      return Response.json({ error: 'This item requires payment' }, { status: 400 });
-    }
-
-    // Check stock
-    if (item.stock_quantity !== null && item.stock_quantity < quantity) {
-      return Response.json({ error: 'Insufficient stock' }, { status: 400 });
-    }
-
+    // Validate user points
     const totalCost = item.points_cost * quantity;
-
-    // Get user points
-    const userPointsList = await base44.entities.UserPoints.filter({ user_email: user.email });
-    let userPoints = userPointsList[0];
-
-    if (!userPoints) {
-      return Response.json({ error: 'No points balance found' }, { status: 400 });
+    const pointsValidation = validateUserPoints(userPoints, totalCost);
+    if (pointsValidation.error) {
+      return Response.json(pointsValidation, { status: 400 });
     }
 
-    if (userPoints.available_points < totalCost) {
-      return Response.json({ 
-        error: 'Insufficient points',
-        required: totalCost,
-        available: userPoints.available_points
-      }, { status: 400 });
-    }
-
-    // Check if user already owns this item (for non-consumables)
-    if (item.category !== 'power_up' && item.category !== 'badge_boost') {
+    // Check for duplicate ownership (non-consumables)
+    if (!isConsumable(item)) {
       const existing = await base44.entities.UserInventory.filter({
         user_email: user.email,
         item_id: itemId
@@ -65,106 +54,144 @@ Deno.serve(async (req) => {
       }
     }
 
-    // Create transaction
-    const transaction = await base44.asServiceRole.entities.StoreTransaction.create({
-      user_email: user.email,
-      item_id: itemId,
-      item_name: item.name,
-      transaction_type: 'points',
-      points_spent: totalCost,
-      quantity,
-      status: 'completed'
-    });
-
-    // Deduct points
-    await base44.asServiceRole.entities.UserPoints.update(userPoints.id, {
-      available_points: userPoints.available_points - totalCost,
-      points_history: [
-        ...(userPoints.points_history || []),
-        {
-          amount: -totalCost,
-          reason: `Purchased ${item.name}`,
-          source: 'store_purchase',
-          timestamp: new Date().toISOString()
-        }
-      ]
-    });
-
-    // Calculate expiration for power-ups
-    let expiresAt = null;
-    if (item.effect_config?.duration_hours) {
-      expiresAt = new Date(Date.now() + item.effect_config.duration_hours * 60 * 60 * 1000).toISOString();
-    }
-
-    // Add to inventory
-    const inventoryItem = await base44.asServiceRole.entities.UserInventory.create({
-      user_email: user.email,
-      item_id: itemId,
-      item_name: item.name,
-      item_category: item.category,
-      item_rarity: item.rarity,
-      acquisition_type: 'points',
-      transaction_id: transaction.id,
-      acquired_at: new Date().toISOString(),
-      expires_at: expiresAt,
-      is_active: true
-    });
-
-    // Update purchase count
-    await base44.asServiceRole.entities.StoreItem.update(itemId, {
-      purchase_count: (item.purchase_count || 0) + quantity,
-      stock_quantity: item.stock_quantity !== null ? item.stock_quantity - quantity : null
-    });
-
-    // If power-up, activate it on user avatar
-    if (item.category === 'power_up' && item.effect_config) {
-      const avatars = await base44.entities.UserAvatar.filter({ user_email: user.email });
-      let avatar = avatars[0];
-
-      const powerUp = {
-        item_id: itemId,
-        effect_type: item.effect_config.type,
-        multiplier: item.effect_config.multiplier || 1,
-        expires_at: expiresAt
-      };
-
-      if (avatar) {
-        await base44.asServiceRole.entities.UserAvatar.update(avatar.id, {
-          active_power_ups: [...(avatar.active_power_ups || []), powerUp],
-          last_updated: new Date().toISOString()
-        });
-      } else {
-        await base44.asServiceRole.entities.UserAvatar.create({
-          user_email: user.email,
-          active_power_ups: [powerUp],
-          last_updated: new Date().toISOString()
-        });
-      }
-    }
-
-    // Create notification
-    await base44.asServiceRole.entities.Notification.create({
-      user_email: user.email,
-      title: 'Purchase Complete!',
-      message: `${item.name} has been added to your inventory.`,
-      type: 'success',
-      icon: '🛍️'
-    });
-
-    return Response.json({
-      success: true,
-      item: {
-        id: inventoryItem.id,
-        name: item.name,
-        category: item.category
-      },
-      points_spent: totalCost,
-      remaining_points: userPoints.available_points - totalCost,
-      expires_at: expiresAt
-    });
+    // Process purchase
+    const result = await processPurchase(base44, user, item, userPoints, totalCost, quantity);
+    
+    return Response.json(result);
 
   } catch (error) {
     console.error('Purchase error:', error);
     return Response.json({ error: error.message }, { status: 500 });
   }
 });
+
+// Validation helpers
+function validateItem(item, quantity) {
+  if (!item) return { error: 'Item not found' };
+  if (!item.is_available) return { error: 'Item not available' };
+  if (item.is_premium && !item.points_cost) return { error: 'This item requires payment' };
+  if (item.stock_quantity !== null && item.stock_quantity < quantity) {
+    return { error: 'Insufficient stock' };
+  }
+  return { valid: true };
+}
+
+function validateUserPoints(userPoints, totalCost) {
+  if (!userPoints) return { error: 'No points balance found' };
+  if (userPoints.available_points < totalCost) {
+    return {
+      error: 'Insufficient points',
+      required: totalCost,
+      available: userPoints.available_points
+    };
+  }
+  return { valid: true };
+}
+
+function isConsumable(item) {
+  return ['power_up', 'badge_boost'].includes(item.category);
+}
+
+// Process the purchase transaction
+async function processPurchase(base44, user, item, userPoints, totalCost, quantity) {
+  // Create transaction record
+  const transaction = await base44.asServiceRole.entities.StoreTransaction.create({
+    user_email: user.email,
+    item_id: item.id,
+    item_name: item.name,
+    transaction_type: 'points',
+    points_spent: totalCost,
+    quantity,
+    status: 'completed'
+  });
+
+  // Deduct points
+  await base44.asServiceRole.entities.UserPoints.update(userPoints.id, {
+    available_points: userPoints.available_points - totalCost,
+    points_history: [
+      ...(userPoints.points_history || []).slice(-49),
+      {
+        amount: -totalCost,
+        reason: `Purchased ${item.name}`,
+        source: 'store_purchase',
+        timestamp: new Date().toISOString()
+      }
+    ]
+  });
+
+  // Calculate expiration for power-ups
+  const expiresAt = item.effect_config?.duration_hours
+    ? new Date(Date.now() + item.effect_config.duration_hours * 60 * 60 * 1000).toISOString()
+    : null;
+
+  // Add to inventory
+  const inventoryItem = await base44.asServiceRole.entities.UserInventory.create({
+    user_email: user.email,
+    item_id: item.id,
+    item_name: item.name,
+    item_category: item.category,
+    item_rarity: item.rarity,
+    acquisition_type: 'points',
+    transaction_id: transaction.id,
+    acquired_at: new Date().toISOString(),
+    expires_at: expiresAt,
+    is_active: true
+  });
+
+  // Update item stock and purchase count
+  await base44.asServiceRole.entities.StoreItem.update(item.id, {
+    purchase_count: (item.purchase_count || 0) + quantity,
+    stock_quantity: item.stock_quantity !== null ? item.stock_quantity - quantity : null
+  });
+
+  // Activate power-up if applicable
+  if (item.category === 'power_up' && item.effect_config) {
+    await activatePowerUp(base44, user.email, item, expiresAt);
+  }
+
+  // Create notification
+  await base44.asServiceRole.entities.Notification.create({
+    user_email: user.email,
+    title: 'Purchase Complete!',
+    message: `${item.name} has been added to your inventory.`,
+    type: 'success',
+    icon: '🛍️'
+  });
+
+  return {
+    success: true,
+    item: {
+      id: inventoryItem.id,
+      name: item.name,
+      category: item.category
+    },
+    points_spent: totalCost,
+    remaining_points: userPoints.available_points - totalCost,
+    expires_at: expiresAt
+  };
+}
+
+// Activate power-up on user avatar
+async function activatePowerUp(base44, userEmail, item, expiresAt) {
+  const avatars = await base44.entities.UserAvatar.filter({ user_email: userEmail });
+  
+  const powerUp = {
+    item_id: item.id,
+    effect_type: item.effect_config.type,
+    multiplier: item.effect_config.multiplier || 1,
+    expires_at: expiresAt
+  };
+
+  if (avatars[0]) {
+    await base44.asServiceRole.entities.UserAvatar.update(avatars[0].id, {
+      active_power_ups: [...(avatars[0].active_power_ups || []), powerUp],
+      last_updated: new Date().toISOString()
+    });
+  } else {
+    await base44.asServiceRole.entities.UserAvatar.create({
+      user_email: userEmail,
+      active_power_ups: [powerUp],
+      last_updated: new Date().toISOString()
+    });
+  }
+}
