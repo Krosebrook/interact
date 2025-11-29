@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import RecognitionForm from '../components/recognition/RecognitionForm';
 import RecognitionCard from '../components/recognition/RecognitionCard';
-import ModerationQueue from '../components/recognition/ModerationQueue';
+import ModerationQueue from '../components/moderation/ModerationQueue';
 import { toast } from 'sonner';
 import {
   Heart,

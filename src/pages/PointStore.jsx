@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { useUserData } from '../components/hooks/useUserData';
+import { useStoreActions } from '../components/store/hooks/useStoreActions';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import LoadingSpinner from '../components/common/LoadingSpinner';
@@ -13,18 +14,7 @@ import StoreItemCard from '../components/store/StoreItemCard';
 import StoreItemDetail from '../components/store/StoreItemDetail';
 import AvatarCustomizer from '../components/store/AvatarCustomizer';
 import { toast } from 'sonner';
-import {
-  Store,
-  Search,
-  Coins,
-  User,
-  Package,
-  Sparkles,
-  Filter,
-  ShoppingBag,
-  CheckCircle,
-  XCircle
-} from 'lucide-react';
+import { Store, Search, Coins, User, Package, Filter, ShoppingBag } from 'lucide-react';
 
 const CATEGORIES = [
   { value: 'all', label: 'All Items', icon: Store },
@@ -46,8 +36,8 @@ const RARITIES = [
 ];
 
 export default function PointStore() {
-  const queryClient = useQueryClient();
   const { user, loading, userPoints } = useUserData(true);
+  const { purchase, isPurchasing, invalidateStoreQueries } = useStoreActions();
   const [activeTab, setActiveTab] = useState('store');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedRarity, setSelectedRarity] = useState('all');
@@ -59,67 +49,27 @@ export default function PointStore() {
     const params = new URLSearchParams(window.location.search);
     if (params.get('success') === 'true') {
       toast.success('Purchase successful! Check your inventory.', { duration: 5000 });
-      queryClient.invalidateQueries(['user-inventory']);
-      queryClient.invalidateQueries(['store-items']);
-      // Clean URL
+      invalidateStoreQueries();
       window.history.replaceState({}, '', window.location.pathname);
     } else if (params.get('canceled') === 'true') {
       toast.error('Purchase canceled');
       window.history.replaceState({}, '', window.location.pathname);
     }
-  }, []);
+  }, [invalidateStoreQueries]);
 
   // Fetch store items
   const { data: storeItems = [], isLoading: loadingItems } = useQuery({
     queryKey: ['store-items'],
-    queryFn: () => base44.entities.StoreItem.filter({ is_available: true }, 'display_order')
+    queryFn: () => base44.entities.StoreItem.filter({ is_available: true }, 'display_order'),
+    staleTime: 30000
   });
 
   // Fetch user inventory
   const { data: inventory = [] } = useQuery({
     queryKey: ['user-inventory', user?.email],
     queryFn: () => base44.entities.UserInventory.filter({ user_email: user?.email }),
-    enabled: !!user?.email
-  });
-
-  // Purchase with points mutation
-  const purchasePointsMutation = useMutation({
-    mutationFn: async (item) => {
-      const response = await base44.functions.invoke('purchaseWithPoints', {
-        itemId: item.id
-      });
-      return response.data;
-    },
-    onSuccess: (data) => {
-      queryClient.invalidateQueries(['user-points']);
-      queryClient.invalidateQueries(['user-inventory']);
-      queryClient.invalidateQueries(['store-items']);
-      setSelectedItem(null);
-      toast.success(`${data.item.name} added to your inventory! 🎉`);
-    },
-    onError: (error) => {
-      const msg = error.response?.data?.error || 'Purchase failed';
-      toast.error(msg);
-    }
-  });
-
-  // Purchase with Stripe mutation
-  const purchaseStripeMutation = useMutation({
-    mutationFn: async (item) => {
-      const response = await base44.functions.invoke('createStoreCheckout', {
-        itemId: item.id
-      });
-      return response.data;
-    },
-    onSuccess: (data) => {
-      if (data.checkoutUrl) {
-        window.location.href = data.checkoutUrl;
-      }
-    },
-    onError: (error) => {
-      const msg = error.response?.data?.error || 'Checkout failed';
-      toast.error(msg);
-    }
+    enabled: !!user?.email,
+    staleTime: 30000
   });
 
   // Filter items
@@ -133,12 +83,9 @@ export default function PointStore() {
   });
 
   // Check if user owns an item
-  const isOwned = (itemId) => {
-    return inventory.some(inv => inv.item_id === itemId);
-  };
+  const isOwned = (itemId) => inventory.some(inv => inv.item_id === itemId);
 
   const currentPoints = userPoints?.available_points || 0;
-  const isPurchasing = purchasePointsMutation.isLoading || purchaseStripeMutation.isLoading;
 
   if (loading) {
     return <LoadingSpinner className="min-h-[60vh]" message="Loading store..." />;
@@ -267,13 +214,7 @@ export default function PointStore() {
                   userPoints={currentPoints}
                   owned={isOwned(item.id)}
                   onViewDetails={setSelectedItem}
-                  onQuickBuy={(item, type) => {
-                    if (type === 'points') {
-                      purchasePointsMutation.mutate(item);
-                    } else {
-                      purchaseStripeMutation.mutate(item);
-                    }
-                  }}
+                  onQuickBuy={purchase}
                 />
               ))}
             </div>
@@ -348,8 +289,8 @@ export default function PointStore() {
         onClose={() => setSelectedItem(null)}
         userPoints={currentPoints}
         owned={selectedItem ? isOwned(selectedItem.id) : false}
-        onPurchasePoints={(item) => purchasePointsMutation.mutate(item)}
-        onPurchaseStripe={(item) => purchaseStripeMutation.mutate(item)}
+        onPurchasePoints={(item) => purchase(item, 'points')}
+        onPurchaseStripe={(item) => purchase(item, 'stripe')}
         isPurchasing={isPurchasing}
       />
     </div>
