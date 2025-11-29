@@ -24,6 +24,7 @@ import GamificationSettings from './pages/GamificationSettings';
 import TeamCompetition from './pages/TeamCompetition';
 import AIEventPlanner from './pages/AIEventPlanner';
 import Channels from './pages/Channels';
+import Documentation from './pages/Documentation';
 import __Layout from './Layout.jsx';
 
 
@@ -54,6 +55,7 @@ export const PAGES = {
     "TeamCompetition": TeamCompetition,
     "AIEventPlanner": AIEventPlanner,
     "Channels": Channels,
+    "Documentation": Documentation,
 }
 
 export const pagesConfig = {
