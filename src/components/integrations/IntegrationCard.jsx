@@ -10,15 +10,22 @@ const INTEGRATION_INFO = {
     name: 'OpenAI', 
     icon: '🤖', 
     color: 'bg-green-500',
-    description: 'GPT-4, DALL-E, Whisper, TTS',
+    description: 'GPT-4o, o1, vision, DALL-E 3, TTS, Whisper, embeddings',
     docs: 'https://platform.openai.com/docs'
   },
   claude: { 
     name: 'Claude (Anthropic)', 
     icon: '🧠', 
     color: 'bg-orange-500',
-    description: 'Claude 3.5 Sonnet, Haiku',
+    description: 'Claude 4 Sonnet, vision, extended thinking, tools',
     docs: 'https://docs.anthropic.com'
+  },
+  gemini: { 
+    name: 'Google Gemini', 
+    icon: '✨', 
+    color: 'bg-blue-600',
+    description: 'Gemini 2.0, vision, video, thinking, code',
+    docs: 'https://ai.google.dev/docs'
   },
   perplexity: { 
     name: 'Perplexity', 
