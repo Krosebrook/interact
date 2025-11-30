@@ -37,7 +37,7 @@ const INTEGRATION_CATEGORIES = {
   ai: {
     name: 'AI & Language Models',
     icon: Brain,
-    keys: ['openai', 'claude', 'perplexity']
+    keys: ['openai', 'claude', 'gemini', 'perplexity']
   },
   productivity: {
     name: 'Productivity',
@@ -69,6 +69,7 @@ const INTEGRATION_CATEGORIES = {
 const DEFAULT_INTEGRATIONS = [
   { integration_name: 'OpenAI', integration_key: 'openai', is_enabled: false, status: 'disabled' },
   { integration_name: 'Claude', integration_key: 'claude', is_enabled: false, status: 'disabled' },
+  { integration_name: 'Google Gemini', integration_key: 'gemini', is_enabled: false, status: 'disabled' },
   { integration_name: 'Perplexity', integration_key: 'perplexity', is_enabled: false, status: 'disabled' },
   { integration_name: 'Notion', integration_key: 'notion', is_enabled: false, status: 'disabled' },
   { integration_name: 'Microsoft Teams', integration_key: 'microsoft_teams', is_enabled: false, status: 'disabled' },
@@ -138,7 +139,11 @@ export default function Integrations() {
           break;
         case 'claude':
           functionName = 'claudeIntegration';
-          testPayload = { prompt: 'Say "Integration test successful!" in one line.' };
+          testPayload = { action: 'chat', prompt: 'Say "Integration test successful!" in one line.' };
+          break;
+        case 'gemini':
+          functionName = 'geminiIntegration';
+          testPayload = { action: 'chat', prompt: 'Say "Integration test successful!" in one line.' };
           break;
         case 'perplexity':
           functionName = 'perplexityIntegration';
@@ -307,6 +312,7 @@ export default function Integrations() {
               <ul className="text-sm text-slate-600 space-y-1">
                 {configuring?.integration_key === 'openai' && <li>• OPENAI_API_KEY</li>}
                 {configuring?.integration_key === 'claude' && <li>• ANTHROPIC_API_KEY</li>}
+                {configuring?.integration_key === 'gemini' && <li>• GOOGLE_API_KEY</li>}
                 {configuring?.integration_key === 'perplexity' && <li>• PERPLEXITY_API_KEY</li>}
                 {configuring?.integration_key === 'notion' && <li>• NOTION_API_KEY</li>}
                 {configuring?.integration_key === 'google_maps' && <li>• GOOGLE_API_KEY</li>}
