@@ -1,89 +1,109 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.4';
 
 /**
- * Award points for user actions (attendance, activity completion, feedback)
- * Handles badge checks and team point updates
+ * REFACTORED POINTS AWARDING SYSTEM
+ * Handles points, levels, badges, streaks, and team updates
+ * 
+ * Input: { participationId, actionType }
+ * Output: { success, pointsAwarded, newTotal, newLevel, badgesEarned }
  */
 
-// Points configuration
+// ============================================================================
+// CONFIGURATION
+// ============================================================================
+
 const POINTS_CONFIG = {
   attendance: { points: 10, field: 'events_attended', reason: 'Event attendance' },
   activity_completion: { points: 15, field: 'activities_completed', reason: 'Activity completed' },
   feedback: { points: 5, field: 'feedback_submitted', reason: 'Feedback submitted' },
-  high_engagement: { points: 5, field: null, reason: 'High engagement bonus' }
+  high_engagement: { points: 5, field: null, reason: 'High engagement bonus' },
+  recognition_sent: { points: 5, field: null, reason: 'Recognition sent' },
+  recognition_received: { points: 10, field: 'peer_recognitions', reason: 'Recognition received' }
 };
+
+const POINTS_PER_LEVEL = 100;
+
+// ============================================================================
+// MAIN HANDLER
+// ============================================================================
 
 Deno.serve(async (req) => {
   const base44 = createClientFromRequest(req);
   
   try {
-    // Authenticate user
     const user = await base44.auth.me();
     if (!user) {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { participationId, actionType } = await req.json();
+    const { participationId, actionType, userEmail: targetEmail } = await req.json();
 
     // Validate action type
-    if (!POINTS_CONFIG[actionType]) {
+    const config = POINTS_CONFIG[actionType];
+    if (!config) {
       return Response.json({ error: 'Invalid action type' }, { status: 400 });
     }
 
-    // Get participation record
-    const participations = await base44.asServiceRole.entities.Participation.filter({ id: participationId });
-    if (!participations.length) {
+    // Handle direct user award (for recognition)
+    if (targetEmail && !participationId) {
+      return await awardDirectPoints(base44, targetEmail, actionType, config);
+    }
+
+    // Handle participation-based award
+    if (!participationId) {
+      return Response.json({ error: 'participationId or userEmail required' }, { status: 400 });
+    }
+
+    const participation = await getParticipation(base44, participationId);
+    if (!participation) {
       return Response.json({ error: 'Participation not found' }, { status: 404 });
     }
-    const participation = participations[0];
 
     // Check for duplicate awards
-    const duplicateCheck = checkDuplicateAward(participation, actionType);
-    if (duplicateCheck.isDuplicate) {
-      return Response.json({ message: duplicateCheck.message });
+    if (isDuplicateAward(participation, actionType)) {
+      return Response.json({ message: 'Points already awarded', alreadyAwarded: true });
     }
 
     // Get or create user points
     const userPoints = await getOrCreateUserPoints(base44, participation.participant_email);
 
-    // Calculate and apply points
-    const { pointsToAward, updates } = calculatePointsUpdate(userPoints, participation, actionType);
-    
+    // Calculate points (with engagement check)
+    const pointsToAward = calculatePoints(config, participation, actionType);
     if (pointsToAward === 0) {
       return Response.json({ message: 'No points to award' });
     }
 
-    // Update records
-    await applyPointsUpdate(base44, participationId, userPoints.id, updates, actionType);
+    // Build updates
+    const updates = buildPointsUpdate(userPoints, pointsToAward, config, actionType, participation);
 
-    // Update team points if applicable
-    if (userPoints.team_id && pointsToAward > 0) {
+    // Apply updates
+    await applyUpdates(base44, participationId, userPoints.id, updates, actionType);
+
+    // Update team if applicable
+    if (userPoints.team_id) {
       await updateTeamPoints(base44, userPoints.team_id, pointsToAward);
     }
 
-    // Check for level up
+    // Check for level up and notify
     const oldLevel = userPoints.level || 1;
-    const newLevel = Math.floor(updates.total_points / 100) + 1;
-    updates.level = newLevel;
+    const newLevel = Math.floor(updates.total_points / POINTS_PER_LEVEL) + 1;
+    
+    if (newLevel > oldLevel) {
+      await createNotification(base44, participation.participant_email, 'level_up_alerts',
+        '🚀 Level Up!', `You've reached Level ${newLevel}!`);
+      updates.level = newLevel;
+    }
 
     await base44.asServiceRole.entities.UserPoints.update(userPoints.id, updates);
 
-    // Send level up notification
-    if (newLevel > oldLevel) {
-      await createNotification(base44, participation.participant_email, 'level_up_alerts',
-        '🚀 Level Up!', `Awesome! You've reached Level ${newLevel}!`,
-        { icon: '⬆️', action_url: '/Gamification' }
-      );
-    }
-
-    // Check for badge awards
-    const badges = await checkAndAwardBadges(base44, userPoints.id, updates);
+    // Check and award badges
+    const badges = await checkAndAwardBadges(base44, userPoints, updates);
 
     return Response.json({
       success: true,
       pointsAwarded: pointsToAward,
       newTotal: updates.total_points,
-      newLevel,
+      newLevel: newLevel,
       badgesEarned: badges
     });
 
@@ -93,19 +113,22 @@ Deno.serve(async (req) => {
   }
 });
 
-// Helper functions
-function checkDuplicateAward(participation, actionType) {
+// ============================================================================
+// HELPER FUNCTIONS
+// ============================================================================
+
+async function getParticipation(base44, participationId) {
+  const records = await base44.asServiceRole.entities.Participation.filter({ id: participationId });
+  return records[0] || null;
+}
+
+function isDuplicateAward(participation, actionType) {
   const checks = {
-    attendance: { field: 'points_awarded', message: 'Points already awarded for attendance' },
-    activity_completion: { field: 'activity_completed', message: 'Points already awarded for activity' },
-    feedback: { field: 'feedback_submitted', message: 'Points already awarded for feedback' }
+    attendance: 'points_awarded',
+    activity_completion: 'activity_completed',
+    feedback: 'feedback_submitted'
   };
-  
-  const check = checks[actionType];
-  if (check && participation[check.field]) {
-    return { isDuplicate: true, message: check.message };
-  }
-  return { isDuplicate: false };
+  return checks[actionType] && participation[checks[actionType]];
 }
 
 async function getOrCreateUserPoints(base44, userEmail) {
@@ -117,6 +140,7 @@ async function getOrCreateUserPoints(base44, userEmail) {
     user_email: userEmail,
     total_points: 0,
     available_points: 0,
+    lifetime_points: 0,
     events_attended: 0,
     activities_completed: 0,
     feedback_submitted: 0,
@@ -126,21 +150,21 @@ async function getOrCreateUserPoints(base44, userEmail) {
   });
 }
 
-function calculatePointsUpdate(userPoints, participation, actionType) {
-  const config = POINTS_CONFIG[actionType];
-  let pointsToAward = config.points;
-  
-  // Special case for high engagement
-  if (actionType === 'high_engagement' && participation.engagement_score < 4) {
-    pointsToAward = 0;
+function calculatePoints(config, participation, actionType) {
+  if (actionType === 'high_engagement' && (participation.engagement_score || 0) < 4) {
+    return 0;
   }
+  return config.points;
+}
 
-  const pointsHistory = userPoints.points_history || [];
+function buildPointsUpdate(userPoints, pointsToAward, config, actionType, participation) {
+  const history = userPoints.points_history || [];
+  
   const updates = {
     total_points: (userPoints.total_points || 0) + pointsToAward,
     available_points: (userPoints.available_points || 0) + pointsToAward,
     lifetime_points: (userPoints.lifetime_points || 0) + pointsToAward,
-    points_history: [...pointsHistory.slice(-49), {
+    points_history: [...history.slice(-49), {
       amount: pointsToAward,
       reason: config.reason,
       source: actionType,
@@ -149,7 +173,6 @@ function calculatePointsUpdate(userPoints, participation, actionType) {
     }]
   };
 
-  // Increment counter field if applicable
   if (config.field) {
     updates[config.field] = (userPoints[config.field] || 0) + 1;
   }
@@ -158,11 +181,10 @@ function calculatePointsUpdate(userPoints, participation, actionType) {
     updates.last_activity_date = new Date().toISOString().split('T')[0];
   }
 
-  return { pointsToAward, updates };
+  return updates;
 }
 
-async function applyPointsUpdate(base44, participationId, userPointsId, updates, actionType) {
-  // Update participation record to mark points awarded
+async function applyUpdates(base44, participationId, userPointsId, updates, actionType) {
   const participationUpdate = {};
   if (actionType === 'attendance') participationUpdate.points_awarded = true;
   if (actionType === 'activity_completion') participationUpdate.activity_completed = true;
@@ -173,104 +195,109 @@ async function applyPointsUpdate(base44, participationId, userPointsId, updates,
   }
 }
 
-async function updateTeamPoints(base44, teamId, pointsToAward) {
+async function updateTeamPoints(base44, teamId, points) {
   try {
     const teams = await base44.asServiceRole.entities.Team.filter({ id: teamId });
     if (teams.length > 0) {
       const team = teams[0];
       await base44.asServiceRole.entities.Team.update(team.id, {
-        total_points: (team.total_points || 0) + pointsToAward,
-        'team_stats.weekly_points': (team.team_stats?.weekly_points || 0) + pointsToAward,
-        'team_stats.monthly_points': (team.team_stats?.monthly_points || 0) + pointsToAward
+        total_points: (team.total_points || 0) + points
       });
     }
-  } catch (error) {
-    console.error('Failed to update team points:', error);
+  } catch (e) {
+    console.error('Team points update failed:', e);
   }
 }
 
-async function createNotification(base44, userEmail, type, title, message, metadata = {}) {
-  try {
-    const prefs = await base44.asServiceRole.entities.UserPreferences.filter({ user_email: userEmail });
-    const shouldNotify = !prefs[0] || prefs[0].notification_preferences?.[type] !== false;
-    
-    if (shouldNotify) {
-      await base44.asServiceRole.entities.Notification.create({
-        user_email: userEmail,
-        type,
-        title,
-        message,
-        ...metadata
-      });
-    }
-  } catch (error) {
-    console.error('Error creating notification:', error);
-  }
-}
-
-async function checkAndAwardBadges(base44, userPointsId, stats) {
-  const [allBadges, userPointsRecords] = await Promise.all([
-    base44.asServiceRole.entities.Badge.list(),
-    base44.asServiceRole.entities.UserPoints.filter({ id: userPointsId })
-  ]);
+async function awardDirectPoints(base44, userEmail, actionType, config) {
+  const userPoints = await getOrCreateUserPoints(base44, userEmail);
+  const pointsToAward = config.points;
   
-  const userPoints = userPointsRecords[0];
-  const earnedBadges = [];
-
-  for (const badge of allBadges) {
-    if (userPoints.badges_earned?.includes(badge.id)) continue;
-    if (badge.is_manual_award) continue;
-    
-    const { type, threshold } = badge.award_criteria || {};
-    if (!type || type === 'manual') continue;
-    
-    const shouldAward = checkBadgeCriteria(type, threshold, stats);
-    
-    if (shouldAward) {
-      earnedBadges.push(badge);
-      await awardBadge(base44, userPointsId, userPoints, badge, stats);
-    }
-  }
-
-  return earnedBadges;
-}
-
-function checkBadgeCriteria(type, threshold, stats) {
-  const criteriaMap = {
-    events_attended: stats.events_attended,
-    feedback_submitted: stats.feedback_submitted,
-    activities_completed: stats.activities_completed,
-    points_total: stats.total_points,
-    streak_days: stats.streak_days,
-    media_uploads: stats.media_uploads || 0,
-    peer_recognitions: stats.peer_recognitions || 0
+  const history = userPoints.points_history || [];
+  const updates = {
+    total_points: (userPoints.total_points || 0) + pointsToAward,
+    available_points: (userPoints.available_points || 0) + pointsToAward,
+    lifetime_points: (userPoints.lifetime_points || 0) + pointsToAward,
+    points_history: [...history.slice(-49), {
+      amount: pointsToAward,
+      reason: config.reason,
+      source: actionType,
+      timestamp: new Date().toISOString()
+    }]
   };
-  
-  return criteriaMap[type] !== undefined && criteriaMap[type] >= threshold;
+
+  if (config.field) {
+    updates[config.field] = (userPoints[config.field] || 0) + 1;
+  }
+
+  await base44.asServiceRole.entities.UserPoints.update(userPoints.id, updates);
+
+  return Response.json({
+    success: true,
+    pointsAwarded: pointsToAward,
+    newTotal: updates.total_points
+  });
 }
 
-async function awardBadge(base44, userPointsId, userPoints, badge, stats) {
-  const updatedBadges = [...(userPoints.badges_earned || []), badge.id];
-  const newTotalPoints = stats.total_points + (badge.points_value || 0);
-  
-  await base44.asServiceRole.entities.UserPoints.update(userPointsId, {
-    badges_earned: updatedBadges,
-    total_points: newTotalPoints
-  });
-  
-  stats.total_points = newTotalPoints;
-  
-  await base44.asServiceRole.entities.BadgeAward.create({
-    badge_id: badge.id,
-    user_email: userPoints.user_email,
-    user_name: userPoints.user_email,
-    award_type: 'automatic',
-    points_awarded: badge.points_value || 0
-  });
-  
-  await createNotification(base44, userPoints.user_email, 'badge_alerts',
-    '🎉 New Badge Earned!',
-    `Congratulations! You've earned the "${badge.badge_name}" badge!`,
-    { icon: badge.badge_icon, badge_id: badge.id, action_url: '/RewardsStore' }
-  );
+async function createNotification(base44, userEmail, type, title, message) {
+  try {
+    await base44.asServiceRole.entities.Notification.create({
+      user_email: userEmail,
+      type,
+      title,
+      message,
+      is_read: false
+    });
+  } catch (e) {
+    console.error('Notification failed:', e);
+  }
+}
+
+async function checkAndAwardBadges(base44, userPoints, stats) {
+  try {
+    const allBadges = await base44.asServiceRole.entities.Badge.list();
+    const earned = userPoints.badges_earned || [];
+    const awarded = [];
+
+    for (const badge of allBadges) {
+      if (earned.includes(badge.id) || badge.is_manual_award) continue;
+
+      const { type, threshold } = badge.award_criteria || {};
+      if (!type || type === 'manual') continue;
+
+      const valueMap = {
+        events_attended: stats.events_attended,
+        feedback_submitted: stats.feedback_submitted,
+        activities_completed: stats.activities_completed,
+        points_total: stats.total_points,
+        streak_days: stats.streak_days
+      };
+
+      if (valueMap[type] !== undefined && valueMap[type] >= threshold) {
+        earned.push(badge.id);
+        awarded.push(badge);
+
+        await base44.asServiceRole.entities.BadgeAward.create({
+          badge_id: badge.id,
+          user_email: userPoints.user_email,
+          award_type: 'automatic',
+          points_awarded: badge.points_value || 0
+        });
+
+        await createNotification(base44, userPoints.user_email, 'badge_alerts',
+          '🎉 New Badge!', `You earned "${badge.badge_name}"!`);
+      }
+    }
+
+    if (awarded.length > 0) {
+      await base44.asServiceRole.entities.UserPoints.update(userPoints.id, {
+        badges_earned: earned
+      });
+    }
+
+    return awarded;
+  } catch (e) {
+    console.error('Badge check failed:', e);
+    return [];
+  }
 }
