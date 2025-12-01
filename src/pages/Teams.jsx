@@ -19,7 +19,7 @@ import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '../utils';
-import { useUserData } from '../components/hooks/useUserData';
+import { useUserData } from '../components/hooks/useUserData.jsx';
 import { useTeamData } from '../components/hooks/useTeamData';
 import TeamMemberManager from '../components/teams/TeamMemberManager';
 import TeamAnalytics from '../components/teams/TeamAnalytics';

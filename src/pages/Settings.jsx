@@ -30,13 +30,21 @@ export default function Settings() {
   const [user, setUser] = useState(null);
   const [generating, setGenerating] = useState(false);
 
+  // Admin-only page - handled by useUserData
   useEffect(() => {
     const loadUser = async () => {
       try {
         const currentUser = await base44.auth.me();
         setUser(currentUser);
         if (currentUser.role !== 'admin') {
-          base44.auth.redirectToLogin();
+          // Redirect based on user_type
+          if (currentUser.user_type === 'facilitator') {
+            window.location.href = '/FacilitatorDashboard';
+          } else if (currentUser.user_type === 'participant') {
+            window.location.href = '/ParticipantPortal';
+          } else {
+            window.location.href = '/RoleSelection';
+          }
         }
       } catch (error) {
         base44.auth.redirectToLogin();

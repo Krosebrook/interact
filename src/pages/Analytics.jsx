@@ -34,13 +34,20 @@ const COLORS = ['#6366f1', '#ec4899', '#10b981', '#f59e0b', '#8b5cf6', '#06b6d4'
 export default function Analytics() {
   const [user, setUser] = useState(null);
 
+  // Admin-only page
   useEffect(() => {
     const loadUser = async () => {
       try {
         const currentUser = await base44.auth.me();
         setUser(currentUser);
         if (currentUser.role !== 'admin') {
-          base44.auth.redirectToLogin();
+          if (currentUser.user_type === 'facilitator') {
+            window.location.href = '/FacilitatorDashboard';
+          } else if (currentUser.user_type === 'participant') {
+            window.location.href = '/ParticipantPortal';
+          } else {
+            window.location.href = '/RoleSelection';
+          }
         }
       } catch (error) {
         base44.auth.redirectToLogin();

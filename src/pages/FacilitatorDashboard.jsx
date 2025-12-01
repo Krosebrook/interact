@@ -13,7 +13,7 @@ import QuickActionsPanel from '../components/dashboard/QuickActionsPanel';
 import LiveEventsBanner from '../components/dashboard/LiveEventsBanner';
 import CompletedEventsList from '../components/dashboard/CompletedEventsList';
 import ActivityGenerator from '../components/ai/ActivityGenerator';
-import { useUserData } from '../components/hooks/useUserData';
+import { useUserData } from '../components/hooks/useUserData.jsx';
 import { useEventData } from '../components/hooks/useEventData';
 import { useEventActions } from '../components/events/useEventActions';
 import { 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useUserData } from '../components/hooks/useUserData';
+import { useUserData } from '../components/hooks/useUserData.jsx';
 import { useUserProfile } from '../components/hooks/useUserProfile';
 import UserProfileCard from '../components/profile/UserProfileCard';
 import ProfilePreferencesEditor from '../components/profile/ProfilePreferencesEditor';
