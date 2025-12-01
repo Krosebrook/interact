@@ -1,38 +1,98 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { base44 } from '@/api/base44Client';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { createPageUrl } from '../../utils';
 
 /**
- * Full user data hook with profile and points
- * Use useAuth for simple auth checks without extra queries
+ * Full user data hook with profile, points, and role-based routing
  * 
  * @param {boolean} requireAuth - Redirect to login if not authenticated
- * @param {boolean} requireAdmin - Redirect if not admin (only checked if requireAuth is true)
+ * @param {boolean} requireAdmin - Redirect if not admin
+ * @param {boolean} requireFacilitator - Redirect if not facilitator (or admin)
+ * @param {boolean} requireParticipant - Redirect if not participant
  */
-export function useUserData(requireAuth = true, requireAdmin = false) {
+export function useUserData(
+  requireAuth = true, 
+  requireAdmin = false,
+  requireFacilitator = false,
+  requireParticipant = false
+) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
 
   useEffect(() => {
+    let isMounted = true;
+    
     const loadUser = async () => {
       try {
         const currentUser = await base44.auth.me();
+        if (!isMounted) return;
+        
         setUser(currentUser);
         
-        if (requireAdmin && currentUser.role !== 'admin') {
-          base44.auth.redirectToLogin();
+        const isAdmin = currentUser.role === 'admin';
+        const isFacilitator = currentUser.user_type === 'facilitator';
+        const isParticipant = currentUser.user_type === 'participant';
+        const hasNoUserType = !currentUser.user_type && !isAdmin;
+        
+        // If non-admin user has no user_type, redirect to role selection
+        if (hasNoUserType && !requireAdmin) {
+          window.location.href = createPageUrl('RoleSelection');
+          return;
         }
+        
+        // Admin-only pages
+        if (requireAdmin && !isAdmin) {
+          // Non-admins go to their appropriate dashboard
+          if (isFacilitator) {
+            window.location.href = createPageUrl('FacilitatorDashboard');
+          } else if (isParticipant) {
+            window.location.href = createPageUrl('ParticipantPortal');
+          } else {
+            window.location.href = createPageUrl('RoleSelection');
+          }
+          return;
+        }
+        
+        // Facilitator-only pages (admins can also access)
+        if (requireFacilitator && !isAdmin && !isFacilitator) {
+          if (isParticipant) {
+            window.location.href = createPageUrl('ParticipantPortal');
+          } else {
+            window.location.href = createPageUrl('RoleSelection');
+          }
+          return;
+        }
+        
+        // Participant-only pages
+        if (requireParticipant && !isParticipant) {
+          if (isAdmin) {
+            window.location.href = createPageUrl('Dashboard');
+          } else if (isFacilitator) {
+            window.location.href = createPageUrl('FacilitatorDashboard');
+          } else {
+            window.location.href = createPageUrl('RoleSelection');
+          }
+          return;
+        }
+        
       } catch (error) {
-        if (requireAuth) {
+        if (isMounted && requireAuth) {
           base44.auth.redirectToLogin();
         }
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     };
+    
     loadUser();
-  }, [requireAuth, requireAdmin]);
+    return () => { isMounted = false; };
+  }, [requireAuth, requireAdmin, requireFacilitator, requireParticipant]);
 
+  // Fetch user points
   const { data: userPoints } = useQuery({
     queryKey: ['user-points', user?.email],
     queryFn: async () => {
@@ -40,9 +100,10 @@ export function useUserData(requireAuth = true, requireAdmin = false) {
       return points[0] || null;
     },
     enabled: !!user?.email,
-    staleTime: 30000 // Cache for 30 seconds
+    staleTime: 30000
   });
 
+  // Fetch user profile
   const { data: profile } = useQuery({
     queryKey: ['user-profile', user?.email],
     queryFn: async () => {
@@ -53,11 +114,29 @@ export function useUserData(requireAuth = true, requireAdmin = false) {
     staleTime: 30000
   });
 
+  // Refresh user data
+  const refreshUserData = useCallback(() => {
+    if (user?.email) {
+      queryClient.invalidateQueries(['user-points', user.email]);
+      queryClient.invalidateQueries(['user-profile', user.email]);
+    }
+  }, [queryClient, user?.email]);
+
+  // Logout helper
+  const logout = useCallback((redirectUrl) => {
+    base44.auth.logout(redirectUrl);
+  }, []);
+
   return {
     user,
     loading,
     userPoints,
     profile,
-    isAdmin: user?.role === 'admin'
+    isAdmin: user?.role === 'admin',
+    isFacilitator: user?.user_type === 'facilitator' || user?.role === 'admin',
+    isParticipant: user?.user_type === 'participant',
+    userType: user?.user_type,
+    logout,
+    refreshUserData
   };
 }

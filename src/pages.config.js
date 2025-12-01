@@ -29,6 +29,7 @@ import PointStore from './pages/PointStore';
 import Recognition from './pages/Recognition';
 import Leaderboards from './pages/Leaderboards';
 import PublicProfile from './pages/PublicProfile';
+import RoleSelection from './pages/RoleSelection';
 import __Layout from './Layout.jsx';
 
 
@@ -64,6 +65,7 @@ export const PAGES = {
     "Recognition": Recognition,
     "Leaderboards": Leaderboards,
     "PublicProfile": PublicProfile,
+    "RoleSelection": RoleSelection,
 }
 
 export const pagesConfig = {

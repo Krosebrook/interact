@@ -73,8 +73,8 @@ export default function Layout({ children, currentPageName }) {
     base44.auth.logout();
   };
 
-  // If participant page, show minimal layout
-  if (currentPageName === 'ParticipantEvent') {
+  // Minimal layout pages (no sidebar/header)
+  if (currentPageName === 'ParticipantEvent' || currentPageName === 'RoleSelection') {
     return (
       <div className="min-h-screen bg-slate-50">
         {children}
@@ -83,8 +83,13 @@ export default function Layout({ children, currentPageName }) {
   }
 
   const isAdmin = user?.role === 'admin';
+  const isFacilitator = user?.user_type === 'facilitator';
+  const isParticipant = user?.user_type === 'participant';
 
-  const navigation = isAdmin ? [
+  // Navigation based on role hierarchy: Admin > Facilitator > Participant
+  const getNavigation = () => {
+    if (isAdmin) {
+      return [
         { name: 'Dashboard', icon: LayoutDashboard, page: 'Dashboard' },
         { name: 'Facilitator', icon: Users, page: 'FacilitatorDashboard' },
         { name: 'Activities', icon: Sparkles, page: 'Activities' },
@@ -104,15 +109,36 @@ export default function Layout({ children, currentPageName }) {
         { name: 'Project Plan', icon: LayoutDashboard, page: 'ProjectPlan' },
         { name: 'Documentation', icon: LayoutDashboard, page: 'Documentation' },
         { name: 'Settings', icon: SettingsIcon, page: 'Settings' },
-      ] : [
-        { name: 'My Events', icon: Calendar, page: 'ParticipantPortal' },
+      ];
+    }
+    
+    if (isFacilitator) {
+      return [
+        { name: 'Dashboard', icon: LayoutDashboard, page: 'FacilitatorDashboard' },
+        { name: 'Activities', icon: Sparkles, page: 'Activities' },
+        { name: 'Calendar', icon: Calendar, page: 'Calendar' },
         { name: 'Teams', icon: Users, page: 'Teams' },
         { name: 'Channels', icon: Users, page: 'Channels' },
-        { name: 'Rewards', icon: Gift, page: 'RewardsStore' },
-        { name: 'Point Store', icon: Gift, page: 'PointStore' },
+        { name: 'Recognition', icon: Gift, page: 'Recognition' },
         { name: 'Leaderboards', icon: BarChart3, page: 'Leaderboards' },
         { name: 'My Profile', icon: User, page: 'UserProfile' },
       ];
+    }
+    
+    // Participant navigation
+    return [
+      { name: 'My Events', icon: Calendar, page: 'ParticipantPortal' },
+      { name: 'Teams', icon: Users, page: 'Teams' },
+      { name: 'Channels', icon: Users, page: 'Channels' },
+      { name: 'Recognition', icon: Gift, page: 'Recognition' },
+      { name: 'Rewards', icon: Gift, page: 'RewardsStore' },
+      { name: 'Point Store', icon: Gift, page: 'PointStore' },
+      { name: 'Leaderboards', icon: BarChart3, page: 'Leaderboards' },
+      { name: 'My Profile', icon: User, page: 'UserProfile' },
+    ];
+  };
+
+  const navigation = getNavigation();
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-100">
@@ -232,9 +258,9 @@ export default function Layout({ children, currentPageName }) {
           <div className="px-4 py-4 border-b border-slate-200">
             <p className="font-medium text-slate-900">{user.full_name}</p>
             <p className="text-sm text-slate-500">{user.email}</p>
-            <span className="inline-block mt-2 px-2 py-1 text-xs font-medium bg-int-orange/10 text-int-orange rounded-full">
-              {user.role}
-            </span>
+            <span className="inline-block mt-2 px-2 py-1 text-xs font-medium bg-int-orange/10 text-int-orange rounded-full capitalize">
+                  {user.role === 'admin' ? 'Admin' : user.user_type || 'User'}
+                </span>
           </div>
         )}
 
