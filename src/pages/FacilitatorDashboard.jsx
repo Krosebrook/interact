@@ -13,7 +13,7 @@ import QuickActionsPanel from '../components/dashboard/QuickActionsPanel';
 import LiveEventsBanner from '../components/dashboard/LiveEventsBanner';
 import CompletedEventsList from '../components/dashboard/CompletedEventsList';
 import ActivityGenerator from '../components/ai/ActivityGenerator';
-import { useAuth } from '../components/hooks/useAuth';
+import { useUserData } from '../components/hooks/useUserData';
 import { useEventData } from '../components/hooks/useEventData';
 import { useEventActions } from '../components/events/useEventActions';
 import { 
@@ -34,7 +34,8 @@ import {
 import { motion } from 'framer-motion';
 
 export default function FacilitatorDashboard() {
-  const { user, loading: userLoading } = useAuth(true);
+  // Facilitator dashboard - accessible by facilitators and admins
+  const { user, loading: userLoading } = useUserData(true, false, true, false);
   const { events, activities, participations, isLoading } = useEventData();
   const eventActions = useEventActions();
   const [showSupport, setShowSupport] = useState(false);

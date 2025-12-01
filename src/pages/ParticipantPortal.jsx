@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useUserData } from '../components/hooks/useUserData';
+import { useUserData } from '../components/hooks/useUserData.jsx';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -19,7 +19,8 @@ import { toast } from 'sonner';
 
 export default function ParticipantPortal() {
   const queryClient = useQueryClient();
-  const { user, loading: userLoading, userPoints: myUserPoints } = useUserData(true, false);
+  // Participant-only portal
+  const { user, loading: userLoading, userPoints: myUserPoints } = useUserData(true, false, false, true);
   const [selectedEventForFeedback, setSelectedEventForFeedback] = useState(null);
 
   const { data: myParticipations = [] } = useQuery({

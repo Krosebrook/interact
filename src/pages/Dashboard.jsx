@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '../utils';
-import { useUserData } from '../components/hooks/useUserData';
+import { useUserData } from '../components/hooks/useUserData.jsx';
 import { useEventData } from '../components/hooks/useEventData';
 import { 
   filterUpcomingEvents, 
@@ -30,7 +30,8 @@ import {
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const { user, loading: userLoading, isAdmin } = useUserData(true, true);
+  // Admin-only dashboard
+  const { user, loading: userLoading, isAdmin } = useUserData(true, true, false, false);
   const { events, activities, participations, isLoading } = useEventData();
   const [showGenerator, setShowGenerator] = useState(false);
   const eventActions = useEventActions();
