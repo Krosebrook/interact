@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import ProtectedRoute from '../components/common/ProtectedRoute';
+import LoadingSpinner from '../components/common/LoadingSpinner';
 import FacilitatorSupportChat from '../components/facilitator/FacilitatorSupportChat';
 import TemplateAnalytics from '../components/facilitator/TemplateAnalytics';
 import FacilitatorAgentChat from '../components/facilitator/FacilitatorAgentChat';
@@ -33,9 +35,8 @@ import {
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-export default function FacilitatorDashboard() {
-  // Facilitator dashboard - accessible by facilitators and admins
-  const { user, loading: userLoading } = useUserData(true, false, true, false);
+function FacilitatorDashboardContent() {
+  const { user } = useUserData(true, false, true, false);
   const { events, activities, participations, isLoading } = useEventData();
   const eventActions = useEventActions();
   const [showSupport, setShowSupport] = useState(false);
@@ -49,12 +50,8 @@ export default function FacilitatorDashboard() {
   const tomorrowEvents = filterTomorrowEvents(upcomingEvents);
   const thisWeekEvents = filterThisWeekEvents(upcomingEvents);
 
-  if (userLoading || isLoading || !user) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
-      </div>
-    );
+  if (isLoading || !user) {
+    return <LoadingSpinner className="min-h-[60vh]" message="Loading dashboard..." />;
   }
 
   const handleEventAction = (action, event) => {
@@ -222,5 +219,13 @@ export default function FacilitatorDashboard() {
         <FacilitatorSupportChat onClose={() => setShowSupport(false)} />
       )}
     </div>
+  );
+}
+
+export default function FacilitatorDashboard() {
+  return (
+    <ProtectedRoute requireFacilitator>
+      <FacilitatorDashboardContent />
+    </ProtectedRoute>
   );
 }
