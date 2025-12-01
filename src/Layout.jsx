@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from './utils';
 import { base44 } from '@/api/base44Client';
+import ErrorBoundary from './components/common/ErrorBoundary';
 import { 
   LayoutDashboard, 
   Calendar, 
@@ -198,7 +199,9 @@ export default function Layout({ children, currentPageName }) {
 
       {/* Main Content */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {children}
+        <ErrorBoundary>
+          {children}
+        </ErrorBoundary>
       </main>
 
       {/* Footer with scenic image */}
