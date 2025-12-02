@@ -24,6 +24,7 @@ import {
 import RecurrenceSettings from './RecurrenceSettings';
 import TimeSlotSuggestions from './TimeSlotSuggestions';
 import RichTextEventEditor from './RichTextEventEditor';
+import EventTypeConditionalFields, { EVENT_TYPES } from './EventTypeConditionalFields';
 import { toast } from 'sonner';
 
 export default function ScheduleEventDialog({
@@ -104,14 +105,47 @@ export default function ScheduleEventDialog({
             </Select>
           </div>
 
-          <div>
-            <Label>Event Title</Label>
-            <Input
-              value={formData.title}
-              onChange={(e) => updateField('title', e.target.value)}
-              placeholder="Override activity title (optional)"
-            />
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label>Event Title</Label>
+              <Input
+                value={formData.title}
+                onChange={(e) => updateField('title', e.target.value)}
+                placeholder="Override activity title (optional)"
+              />
+            </div>
+            <div>
+              <Label>Event Type</Label>
+              <Select
+                value={formData.event_type || 'other'}
+                onValueChange={(value) => updateField('event_type', value)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select type..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.entries(EVENT_TYPES).map(([key, config]) => {
+                    const Icon = config.icon;
+                    return (
+                      <SelectItem key={key} value={key}>
+                        <span className="flex items-center gap-2">
+                          <Icon className="h-4 w-4" />
+                          {config.label}
+                        </span>
+                      </SelectItem>
+                    );
+                  })}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
+
+          {/* Conditional Fields based on Event Type */}
+          <EventTypeConditionalFields
+            eventType={formData.event_type}
+            typeSpecificFields={formData.type_specific_fields || {}}
+            onChange={(fields) => updateField('type_specific_fields', fields)}
+          />
 
           <div className="grid grid-cols-2 gap-4">
             <div>
