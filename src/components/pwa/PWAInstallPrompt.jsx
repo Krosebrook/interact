@@ -92,7 +92,7 @@ export default function PWAInstallPrompt() {
               
               <div className="flex-1">
                 <h3 className="font-bold text-lg mb-1 flex items-center gap-2">
-                  Install Team Engage
+                  Install INTeract
                   <Sparkles className="h-4 w-4 text-amber-400" />
                 </h3>
                 <p className="text-sm text-white/80 mb-3">
