@@ -109,7 +109,7 @@ export default function AISuggestionsWidget({ onScheduleActivity, onGenerateCust
             </div>
             <div>
               <h3 className="text-lg font-bold text-slate-900">AI Suggestions</h3>
-              <p className="text-sm text-slate-500">Smart activity recommendations</p>
+              <p className="text-sm text-slate-600">Smart activity recommendations</p>
             </div>
           </div>
           <div className="flex gap-2">
@@ -145,7 +145,7 @@ export default function AISuggestionsWidget({ onScheduleActivity, onGenerateCust
                 <Sparkles className="h-8 w-8 text-purple-400" />
               </div>
               <p className="text-slate-600 font-medium mb-2">No new recommendations</p>
-              <p className="text-sm text-slate-500">
+              <p className="text-sm text-slate-600">
                 Click "Quick Generate" to create a custom activity!
               </p>
             </motion.div>
@@ -197,7 +197,7 @@ export default function AISuggestionsWidget({ onScheduleActivity, onGenerateCust
                         </div>
 
                         {rec.context?.date_context && (
-                          <div className="flex items-center gap-1 text-xs text-slate-500">
+                          <div className="flex items-center gap-1 text-xs text-slate-600">
                             <Calendar className="h-3 w-3" />
                             <span>{rec.context.date_context}</span>
                           </div>

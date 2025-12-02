@@ -68,7 +68,7 @@ export default function Dashboard() {
           </div>
           <div className="flex gap-3">
             <Link to={createPageUrl('Activities')}>
-              <Button className="bg-gradient-orange hover:opacity-90 text-white shadow-lg hover:shadow-xl transition-all press-effect">
+              <Button className="bg-int-orange hover:bg-int-orange/90 text-slate-900 font-semibold shadow-md hover:shadow-lg transition-all">
                 <Sparkles className="h-4 w-4 mr-2" />
                 Browse Activities
               </Button>
@@ -98,7 +98,7 @@ export default function Dashboard() {
             <h2 className="text-2xl font-bold text-int-navy font-display">
               <span className="text-highlight-navy">Upcoming Events</span>
             </h2>
-            <p className="text-slate-500 text-sm mt-1">Your next scheduled activities</p>
+            <p className="text-slate-600 text-sm mt-1">Your next scheduled activities</p>
           </div>
           <Link to={createPageUrl('Calendar')}>
             <Button variant="ghost" className="text-int-orange hover:text-[#C46322] hover:bg-int-orange/10 font-semibold">

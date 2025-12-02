@@ -93,7 +93,7 @@ export default function EmptyState({
           transition={{ delay: 0.25 }}
           className={`
             ${compact ? 'text-xs' : 'text-sm'} 
-            text-slate-500 mb-6 max-w-sm mx-auto leading-relaxed
+            text-slate-600 mb-6 max-w-sm mx-auto leading-relaxed
           `}
         >
           {description}
@@ -112,7 +112,7 @@ export default function EmptyState({
             <Lightbulb className="h-4 w-4" />
             Quick Tips
           </div>
-          <ul className="text-left text-sm text-amber-800/80 space-y-1">
+          <ul className="text-left text-sm text-amber-900 space-y-1">
             {tips.map((tip, index) => (
               <li key={index} className="flex items-start gap-2">
                 <span className="text-amber-500 mt-0.5">•</span>
@@ -134,7 +134,7 @@ export default function EmptyState({
           {actionLabel && onAction && (
             <Button 
               onClick={onAction}
-              className="bg-gradient-orange hover:opacity-90 text-white shadow-lg hover:shadow-xl transition-all press-effect"
+              className="bg-int-orange hover:bg-int-orange/90 text-slate-900 font-semibold shadow-md hover:shadow-lg transition-all"
               size={compact ? 'sm' : 'default'}
             >
               {actionLabel}
