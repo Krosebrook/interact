@@ -14,6 +14,7 @@ import { toast } from 'sonner';
 const DEFAULT_FORM_DATA = {
   activity_id: '',
   title: '',
+  event_type: 'other',
   scheduled_date: '',
   duration_minutes: 30,
   max_participants: null,
@@ -22,7 +23,8 @@ const DEFAULT_FORM_DATA = {
   facilitator_name: '',
   facilitator_email: '',
   event_format: 'online',
-  location: ''
+  location: '',
+  type_specific_fields: {}
 };
 
 const DEFAULT_RECURRENCE = {
@@ -39,6 +41,38 @@ const generateMagicLink = () =>
 
 const generateSeriesId = () => 
   `series-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+
+/**
+ * Map of event types to their relevant fields
+ */
+const EVENT_TYPE_FIELDS = {
+  meeting: ['agenda_link', 'required_attendees'],
+  workshop: ['materials_needed', 'prerequisites'],
+  training: ['prerequisites', 'learning_objectives', 'certification_offered'],
+  presentation: ['presentation_slides_url', 'q_and_a_enabled'],
+  brainstorm: ['brainstorm_topic', 'brainstorm_tools'],
+  wellness: ['wellness_category'],
+  social: ['social_theme', 'dress_code'],
+  other: []
+};
+
+/**
+ * Clean type-specific fields to only include relevant ones for the event type
+ */
+function cleanTypeSpecificFields(eventType, fields) {
+  if (!fields || !eventType) return {};
+  
+  const relevantFields = EVENT_TYPE_FIELDS[eventType] || [];
+  const cleaned = {};
+  
+  for (const field of relevantFields) {
+    if (fields[field] !== undefined && fields[field] !== '' && fields[field] !== null) {
+      cleaned[field] = fields[field];
+    }
+  }
+  
+  return cleaned;
+}
 
 /**
  * Calculate next date based on recurrence frequency
@@ -98,10 +132,14 @@ export function useEventScheduling(options = {}) {
   const createSingleEvent = async (data, recurrenceInfo = null) => {
     const magicLink = generateMagicLink();
     
+    // Clean up type_specific_fields - only include relevant fields for the event type
+    const cleanedTypeFields = cleanTypeSpecificFields(data.event_type, data.type_specific_fields);
+    
     const eventData = {
       ...data,
       magic_link: magicLink,
       status: 'scheduled',
+      type_specific_fields: cleanedTypeFields,
       is_recurring: !!recurrenceInfo,
       recurring_series_id: recurrenceInfo?.seriesId || null,
       recurrence_pattern: recurrenceInfo ? {
