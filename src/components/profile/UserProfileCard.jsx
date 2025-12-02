@@ -1,23 +1,23 @@
 import React from 'react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { 
   User, 
   MapPin, 
-  Building, 
-  Star, 
-  Trophy,
-  Camera,
-  Calendar,
-  TrendingUp,
-  Edit
+  Building,
+  Briefcase,
+  Flame
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-export default function UserProfileCard({ profile, userPoints, onEdit, compact = false }) {
-  const engagementLevel = userPoints?.level || 1;
+/**
+ * Compact profile card for use in sidebars and smaller spaces.
+ * For full profile header, use ProfileHeader component instead.
+ */
+export default function UserProfileCard({ profile, userPoints, compact = false }) {
+  const level = userPoints?.level || 1;
   const totalPoints = userPoints?.total_points || 0;
+  const streakDays = userPoints?.streak_days || 0;
 
   if (compact) {
     return (
@@ -36,7 +36,7 @@ export default function UserProfileCard({ profile, userPoints, onEdit, compact =
               </div>
             )}
             <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-yellow-400 rounded-full flex items-center justify-center text-xs font-bold">
-              {engagementLevel}
+              {level}
             </div>
           </div>
           <div className="flex-1 min-w-0">
@@ -48,7 +48,7 @@ export default function UserProfileCard({ profile, userPoints, onEdit, compact =
             </p>
           </div>
           <div className="text-right">
-            <p className="font-bold text-purple-600">{totalPoints}</p>
+            <p className="font-bold text-purple-600">{totalPoints.toLocaleString()}</p>
             <p className="text-xs text-slate-500">points</p>
           </div>
         </div>
@@ -63,109 +63,107 @@ export default function UserProfileCard({ profile, userPoints, onEdit, compact =
     >
       <Card className="overflow-hidden border-0 shadow-xl">
         {/* Header Banner */}
-        <div className="h-24 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 relative">
+        <div className="h-20 bg-gradient-to-r from-int-navy via-purple-700 to-int-orange relative">
           <div className="absolute inset-0 bg-black/10" />
-          {onEdit && (
-            <Button
-              size="sm"
-              variant="ghost"
-              className="absolute top-2 right-2 text-white hover:bg-white/20"
-              onClick={onEdit}
-            >
-              <Edit className="h-4 w-4 mr-1" />
-              Edit
-            </Button>
-          )}
         </div>
 
         {/* Profile Content */}
-        <div className="px-6 pb-6">
+        <div className="px-5 pb-5">
           {/* Avatar */}
-          <div className="relative -mt-12 mb-4">
-            {profile?.avatar_url ? (
-              <img 
-                src={profile.avatar_url} 
-                alt={profile.display_name}
-                className="w-24 h-24 rounded-full border-4 border-white object-cover shadow-lg"
-              />
-            ) : (
-              <div className="w-24 h-24 rounded-full border-4 border-white bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center shadow-lg">
-                <User className="h-12 w-12 text-white" />
-              </div>
-            )}
-            <div className="absolute bottom-0 right-0 w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center text-sm font-bold border-2 border-white">
-              {engagementLevel}
+          <div className="relative -mt-10 mb-3">
+            <div className="w-20 h-20 rounded-full p-0.5 bg-gradient-to-br from-yellow-400 to-int-orange">
+              {profile?.avatar_url ? (
+                <img 
+                  src={profile.avatar_url} 
+                  alt={profile.display_name}
+                  className="w-full h-full rounded-full border-3 border-white object-cover"
+                />
+              ) : (
+                <div className="w-full h-full rounded-full border-3 border-white bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center">
+                  <User className="h-10 w-10 text-white" />
+                </div>
+              )}
+            </div>
+            <div className="absolute bottom-0 right-0 w-7 h-7 bg-gradient-to-br from-yellow-400 to-amber-500 rounded-full flex items-center justify-center text-xs font-bold text-white border-2 border-white shadow">
+              {level}
             </div>
           </div>
 
-          {/* Name & Bio */}
-          <h2 className="text-xl font-bold text-slate-900 mb-1">
+          {/* Name & Info */}
+          <h2 className="text-lg font-bold text-slate-900 mb-0.5">
             {profile?.display_name || 'New User'}
           </h2>
-          {profile?.bio && (
-            <p className="text-slate-600 text-sm mb-3">{profile.bio}</p>
+          
+          {profile?.job_title && (
+            <p className="text-sm text-int-orange font-medium flex items-center gap-1 mb-1">
+              <Briefcase className="h-3.5 w-3.5" />
+              {profile.job_title}
+            </p>
           )}
 
-          {/* Info */}
-          <div className="flex flex-wrap gap-3 mb-4">
+          {profile?.bio && (
+            <p className="text-slate-600 text-sm mb-3 line-clamp-2">{profile.bio}</p>
+          )}
+
+          {/* Location & Dept */}
+          <div className="flex flex-wrap gap-2 mb-4 text-xs">
             {profile?.department && (
-              <div className="flex items-center gap-1 text-sm text-slate-500">
-                <Building className="h-4 w-4" />
+              <Badge variant="outline" className="gap-1">
+                <Building className="h-3 w-3" />
                 {profile.department}
-              </div>
+              </Badge>
             )}
             {profile?.location && (
-              <div className="flex items-center gap-1 text-sm text-slate-500">
-                <MapPin className="h-4 w-4" />
+              <Badge variant="outline" className="gap-1">
+                <MapPin className="h-3 w-3" />
                 {profile.location}
-              </div>
+              </Badge>
             )}
           </div>
 
-          {/* Stats */}
-          <div className="grid grid-cols-3 gap-4 p-4 bg-slate-50 rounded-xl mb-4">
+          {/* Stats Row */}
+          <div className="grid grid-cols-3 gap-2 p-3 bg-slate-50 rounded-xl">
             <div className="text-center">
-              <p className="text-2xl font-bold text-purple-600">{totalPoints}</p>
+              <p className="text-lg font-bold text-purple-600">{totalPoints.toLocaleString()}</p>
               <p className="text-xs text-slate-500">Points</p>
             </div>
             <div className="text-center">
-              <p className="text-2xl font-bold text-indigo-600">
-                {profile?.engagement_stats?.total_events_attended || 0}
+              <p className="text-lg font-bold text-blue-600">
+                {userPoints?.events_attended || 0}
               </p>
               <p className="text-xs text-slate-500">Events</p>
             </div>
             <div className="text-center">
-              <p className="text-2xl font-bold text-blue-600">
+              <p className="text-lg font-bold text-amber-600">
                 {userPoints?.badges_earned?.length || 0}
               </p>
               <p className="text-xs text-slate-500">Badges</p>
             </div>
           </div>
 
-          {/* Interests */}
-          {profile?.interests_tags?.length > 0 && (
-            <div>
-              <p className="text-sm font-semibold text-slate-700 mb-2">Interests</p>
-              <div className="flex flex-wrap gap-2">
-                {profile.interests_tags.slice(0, 6).map((tag, idx) => (
-                  <Badge key={idx} variant="outline" className="bg-purple-50 text-purple-700 border-purple-200">
-                    {tag}
-                  </Badge>
-                ))}
-              </div>
+          {/* Streak */}
+          {streakDays > 0 && (
+            <div className="mt-3 flex items-center justify-center gap-2 p-2 bg-gradient-to-r from-orange-50 to-amber-50 rounded-lg">
+              <Flame className="h-4 w-4 text-orange-500" />
+              <span className="text-sm font-medium text-orange-700">{streakDays} day streak!</span>
             </div>
           )}
 
-          {/* Preferred Activities */}
-          {profile?.activity_preferences?.preferred_types?.length > 0 && (
+          {/* Interests */}
+          {profile?.interests_tags?.length > 0 && (
             <div className="mt-4">
-              <p className="text-sm font-semibold text-slate-700 mb-2">Favorite Activities</p>
-              <div className="flex flex-wrap gap-2">
-                {profile.activity_preferences.preferred_types.map((type, idx) => (
-                  <Badge key={idx} className="bg-indigo-100 text-indigo-700">
-                    {type}
+              <p className="text-xs font-semibold text-slate-500 mb-2 uppercase tracking-wide">Interests</p>
+              <div className="flex flex-wrap gap-1.5">
+                {profile.interests_tags.slice(0, 5).map((tag, idx) => (
+                  <Badge key={idx} variant="outline" className="text-xs bg-purple-50 text-purple-700 border-purple-200">
+                    {tag}
                   </Badge>
                 ))}
+                {profile.interests_tags.length > 5 && (
+                  <Badge variant="outline" className="text-xs">
+                    +{profile.interests_tags.length - 5}
+                  </Badge>
+                )}
               </div>
             </div>
           )}
