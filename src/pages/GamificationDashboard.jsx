@@ -289,6 +289,14 @@ export default function GamificationDashboard() {
             <Target className="h-4 w-4 mr-2" />
             Challenges
           </TabsTrigger>
+          <TabsTrigger value="tiers" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500 data-[state=active]:to-orange-500 data-[state=active]:text-white">
+            <Crown className="h-4 w-4 mr-2" />
+            Tiers
+          </TabsTrigger>
+          <TabsTrigger value="social" className="data-[state=active]:bg-gradient-social data-[state=active]:text-white">
+            <Users className="h-4 w-4 mr-2" />
+            Social
+          </TabsTrigger>
           <TabsTrigger value="rewards" className="data-[state=active]:bg-gradient-wellness data-[state=active]:text-white">
             <Gift className="h-4 w-4 mr-2" />
             Rewards
