@@ -196,7 +196,7 @@ export default function ScheduleEventDialog({
             </Button>
             <Button 
               type="submit" 
-              className="bg-int-orange hover:bg-[#C46322] text-white"
+              className="bg-int-orange hover:bg-[#C46322] text-slate-900 font-semibold"
               disabled={isSubmitting}
             >
               {isSubmitting ? 'Scheduling...' : 'Schedule Event'}
