@@ -15,6 +15,8 @@ import BadgeDistributionAnalysis from '../components/analytics/gamification/Badg
 import ChallengePerformanceMetrics from '../components/analytics/gamification/ChallengePerformanceMetrics';
 import LeaderboardDynamicsAnalysis from '../components/analytics/gamification/LeaderboardDynamicsAnalysis';
 import ABTestingFramework from '../components/analytics/gamification/ABTestingFramework';
+import AIInsightsGenerator from '../components/analytics/gamification/AIInsightsGenerator';
+import GamificationConfigPanel from '../components/admin/GamificationConfigPanel';
 
 export default function AdvancedGamificationAnalytics() {
   const { user, loading: userLoading, isAdmin } = useUserData(true, true);
@@ -60,6 +62,12 @@ export default function AdvancedGamificationAnalytics() {
   const { data: leaderboardSnapshots = [] } = useQuery({
     queryKey: ['leaderboard-snapshots'],
     queryFn: () => base44.entities.LeaderboardSnapshot.list('-created_date', 100),
+    enabled: !!user
+  });
+
+  const { data: abTests = [] } = useQuery({
+    queryKey: ['ab-tests-analytics'],
+    queryFn: () => base44.entities.GamificationABTest.list('-created_date', 50),
     enabled: !!user
   });
 
@@ -144,7 +152,7 @@ export default function AdvancedGamificationAnalytics() {
 
       {/* Main Analytics Tabs */}
       <Tabs defaultValue="overview" className="w-full">
-        <TabsList className="grid grid-cols-5 w-full mb-6">
+        <TabsList className="grid grid-cols-7 w-full mb-6">
           <TabsTrigger value="overview" className="flex items-center gap-2">
             <TrendingUp className="h-4 w-4" />
             <span className="hidden sm:inline">Engagement</span>
@@ -164,6 +172,14 @@ export default function AdvancedGamificationAnalytics() {
           <TabsTrigger value="abtesting" className="flex items-center gap-2">
             <FlaskConical className="h-4 w-4" />
             <span className="hidden sm:inline">A/B Tests</span>
+          </TabsTrigger>
+          <TabsTrigger value="ai" className="flex items-center gap-2">
+            <BarChart3 className="h-4 w-4" />
+            <span className="hidden sm:inline">AI Insights</span>
+          </TabsTrigger>
+          <TabsTrigger value="config" className="flex items-center gap-2">
+            <BarChart3 className="h-4 w-4" />
+            <span className="hidden sm:inline">Config</span>
           </TabsTrigger>
         </TabsList>
 
@@ -233,6 +249,52 @@ export default function AdvancedGamificationAnalytics() {
           <div className="grid grid-cols-2 gap-6">
             <ABTestingFramework />
           </div>
+        </TabsContent>
+
+        <TabsContent value="ai" className="space-y-6">
+          <AIInsightsGenerator 
+            engagementData={{
+              weekChange: 0,
+              correlation: 0
+            }}
+            badgeData={{
+              totalBadges: badges.length,
+              totalAwarded: badgeAwards.length,
+              unlockRate: badges.length > 0 ? ((new Set(badgeAwards.map(a => a.badge_id)).size / badges.length) * 100).toFixed(0) : 0,
+              rarelyEarned: badges.filter(b => !badgeAwards.some(a => a.badge_id === b.id)).length
+            }}
+            challengeData={{
+              overallCompletionRate: personalChallenges.length > 0 
+                ? ((personalChallenges.filter(c => c.status === 'completed').length / personalChallenges.length) * 100).toFixed(0) 
+                : 0,
+              activeChallenges: personalChallenges.filter(c => c.status === 'active').length,
+              abandonedChallenges: personalChallenges.filter(c => c.status === 'abandoned' || c.status === 'expired').length
+            }}
+            leaderboardData={{
+              totalUsers: userPoints.length,
+              activeUsers: userPoints.filter(u => u.weekly_points > 0).length,
+              avgPoints: userPoints.length > 0 ? Math.round(userPoints.reduce((s, u) => s + (u.total_points || 0), 0) / userPoints.length) : 0,
+              atRiskUsers: userPoints.filter(u => !u.last_activity_date || (new Date() - new Date(u.last_activity_date)) > 7 * 24 * 60 * 60 * 1000).length,
+              dormantUsers: userPoints.filter(u => !u.last_activity_date || (new Date() - new Date(u.last_activity_date)) > 30 * 24 * 60 * 60 * 1000).length,
+              segments: {
+                champions: userPoints.filter(u => (u.engagement_score || 0) >= 80).length
+              },
+              healthScore: 70,
+              topRisers: userPoints.slice(0, 5).map((u, i) => ({
+                user_email: u.user_email,
+                user_name: u.user_name || u.user_email?.split('@')[0],
+                currentRank: i + 1,
+                total_points: u.total_points || 0,
+                streak_days: u.streak_days || 0,
+                velocity: u.weekly_points > 0 ? 'rising' : 'stable'
+              }))
+            }}
+            abTestResults={abTests}
+          />
+        </TabsContent>
+
+        <TabsContent value="config" className="space-y-6">
+          <GamificationConfigPanel />
         </TabsContent>
       </Tabs>
     </div>
