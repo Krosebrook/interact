@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import {
   Dialog,
@@ -10,7 +11,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Award, Lock, Star, Trophy, Target, Flame, Users, Lightbulb, Heart, Zap } from 'lucide-react';
+import { Award, Lock, Star, Trophy, Target, Flame, Users, Lightbulb, Heart, Zap, Share2 } from 'lucide-react';
+import { SocialShareDialog } from './SocialShareCard';
 
 const BADGE_ICONS = {
   milestone: Trophy,
@@ -37,7 +39,9 @@ const RARITY_STYLES = {
 };
 
 export default function BadgeShowcase({ userEmail, earnedBadgeIds = [] }) {
-  const [selectedBadge, setSelectedBadge] = React.useState(null);
+  const [selectedBadge, setSelectedBadge] = useState(null);
+  const [shareDialogOpen, setShareDialogOpen] = useState(false);
+  const [badgeToShare, setBadgeToShare] = useState(null);
 
   const { data: allBadges = [] } = useQuery({
     queryKey: ['all-badges'],
@@ -215,12 +219,53 @@ export default function BadgeShowcase({ userEmail, earnedBadgeIds = [] }) {
                 <div className="bg-green-50 rounded-lg p-4 text-center">
                   <Award className="h-8 w-8 text-green-600 mx-auto mb-2" />
                   <p className="text-green-700 font-medium">Badge Earned!</p>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="mt-3"
+                    onClick={() => {
+                      setBadgeToShare(selectedBadge);
+                      setShareDialogOpen(true);
+                    }}
+                  >
+                    <Share2 className="h-4 w-4 mr-2" />
+                    Share Achievement
+                  </Button>
                 </div>
               )}
             </div>
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Share Dialog */}
+      <SocialShareDialog
+        open={shareDialogOpen}
+        onOpenChange={setShareDialogOpen}
+        shareType="badge_earned"
+        shareData={{
+          title: badgeToShare?.badge_name,
+          description: `I earned the ${badgeToShare?.badge_name} badge!`,
+          icon: badgeToShare?.badge_icon,
+          value: badgeToShare?.points_value > 0 ? `+${badgeToShare.points_value} pts` : null
+        }}
+        onShare={async (platform) => {
+          if (!badgeToShare) return;
+          await base44.entities.SocialShare.create({
+            user_email: userEmail,
+            share_type: 'badge_earned',
+            reference_id: badgeToShare.id,
+            share_data: {
+              title: badgeToShare.badge_name,
+              description: `Earned the ${badgeToShare.badge_name} badge!`,
+              icon: badgeToShare.badge_icon,
+              value: badgeToShare.points_value > 0 ? `+${badgeToShare.points_value} pts` : null
+            },
+            platforms: [platform],
+            visibility: 'public'
+          });
+        }}
+      />
     </>
   );
 }
