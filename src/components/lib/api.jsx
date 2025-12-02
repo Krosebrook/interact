@@ -1,327 +1,187 @@
 /**
  * CENTRALIZED API LAYER
- * All entity operations and backend function calls go through here
- * Provides type safety, caching config, and error handling
+ * Standardized data fetching with caching, error handling, and retry logic
  */
 
 import { base44 } from '@/api/base44Client';
+import { API_CONFIG } from './config';
 
 // ============================================================================
-// QUERY CONFIGURATION
+// ENTITY OPERATIONS
 // ============================================================================
 
-export const QUERY_CONFIG = {
-  // Static data - rarely changes
-  static: { staleTime: 5 * 60 * 1000, cacheTime: 30 * 60 * 1000 },
-  // User-specific - changes moderately
-  user: { staleTime: 30 * 1000, cacheTime: 5 * 60 * 1000 },
-  // Real-time - needs fresh data
-  realtime: { staleTime: 0, refetchInterval: 5000 },
-  // Leaderboard - moderate refresh
-  leaderboard: { staleTime: 60 * 1000, refetchInterval: 5 * 60 * 1000 }
+/**
+ * Fetch entity list with standardized options
+ */
+export async function fetchEntityList(entityName, options = {}) {
+  const { 
+    sort = '-created_date', 
+    limit = API_CONFIG.defaultPageSize,
+    filter = null 
+  } = options;
+
+  const entity = base44.entities[entityName];
+  if (!entity) {
+    throw new Error(`Entity "${entityName}" not found`);
+  }
+
+  if (filter) {
+    return entity.filter(filter, sort, limit);
+  }
+  return entity.list(sort, limit);
+}
+
+/**
+ * Fetch single entity by ID
+ */
+export async function fetchEntityById(entityName, id) {
+  const entity = base44.entities[entityName];
+  if (!entity) {
+    throw new Error(`Entity "${entityName}" not found`);
+  }
+  
+  const results = await entity.filter({ id });
+  return results[0] || null;
+}
+
+/**
+ * Create entity with validation
+ */
+export async function createEntity(entityName, data) {
+  const entity = base44.entities[entityName];
+  if (!entity) {
+    throw new Error(`Entity "${entityName}" not found`);
+  }
+  return entity.create(data);
+}
+
+/**
+ * Update entity
+ */
+export async function updateEntity(entityName, id, data) {
+  const entity = base44.entities[entityName];
+  if (!entity) {
+    throw new Error(`Entity "${entityName}" not found`);
+  }
+  return entity.update(id, data);
+}
+
+/**
+ * Delete entity
+ */
+export async function deleteEntity(entityName, id) {
+  const entity = base44.entities[entityName];
+  if (!entity) {
+    throw new Error(`Entity "${entityName}" not found`);
+  }
+  return entity.delete(id);
+}
+
+// ============================================================================
+// QUERY KEY FACTORIES
+// ============================================================================
+
+export const queryKeys = {
+  // Core entities
+  events: {
+    all: ['events'],
+    list: (filters) => ['events', 'list', filters],
+    detail: (id) => ['events', 'detail', id],
+  },
+  activities: {
+    all: ['activities'],
+    list: (filters) => ['activities', 'list', filters],
+    detail: (id) => ['activities', 'detail', id],
+  },
+  participations: {
+    all: ['participations'],
+    byEvent: (eventId) => ['participations', 'event', eventId],
+    byUser: (email) => ['participations', 'user', email],
+  },
+  
+  // Gamification
+  userPoints: {
+    all: ['user-points'],
+    byUser: (email) => ['user-points', email],
+  },
+  badges: {
+    all: ['badges'],
+    byUser: (email) => ['badges', 'user', email],
+  },
+  leaderboard: {
+    all: ['leaderboard'],
+    byPeriod: (period, category) => ['leaderboard', period, category],
+  },
+  
+  // Teams & Social
+  teams: {
+    all: ['teams'],
+    detail: (id) => ['teams', 'detail', id],
+    members: (teamId) => ['teams', 'members', teamId],
+  },
+  channels: {
+    all: ['channels'],
+    messages: (channelId) => ['channels', 'messages', channelId],
+  },
+  recognition: {
+    all: ['recognition'],
+    byUser: (email) => ['recognition', 'user', email],
+  },
+  
+  // Store
+  storeItems: {
+    all: ['store-items'],
+    byCategory: (category) => ['store-items', 'category', category],
+  },
+  inventory: {
+    byUser: (email) => ['inventory', email],
+  },
+  
+  // User
+  user: {
+    current: ['user', 'current'],
+    profile: (email) => ['user', 'profile', email],
+    preferences: (email) => ['user', 'preferences', email],
+  },
+  
+  // Polls
+  polls: {
+    all: ['time-slot-polls'],
+    active: ['time-slot-polls', 'active'],
+  },
+  
+  // Analytics
+  analytics: {
+    dashboard: ['analytics', 'dashboard'],
+    engagement: (period) => ['analytics', 'engagement', period],
+    skills: ['analytics', 'skills'],
+  }
 };
 
 // ============================================================================
-// ENTITY SERVICES
+// CACHE CONFIGURATION
 // ============================================================================
 
-export const UserService = {
-  async getCurrentUser() {
-    return base44.auth.me();
+export const cacheConfig = {
+  events: {
+    staleTime: API_CONFIG.cacheTime.medium,
+    cacheTime: API_CONFIG.cacheTime.long,
   },
-  
-  async isAuthenticated() {
-    return base44.auth.isAuthenticated();
+  activities: {
+    staleTime: API_CONFIG.cacheTime.long,
+    cacheTime: API_CONFIG.cacheTime.static,
   },
-  
-  async updateCurrentUser(data) {
-    return base44.auth.updateMe(data);
+  user: {
+    staleTime: API_CONFIG.cacheTime.short,
+    cacheTime: API_CONFIG.cacheTime.medium,
   },
-  
-  logout(redirectUrl) {
-    base44.auth.logout(redirectUrl);
+  leaderboard: {
+    staleTime: API_CONFIG.cacheTime.medium,
+    cacheTime: API_CONFIG.cacheTime.long,
   },
-  
-  redirectToLogin(nextUrl) {
-    base44.auth.redirectToLogin(nextUrl);
-  }
-};
-
-export const UserPointsService = {
-  async getByEmail(email) {
-    const records = await base44.entities.UserPoints.filter({ user_email: email });
-    return records[0] || null;
-  },
-  
-  async getLeaderboard(limit = 100) {
-    return base44.entities.UserPoints.list('-total_points', limit);
-  },
-  
-  async update(id, data) {
-    return base44.entities.UserPoints.update(id, data);
-  }
-};
-
-export const UserProfileService = {
-  async getByEmail(email) {
-    const records = await base44.entities.UserProfile.filter({ user_email: email });
-    return records[0] || null;
-  },
-  
-  async getAll() {
-    return base44.entities.UserProfile.list();
-  },
-  
-  async update(id, data) {
-    return base44.entities.UserProfile.update(id, data);
-  },
-  
-  async create(data) {
-    return base44.entities.UserProfile.create(data);
-  }
-};
-
-export const RecognitionService = {
-  async getByStatus(status, limit = 50) {
-    return base44.entities.Recognition.filter({ status }, '-created_date', limit);
-  },
-  
-  async getPublic(limit = 50) {
-    return base44.entities.Recognition.filter(
-      { status: 'approved', visibility: 'public' },
-      '-created_date',
-      limit
-    );
-  },
-  
-  async getFeatured(limit = 10) {
-    return base44.entities.Recognition.filter(
-      { is_featured: true, status: 'approved' },
-      '-featured_at',
-      limit
-    );
-  },
-  
-  async create(data) {
-    return base44.entities.Recognition.create(data);
-  },
-  
-  async update(id, data) {
-    return base44.entities.Recognition.update(id, data);
-  },
-  
-  async delete(id) {
-    return base44.entities.Recognition.delete(id);
-  }
-};
-
-export const EventService = {
-  async getAll(limit = 100) {
-    return base44.entities.Event.list('-scheduled_date', limit);
-  },
-  
-  async getUpcoming(limit = 20) {
-    const now = new Date().toISOString();
-    const events = await base44.entities.Event.filter(
-      { status: 'scheduled' },
-      'scheduled_date',
-      limit
-    );
-    return events.filter(e => e.scheduled_date >= now);
-  },
-  
-  async create(data) {
-    return base44.entities.Event.create(data);
-  },
-  
-  async update(id, data) {
-    return base44.entities.Event.update(id, data);
-  },
-  
-  async delete(id) {
-    return base44.entities.Event.delete(id);
-  }
-};
-
-export const ActivityService = {
-  async getAll() {
-    return base44.entities.Activity.list();
-  },
-  
-  async getById(id) {
-    const records = await base44.entities.Activity.filter({ id });
-    return records[0] || null;
-  },
-  
-  async create(data) {
-    return base44.entities.Activity.create(data);
-  }
-};
-
-export const ParticipationService = {
-  async getAll(limit = 500) {
-    return base44.entities.Participation.list('-created_date', limit);
-  },
-  
-  async getByEvent(eventId) {
-    return base44.entities.Participation.filter({ event_id: eventId });
-  },
-  
-  async getByUser(userEmail) {
-    return base44.entities.Participation.filter({ participant_email: userEmail });
-  },
-  
-  async create(data) {
-    return base44.entities.Participation.create(data);
-  },
-  
-  async update(id, data) {
-    return base44.entities.Participation.update(id, data);
-  }
-};
-
-export const StoreService = {
-  async getItems(availableOnly = true) {
-    if (availableOnly) {
-      return base44.entities.StoreItem.filter({ is_available: true }, 'display_order');
-    }
-    return base44.entities.StoreItem.list('display_order');
-  },
-  
-  async getInventory(userEmail) {
-    return base44.entities.UserInventory.filter({ user_email: userEmail });
-  },
-  
-  async getAvatar(userEmail) {
-    const records = await base44.entities.UserAvatar.filter({ user_email: userEmail });
-    return records[0] || null;
-  },
-  
-  async updateAvatar(id, data) {
-    return base44.entities.UserAvatar.update(id, data);
-  },
-  
-  async createAvatar(data) {
-    return base44.entities.UserAvatar.create(data);
-  }
-};
-
-export const SocialService = {
-  async getFollowing(userEmail) {
-    return base44.entities.UserFollow.filter({
-      follower_email: userEmail,
-      status: 'active'
-    });
-  },
-  
-  async getFollowers(userEmail) {
-    return base44.entities.UserFollow.filter({
-      following_email: userEmail,
-      status: 'active'
-    });
-  },
-  
-  async getBlocked(userEmail) {
-    return base44.entities.UserFollow.filter({
-      follower_email: userEmail,
-      status: 'blocked'
-    });
-  },
-  
-  async getRelationship(followerEmail, followingEmail) {
-    const records = await base44.entities.UserFollow.filter({
-      follower_email: followerEmail,
-      following_email: followingEmail
-    });
-    return records[0] || null;
-  },
-  
-  async follow(followerEmail, followingEmail) {
-    const existing = await this.getRelationship(followerEmail, followingEmail);
-    if (existing) {
-      return base44.entities.UserFollow.update(existing.id, { status: 'active' });
-    }
-    return base44.entities.UserFollow.create({
-      follower_email: followerEmail,
-      following_email: followingEmail,
-      status: 'active'
-    });
-  },
-  
-  async unfollow(followerEmail, followingEmail) {
-    const existing = await this.getRelationship(followerEmail, followingEmail);
-    if (existing) {
-      return base44.entities.UserFollow.delete(existing.id);
-    }
-  },
-  
-  async block(followerEmail, followingEmail) {
-    const existing = await this.getRelationship(followerEmail, followingEmail);
-    if (existing) {
-      return base44.entities.UserFollow.update(existing.id, { status: 'blocked' });
-    }
-    return base44.entities.UserFollow.create({
-      follower_email: followerEmail,
-      following_email: followingEmail,
-      status: 'blocked'
-    });
-  }
-};
-
-export const ChannelService = {
-  async getAll() {
-    return base44.entities.Channel.filter({ is_archived: false }, '-last_activity');
-  },
-  
-  async getMessages(channelId, limit = 100) {
-    return base44.entities.ChannelMessage.filter(
-      { channel_id: channelId },
-      '-created_date',
-      limit
-    );
-  },
-  
-  async sendMessage(data) {
-    return base44.entities.ChannelMessage.create(data);
-  }
-};
-
-export const TeamService = {
-  async getAll() {
-    return base44.entities.Team.list('-total_points');
-  },
-  
-  async getById(id) {
-    const records = await base44.entities.Team.filter({ id });
-    return records[0] || null;
-  }
-};
-
-export const BadgeService = {
-  async getAll() {
-    return base44.entities.Badge.filter({ is_active: true });
-  },
-  
-  async getAwards(userEmail) {
-    return base44.entities.BadgeAward.filter({ user_email: userEmail });
-  }
-};
-
-export const NotificationService = {
-  async getForUser(userEmail, limit = 20) {
-    return base44.entities.Notification.filter(
-      { user_email: userEmail },
-      '-created_date',
-      limit
-    );
-  },
-  
-  async markAsRead(id) {
-    return base44.entities.Notification.update(id, { is_read: true });
-  },
-  
-  async delete(id) {
-    return base44.entities.Notification.delete(id);
+  static: {
+    staleTime: API_CONFIG.cacheTime.static,
+    cacheTime: API_CONFIG.cacheTime.static,
   }
 };
 
@@ -329,84 +189,45 @@ export const NotificationService = {
 // BACKEND FUNCTION CALLS
 // ============================================================================
 
-export const BackendFunctions = {
-  async awardPoints(participationId, actionType) {
-    const response = await base44.functions.invoke('awardPoints', {
-      participationId,
-      actionType
-    });
-    return response.data;
-  },
+export async function invokeFunction(functionName, params = {}) {
+  return base44.functions.invoke(functionName, params);
+}
+
+// Common function helpers
+export const backendFunctions = {
+  sendTeamsNotification: (eventId, notificationType) => 
+    invokeFunction('sendTeamsNotification', { eventId, notificationType }),
   
-  async purchaseWithPoints(itemId, quantity = 1) {
-    const response = await base44.functions.invoke('purchaseWithPoints', {
-      itemId,
-      quantity
-    });
-    return response.data;
-  },
+  generateCalendarFile: (eventId) => 
+    invokeFunction('generateCalendarFile', { eventId }),
   
-  async createStoreCheckout(itemId) {
-    const response = await base44.functions.invoke('createStoreCheckout', {
-      itemId
-    });
-    return response.data;
-  },
+  awardPoints: (userEmail, pointsData) => 
+    invokeFunction('awardPoints', { userEmail, ...pointsData }),
   
-  async callOpenAI(action, prompt, options = {}) {
-    const response = await base44.functions.invoke('openaiIntegration', {
-      action,
-      prompt,
-      ...options
-    });
-    return response.data;
-  },
+  generateRecommendations: (context) => 
+    invokeFunction('generateRecommendations', context),
   
-  async callClaude(action, prompt, options = {}) {
-    const response = await base44.functions.invoke('claudeIntegration', {
-      action,
-      prompt,
-      ...options
-    });
-    return response.data;
-  },
-  
-  async callGemini(action, prompt, options = {}) {
-    const response = await base44.functions.invoke('geminiIntegration', {
-      action,
-      prompt,
-      ...options
-    });
-    return response.data;
-  }
+  purchaseWithPoints: (itemId, userEmail) => 
+    invokeFunction('purchaseWithPoints', { itemId, userEmail }),
 };
 
 // ============================================================================
-// CORE INTEGRATIONS
+// INTEGRATION HELPERS
 // ============================================================================
 
-export const Integrations = {
-  async invokeLLM(prompt, options = {}) {
-    return base44.integrations.Core.InvokeLLM({
+export const integrations = {
+  invokeLLM: (prompt, options = {}) => 
+    base44.integrations.Core.InvokeLLM({
       prompt,
       ...options
-    });
-  },
+    }),
   
-  async uploadFile(file) {
-    return base44.integrations.Core.UploadFile({ file });
-  },
+  uploadFile: (file) => 
+    base44.integrations.Core.UploadFile({ file }),
   
-  async sendEmail(to, subject, body, fromName) {
-    return base44.integrations.Core.SendEmail({
-      to,
-      subject,
-      body,
-      from_name: fromName
-    });
-  },
+  generateImage: (prompt) => 
+    base44.integrations.Core.GenerateImage({ prompt }),
   
-  async generateImage(prompt) {
-    return base44.integrations.Core.GenerateImage({ prompt });
-  }
+  sendEmail: (to, subject, body, fromName = null) => 
+    base44.integrations.Core.SendEmail({ to, subject, body, from_name: fromName }),
 };
