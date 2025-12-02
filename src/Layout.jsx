@@ -166,8 +166,8 @@ export default function Layout({ children, currentPageName }) {
                 <Sparkles className="h-6 w-6 text-white" />
               </div>
               <div className="hidden sm:block">
-                <h1 className="text-xl font-bold text-white drop-shadow-lg">Team Engage</h1>
-                <p className="text-xs text-white/80">Activity Hub</p>
+                <h1 className="text-xl font-bold text-white drop-shadow-lg">INTeract</h1>
+                <p className="text-xs text-white/80">Employee Engagement</p>
               </div>
             </Link>
           </div>
@@ -215,7 +215,7 @@ export default function Layout({ children, currentPageName }) {
       >
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-black/10" />
         <div className="relative z-10 h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-          <p className="text-sm text-white/80">© 2025 Team Engage</p>
+          <p className="text-sm text-white/80">© 2025 INTeract</p>
           <div className="flex items-center gap-4 text-sm text-white/80">
             <span>Powered by FlashFusion</span>
           </div>
@@ -247,7 +247,7 @@ export default function Layout({ children, currentPageName }) {
               <div className="h-10 w-10 bg-int-orange rounded-xl flex items-center justify-center">
                 <Sparkles className="h-6 w-6 text-white" />
               </div>
-              <span className="text-lg font-bold text-white">Team Engage</span>
+              <span className="text-lg font-bold text-white">INTeract</span>
             </div>
             <Button
               variant="ghost"
