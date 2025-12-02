@@ -27,10 +27,10 @@ export default function QuickActionCard({ title, subtitle, icon: Icon, page, onC
           </div>
           <div>
             <h3 className="font-semibold text-slate-900 text-lg">{title}</h3>
-            <p className="text-sm text-slate-500">{subtitle}</p>
+            <p className="text-sm text-slate-600">{subtitle}</p>
           </div>
         </div>
-        <ChevronRight className={`h-5 w-5 text-slate-400 group-hover:${colorConfig.text} group-hover:translate-x-1 transition-all`} />
+        <ChevronRight className="h-5 w-5 text-slate-500 group-hover:text-int-navy group-hover:translate-x-1 transition-all" />
       </div>
     </div>
   );
