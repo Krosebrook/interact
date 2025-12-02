@@ -8,24 +8,24 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { 
-  Calendar, 
-  Clock, 
-  Users, 
-  MoreVertical, 
-  Link as LinkIcon, 
-  Download, 
-  Bell, 
-  FileText, 
+  DropdownMenuTrigger } from
+'@/components/ui/dropdown-menu';
+import {
+  Calendar,
+  Clock,
+  Users,
+  MoreVertical,
+  Link as LinkIcon,
+  Download,
+  Bell,
+  FileText,
   XCircle,
   Bookmark,
   BookmarkCheck,
   MapPin,
   Video,
-  RefreshCw
-} from 'lucide-react';
+  RefreshCw } from
+'lucide-react';
 import { format, isPast } from 'date-fns';
 import { motion } from 'framer-motion';
 
@@ -43,9 +43,9 @@ const formatStyles = {
   hybrid: { icon: Users, label: 'Hybrid', color: 'text-purple-600' }
 };
 
-export default function EventCalendarCard({ 
-  event, 
-  activity, 
+export default function EventCalendarCard({
+  event,
+  activity,
   participantCount = 0,
   onView,
   onCopyLink,
@@ -57,7 +57,7 @@ export default function EventCalendarCard({
   userEmail
 }) {
   const [isBookmarked, setIsBookmarked] = useState(false);
-  
+
   const eventDate = new Date(event.scheduled_date);
   const isEventPast = isPast(eventDate);
   const formatConfig = formatStyles[event.event_format] || formatStyles.online;
@@ -69,31 +69,31 @@ export default function EventCalendarCard({
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ y: -4 }}
       transition={{ duration: 0.2 }}
-      className="activity-card group p-4"
-    >
+      className="activity-card group p-4">
+
       {/* Header */}
       <div className="flex items-start justify-between mb-3">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
-            <Badge className={`${statusStyles[event.status]} border text-xs`}>
+            <Badge className="bg-gradient-icebreaker text-slate-950 px-2.5 py-0.5 text-xs font-semibold rounded-md inline-flex items-center transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent shadow hover:bg-primary/80 border">
               {event.status.replace('_', ' ')}
             </Badge>
-            {event.is_recurring && (
-              <Badge variant="outline" className="border-slate-200 text-slate-600 text-xs">
+            {event.is_recurring &&
+            <Badge variant="outline" className="border-slate-200 text-slate-600 text-xs">
                 <RefreshCw className="h-3 w-3 mr-1" />
                 Recurring
               </Badge>
-            )}
+            }
           </div>
-          <h3 
+          <h3
             className="font-semibold text-slate-900 truncate group-hover:text-int-orange transition-colors"
-            title={event.title}
-          >
+            title={event.title}>
+
             {event.title}
           </h3>
-          {activity && (
-            <p className="text-sm text-slate-500 truncate" title={activity.title}>{activity.title}</p>
-          )}
+          {activity &&
+          <p className="text-sm text-slate-500 truncate" title={activity.title}>{activity.title}</p>
+          }
         </div>
         
         <div className="flex items-center gap-1">
@@ -101,13 +101,13 @@ export default function EventCalendarCard({
             variant="ghost"
             size="icon"
             className="h-8 w-8 text-slate-400 hover:text-slate-700 hover:bg-slate-100"
-            onClick={() => setIsBookmarked(!isBookmarked)}
-          >
-            {isBookmarked ? (
-              <BookmarkCheck className="h-4 w-4 text-int-orange" />
-            ) : (
-              <Bookmark className="h-4 w-4" />
-            )}
+            onClick={() => setIsBookmarked(!isBookmarked)}>
+
+            {isBookmarked ?
+            <BookmarkCheck className="h-4 w-4 text-int-orange" /> :
+
+            <Bookmark className="h-4 w-4" />
+            }
           </Button>
           
           <DropdownMenu>
@@ -126,38 +126,38 @@ export default function EventCalendarCard({
                 Add to Calendar
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              {!isEventPast && (
-                <>
+              {!isEventPast &&
+              <>
                   <DropdownMenuItem onClick={() => onSendReminder(event)}>
                     <Bell className="h-4 w-4 mr-2" />
                     Send Reminder
                   </DropdownMenuItem>
-                  {onReschedule && (
-                    <DropdownMenuItem onClick={() => onReschedule(event)}>
+                  {onReschedule &&
+                <DropdownMenuItem onClick={() => onReschedule(event)}>
                       <RefreshCw className="h-4 w-4 mr-2" />
                       Reschedule
                     </DropdownMenuItem>
-                  )}
+                }
                 </>
-              )}
-              {isEventPast && event.status === 'completed' && (
-                <DropdownMenuItem onClick={() => onSendRecap(event)}>
+              }
+              {isEventPast && event.status === 'completed' &&
+              <DropdownMenuItem onClick={() => onSendRecap(event)}>
                   <FileText className="h-4 w-4 mr-2" />
                   Send Recap
                 </DropdownMenuItem>
-              )}
-              {!isEventPast && event.status !== 'cancelled' && (
-                <>
+              }
+              {!isEventPast && event.status !== 'cancelled' &&
+              <>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem 
-                    onClick={() => onCancel(event)}
-                    className="text-red-600 focus:text-red-600"
-                  >
+                  <DropdownMenuItem
+                  onClick={() => onCancel(event)}
+                  className="text-red-600 focus:text-red-600">
+
                     <XCircle className="h-4 w-4 mr-2" />
                     Cancel Event
                   </DropdownMenuItem>
                 </>
-              )}
+              }
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
@@ -172,16 +172,16 @@ export default function EventCalendarCard({
         <div className="flex items-center gap-2 text-sm text-slate-600">
           <Clock className="h-4 w-4 text-int-orange" />
           <span>{format(eventDate, 'h:mm a')}</span>
-          {event.duration_minutes && (
-            <span className="text-slate-600">• {event.duration_minutes} min</span>
-          )}
+          {event.duration_minutes &&
+          <span className="text-slate-600">• {event.duration_minutes} min</span>
+          }
         </div>
         <div className="flex items-center gap-2 text-sm text-slate-600">
           <FormatIcon className={`h-4 w-4 ${formatConfig.color}`} />
           <span>{formatConfig.label}</span>
-          {event.location && (
-            <span className="text-slate-600 truncate">• {event.location}</span>
-          )}
+          {event.location &&
+          <span className="text-slate-600 truncate">• {event.location}</span>
+          }
         </div>
       </div>
 
@@ -190,20 +190,20 @@ export default function EventCalendarCard({
         <div className="flex items-center gap-2 text-sm text-slate-500">
           <Users className="h-4 w-4" />
           <span>{participantCount} participant{participantCount !== 1 ? 's' : ''}</span>
-          {event.max_participants && (
-            <span className="text-slate-600">/ {event.max_participants}</span>
-          )}
+          {event.max_participants &&
+          <span className="text-slate-600">/ {event.max_participants}</span>
+          }
         </div>
         
         <Link to={`${createPageUrl('FacilitatorView')}?eventId=${event.id}`}>
-          <Button 
-            size="sm" 
-            className="bg-int-orange hover:bg-int-orange/90 text-slate-900 font-semibold shadow-md hover:shadow-lg transition-all"
-          >
+          <Button
+            size="sm"
+            className="bg-int-orange hover:bg-int-orange/90 text-slate-900 font-semibold shadow-md hover:shadow-lg transition-all">
+
             Facilitate
           </Button>
         </Link>
       </div>
-    </motion.div>
-  );
+    </motion.div>);
+
 }
