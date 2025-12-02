@@ -1,10 +1,22 @@
 /**
  * CENTRALIZED API LAYER
  * Standardized data fetching with caching, error handling, and retry logic
+ * 
+ * This module provides:
+ * - Entity CRUD operations
+ * - Backend function invocation
+ * - Integration helpers
+ * 
+ * For query keys, see: ./queryKeys.js
+ * For cache config, see: ./cacheConfig.js
  */
 
 import { base44 } from '@/api/base44Client';
 import { API_CONFIG } from './config';
+
+// Re-export query keys and cache config for convenience
+export { queryKeys, invalidationGroups } from './queryKeys';
+export { cachePresets, getCacheConfig, CACHE_TIMES } from './cacheConfig';
 
 // ============================================================================
 // ENTITY OPERATIONS
@@ -12,6 +24,11 @@ import { API_CONFIG } from './config';
 
 /**
  * Fetch entity list with standardized options
+ * @param {string} entityName - Name of the entity
+ * @param {Object} options - Fetch options
+ * @param {string} options.sort - Sort field (prefix with - for descending)
+ * @param {number} options.limit - Max results
+ * @param {Object} options.filter - Filter criteria
  */
 export async function fetchEntityList(entityName, options = {}) {
   const { 
@@ -77,157 +94,135 @@ export async function deleteEntity(entityName, id) {
   return entity.delete(id);
 }
 
-// ============================================================================
-// QUERY KEY FACTORIES
-// ============================================================================
-
-export const queryKeys = {
-  // Core entities
-  events: {
-    all: ['events'],
-    list: (filters) => ['events', 'list', filters],
-    detail: (id) => ['events', 'detail', id],
-  },
-  activities: {
-    all: ['activities'],
-    list: (filters) => ['activities', 'list', filters],
-    detail: (id) => ['activities', 'detail', id],
-  },
-  participations: {
-    all: ['participations'],
-    byEvent: (eventId) => ['participations', 'event', eventId],
-    byUser: (email) => ['participations', 'user', email],
-  },
-  
-  // Gamification
-  userPoints: {
-    all: ['user-points'],
-    byUser: (email) => ['user-points', email],
-  },
-  badges: {
-    all: ['badges'],
-    byUser: (email) => ['badges', 'user', email],
-  },
-  leaderboard: {
-    all: ['leaderboard'],
-    byPeriod: (period, category) => ['leaderboard', period, category],
-  },
-  
-  // Teams & Social
-  teams: {
-    all: ['teams'],
-    detail: (id) => ['teams', 'detail', id],
-    members: (teamId) => ['teams', 'members', teamId],
-  },
-  channels: {
-    all: ['channels'],
-    messages: (channelId) => ['channels', 'messages', channelId],
-  },
-  recognition: {
-    all: ['recognition'],
-    byUser: (email) => ['recognition', 'user', email],
-  },
-  
-  // Store
-  storeItems: {
-    all: ['store-items'],
-    byCategory: (category) => ['store-items', 'category', category],
-  },
-  inventory: {
-    byUser: (email) => ['inventory', email],
-  },
-  
-  // User
-  user: {
-    current: ['user', 'current'],
-    profile: (email) => ['user', 'profile', email],
-    preferences: (email) => ['user', 'preferences', email],
-  },
-  
-  // Polls
-  polls: {
-    all: ['time-slot-polls'],
-    active: ['time-slot-polls', 'active'],
-  },
-  
-  // Analytics
-  analytics: {
-    dashboard: ['analytics', 'dashboard'],
-    engagement: (period) => ['analytics', 'engagement', period],
-    skills: ['analytics', 'skills'],
+/**
+ * Bulk create entities
+ */
+export async function bulkCreateEntities(entityName, dataArray) {
+  const entity = base44.entities[entityName];
+  if (!entity) {
+    throw new Error(`Entity "${entityName}" not found`);
   }
-};
+  return entity.bulkCreate(dataArray);
+}
 
-// ============================================================================
-// CACHE CONFIGURATION
-// ============================================================================
-
-export const cacheConfig = {
-  events: {
-    staleTime: API_CONFIG.cacheTime.medium,
-    cacheTime: API_CONFIG.cacheTime.long,
-  },
-  activities: {
-    staleTime: API_CONFIG.cacheTime.long,
-    cacheTime: API_CONFIG.cacheTime.static,
-  },
-  user: {
-    staleTime: API_CONFIG.cacheTime.short,
-    cacheTime: API_CONFIG.cacheTime.medium,
-  },
-  leaderboard: {
-    staleTime: API_CONFIG.cacheTime.medium,
-    cacheTime: API_CONFIG.cacheTime.long,
-  },
-  static: {
-    staleTime: API_CONFIG.cacheTime.static,
-    cacheTime: API_CONFIG.cacheTime.static,
+/**
+ * Get entity schema
+ */
+export async function getEntitySchema(entityName) {
+  const entity = base44.entities[entityName];
+  if (!entity) {
+    throw new Error(`Entity "${entityName}" not found`);
   }
-};
+  return entity.schema();
+}
 
 // ============================================================================
 // BACKEND FUNCTION CALLS
 // ============================================================================
 
+/**
+ * Invoke a backend function
+ * @param {string} functionName - Name of the function
+ * @param {Object} params - Function parameters
+ */
 export async function invokeFunction(functionName, params = {}) {
   return base44.functions.invoke(functionName, params);
 }
 
-// Common function helpers
+/**
+ * Pre-configured backend function helpers
+ */
 export const backendFunctions = {
+  // Notifications
   sendTeamsNotification: (eventId, notificationType) => 
     invokeFunction('sendTeamsNotification', { eventId, notificationType }),
   
+  sendSlackNotification: (eventId, notificationType) => 
+    invokeFunction('slackNotifications', { eventId, notificationType }),
+  
+  // Calendar
   generateCalendarFile: (eventId) => 
     invokeFunction('generateCalendarFile', { eventId }),
   
+  syncToGoogleCalendar: (eventId, userEmail) => 
+    invokeFunction('syncToGoogleCalendar', { eventId, userEmail }),
+  
+  // Gamification
   awardPoints: (userEmail, pointsData) => 
     invokeFunction('awardPoints', { userEmail, ...pointsData }),
   
+  updateStreak: (userEmail) => 
+    invokeFunction('updateAttendanceStreak', { userEmail }),
+  
+  // Store
+  purchaseWithPoints: (itemId, userEmail) => 
+    invokeFunction('purchaseWithPoints', { itemId, userEmail }),
+  
+  createStoreCheckout: (itemId, userEmail) => 
+    invokeFunction('createStoreCheckout', { itemId, userEmail }),
+  
+  // AI & Recommendations
   generateRecommendations: (context) => 
     invokeFunction('generateRecommendations', context),
   
-  purchaseWithPoints: (itemId, userEmail) => 
-    invokeFunction('purchaseWithPoints', { itemId, userEmail }),
+  generateAIInsights: (data) => 
+    invokeFunction('generateAIInsights', data),
+  
+  generateFacilitatorGuide: (eventId) => 
+    invokeFunction('generateFacilitatorGuide', { eventId }),
+  
+  // Reports
+  exportEventReport: (eventId, format) => 
+    invokeFunction('exportEventReport', { eventId, format }),
+  
+  summarizeEvent: (eventId) => 
+    invokeFunction('summarizeEvent', { eventId }),
 };
 
 // ============================================================================
 // INTEGRATION HELPERS
 // ============================================================================
 
+/**
+ * Core platform integrations
+ */
 export const integrations = {
+  /**
+   * Invoke LLM with prompt
+   */
   invokeLLM: (prompt, options = {}) => 
     base44.integrations.Core.InvokeLLM({
       prompt,
       ...options
     }),
   
+  /**
+   * Upload file to storage
+   */
   uploadFile: (file) => 
     base44.integrations.Core.UploadFile({ file }),
   
+  /**
+   * Upload private file
+   */
+  uploadPrivateFile: (file) => 
+    base44.integrations.Core.UploadPrivateFile({ file }),
+  
+  /**
+   * Generate image with AI
+   */
   generateImage: (prompt) => 
     base44.integrations.Core.GenerateImage({ prompt }),
   
+  /**
+   * Send email
+   */
   sendEmail: (to, subject, body, fromName = null) => 
     base44.integrations.Core.SendEmail({ to, subject, body, from_name: fromName }),
+  
+  /**
+   * Extract data from uploaded file
+   */
+  extractDataFromFile: (fileUrl, jsonSchema) => 
+    base44.integrations.Core.ExtractDataFromUploadedFile({ file_url: fileUrl, json_schema: jsonSchema }),
 };
