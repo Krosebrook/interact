@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { Lock, Star, Sparkles, Award, Users, Calendar, Zap } from 'lucide-react';
+import { Lock, Star, Sparkles, Award, Users, Calendar, Zap, Share2 } from 'lucide-react';
 
 const RARITY_CONFIG = {
   common: {
@@ -57,6 +58,7 @@ export default function BadgeCard({
   progress = null,
   earnedDate,
   onClick,
+  onShare,
   showProgress = true,
   size = 'default'
 }) {
@@ -174,6 +176,22 @@ export default function BadgeCard({
             <p className="text-xs text-slate-600 mt-2">
               Earned {new Date(earnedDate).toLocaleDateString()}
             </p>
+          )}
+
+          {/* Share button for earned badges */}
+          {isEarned && onShare && size !== 'small' && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="mt-2 h-7 text-xs text-slate-500 hover:text-int-orange"
+              onClick={(e) => {
+                e.stopPropagation();
+                onShare(badge);
+              }}
+            >
+              <Share2 className="h-3 w-3 mr-1" />
+              Share
+            </Button>
           )}
         </div>
 
