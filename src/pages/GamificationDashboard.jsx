@@ -404,7 +404,17 @@ export default function GamificationDashboard() {
         </TabsContent>
 
         {/* Leaderboard Tab */}
-        <TabsContent value="leaderboard" className="mt-6">
+        <TabsContent value="leaderboard" className="mt-6 space-y-6">
+          {/* Tailored Leaderboards */}
+          <TailoredLeaderboardFormats 
+            userPoints={userPoints.map((up, idx) => ({
+              ...up,
+              user_name: users.find(u => u.email === up.user_email)?.full_name || up.user_email?.split('@')[0]
+            }))}
+            currentUserEmail={user?.email}
+          />
+
+          {/* Global Leaderboard */}
           <Card className="border-2 border-int-navy/20">
             <CardHeader className="bg-gradient-to-r from-int-navy via-blue-800 to-int-navy text-white">
               <div className="flex items-center justify-between">
@@ -446,6 +456,12 @@ export default function GamificationDashboard() {
 
         {/* Badges Tab */}
         <TabsContent value="badges" className="mt-6 space-y-6">
+          {/* Personalized Recommendations */}
+          <PersonalizedRecommendationsEngine 
+            userEmail={user?.email}
+            userPoints={currentUserPoints}
+          />
+
           {/* Earned Badges */}
           <Card>
             <CardHeader>
