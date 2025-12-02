@@ -105,6 +105,7 @@ export default function Layout({ children, currentPageName }) {
         { name: 'Skills', icon: BarChart3, page: 'SkillsDashboard' },
         { name: 'Gamification', icon: Gift, page: 'GamificationDashboard' },
         { name: 'Gamification Settings', icon: SettingsIcon, page: 'GamificationSettings' },
+              { name: 'Gamification Analytics', icon: BarChart3, page: 'AdvancedGamificationAnalytics' },
         { name: 'AI Event Planner', icon: Sparkles, page: 'AIEventPlanner' },
         { name: 'Analytics', icon: BarChart3, page: 'Analytics' },
         { name: 'Integrations', icon: Plug, page: 'Integrations' },

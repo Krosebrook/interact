@@ -5,6 +5,7 @@ import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ScatterChart, Scatter, ZAxis } from 'recharts';
 import { Target, Flame, Clock, Trophy, AlertCircle, CheckCircle, XCircle } from 'lucide-react';
+import { Cell } from 'recharts';
 
 const DIFFICULTY_COLORS = {
   easy: '#22c55e',
@@ -293,6 +294,3 @@ export default function ChallengePerformanceMetrics({
     </Card>
   );
 }
-
-// Need to import Cell for the BarChart
-import { Cell } from 'recharts';
