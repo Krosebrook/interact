@@ -27,38 +27,38 @@ export default function ActivitiesHeader({
           </p>
         </div>
         <div className="flex gap-2 flex-wrap">
-          <Button 
-            onClick={onOpenPlanner}
-            className="bg-gradient-purple hover:opacity-90 text-white shadow-lg hover:shadow-xl transition-all press-effect"
-          >
+          <Button
+            onClick={onOpenPlanner} className="bg-gradient-purple text-slate-950 px-4 py-2 text-sm font-medium rounded-md inline-flex items-center justify-center gap-2 whitespace-nowrap focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:bg-primary/90 h-9 hover:opacity-90 shadow-lg hover:shadow-xl transition-all press-effect">
+
+
             <Brain className="h-4 w-4 mr-2" />
             AI Activity Planner
           </Button>
-          <Button 
+          <Button
             onClick={onOpenSuggester}
             variant="outline"
-            className="border-int-navy text-int-navy hover:bg-int-navy/5 font-medium"
-          >
+            className="border-int-navy text-int-navy hover:bg-int-navy/5 font-medium">
+
             <Plus className="h-4 w-4 mr-2" />
             AI Suggestions
           </Button>
-          <Button 
+          <Button
             onClick={onOpenModuleBuilder}
             variant="outline"
-            className="border-int-navy text-int-navy hover:bg-int-navy/5 font-medium"
-          >
+            className="border-int-navy text-int-navy hover:bg-int-navy/5 font-medium">
+
             <Plus className="h-4 w-4 mr-2" />
             Build from Modules
           </Button>
-          <Button 
+          <Button
             onClick={onOpenGenerator}
-            className="bg-int-orange hover:bg-int-orange/90 text-slate-900 font-semibold shadow-md hover:shadow-lg transition-all"
-          >
+            className="bg-int-orange hover:bg-int-orange/90 text-slate-900 font-semibold shadow-md hover:shadow-lg transition-all">
+
             <Plus className="h-4 w-4 mr-2" />
             Generate Custom
           </Button>
         </div>
       </div>
-    </div>
-  );
+    </div>);
+
 }
