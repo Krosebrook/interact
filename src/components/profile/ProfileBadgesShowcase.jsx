@@ -9,6 +9,7 @@ import { format } from 'date-fns';
 
 const rarityColors = {
   common: 'from-slate-100 to-slate-200 border-slate-300',
+  uncommon: 'from-green-100 to-emerald-200 border-green-300',
   rare: 'from-blue-100 to-blue-200 border-blue-300',
   epic: 'from-purple-100 to-purple-200 border-purple-300',
   legendary: 'from-amber-100 to-yellow-200 border-amber-400'
@@ -16,6 +17,7 @@ const rarityColors = {
 
 const rarityTextColors = {
   common: 'text-slate-700',
+  uncommon: 'text-green-700',
   rare: 'text-blue-700',
   epic: 'text-purple-700',
   legendary: 'text-amber-700'
@@ -50,6 +52,7 @@ export default function ProfileBadgesShowcase({ userEmail }) {
     legendary: earnedBadges.filter(b => b.rarity === 'legendary'),
     epic: earnedBadges.filter(b => b.rarity === 'epic'),
     rare: earnedBadges.filter(b => b.rarity === 'rare'),
+    uncommon: earnedBadges.filter(b => b.rarity === 'uncommon'),
     common: earnedBadges.filter(b => b.rarity === 'common' || !b.rarity)
   };
 
@@ -123,6 +126,18 @@ export default function ProfileBadgesShowcase({ userEmail }) {
                 <h4 className="text-sm font-semibold text-blue-700 mb-3">Rare</h4>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                   {badgesByRarity.rare.map((badge, idx) => (
+                    <BadgeCard key={badge.id} badge={badge} delay={idx} />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Uncommon Badges */}
+            {badgesByRarity.uncommon.length > 0 && (
+              <div>
+                <h4 className="text-sm font-semibold text-green-700 mb-3">Uncommon</h4>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  {badgesByRarity.uncommon.map((badge, idx) => (
                     <BadgeCard key={badge.id} badge={badge} delay={idx} />
                   ))}
                 </div>
