@@ -2,8 +2,15 @@
  * CENTRALIZED UTILITY FUNCTIONS
  * Pure functions for data transformation and calculations
  * 
+ * Organization:
+ * - Date utilities: Formatting, relative time, comparisons
+ * - Gamification utilities: Levels, points, engagement scores
+ * - String utilities: Formatting, truncation, initials
+ * - Number utilities: Formatting numbers, currency, percentages
+ * - Array utilities: Grouping, sorting, deduplication
+ * - Validation utilities: Email, required fields
+ * 
  * NOTE: Event-specific utilities are in components/utils/eventUtils.js
- * This file contains general-purpose utilities used across the app.
  */
 
 import { ENGAGEMENT_WEIGHTS, LEVEL_THRESHOLDS } from './constants';
@@ -12,6 +19,11 @@ import { ENGAGEMENT_WEIGHTS, LEVEL_THRESHOLDS } from './constants';
 // DATE UTILITIES
 // ============================================================================
 
+/**
+ * Format a date string with various format options
+ * @param {string|Date} dateString - Date to format
+ * @param {string} format - Format type: 'short', 'medium', 'full', 'time', 'datetime', 'relative'
+ */
 export function formatDate(dateString, format = 'short') {
   if (!dateString) return '';
   const date = new Date(dateString);
@@ -43,6 +55,11 @@ export function formatDate(dateString, format = 'short') {
       return date.toLocaleDateString();
   }
 }
+
+// Aliases for clearer imports
+export const formatTime = (dateString) => formatDate(dateString, 'time');
+export const formatDateTime = (dateString) => formatDate(dateString, 'datetime');
+export const formatRelativeTime = (dateString) => formatDate(dateString, 'relative');
 
 export function getRelativeTime(date) {
   const now = new Date();
@@ -77,8 +94,24 @@ export function isPast(dateString) {
 // GAMIFICATION UTILITIES
 // ============================================================================
 
+/**
+ * Calculate user level from total points
+ */
 export function calculateLevel(totalPoints) {
   return Math.floor((totalPoints || 0) / LEVEL_THRESHOLDS.pointsPerLevel) + 1;
+}
+
+/**
+ * Get user level info including title
+ */
+export function getUserLevel(totalPoints) {
+  const level = calculateLevel(totalPoints);
+  return {
+    level,
+    title: getLevelTitle(level),
+    progress: getLevelProgress(totalPoints),
+    pointsToNext: getPointsToNextLevel(totalPoints)
+  };
 }
 
 export function getPointsToNextLevel(totalPoints) {
