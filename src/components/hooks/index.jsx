@@ -43,3 +43,4 @@ export { useSocialActions } from '../profile/hooks/useSocialActions';
 export { useModerationActions } from '../moderation/hooks/useModerationActions';
 export { useAvatarCustomization } from '../store/hooks/useAvatarCustomization';
 export { useActivityFilters } from '../activities/useActivityFilters';
+export { useTeamsNotification, useSendAnnouncement, useSendReminder, useSendRecap } from './useTeamsNotification';
