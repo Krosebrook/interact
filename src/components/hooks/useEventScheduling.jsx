@@ -6,7 +6,8 @@
 import { useState, useCallback } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { queryKeys, backendFunctions } from '../lib/api';
+import { queryKeys } from '../lib/queryKeys';
+import { BackendFunctions } from '../lib/api';
 import { addDays, addWeeks, addMonths } from 'date-fns';
 import { toast } from 'sonner';
 
@@ -115,7 +116,7 @@ export function useEventScheduling(options = {}) {
     // Send Teams notification if enabled
     if (sendNotifications) {
       try {
-        await backendFunctions.sendTeamsNotification(event.id, 'announcement');
+        await BackendFunctions.sendTeamsNotification({ event_id: event.id, notification_type: 'announcement' });
       } catch (error) {
         console.error('Failed to send Teams notification:', error);
       }
