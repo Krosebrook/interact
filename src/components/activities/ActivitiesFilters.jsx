@@ -56,7 +56,7 @@ export default function ActivitiesFilters({
       {/* Search Bar & Sort */}
       <div className="flex flex-col sm:flex-row gap-4">
         <div className="flex-1 relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-int-navy/40" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500" />
           <Input
             placeholder="Search by name, description, or skills..."
             value={searchQuery}
@@ -66,14 +66,14 @@ export default function ActivitiesFilters({
           {searchQuery && (
             <button 
               onClick={() => onSearchChange('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-int-orange transition-colors"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-int-orange transition-colors"
             >
               <X className="h-4 w-4" />
             </button>
           )}
         </div>
         <div className="flex items-center gap-2">
-          <SortAsc className="h-4 w-4 text-int-navy/50" />
+          <SortAsc className="h-4 w-4 text-int-navy" />
           <Select value={sortBy} onValueChange={onSortChange}>
             <SelectTrigger className="w-[160px] border-slate-200 font-medium">
               <SelectValue placeholder="Sort by" />
@@ -102,7 +102,7 @@ export default function ActivitiesFilters({
             className={`cursor-pointer transition-all font-medium ${
               selectedType === type 
                 ? `${TYPE_COLORS[type]} text-white shadow-sm` 
-                : 'hover:bg-slate-100 text-slate-600'
+                : 'hover:bg-slate-100 text-slate-700 border-slate-300'
             }`}
             onClick={() => onTypeChange(type)}
           >
@@ -125,7 +125,7 @@ export default function ActivitiesFilters({
               className={`cursor-pointer transition-all font-medium ${
                 selectedDuration === duration 
                   ? 'bg-gradient-navy text-white shadow-sm' 
-                  : 'hover:bg-slate-100 text-slate-600'
+                  : 'hover:bg-slate-100 text-slate-700 border-slate-300'
               }`}
               onClick={() => onDurationChange(duration)}
             >
@@ -148,7 +148,7 @@ export default function ActivitiesFilters({
               className={`cursor-pointer transition-all font-medium ${
                 selectedSkillLevel === level 
                   ? 'bg-gradient-purple text-white shadow-sm' 
-                  : 'hover:bg-slate-100 text-slate-600'
+                  : 'hover:bg-slate-100 text-slate-700 border-slate-300'
               }`}
               onClick={() => onSkillLevelChange(level)}
             >
@@ -170,7 +170,7 @@ export default function ActivitiesFilters({
             className={`cursor-pointer transition-all font-medium ${
               selectedSkill === 'all' 
                 ? 'bg-gradient-wellness text-white shadow-sm' 
-                : 'hover:bg-slate-100 text-slate-600'
+                : 'hover:bg-slate-100 text-slate-700 border-slate-300'
             }`}
             onClick={() => onSkillChange('all')}
           >
@@ -183,7 +183,7 @@ export default function ActivitiesFilters({
               className={`cursor-pointer transition-all font-medium ${
                 selectedSkill === skill 
                   ? 'bg-gradient-wellness text-white shadow-sm' 
-                  : 'hover:bg-slate-100 text-slate-600'
+                  : 'hover:bg-slate-100 text-slate-700 border-slate-300'
               }`}
               onClick={() => onSkillChange(skill)}
             >
@@ -216,7 +216,7 @@ export default function ActivitiesFilters({
             variant="ghost" 
             size="sm" 
             onClick={onClearAll}
-            className="text-slate-500 hover:text-slate-700"
+            className="text-slate-600 hover:text-slate-900"
           >
             <X className="h-4 w-4 mr-1" />
             Clear all filters
