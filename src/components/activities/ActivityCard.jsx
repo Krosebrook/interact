@@ -63,15 +63,18 @@ export default function ActivityCard({ activity, onSchedule, onDuplicate, onView
           </div>
           
           {/* Title overlaid on image */}
-          <h3 className="activity-card-title line-clamp-2">
+          <h3 className="activity-card-title line-clamp-2" title={activity.title}>
             {activity.title}
           </h3>
         </div>
         
         {/* Content */}
         <div className="flex-1 flex flex-col p-4">
-          <p className="text-sm text-slate-600 mb-4 line-clamp-2 flex-1 leading-relaxed">
-            {activity.description}
+          <p 
+            className="text-sm text-slate-600 mb-4 line-clamp-2 flex-1 leading-relaxed"
+            title={activity.description}
+          >
+            {activity.description || 'No description available'}
           </p>
           
           {/* Meta info with pills */}

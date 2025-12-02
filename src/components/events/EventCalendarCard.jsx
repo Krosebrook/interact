@@ -85,11 +85,14 @@ export default function EventCalendarCard({
               </Badge>
             )}
           </div>
-          <h3 className="font-semibold text-slate-900 truncate group-hover:text-int-orange transition-colors">
+          <h3 
+            className="font-semibold text-slate-900 truncate group-hover:text-int-orange transition-colors"
+            title={event.title}
+          >
             {event.title}
           </h3>
           {activity && (
-            <p className="text-sm text-slate-500 truncate">{activity.title}</p>
+            <p className="text-sm text-slate-500 truncate" title={activity.title}>{activity.title}</p>
           )}
         </div>
         
