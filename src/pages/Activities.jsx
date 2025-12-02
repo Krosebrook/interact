@@ -23,75 +23,28 @@ export default function Activities() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { user, loading } = useUserData(true, true);
-  const { activities, isLoading, duplicateActivity, filterActivities } = useActivities();
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedType, setSelectedType] = useState('all');
-  const [selectedDuration, setSelectedDuration] = useState('all');
-  const [selectedSkill, setSelectedSkill] = useState('all');
-  const [selectedSkillLevel, setSelectedSkillLevel] = useState('all');
-  const [sortBy, setSortBy] = useState('newest');
+  const { activities, isLoading, duplicateActivity } = useActivities();
+  
+  // Use centralized filter hook
+  const {
+    filters,
+    allSkills,
+    filteredActivities,
+    setSearch,
+    setType,
+    setDuration,
+    setSkill,
+    setSkillLevel,
+    setSortBy,
+    clearFilters
+  } = useActivityFilters(activities || []);
+
+  // Dialog states
   const [viewingActivity, setViewingActivity] = useState(null);
   const [showGenerator, setShowGenerator] = useState(false);
   const [showPlanner, setShowPlanner] = useState(false);
   const [showSuggester, setShowSuggester] = useState(false);
   const [showModuleBuilder, setShowModuleBuilder] = useState(false);
-
-  // Get unique skills from all activities
-  const allSkills = [...new Set(activities?.flatMap(a => a.skills_developed || []) || [])].sort();
-
-  // Filter activities
-  let filteredActivities = filterActivities({ 
-    search: searchQuery, 
-    type: selectedType, 
-    duration: selectedDuration 
-  });
-
-  // Additional filtering by skill
-  if (selectedSkill !== 'all') {
-    filteredActivities = filteredActivities.filter(a => 
-      a.skills_developed?.includes(selectedSkill)
-    );
-  }
-
-  // Additional filtering by skill level
-  if (selectedSkillLevel !== 'all') {
-    filteredActivities = filteredActivities.filter(a => 
-      a.skill_level === selectedSkillLevel
-    );
-  }
-
-  // Sort activities
-  filteredActivities = [...filteredActivities].sort((a, b) => {
-    switch (sortBy) {
-      case 'newest':
-        return new Date(b.created_date) - new Date(a.created_date);
-      case 'oldest':
-        return new Date(a.created_date) - new Date(b.created_date);
-      case 'popularity':
-        return (b.popularity_score || 0) - (a.popularity_score || 0);
-      case 'az':
-        return a.title.localeCompare(b.title);
-      case 'za':
-        return b.title.localeCompare(a.title);
-      default:
-        return 0;
-    }
-  });
-
-  const hasActiveFilters = selectedType !== 'all' || selectedDuration !== 'all' || 
-    selectedSkill !== 'all' || selectedSkillLevel !== 'all' || searchQuery;
-
-  const clearAllFilters = () => {
-    setSearchQuery('');
-    setSelectedType('all');
-    setSelectedDuration('all');
-    setSelectedSkill('all');
-    setSelectedSkillLevel('all');
-  };
-
-  const types = ['all', 'icebreaker', 'creative', 'competitive', 'wellness', 'learning', 'social'];
-  const durations = ['all', '5-15min', '15-30min', '30+min'];
-  const skillLevels = ['all', 'beginner', 'intermediate', 'advanced'];
 
   const handleSchedule = (activity) => {
     navigate(`${createPageUrl('Calendar')}?activity=${activity.id}`);
