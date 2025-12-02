@@ -3,12 +3,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { useUserData } from '../components/hooks/useUserData.jsx';
 import { useEventData } from '../components/hooks/useEventData';
-import { 
-  filterUpcomingEvents, 
-  getParticipationStats, 
+import {
+  filterUpcomingEvents,
+  getParticipationStats,
   getActivityForEvent,
-  calculateDashboardStats 
-} from '../components/utils/eventUtils';
+  calculateDashboardStats } from
+'../components/utils/eventUtils';
 import { Button } from '@/components/ui/button';
 import StatsGrid, { StatCard } from '../components/common/StatsGrid';
 import SkeletonGrid from '../components/common/SkeletonGrid';
@@ -19,14 +19,14 @@ import ActivityGenerator from '../components/ai/ActivityGenerator';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import EmptyState from '../components/common/EmptyState';
 import { useEventActions } from '../components/events/useEventActions';
-import { 
-  Calendar, 
-  Users, 
-  Sparkles, 
-  TrendingUp, 
+import {
+  Calendar,
+  Users,
+  Sparkles,
+  TrendingUp,
   ArrowRight,
-  Zap
-} from 'lucide-react';
+  Zap } from
+'lucide-react';
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -53,7 +53,7 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="space-y-8 animate-fade-in">
+    <div className="bg-blue-50 opacity-100 space-y-8 animate-fade-in">
       {/* Welcome Header - Glass Panel */}
       <div className="glass-panel-solid relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-int-navy/5 via-transparent to-int-orange/5 pointer-events-none" />
@@ -87,7 +87,7 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard title="Upcoming Events" value={stats.upcomingCount} subtitle="Scheduled activities" icon={Calendar} color="navy" delay={0} />
         <StatCard title="Total Activities" value={stats.activitiesCount} subtitle="In your library" icon={Sparkles} color="orange" delay={0.1} />
-        <StatCard title="This Month" value={stats.completedThisMonth} subtitle="Events completed" trend={stats.completedThisMonth > 0 ? `${Math.round((stats.completedThisMonth / Math.max(stats.upcomingCount, 1)) * 100)}% completion rate` : "Let's schedule more!"} icon={TrendingUp} color="green" delay={0.2} />
+        <StatCard title="This Month" value={stats.completedThisMonth} subtitle="Events completed" trend={stats.completedThisMonth > 0 ? `${Math.round(stats.completedThisMonth / Math.max(stats.upcomingCount, 1) * 100)}% completion rate` : "Let's schedule more!"} icon={TrendingUp} color="green" delay={0.2} />
         <StatCard title="Avg Participation" value={stats.avgParticipation} subtitle="People per event" icon={Users} color="purple" delay={0.3} />
       </div>
 
@@ -107,82 +107,82 @@ export default function Dashboard() {
           </Link>
         </div>
 
-        {isLoading ? (
-          <SkeletonGrid count={3} />
-        ) : upcomingEvents.length === 0 ? (
-          <EmptyState
-            icon={Calendar}
-            title="No upcoming events"
-            description="Your calendar is clear! Get started by scheduling your first team activity."
-            actionLabel="Schedule Event"
-            onAction={() => navigate(createPageUrl('Calendar'))}
-            secondaryActionLabel="Browse Activities"
-            onSecondaryAction={() => navigate(createPageUrl('Activities'))}
-            tips={[
-              "Browse our activity library for ideas",
-              "Try a quick 15-minute icebreaker to start",
-              "Consider scheduling a recurring weekly event"
-            ]}
-            type="navy"
-          />
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {upcomingEvents.slice(0, 6).map(event => (
-              <EventCalendarCard
-                key={event.id}
-                event={event}
-                activity={getActivityForEvent(event, activities)}
-                participantCount={getParticipationStats(event.id, participations).total}
-                onView={(e) => {/* TODO: implement view */}}
-                onCopyLink={eventActions.handleCopyLink}
-                onDownloadCalendar={eventActions.handleDownloadCalendar}
-                onSendReminder={eventActions.handleSendReminder}
-                onSendRecap={eventActions.handleSendRecap}
-                onCancel={eventActions.handleCancelEvent}
-                userEmail={user?.email}
-              />
-            ))}
+        {isLoading ?
+        <SkeletonGrid count={3} /> :
+        upcomingEvents.length === 0 ?
+        <EmptyState
+          icon={Calendar}
+          title="No upcoming events"
+          description="Your calendar is clear! Get started by scheduling your first team activity."
+          actionLabel="Schedule Event"
+          onAction={() => navigate(createPageUrl('Calendar'))}
+          secondaryActionLabel="Browse Activities"
+          onSecondaryAction={() => navigate(createPageUrl('Activities'))}
+          tips={[
+          "Browse our activity library for ideas",
+          "Try a quick 15-minute icebreaker to start",
+          "Consider scheduling a recurring weekly event"]
+          }
+          type="navy" /> :
+
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {upcomingEvents.slice(0, 6).map((event) =>
+          <EventCalendarCard
+            key={event.id}
+            event={event}
+            activity={getActivityForEvent(event, activities)}
+            participantCount={getParticipationStats(event.id, participations).total}
+            onView={(e) => {/* TODO: implement view */}}
+            onCopyLink={eventActions.handleCopyLink}
+            onDownloadCalendar={eventActions.handleDownloadCalendar}
+            onSendReminder={eventActions.handleSendReminder}
+            onSendRecap={eventActions.handleSendRecap}
+            onCancel={eventActions.handleCancelEvent}
+            userEmail={user?.email} />
+
+          )}
           </div>
-        )}
+        }
       </div>
 
       {/* AI Suggestions */}
-      <AISuggestionsWidget 
+      <AISuggestionsWidget
         onScheduleActivity={handleScheduleActivity}
-        onGenerateCustom={() => setShowGenerator(true)}
-      />
+        onGenerateCustom={() => setShowGenerator(true)} />
+
 
       {/* Quick Actions */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <QuickActionCard 
-          title="Browse Activities" 
+        <QuickActionCard
+          title="Browse Activities"
           subtitle={`Explore ${activities.length} activity templates`}
           icon={Sparkles}
           page="Activities"
-          color="orange"
-        />
-        <QuickActionCard 
-          title="Schedule Event" 
+          color="orange" />
+
+        <QuickActionCard
+          title="Schedule Event"
           subtitle="Plan your next team activity"
           icon={Calendar}
           page="Calendar"
-          color="navy"
-        />
-        <QuickActionCard 
-          title="View Analytics" 
+          color="navy" />
+
+        <QuickActionCard
+          title="View Analytics"
           subtitle="Track engagement & trends"
           icon={TrendingUp}
           page="Analytics"
-          color="purple"
-        />
+          color="purple" />
+
       </div>
 
       {/* Activity Generator Dialog */}
       <ActivityGenerator
         open={showGenerator}
         onOpenChange={setShowGenerator}
-        onActivityCreated={handleActivityCreated}
-      />
-    </div>
-  );
+        onActivityCreated={handleActivityCreated} />
+
+    </div>);
+
 }
