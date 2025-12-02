@@ -98,7 +98,7 @@ export default function LeaderboardRow({
             <Badge className="bg-int-orange text-white text-xs">You</Badge>
           )}
         </div>
-        <div className="flex items-center gap-3 text-sm text-slate-500 mt-0.5">
+        <div className="flex items-center gap-3 text-sm text-slate-600 mt-0.5">
           <span className="flex items-center gap-1">
             <Star className="h-3 w-3" />
             Level {level}
@@ -128,7 +128,7 @@ export default function LeaderboardRow({
         >
           {points.toLocaleString()}
         </motion.div>
-        <span className="text-xs text-slate-500">points</span>
+        <span className="text-xs text-slate-600 font-medium">points</span>
       </div>
 
       {/* Rank change indicator */}
