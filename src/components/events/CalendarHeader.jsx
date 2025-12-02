@@ -43,7 +43,7 @@ export default function CalendarHeader({
         </Button>
         <Button
           onClick={onScheduleEvent}
-          className="bg-int-orange hover:bg-[#C46322] text-white"
+          className="bg-int-orange hover:bg-int-orange/90 text-slate-900 font-semibold"
         >
           <Plus className="h-4 w-4 mr-2" />
           Schedule Event

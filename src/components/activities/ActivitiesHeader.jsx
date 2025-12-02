@@ -52,7 +52,7 @@ export default function ActivitiesHeader({
           </Button>
           <Button 
             onClick={onOpenGenerator}
-            className="bg-gradient-orange hover:opacity-90 text-white shadow-lg hover:shadow-xl transition-all press-effect"
+            className="bg-int-orange hover:bg-int-orange/90 text-slate-900 font-semibold shadow-md hover:shadow-lg transition-all"
           >
             <Plus className="h-4 w-4 mr-2" />
             Generate Custom
