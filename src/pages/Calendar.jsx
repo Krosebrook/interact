@@ -3,44 +3,21 @@ import { base44 } from '@/api/base44Client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useUserData } from '../components/hooks/useUserData';
 import { useEventData } from '../components/hooks/useEventData';
-import { filterUpcomingEvents, filterPastEvents, getParticipationStats, getActivityForEvent } from '../components/utils/eventUtils';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
-import EventCalendarCard from '../components/events/EventCalendarCard';
-import RecurrenceSettings from '../components/events/RecurrenceSettings';
-import TimeSlotSuggestions from '../components/events/TimeSlotSuggestions';
-import TimeSlotPollCreator from '../components/events/TimeSlotPollCreator';
+import { useEventScheduling } from '../components/hooks/useEventScheduling';
+import { filterUpcomingEvents, filterPastEvents } from '../components/utils/eventUtils';
 import TimeSlotPollList from '../components/events/TimeSlotPollList';
 import BookmarkedEventsList from '../components/events/BookmarkedEventsList';
-import RichTextEventEditor from '../components/events/RichTextEventEditor';
 import EventSeriesCreator from '../components/events/EventSeriesCreator';
-import RegistrationFormBuilder from '../components/events/RegistrationFormBuilder';
 import BulkEventScheduler from '../components/events/BulkEventScheduler';
 import EventRescheduleDialog from '../components/events/EventRescheduleDialog';
+import ScheduleEventDialog from '../components/events/ScheduleEventDialog';
+import CreatePollDialog from '../components/events/CreatePollDialog';
+import CalendarHeader from '../components/events/CalendarHeader';
+import EventsList from '../components/events/EventsList';
 import LoadingSpinner from '../components/common/LoadingSpinner';
-import EmptyState from '../components/common/EmptyState';
-import PageHeader from '../components/common/PageHeader';
 import { useEventActions } from '../components/events/useEventActions';
 import { useTeamData } from '../components/hooks/useTeamData';
-import { Calendar as CalendarIcon, Plus, Vote, Layers, ClipboardList, CalendarPlus } from 'lucide-react';
 import { toast } from 'sonner';
-import { addDays, addWeeks, addMonths } from 'date-fns';
 
 export default function Calendar() {
   const queryClient = useQueryClient();
