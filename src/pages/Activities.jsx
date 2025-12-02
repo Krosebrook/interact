@@ -60,237 +60,34 @@ export default function Activities() {
 
   return (
     <div className="space-y-6 animate-fade-in">
-      {/* Header with gradient background */}
-      <div className="glass-panel-solid relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-int-navy/5 via-transparent to-int-orange/5 pointer-events-none" />
-        <div className="relative flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <div>
-            <h1 className="text-3xl font-bold text-int-navy mb-1 font-display">
-              <span className="text-highlight">Activity Library</span>
-            </h1>
-            <p className="text-slate-600 font-medium">
-              <span className="text-int-orange font-bold">{filteredActivities.length}</span> activities available
-            </p>
-          </div>
-          <div className="flex gap-2 flex-wrap">
-            <Button 
-              onClick={() => setShowPlanner(true)}
-              className="bg-gradient-purple hover:opacity-90 text-white shadow-lg hover:shadow-xl transition-all press-effect"
-            >
-              <Brain className="h-4 w-4 mr-2" />
-              AI Activity Planner
-            </Button>
-            <Button 
-              onClick={() => setShowSuggester(true)}
-              variant="outline"
-              className="border-int-navy text-int-navy hover:bg-int-navy/5 font-medium"
-            >
-              <Plus className="h-4 w-4 mr-2" />
-              AI Suggestions
-            </Button>
-            <Button 
-              onClick={() => setShowModuleBuilder(true)}
-              variant="outline"
-              className="border-int-navy text-int-navy hover:bg-int-navy/5 font-medium"
-            >
-              <Plus className="h-4 w-4 mr-2" />
-              Build from Modules
-            </Button>
-            <Button 
-              onClick={() => setShowGenerator(true)}
-              className="bg-gradient-orange hover:opacity-90 text-white shadow-lg hover:shadow-xl transition-all press-effect"
-            >
-              <Plus className="h-4 w-4 mr-2" />
-              Generate Custom
-            </Button>
-          </div>
-        </div>
-      </div>
+      {/* Header */}
+      <ActivitiesHeader
+        activityCount={filteredActivities.length}
+        onOpenPlanner={() => setShowPlanner(true)}
+        onOpenSuggester={() => setShowSuggester(true)}
+        onOpenModuleBuilder={() => setShowModuleBuilder(true)}
+        onOpenGenerator={() => setShowGenerator(true)}
+      />
 
       {/* Search and Filters */}
-      <div className="glass-card-solid space-y-4">
-        {/* Search Bar & Sort */}
-        <div className="flex flex-col sm:flex-row gap-4">
-          <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-int-navy/40" />
-            <Input
-              placeholder="Search by name, description, or skills..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 h-11 border-slate-200 focus:border-int-orange focus:ring-int-orange/20 font-medium"
-            />
-            {searchQuery && (
-              <button 
-                onClick={() => setSearchQuery('')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-int-orange transition-colors"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            )}
-          </div>
-          <div className="flex items-center gap-2">
-            <SortAsc className="h-4 w-4 text-int-navy/50" />
-            <Select value={sortBy} onValueChange={setSortBy}>
-              <SelectTrigger className="w-[160px] border-slate-200 font-medium">
-                <SelectValue placeholder="Sort by" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="newest">Newest First</SelectItem>
-                <SelectItem value="oldest">Oldest First</SelectItem>
-                <SelectItem value="popularity">Most Popular</SelectItem>
-                <SelectItem value="az">A to Z</SelectItem>
-                <SelectItem value="za">Z to A</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-
-        {/* Filter Row 1: Type */}
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="flex items-center gap-2 mr-2">
-            <Filter className="h-4 w-4 text-int-orange" />
-            <span className="text-sm font-semibold text-int-navy">Type:</span>
-          </div>
-          {types.map(type => {
-            const typeColors = {
-              all: 'bg-int-orange',
-              icebreaker: 'bg-gradient-icebreaker',
-              creative: 'bg-gradient-creative',
-              competitive: 'bg-gradient-competitive',
-              wellness: 'bg-gradient-wellness',
-              learning: 'bg-gradient-learning',
-              social: 'bg-gradient-social'
-            };
-            return (
-              <Badge
-                key={type}
-                variant={selectedType === type ? 'default' : 'outline'}
-                className={`cursor-pointer transition-all font-medium ${
-                  selectedType === type 
-                    ? `${typeColors[type]} text-white shadow-sm` 
-                    : 'hover:bg-slate-100 text-slate-600'
-                }`}
-                onClick={() => setSelectedType(type)}
-              >
-                {type === 'all' ? 'All Types' : type}
-              </Badge>
-            );
-          })}
-        </div>
-
-        {/* Filter Row 2: Duration & Skill Level */}
-        <div className="flex flex-wrap items-center gap-4">
-          <div className="flex flex-wrap items-center gap-2">
-            <div className="flex items-center gap-2 mr-2">
-              <Clock className="h-4 w-4 text-int-navy" />
-              <span className="text-sm font-semibold text-int-navy">Duration:</span>
-            </div>
-            {durations.map(duration => (
-              <Badge
-                key={duration}
-                variant={selectedDuration === duration ? 'default' : 'outline'}
-                className={`cursor-pointer transition-all font-medium ${
-                  selectedDuration === duration 
-                    ? 'bg-gradient-navy text-white shadow-sm' 
-                    : 'hover:bg-slate-100 text-slate-600'
-                }`}
-                onClick={() => setSelectedDuration(duration)}
-              >
-                {duration === 'all' ? 'Any' : duration}
-              </Badge>
-            ))}
-          </div>
-
-          <div className="h-6 w-px bg-slate-200 hidden sm:block" />
-
-          <div className="flex flex-wrap items-center gap-2">
-            <div className="flex items-center gap-2 mr-2">
-              <Zap className="h-4 w-4 text-purple-600" />
-              <span className="text-sm font-semibold text-int-navy">Level:</span>
-            </div>
-            {skillLevels.map(level => (
-              <Badge
-                key={level}
-                variant={selectedSkillLevel === level ? 'default' : 'outline'}
-                className={`cursor-pointer transition-all font-medium ${
-                  selectedSkillLevel === level 
-                    ? 'bg-gradient-purple text-white shadow-sm' 
-                    : 'hover:bg-slate-100 text-slate-600'
-                }`}
-                onClick={() => setSelectedSkillLevel(level)}
-              >
-                {level === 'all' ? 'Any' : level}
-              </Badge>
-            ))}
-          </div>
-        </div>
-
-        {/* Filter Row 3: Skills Developed */}
-        {allSkills.length > 0 && (
-          <div className="flex flex-wrap items-center gap-2">
-            <div className="flex items-center gap-2 mr-2">
-              <GraduationCap className="h-4 w-4 text-emerald-600" />
-              <span className="text-sm font-semibold text-int-navy">Skills:</span>
-            </div>
-            <Badge
-              variant={selectedSkill === 'all' ? 'default' : 'outline'}
-              className={`cursor-pointer transition-all font-medium ${
-                selectedSkill === 'all' 
-                  ? 'bg-gradient-wellness text-white shadow-sm' 
-                  : 'hover:bg-slate-100 text-slate-600'
-              }`}
-              onClick={() => setSelectedSkill('all')}
-            >
-              All Skills
-            </Badge>
-            {allSkills.slice(0, 10).map(skill => (
-              <Badge
-                key={skill}
-                variant={selectedSkill === skill ? 'default' : 'outline'}
-                className={`cursor-pointer transition-all font-medium ${
-                  selectedSkill === skill 
-                    ? 'bg-gradient-wellness text-white shadow-sm' 
-                    : 'hover:bg-slate-100 text-slate-600'
-                }`}
-                onClick={() => setSelectedSkill(skill)}
-              >
-                {skill}
-              </Badge>
-            ))}
-            {allSkills.length > 10 && (
-              <Select value={selectedSkill} onValueChange={setSelectedSkill}>
-                <SelectTrigger className="w-[140px] h-7 text-xs font-medium">
-                  <SelectValue placeholder="More skills..." />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Skills</SelectItem>
-                  {allSkills.map(skill => (
-                    <SelectItem key={skill} value={skill}>{skill}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            )}
-          </div>
-        )}
-
-        {/* Active Filters Summary */}
-        {hasActiveFilters && (
-          <div className="flex items-center justify-between pt-3 border-t border-slate-200">
-            <p className="text-sm text-slate-600">
-              Showing <span className="font-semibold text-slate-900">{filteredActivities.length}</span> of {activities?.length || 0} activities
-            </p>
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              onClick={clearAllFilters}
-              className="text-slate-500 hover:text-slate-700"
-            >
-              <X className="h-4 w-4 mr-1" />
-              Clear all filters
-            </Button>
-          </div>
-        )}
-      </div>
+      <ActivitiesFilters
+        searchQuery={filters.search}
+        onSearchChange={setSearch}
+        selectedType={filters.type}
+        onTypeChange={setType}
+        selectedDuration={filters.duration}
+        onDurationChange={setDuration}
+        selectedSkill={filters.skill}
+        onSkillChange={setSkill}
+        selectedSkillLevel={filters.skillLevel}
+        onSkillLevelChange={setSkillLevel}
+        sortBy={filters.sortBy}
+        onSortChange={setSortBy}
+        allSkills={allSkills}
+        totalCount={activities?.length || 0}
+        filteredCount={filteredActivities.length}
+        onClearAll={clearFilters}
+      />
 
       {/* Activities Grid */}
       {isLoading ? (
