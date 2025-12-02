@@ -13,14 +13,7 @@ const typeConfig = {
   social: { emoji: '🎉', label: 'Social', badgeClass: 'activity-badge-social' }
 };
 
-const gradientClasses = {
-  icebreaker: 'bg-gradient-icebreaker',
-  creative: 'bg-gradient-creative',
-  competitive: 'bg-gradient-competitive',
-  wellness: 'bg-gradient-wellness',
-  learning: 'bg-gradient-learning',
-  social: 'bg-gradient-social'
-};
+
 
 // Default images per type for activities without images
 const defaultImages = {
@@ -34,7 +27,6 @@ const defaultImages = {
 
 export default function ActivityCard({ activity, onSchedule, onDuplicate, onView }) {
   const config = typeConfig[activity.type] || typeConfig.social;
-  const gradientClass = gradientClasses[activity.type] || gradientClasses.social;
   const imageUrl = activity.image_url || defaultImages[activity.type] || defaultImages.social;
 
   return (
@@ -46,51 +38,55 @@ export default function ActivityCard({ activity, onSchedule, onDuplicate, onView
       className="h-full"
     >
       <div 
-        className="activity-card h-full flex flex-col cursor-pointer group"
+        className="bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-lg transition-all duration-300 h-full flex flex-col cursor-pointer group overflow-hidden"
         onClick={() => onView(activity)}
       >
-        {/* Header with image and gradient overlay */}
-        <div className="activity-card-header">
+        {/* Image Header - fixed height, no overflow */}
+        <div className="relative h-40 flex-shrink-0 overflow-hidden">
           <img 
             src={imageUrl} 
             alt={activity.title}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
           
-          {/* Type badge */}
-          <div className={`activity-card-badge ${config.badgeClass}`}>
+          {/* Type badge - top right */}
+          <div className={`absolute top-3 right-3 ${config.badgeClass} px-2.5 py-1 rounded-full text-xs font-semibold backdrop-blur-sm`}>
             {config.emoji} {config.label}
           </div>
-          
-          {/* Title overlaid on image */}
-          <h3 className="activity-card-title line-clamp-2" title={activity.title}>
-            {activity.title}
-          </h3>
         </div>
         
-        {/* Content */}
+        {/* Content - separate from image, no overlay */}
         <div className="flex-1 flex flex-col p-4">
+          {/* Title */}
+          <h3 
+            className="font-semibold text-slate-900 text-base mb-2 line-clamp-2 group-hover:text-int-orange transition-colors" 
+            title={activity.title}
+          >
+            {activity.title}
+          </h3>
+          
+          {/* Description */}
           <p 
-            className="text-sm text-slate-600 mb-4 line-clamp-2 flex-1 leading-relaxed"
+            className="text-sm text-slate-500 mb-3 line-clamp-2 leading-relaxed"
             title={activity.description}
           >
             {activity.description || 'No description available'}
           </p>
           
           {/* Meta info with pills */}
-          <div className="flex flex-wrap gap-2 mb-4">
-            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-100 text-xs font-medium text-slate-700">
+          <div className="flex flex-wrap gap-2 mb-3">
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-slate-100 text-xs font-medium text-slate-600">
               <Clock className="h-3 w-3" />
               {activity.duration}
             </span>
             {activity.capacity && (
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-100 text-xs font-medium text-slate-700">
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-slate-100 text-xs font-medium text-slate-600">
                 <Users className="h-3 w-3" />
                 Max {activity.capacity}
               </span>
             )}
             {activity.popularity_score > 0 && (
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-50 text-xs font-medium text-amber-700">
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-50 text-xs font-medium text-amber-600">
                 <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
                 {activity.popularity_score}
               </span>
@@ -99,7 +95,7 @@ export default function ActivityCard({ activity, onSchedule, onDuplicate, onView
           
           {/* Skills Tags */}
           {activity.skills_developed?.length > 0 && (
-            <div className="flex flex-wrap gap-1.5 mb-4">
+            <div className="flex flex-wrap gap-1.5 mb-3">
               {activity.skills_developed.slice(0, 3).map(skill => (
                 <Badge 
                   key={skill} 
@@ -120,14 +116,14 @@ export default function ActivityCard({ activity, onSchedule, onDuplicate, onView
             </div>
           )}
           
-          {/* Actions */}
-          <div className="flex gap-2 mt-auto pt-2 border-t border-slate-100">
+          {/* Actions - pushed to bottom */}
+          <div className="flex gap-2 mt-auto pt-3 border-t border-slate-100">
             <Button 
               onClick={(e) => {
                 e.stopPropagation();
                 onSchedule(activity);
               }}
-              className="flex-1 bg-gradient-orange hover:opacity-90 text-white shadow-md hover:shadow-lg transition-all press-effect"
+              className="flex-1 bg-int-orange hover:bg-int-orange/90 text-slate-900 font-semibold shadow-sm hover:shadow-md transition-all"
               size="sm"
             >
               <Calendar className="h-4 w-4 mr-1.5" />
