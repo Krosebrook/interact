@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Trophy, TrendingUp, Users } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Trophy, TrendingUp, Users, Share2 } from 'lucide-react';
 import LeaderboardRow from './LeaderboardRow';
+import { SocialShareDialog } from '../gamification/SocialShareCard';
 
 /**
  * Card showing current user's rank and nearby competitors
  */
-export default function MyRankCard({ myRank, nearby, totalParticipants, categoryLabel }) {
+export default function MyRankCard({ myRank, nearby, totalParticipants, categoryLabel, userEmail }) {
+  const [shareDialogOpen, setShareDialogOpen] = useState(false);
   if (!myRank) {
     return (
       <Card className="bg-gradient-to-r from-slate-100 to-slate-50 border-slate-200">
@@ -46,13 +49,24 @@ export default function MyRankCard({ myRank, nearby, totalParticipants, category
         </div>
 
         {/* Percentile badge */}
-        <div className="flex items-center gap-2 mb-4">
-          <Badge className="bg-int-orange text-slate-950 px-2.5 py-0.5 text-xs font-semibold rounded-md inline-flex items-center border transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent shadow hover:bg-primary/80">
-            Top {100 - percentile}%
-          </Badge>
-          <span className="text-xs text-slate-500">
-            Better than {percentile}% of users
-          </span>
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <Badge className="bg-int-orange text-slate-950 px-2.5 py-0.5 text-xs font-semibold rounded-md inline-flex items-center border transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent shadow hover:bg-primary/80">
+              Top {100 - percentile}%
+            </Badge>
+            <span className="text-xs text-slate-500">
+              Better than {percentile}% of users
+            </span>
+          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-8 text-slate-600 hover:text-int-orange"
+            onClick={() => setShareDialogOpen(true)}
+          >
+            <Share2 className="h-4 w-4 mr-1" />
+            Share
+          </Button>
         </div>
 
         {/* Nearby competitors */}
@@ -84,6 +98,35 @@ export default function MyRankCard({ myRank, nearby, totalParticipants, category
             </div>
           </div>
         }
+
+        {/* Share Dialog */}
+        <SocialShareDialog
+          open={shareDialogOpen}
+          onOpenChange={setShareDialogOpen}
+          shareType="leaderboard_rank"
+          shareData={{
+            title: `Ranked #${myRank.rank}!`,
+            description: `I'm in the top ${100 - percentile}% on the leaderboard with ${myRank.score.toLocaleString()} ${categoryLabel.toLowerCase()}!`,
+            icon: '🏆',
+            value: `#${myRank.rank} of ${totalParticipants}`
+          }}
+          onShare={async (platform) => {
+            const { base44 } = await import('@/api/base44Client');
+            await base44.entities.SocialShare.create({
+              user_email: userEmail || myRank.user_email,
+              share_type: 'leaderboard_rank',
+              reference_id: `rank-${myRank.rank}`,
+              share_data: {
+                title: `Ranked #${myRank.rank}!`,
+                description: `Top ${100 - percentile}% with ${myRank.score.toLocaleString()} ${categoryLabel.toLowerCase()}`,
+                icon: '🏆',
+                value: `#${myRank.rank}`
+              },
+              platforms: [platform],
+              visibility: 'public'
+            });
+          }}
+        />
       </CardContent>
     </Card>);
 
