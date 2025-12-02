@@ -1,17 +1,17 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useUserData } from '../components/hooks/useUserData.jsx';
 import { useUserProfile } from '../components/hooks/useUserProfile';
-import UserProfileCard from '../components/profile/UserProfileCard';
+import ProfileHeader from '../components/profile/ProfileHeader';
 import ProfilePreferencesEditor from '../components/profile/ProfilePreferencesEditor';
 import ContributionsShowcase from '../components/profile/ContributionsShowcase';
 import ProfileBadgesShowcase from '../components/profile/ProfileBadgesShowcase';
 import ProfileEventsDashboard from '../components/profile/ProfileEventsDashboard';
-import ProfileEventHistory from '../components/profile/ProfileEventHistory';
+import ActivityHistoryTimeline from '../components/profile/ActivityHistoryTimeline';
 import SkillsInterestsManager from '../components/profile/SkillsInterestsManager';
+import SkillsDevelopmentTracker from '../components/profile/SkillsDevelopmentTracker';
 import LoadingSpinner from '../components/common/LoadingSpinner';
-import PageHeader from '../components/common/PageHeader';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { User, Settings, Trophy, Calendar, History, Heart } from 'lucide-react';
+import { User, Settings, Trophy, Calendar, History, Heart, Target, Award } from 'lucide-react';
 
 export default function UserProfilePage() {
   const { user, loading: userLoading } = useUserData(true, false);
