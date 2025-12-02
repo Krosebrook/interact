@@ -23,106 +23,80 @@ export default function UserProfilePage() {
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
-      <PageHeader 
-        title="My Profile" 
-        description="View your achievements, manage events, and customize your preferences" 
+      {/* Profile Header with Avatar, Bio, Level, Stats */}
+      <ProfileHeader 
+        user={user}
+        profile={profile} 
+        userPoints={userPoints}
+        onUpdate={refetchProfile}
       />
 
-      <Tabs defaultValue="dashboard" className="w-full">
-        <TabsList className="grid w-full grid-cols-3 lg:grid-cols-6 mb-6">
-          <TabsTrigger value="dashboard" className="flex items-center gap-2">
-            <Calendar className="h-4 w-4" />
-            <span className="hidden sm:inline">Dashboard</span>
+      <Tabs defaultValue="overview" className="w-full">
+        <TabsList className="grid w-full grid-cols-3 lg:grid-cols-7 mb-6 h-auto gap-1 p-1">
+          <TabsTrigger value="overview" className="flex items-center gap-2 py-2.5">
+            <User className="h-4 w-4" />
+            <span className="hidden sm:inline">Overview</span>
           </TabsTrigger>
-          <TabsTrigger value="badges" className="flex items-center gap-2">
+          <TabsTrigger value="badges" className="flex items-center gap-2 py-2.5">
             <Trophy className="h-4 w-4" />
             <span className="hidden sm:inline">Badges</span>
           </TabsTrigger>
-          <TabsTrigger value="history" className="flex items-center gap-2">
+          <TabsTrigger value="skills" className="flex items-center gap-2 py-2.5">
+            <Target className="h-4 w-4" />
+            <span className="hidden sm:inline">Skills</span>
+          </TabsTrigger>
+          <TabsTrigger value="history" className="flex items-center gap-2 py-2.5">
             <History className="h-4 w-4" />
             <span className="hidden sm:inline">History</span>
           </TabsTrigger>
-          <TabsTrigger value="interests" className="flex items-center gap-2">
+          <TabsTrigger value="events" className="flex items-center gap-2 py-2.5">
+            <Calendar className="h-4 w-4" />
+            <span className="hidden sm:inline">Events</span>
+          </TabsTrigger>
+          <TabsTrigger value="interests" className="flex items-center gap-2 py-2.5">
             <Heart className="h-4 w-4" />
             <span className="hidden sm:inline">Interests</span>
           </TabsTrigger>
-          <TabsTrigger value="profile" className="flex items-center gap-2">
-            <User className="h-4 w-4" />
-            <span className="hidden sm:inline">Profile</span>
-          </TabsTrigger>
-          <TabsTrigger value="settings" className="flex items-center gap-2">
+          <TabsTrigger value="settings" className="flex items-center gap-2 py-2.5">
             <Settings className="h-4 w-4" />
             <span className="hidden sm:inline">Settings</span>
           </TabsTrigger>
         </TabsList>
 
-        {/* Dashboard - Upcoming & Bookmarked Events */}
-        <TabsContent value="dashboard">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-1">
-              <UserProfileCard 
-                profile={profile} 
-                userPoints={userPoints}
-              />
-            </div>
-            <div className="lg:col-span-2">
-              <ProfileEventsDashboard userEmail={user.email} />
-            </div>
-          </div>
+        {/* Overview - Contributions & Recognition */}
+        <TabsContent value="overview">
+          <ContributionsShowcase userEmail={user.email} />
         </TabsContent>
 
         {/* Badges & Achievements */}
         <TabsContent value="badges">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-1">
-              <UserProfileCard 
-                profile={profile} 
-                userPoints={userPoints}
-                compact={false}
-              />
-            </div>
-            <div className="lg:col-span-2">
-              <ProfileBadgesShowcase userEmail={user.email} />
-            </div>
-          </div>
+          <ProfileBadgesShowcase userEmail={user.email} />
         </TabsContent>
 
-        {/* Event History */}
+        {/* Skills Development */}
+        <TabsContent value="skills">
+          <SkillsDevelopmentTracker 
+            userEmail={user.email} 
+            profile={profile}
+          />
+        </TabsContent>
+
+        {/* Activity History Timeline */}
         <TabsContent value="history">
-          <ProfileEventHistory userEmail={user.email} />
+          <ActivityHistoryTimeline userEmail={user.email} />
         </TabsContent>
 
-        {/* Skills & Interests */}
+        {/* Upcoming Events Dashboard */}
+        <TabsContent value="events">
+          <ProfileEventsDashboard userEmail={user.email} />
+        </TabsContent>
+
+        {/* Skills & Interests Manager */}
         <TabsContent value="interests">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-1">
-              <UserProfileCard 
-                profile={profile} 
-                userPoints={userPoints}
-              />
-            </div>
-            <div className="lg:col-span-2">
-              <SkillsInterestsManager 
-                profile={profile} 
-                onUpdate={refetchProfile}
-              />
-            </div>
-          </div>
-        </TabsContent>
-
-        {/* Profile Overview */}
-        <TabsContent value="profile">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-1">
-              <UserProfileCard 
-                profile={profile} 
-                userPoints={userPoints}
-              />
-            </div>
-            <div className="lg:col-span-2">
-              <ContributionsShowcase userEmail={user.email} />
-            </div>
-          </div>
+          <SkillsInterestsManager 
+            profile={profile} 
+            onUpdate={refetchProfile}
+          />
         </TabsContent>
 
         {/* Settings & Preferences */}
