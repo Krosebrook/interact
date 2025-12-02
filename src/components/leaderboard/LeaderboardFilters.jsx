@@ -30,7 +30,7 @@ export default function LeaderboardFilters({
 
       {/* Time period buttons */}
       <div className="flex flex-wrap items-center gap-2">
-        <span className="text-sm text-slate-500 mr-2">Period:</span>
+        <span className="text-sm text-slate-700 font-medium mr-2">Period:</span>
         {Object.entries(TIME_PERIODS).map(([key, config]) => (
           <Button
             key={key}

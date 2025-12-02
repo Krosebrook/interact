@@ -24,7 +24,7 @@ export default function StatsCard({ title, value, subtitle, icon: Icon, color = 
               <p className="text-sm font-medium text-slate-600 mb-1">{title}</p>
               <p className="text-3xl font-bold text-slate-900 mb-1">{value}</p>
               {subtitle && (
-                <p className="text-sm text-slate-500">{subtitle}</p>
+                <p className="text-sm text-slate-600">{subtitle}</p>
               )}
               {trend && (
                 <p className="text-xs text-emerald-600 font-medium mt-2">

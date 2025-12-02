@@ -173,14 +173,14 @@ export default function EventCalendarCard({
           <Clock className="h-4 w-4 text-int-orange" />
           <span>{format(eventDate, 'h:mm a')}</span>
           {event.duration_minutes && (
-            <span className="text-slate-400">• {event.duration_minutes} min</span>
+            <span className="text-slate-600">• {event.duration_minutes} min</span>
           )}
         </div>
         <div className="flex items-center gap-2 text-sm text-slate-600">
           <FormatIcon className={`h-4 w-4 ${formatConfig.color}`} />
           <span>{formatConfig.label}</span>
           {event.location && (
-            <span className="text-slate-400 truncate">• {event.location}</span>
+            <span className="text-slate-600 truncate">• {event.location}</span>
           )}
         </div>
       </div>
@@ -191,14 +191,14 @@ export default function EventCalendarCard({
           <Users className="h-4 w-4" />
           <span>{participantCount} participant{participantCount !== 1 ? 's' : ''}</span>
           {event.max_participants && (
-            <span className="text-slate-400">/ {event.max_participants}</span>
+            <span className="text-slate-600">/ {event.max_participants}</span>
           )}
         </div>
         
         <Link to={`${createPageUrl('FacilitatorView')}?eventId=${event.id}`}>
           <Button 
             size="sm" 
-            className="bg-gradient-orange hover:opacity-90 text-white shadow-lg hover:shadow-xl transition-all press-effect"
+            className="bg-int-orange hover:bg-int-orange/90 text-slate-900 font-semibold shadow-md hover:shadow-lg transition-all"
           >
             Facilitate
           </Button>

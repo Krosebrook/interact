@@ -60,11 +60,11 @@ export default function RecognitionCard({
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
               <span className="font-semibold text-slate-900">{recognition.sender_name}</span>
-              <span className="text-slate-400">recognized</span>
+              <span className="text-slate-600">recognized</span>
               <span className="font-semibold text-int-orange">{recognition.recipient_name}</span>
               {getVisibilityIcon()}
             </div>
-            <div className="flex items-center gap-2 text-xs text-slate-500 mt-1">
+            <div className="flex items-center gap-2 text-xs text-slate-600 mt-1">
               <span>{timeAgo}</span>
               {recognition.ai_suggested && (
                 <Badge variant="secondary" className="text-[10px] bg-purple-50 text-purple-600">
@@ -129,7 +129,7 @@ export default function RecognitionCard({
 
           <div className="flex items-center gap-2">
             {recognition.comments_count > 0 && (
-              <span className="text-xs text-slate-500 flex items-center gap-1">
+              <span className="text-xs text-slate-600 flex items-center gap-1">
                 <MessageCircle className="h-3 w-3" />
                 {recognition.comments_count}
               </span>

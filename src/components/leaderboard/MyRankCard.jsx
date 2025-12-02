@@ -14,7 +14,7 @@ export default function MyRankCard({ myRank, nearby, totalParticipants, category
         <CardContent className="p-6 text-center">
           <Trophy className="h-12 w-12 mx-auto mb-3 text-slate-400" />
           <h3 className="font-semibold text-slate-700 mb-1">Start Earning!</h3>
-          <p className="text-sm text-slate-500">
+          <p className="text-sm text-slate-600">
             Participate in activities to appear on the leaderboard
           </p>
         </CardContent>
@@ -50,7 +50,7 @@ export default function MyRankCard({ myRank, nearby, totalParticipants, category
           <Badge className="bg-int-orange text-white">
             Top {100 - percentile}%
           </Badge>
-          <span className="text-xs text-slate-500">
+          <span className="text-xs text-slate-600">
             Better than {percentile}% of users
           </span>
         </div>
@@ -58,7 +58,7 @@ export default function MyRankCard({ myRank, nearby, totalParticipants, category
         {/* Nearby competitors */}
         {nearby.length > 0 && (
           <div className="border-t border-slate-200 pt-4">
-            <p className="text-xs font-medium text-slate-500 mb-2 flex items-center gap-1">
+            <p className="text-xs font-medium text-slate-600 mb-2 flex items-center gap-1">
               <Users className="h-3 w-3" />
               Nearby Competitors
             </p>
@@ -73,7 +73,7 @@ export default function MyRankCard({ myRank, nearby, totalParticipants, category
                   }`}
                 >
                   <span className="flex items-center gap-2">
-                    <span className="w-6 text-center text-slate-500">#{user.rank}</span>
+                    <span className="w-6 text-center text-slate-600 font-medium">#{user.rank}</span>
                     <span className={user.user_email === myRank.user_email ? 'text-int-orange' : ''}>
                       {user.user_name}
                     </span>

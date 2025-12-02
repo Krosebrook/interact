@@ -137,7 +137,7 @@ export default function BadgeCard({
           </h4>
 
           {size !== 'small' && badge.badge_description && (
-            <p className={`text-slate-500 mt-1 line-clamp-2 ${style.desc}`}>
+            <p className={`text-slate-600 mt-1 line-clamp-2 ${style.desc}`}>
               {badge.is_hidden && !isEarned ? 'Hidden badge' : badge.badge_description}
             </p>
           )}
@@ -163,7 +163,7 @@ export default function BadgeCard({
           {!isEarned && showProgress && progress && (
             <div className="mt-3">
               <Progress value={progress.percentage} className="h-1.5" />
-              <p className="text-xs text-slate-500 mt-1">
+              <p className="text-xs text-slate-600 mt-1">
                 {progress.current}/{progress.target}
               </p>
             </div>
@@ -171,7 +171,7 @@ export default function BadgeCard({
 
           {/* Earned date */}
           {isEarned && earnedDate && size !== 'small' && (
-            <p className="text-xs text-slate-400 mt-2">
+            <p className="text-xs text-slate-600 mt-2">
               Earned {new Date(earnedDate).toLocaleDateString()}
             </p>
           )}

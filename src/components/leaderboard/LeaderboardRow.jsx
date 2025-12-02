@@ -86,7 +86,7 @@ export default function LeaderboardRow({
         </div>
         
         {showDetails && (
-          <div className="flex items-center gap-3 mt-1 text-xs text-slate-500">
+          <div className="flex items-center gap-3 mt-1 text-xs text-slate-600">
             {user.streak > 0 && (
               <span className="flex items-center gap-1">
                 <Flame className="h-3 w-3 text-orange-500" />
