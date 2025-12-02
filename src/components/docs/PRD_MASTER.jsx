@@ -1,6 +1,5 @@
-
 /**
- * TEAM ENGAGE - PRODUCT REQUIREMENTS DOCUMENT (PRD)
+ * INTERACT - PRODUCT REQUIREMENTS DOCUMENT (PRD)
  * Employee Engagement Platform for Intinc
  * Version: 3.0.0 (Post-Refactor)
  * Last Updated: 2025-11-30
@@ -15,10 +14,10 @@ export const PRD_MASTER = {
   },
 
   overview: {
-    name: "Team Engage",
+    name: "INTeract",
     tagline: "AI-Powered Employee Engagement Platform",
     description: `
-      Team Engage is a comprehensive employee engagement platform designed for 
+      INTeract is a comprehensive employee engagement platform designed for 
       remote-first tech companies (50-200 employees). It combines gamification, 
       social features, AI-powered recommendations, and analytics to foster 
       team connection and recognition.
