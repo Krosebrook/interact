@@ -155,13 +155,13 @@ export default function ProfileHeader({ user, profile, userPoints, onUpdate }) {
                     </span>
                   )}
                   {profile?.department && (
-                    <span className="flex items-center gap-1 text-sm text-slate-500">
+                    <span className="flex items-center gap-1 text-sm text-slate-600">
                       <Building className="h-4 w-4" />
                       {profile.department}
                     </span>
                   )}
                   {profile?.location && (
-                    <span className="flex items-center gap-1 text-sm text-slate-500">
+                    <span className="flex items-center gap-1 text-sm text-slate-600">
                       <MapPin className="h-4 w-4" />
                       {profile.location}
                     </span>
@@ -186,7 +186,7 @@ export default function ProfileHeader({ user, profile, userPoints, onUpdate }) {
                 </span>
               </div>
               <Progress value={xpProgress} className="h-2" />
-              <p className="text-xs text-slate-500 mt-1">
+              <p className="text-xs text-slate-600 mt-1">
                 {nextLevelThreshold - totalPoints} XP to Level {level + 1}
               </p>
             </div>
@@ -256,7 +256,7 @@ export default function ProfileHeader({ user, profile, userPoints, onUpdate }) {
               </div>
               <div className="flex-1">
                 <p className="text-sm font-medium text-slate-700">Profile Photo</p>
-                <p className="text-xs text-slate-500">Upload a photo (max 10MB)</p>
+                <p className="text-xs text-slate-600">Upload a photo (max 10MB)</p>
               </div>
             </div>
 
@@ -311,7 +311,7 @@ export default function ProfileHeader({ user, profile, userPoints, onUpdate }) {
                 className="mt-1 h-24"
                 maxLength={300}
               />
-              <p className="text-xs text-slate-400 mt-1 text-right">
+              <p className="text-xs text-slate-600 mt-1 text-right">
                 {editForm.bio.length}/300
               </p>
             </div>
@@ -343,7 +343,7 @@ function StatsBox({ icon, value, label, gradient }) {
     <div className={`p-3 rounded-xl bg-gradient-to-br ${gradient} text-center`}>
       <div className="flex justify-center mb-1">{icon}</div>
       <p className="text-xl font-bold text-slate-800">{value}</p>
-      <p className="text-xs text-slate-500">{label}</p>
+      <p className="text-xs text-slate-700 font-medium">{label}</p>
     </div>
   );
 }
