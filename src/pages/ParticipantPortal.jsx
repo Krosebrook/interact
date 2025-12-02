@@ -83,7 +83,7 @@ export default function ParticipantPortal() {
           <h1 className="text-4xl font-bold text-slate-900 mb-2">
             Welcome, {user.full_name}! 👋
           </h1>
-          <p className="text-slate-600">Your personalized event hub</p>
+          <p className="text-slate-600">Your INTeract engagement hub</p>
         </div>
 
         {/* Stats Cards */}

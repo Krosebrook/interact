@@ -63,7 +63,7 @@ export default function Dashboard() {
               Welcome back, <span className="text-gradient-orange">{user.full_name}</span>! 👋
             </h1>
             <p className="text-slate-600 font-medium">
-              Here's what's happening with your team activities
+              Here's what's happening with your team engagement
             </p>
           </div>
           <div className="flex gap-3">
