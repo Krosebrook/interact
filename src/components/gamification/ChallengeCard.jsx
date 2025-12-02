@@ -152,7 +152,7 @@ export default function ChallengeCard({
             {!isJoined && challenge.status === 'active' ? (
               <Button 
                 onClick={() => onJoin?.(challenge)}
-                className="flex-1 bg-gradient-orange hover:opacity-90 text-white shadow-md press-effect"
+                className="flex-1 bg-int-orange hover:bg-int-orange/90 text-slate-900 font-semibold shadow-md press-effect"
               >
                 <Target className="h-4 w-4 mr-2" />
                 Join Challenge
