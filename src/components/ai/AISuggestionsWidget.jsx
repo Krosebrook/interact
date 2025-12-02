@@ -142,10 +142,10 @@ export default function AISuggestionsWidget({ onScheduleActivity, onGenerateCust
               className="text-center py-10 px-4"
             >
               <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-purple-100 to-indigo-100 flex items-center justify-center">
-                <Sparkles className="h-8 w-8 text-purple-500" />
+                <Sparkles className="h-8 w-8 text-purple-400" />
               </div>
-              <p className="text-slate-700 font-medium mb-2">No new recommendations</p>
-              <p className="text-sm text-slate-600">
+              <p className="text-slate-600 font-medium mb-2">No new recommendations</p>
+              <p className="text-sm text-slate-500">
                 Click "Quick Generate" to create a custom activity!
               </p>
             </motion.div>

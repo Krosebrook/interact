@@ -173,7 +173,7 @@ export default function LiveCoachingWidget({ eventId }) {
                 </Badge>
                 <div className="flex-1">
                   <p className="font-semibold text-sm mb-1">{tip.title}</p>
-                  <p className="text-xs text-slate-600">{tip.action}</p>
+                  <p className="text-xs text-slate-700">{tip.action}</p>
                 </div>
               </motion.div>
             );

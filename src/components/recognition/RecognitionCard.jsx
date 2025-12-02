@@ -60,7 +60,7 @@ export default function RecognitionCard({
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
               <span className="font-semibold text-slate-900">{recognition.sender_name}</span>
-              <span className="text-slate-600">recognized</span>
+              <span className="text-slate-400">recognized</span>
               <span className="font-semibold text-int-orange">{recognition.recipient_name}</span>
               {getVisibilityIcon()}
             </div>

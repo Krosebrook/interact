@@ -86,7 +86,7 @@ export default function ChannelList({
             <span className="font-medium truncate">{channel.name}</span>
           </div>
           {channel.last_activity && (
-            <p className={`text-xs truncate ${isSelected ? 'text-white/70' : 'text-slate-500'}`}>
+            <p className={`text-xs truncate ${isSelected ? 'text-white/70' : 'text-slate-400'}`}>
               {formatTimeAgo(channel.last_activity)}
             </p>
           )}
@@ -127,7 +127,7 @@ export default function ChannelList({
           {/* Public Channels */}
           {filteredPublic.length > 0 && (
             <div>
-              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider px-3 mb-2">
+              <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider px-3 mb-2">
                 Public Channels
               </p>
               <div className="space-y-1">
@@ -141,7 +141,7 @@ export default function ChannelList({
           {/* Private Channels */}
           {filteredPrivate.length > 0 && (
             <div>
-              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider px-3 mb-2">
+              <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider px-3 mb-2">
                 Private Channels
               </p>
               <div className="space-y-1">
@@ -153,7 +153,7 @@ export default function ChannelList({
           )}
 
           {filteredPublic.length === 0 && filteredPrivate.length === 0 && (
-            <div className="text-center py-8 text-slate-500">
+            <div className="text-center py-8 text-slate-400">
               <Hash className="h-8 w-8 mx-auto mb-2 opacity-50" />
               <p className="text-sm">No channels found</p>
             </div>

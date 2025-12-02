@@ -99,7 +99,7 @@ export default function ActivityDetailDialog({
           <div className="flex gap-3 pt-4">
             <Button
               onClick={handleSchedule}
-              className="flex-1 bg-int-orange hover:bg-[#C46322] text-slate-900 font-semibold"
+              className="flex-1 bg-int-orange hover:bg-[#C46322] text-white"
             >
               Schedule This Activity
             </Button>

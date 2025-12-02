@@ -29,7 +29,7 @@ export default function ActivitiesHeader({
         <div className="flex gap-2 flex-wrap">
           <Button 
             onClick={onOpenPlanner}
-            className="bg-purple-600 hover:bg-purple-700 text-white shadow-lg hover:shadow-xl transition-all press-effect"
+            className="bg-gradient-purple hover:opacity-90 text-white shadow-lg hover:shadow-xl transition-all press-effect"
           >
             <Brain className="h-4 w-4 mr-2" />
             AI Activity Planner
@@ -52,7 +52,7 @@ export default function ActivitiesHeader({
           </Button>
           <Button 
             onClick={onOpenGenerator}
-            className="bg-int-orange hover:bg-int-orange/90 text-slate-900 font-semibold shadow-lg hover:shadow-xl transition-all press-effect"
+            className="bg-gradient-orange hover:opacity-90 text-white shadow-lg hover:shadow-xl transition-all press-effect"
           >
             <Plus className="h-4 w-4 mr-2" />
             Generate Custom

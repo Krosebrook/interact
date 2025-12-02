@@ -98,7 +98,7 @@ export default function BadgeCard({
 
         {/* Category indicator */}
         <div className="absolute top-2 left-2">
-          <CategoryIcon className={`h-4 w-4 ${isEarned ? 'text-slate-500' : 'text-slate-400'}`} />
+          <CategoryIcon className={`h-4 w-4 ${isEarned ? 'text-slate-400' : 'text-slate-300'}`} />
         </div>
 
         {/* Earned star */}
@@ -171,7 +171,7 @@ export default function BadgeCard({
 
           {/* Earned date */}
           {isEarned && earnedDate && size !== 'small' && (
-            <p className="text-xs text-slate-500 mt-2">
+            <p className="text-xs text-slate-400 mt-2">
               Earned {new Date(earnedDate).toLocaleDateString()}
             </p>
           )}

@@ -66,7 +66,7 @@ export default function ParticipantEventCard({
             <div className="flex items-center gap-2">
               <Clock className="h-4 w-4" />
               <span>{format(new Date(event.scheduled_date), 'h:mm a')}</span>
-              <span className="text-slate-500">•</span>
+              <span className="text-slate-400">•</span>
               <span>{event.duration_minutes || activity?.duration || 'TBD'}</span>
             </div>
             {event.meeting_link && (
