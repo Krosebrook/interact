@@ -1,155 +1,125 @@
 # Team Engage - Employee Engagement Platform
 
-## Overview
+## Architecture Overview
 
-Team Engage is an AI-powered employee engagement platform designed for remote-first tech companies. It enables peer-to-peer recognition, pulse surveys, team activities, and gamification to boost employee engagement.
+This codebase follows a modular architecture with clear separation of concerns:
 
-## Tech Stack
-
-- **Frontend:** React 18, Tailwind CSS, shadcn/ui
-- **State Management:** TanStack React Query
-- **Backend:** Base44 Platform (Entities, Auth, Functions)
-- **AI Integration:** OpenAI, Claude, Gemini
-- **Payments:** Stripe
-
-## Project Structure
+### Directory Structure
 
 ```
-├── pages/                    # Page components (flat structure)
-│   ├── Dashboard.js          # Admin dashboard
-│   ├── FacilitatorDashboard.js
-│   ├── ParticipantPortal.js
-│   ├── Analytics.js
-│   ├── Settings.js
-│   └── ...
-│
 ├── components/
-│   ├── common/               # Shared UI components
-│   │   ├── ErrorBoundary.jsx
-│   │   ├── LoadingSpinner.jsx
-│   │   ├── ProtectedRoute.jsx
-│   │   └── ...
-│   │
-│   ├── hooks/                # Custom React hooks
-│   │   ├── useUserData.jsx
-│   │   ├── useEventData.jsx
-│   │   └── ...
-│   │
-│   ├── lib/                  # Core utilities
-│   │   ├── api.js            # Centralized API layer
-│   │   ├── constants.js      # App constants
-│   │   └── config.js         # Configuration
-│   │
-│   ├── analytics/            # Analytics feature
-│   ├── events/               # Event management
-│   ├── gamification/         # Points, badges, leaderboards
-│   ├── recognition/          # Peer recognition
-│   ├── teams/                # Team management
-│   └── ...
-│
-├── entities/                 # Base44 entity schemas (JSON)
-├── functions/                # Backend functions (Deno)
-├── agents/                   # AI agent configurations
-└── Layout.js                 # App layout wrapper
+│   ├── activities/       # Activity-related components and hooks
+│   ├── ai/               # AI-powered features (generators, planners)
+│   ├── analytics/        # Analytics dashboards and charts
+│   ├── channels/         # Team communication channels
+│   ├── common/           # Shared UI components (LoadingSpinner, EmptyState, etc.)
+│   ├── dashboard/        # Dashboard-specific components
+│   ├── docs/             # Documentation files
+│   ├── events/           # Event scheduling and management
+│   ├── facilitator/      # Facilitator tools and assistants
+│   ├── gamification/     # Points, badges, leaderboards
+│   ├── hooks/            # Shared React hooks
+│   ├── integrations/     # External service integrations
+│   ├── leaderboard/      # Leaderboard components
+│   ├── lib/              # Core utilities and configuration
+│   ├── moderation/       # Content moderation
+│   ├── notifications/    # Notification system
+│   ├── participant/      # Participant-specific features
+│   ├── profile/          # User profile components
+│   ├── pwa/              # Progressive Web App features
+│   ├── recognition/      # Peer recognition system
+│   ├── settings/         # Settings panels
+│   ├── skills/           # Skill tracking and development
+│   ├── store/            # Point store and avatar customization
+│   ├── teams/            # Team management
+│   ├── templates/        # Event and activity templates
+│   └── utils/            # Utility functions
+├── entities/             # JSON schemas for data models
+├── functions/            # Backend serverless functions
+├── pages/                # Page components (flat structure)
+└── agents/               # AI agent configurations
 ```
 
-## Key Patterns
+### Key Patterns
 
-### 1. Protected Routes
+#### 1. Centralized Configuration
+All app configuration lives in `components/lib/`:
+- `config.js` - App settings, feature flags, API config
+- `constants.js` - Enums, static data, color mappings
+- `utils.js` - General utility functions
+- `api.js` - API layer with query keys and cache config
 
-All pages use `ProtectedRoute` wrapper for declarative access control:
+#### 2. Custom Hooks
+Hooks are organized by feature in `components/hooks/`:
+- `useUserData` - Authentication and user state
+- `useEventData` - Event fetching and caching
+- `useEventScheduling` - Event creation logic
+- `useFormState` - Generic form state management
+- See `components/hooks/index.js` for full exports
 
+#### 3. Component Composition
+Large pages are decomposed into smaller components:
+- Headers (e.g., `CalendarHeader`, `ActivitiesHeader`)
+- Dialogs (e.g., `ScheduleEventDialog`, `CreatePollDialog`)
+- Lists (e.g., `EventsList`)
+- Filters (e.g., `ActivitiesFilters`)
+
+#### 4. Protected Routes
+Use `ProtectedRoute` wrapper for role-based access:
 ```jsx
-import ProtectedRoute from '../components/common/ProtectedRoute';
-
-export default function AdminPage() {
-  return (
-    <ProtectedRoute requireAdmin>
-      <AdminContent />
-    </ProtectedRoute>
-  );
-}
+<ProtectedRoute requireAdmin>
+  <AdminContent />
+</ProtectedRoute>
 ```
 
-### 2. User Data Hook
-
-Use `useUserData` hook for authentication and role-based access:
-
+#### 5. Data Loading Pattern
+Use `DataLoader` component for consistent loading/error/empty states:
 ```jsx
-const { user, loading, isAdmin, isFacilitator, isParticipant } = useUserData(
-  true,   // requireAuth
-  false,  // requireAdmin
-  true,   // requireFacilitator
-  false   // requireParticipant
-);
+<DataLoader 
+  isLoading={isLoading} 
+  data={items}
+  emptyTitle="No items found"
+>
+  {(data) => <ItemList items={data} />}
+</DataLoader>
 ```
 
-### 3. Centralized API Layer
+### Entity Schema Design
 
-Use `components/lib/api.js` for all entity operations:
+Entities are defined as JSON schemas in `/entities/`:
+- Built-in fields: `id`, `created_date`, `updated_date`, `created_by`
+- User entity has special security rules (admin-only for list/update)
+- Reference other entities by ID (e.g., `event.activity_id`)
 
-```jsx
-import { api } from '../lib/api';
+### Backend Functions
 
-// Fetch events
-const events = await api.events.list();
+Serverless functions in `/functions/`:
+- Must use `Deno.serve()` pattern
+- Use `createClientFromRequest` for Base44 SDK
+- Validate user auth before operations
+- External dependencies use `npm:` prefix
 
-// Create with validation
-await api.events.create(eventData);
-```
+### Styling
 
-### 4. React Query for Data Fetching
+- Tailwind CSS for all styling
+- CSS variables defined in `globals.css`
+- Brand colors: `int-navy`, `int-orange`, `int-gold`, `int-teal`
+- Glassmorphism classes: `glass-panel`, `glass-card`
+- Animation classes: `animate-fade-in`, `hover-lift`
 
-All data fetching uses TanStack Query:
+### State Management
 
-```jsx
-const { data: events, isLoading } = useQuery({
-  queryKey: ['events'],
-  queryFn: () => base44.entities.Event.list(),
-  staleTime: 30000
-});
-```
+- React Query for server state (`@tanstack/react-query`)
+- Local state with `useState` for UI state
+- Custom hooks for complex state logic
+- No global state store (prefer composition)
 
-### 5. Component Decomposition
+### Best Practices
 
-Pages are decomposed into focused components:
-- Keep components under 150 lines
-- Extract hooks for complex logic
-- Use barrel exports for clean imports
-
-## User Roles
-
-| Role | Access |
-|------|--------|
-| **Admin** | Full access to all features, settings, analytics |
-| **Facilitator** | Event management, limited analytics |
-| **Participant** | Events, recognition, gamification |
-
-## Environment Variables
-
-Required secrets (set in Base44 dashboard):
-- `OPENAI_API_KEY` - AI features
-- `STRIPE_SECRET_KEY` - Payments
-- `STRIPE_SIGNING_SECRET` - Webhooks
-
-## Development Guidelines
-
-1. **File Size:** Keep files under 150 lines
-2. **Naming:** Use PascalCase for components, camelCase for hooks
-3. **Imports:** Use absolute imports with `@/` prefix
-4. **Icons:** Only use icons from `lucide-react`
-5. **Styling:** Tailwind CSS with custom CSS variables
-
-## Testing Checklist
-
-- [ ] Role-based access control works correctly
-- [ ] Loading states display properly
-- [ ] Error boundaries catch exceptions
-- [ ] Forms validate input
-- [ ] Mobile responsive design works
-
-## Version History
-
-- **v3.0.0** - Role-based refactoring, ProtectedRoute, API layer
-- **v2.0.0** - Gamification, recognition features
-- **v1.0.0** - Initial release
+1. **Small Components**: Keep components < 50 lines when possible
+2. **Extract Hooks**: Complex logic goes into custom hooks
+3. **Barrel Exports**: Use index.js for clean imports
+4. **Consistent Naming**: PascalCase for components, camelCase for hooks
+5. **Error Handling**: Let errors bubble up (no silent catches)
+6. **Loading States**: Always show loading indicators
+7. **Mobile First**: Design for mobile, enhance for desktop
