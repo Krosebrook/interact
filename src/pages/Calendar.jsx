@@ -23,141 +23,32 @@ export default function Calendar() {
   const queryClient = useQueryClient();
   const { user, loading } = useUserData(true, true);
   const { events, activities, participations, isLoading } = useEventData();
-  const [showScheduleDialog, setShowScheduleDialog] = useState(false);
   const eventActions = useEventActions();
-  const [formData, setFormData] = useState({
-    activity_id: '',
-    title: '',
-    scheduled_date: '',
-    duration_minutes: 30,
-    max_participants: null,
-    custom_instructions: '',
-    meeting_link: '',
-    facilitator_name: '',
-    facilitator_email: ''
-  });
-  const [recurrenceSettings, setRecurrenceSettings] = useState({
-    enabled: false,
-    frequency: 'weekly',
-    occurrences: 4
-  });
-  const [showPollDialog, setShowPollDialog] = useState(false);
-      const [showSeriesCreator, setShowSeriesCreator] = useState(false);
-      const [showBulkScheduler, setShowBulkScheduler] = useState(false);
-      const [rescheduleEvent, setRescheduleEvent] = useState(null);
-      const [scheduleMode, setScheduleMode] = useState('direct'); // 'direct' or 'poll'
-      const { teams } = useTeamData();
+  const { teams } = useTeamData();
 
+  // Dialog states
+  const [showScheduleDialog, setShowScheduleDialog] = useState(false);
+  const [showPollDialog, setShowPollDialog] = useState(false);
+  const [showSeriesCreator, setShowSeriesCreator] = useState(false);
+  const [showBulkScheduler, setShowBulkScheduler] = useState(false);
+  const [rescheduleEvent, setRescheduleEvent] = useState(null);
+
+  // Use centralized scheduling hook
+  const scheduling = useEventScheduling({
+    onSuccess: () => setShowScheduleDialog(false)
+  });
+
+  // Check for pre-selected activity from URL
   useEffect(() => {
-    // Check for pre-selected activity from URL
     const urlParams = new URLSearchParams(window.location.search);
     const activityId = urlParams.get('activity');
     if (activityId) {
-      setFormData(prev => ({ ...prev, activity_id: activityId }));
+      scheduling.updateField('activity_id', activityId);
       setShowScheduleDialog(true);
     }
   }, []);
 
-  const createEventMutation = useMutation({
-    mutationFn: async (data) => {
-      const events = [];
-      const recurringSeriesId = recurrenceSettings.enabled 
-        ? `series-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
-        : null;
-
-      const createSingleEvent = async (scheduleDate, occurrenceNum = 1, totalOccurrences = 1) => {
-        const magicLink = `event-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-        const event = await base44.entities.Event.create({
-          ...data,
-          scheduled_date: scheduleDate,
-          magic_link: magicLink,
-          status: 'scheduled',
-          is_recurring: recurrenceSettings.enabled,
-          recurring_series_id: recurringSeriesId,
-          recurrence_pattern: recurrenceSettings.enabled ? {
-            frequency: recurrenceSettings.frequency,
-            occurrence_number: occurrenceNum,
-            total_occurrences: totalOccurrences
-          } : null
-        });
-
-        // Send Teams announcement
-        try {
-          await base44.functions.invoke('sendTeamsNotification', {
-            eventId: event.id,
-            notificationType: 'announcement'
-          });
-        } catch (error) {
-          console.error('Failed to send Teams notification:', error);
-        }
-
-        return event;
-      };
-
-      if (recurrenceSettings.enabled) {
-        const baseDate = new Date(data.scheduled_date);
-        const occurrences = recurrenceSettings.occurrences || 4;
-
-        for (let i = 0; i < occurrences; i++) {
-          let nextDate;
-          switch (recurrenceSettings.frequency) {
-            case 'daily':
-              nextDate = addDays(baseDate, i);
-              break;
-            case 'weekly':
-              nextDate = addWeeks(baseDate, i);
-              break;
-            case 'biweekly':
-              nextDate = addWeeks(baseDate, i * 2);
-              break;
-            case 'monthly':
-              nextDate = addMonths(baseDate, i);
-              break;
-            default:
-              nextDate = addWeeks(baseDate, i);
-          }
-
-          const event = await createSingleEvent(
-            nextDate.toISOString(),
-            i + 1,
-            occurrences
-          );
-          events.push(event);
-        }
-      } else {
-        const event = await createSingleEvent(data.scheduled_date);
-        events.push(event);
-      }
-
-      return events;
-    },
-    onSuccess: (events) => {
-      queryClient.invalidateQueries(['events']);
-      setShowScheduleDialog(false);
-      setFormData({
-        activity_id: '',
-        title: '',
-        scheduled_date: '',
-        duration_minutes: 30,
-        max_participants: null,
-        custom_instructions: '',
-        meeting_link: '',
-        facilitator_name: '',
-        facilitator_email: ''
-      });
-      setRecurrenceSettings({
-        enabled: false,
-        frequency: 'weekly',
-        occurrences: 4
-      });
-      toast.success(
-        recurrenceSettings.enabled 
-          ? `${events.length} recurring events created! 🎉`
-          : 'Event scheduled and Teams notified! 🎉'
-      );
-    }
-  });
-
+  // Poll creation mutation
   const createPollMutation = useMutation({
     mutationFn: async (pollData) => {
       return base44.entities.TimeSlotPoll.create({
@@ -174,15 +65,6 @@ export default function Calendar() {
       toast.success('Time slot poll created! Share it with your team.');
     }
   });
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const selectedActivity = activities.find(a => a.id === formData.activity_id);
-    createEventMutation.mutate({
-      ...formData,
-      title: formData.title || selectedActivity?.title || 'Untitled Event'
-    });
-  };
 
   const upcomingEvents = filterUpcomingEvents(events);
   const pastEvents = filterPastEvents(events);
