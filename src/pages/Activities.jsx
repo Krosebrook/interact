@@ -1,36 +1,20 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
-import { useQueryClient, useMutation } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { useUserData } from '../components/hooks/useUserData';
 import { useActivities } from '../components/hooks/useActivities';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { Label } from '@/components/ui/label';
+import { useActivityFilters } from '../components/activities/useActivityFilters';
 import ActivityCard from '../components/activities/ActivityCard';
 import ActivityGenerator from '../components/ai/ActivityGenerator';
 import AIActivityPlanner from '../components/ai/AIActivityPlanner';
 import AIActivitySuggester from '../components/activities/AIActivitySuggester';
 import ModuleBuilder from '../components/activities/ModuleBuilder';
-import SkillTagger from '../components/skills/SkillTagger';
+import ActivitiesHeader from '../components/activities/ActivitiesHeader';
+import ActivitiesFilters from '../components/activities/ActivitiesFilters';
+import ActivityDetailDialog from '../components/activities/ActivityDetailDialog';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import EmptyState from '../components/common/EmptyState';
 import SkeletonGrid from '../components/common/SkeletonGrid';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
-import { 
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Search, Filter, Plus, Brain, GraduationCap, SortAsc, X, Clock, Zap } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '../utils';
