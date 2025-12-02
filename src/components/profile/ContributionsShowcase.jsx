@@ -1,7 +1,7 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Card } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
@@ -11,7 +11,9 @@ import {
   MessageSquare,
   Calendar,
   Heart,
-  Award
+  Award,
+  Gift,
+  TrendingUp
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { format } from 'date-fns';
@@ -43,48 +45,118 @@ export default function ContributionsShowcase({ userEmail }) {
     queryFn: () => base44.entities.Badge.list()
   });
 
+  const { data: recognitionsSent = [] } = useQuery({
+    queryKey: ['recognitions-sent', userEmail],
+    queryFn: () => base44.entities.Recognition.filter({ sender_email: userEmail }),
+    enabled: !!userEmail
+  });
+
+  const { data: recognitionsReceived = [] } = useQuery({
+    queryKey: ['recognitions-received', userEmail],
+    queryFn: () => base44.entities.Recognition.filter({ recipient_email: userEmail }),
+    enabled: !!userEmail
+  });
+
   const earnedBadges = badges.filter(b => userPoints?.badges_earned?.includes(b.id));
   const completedActivities = participations.filter(p => p.activity_completed);
   const feedbackSubmitted = participations.filter(p => p.feedback_submitted);
+  const eventsAttended = participations.filter(p => p.attended);
 
   const stats = [
-    { label: 'Photos Shared', value: media.length, icon: Camera, color: 'text-pink-600' },
-    { label: 'Activities Completed', value: completedActivities.length, icon: Trophy, color: 'text-amber-600' },
-    { label: 'Feedback Given', value: feedbackSubmitted.length, icon: MessageSquare, color: 'text-blue-600' },
-    { label: 'Badges Earned', value: earnedBadges.length, icon: Award, color: 'text-purple-600' },
+    { label: 'Events Attended', value: eventsAttended.length, icon: Calendar, color: 'text-blue-600', bg: 'bg-blue-50' },
+    { label: 'Badges Earned', value: earnedBadges.length, icon: Award, color: 'text-amber-600', bg: 'bg-amber-50' },
+    { label: 'Recognitions Given', value: recognitionsSent.length, icon: Gift, color: 'text-pink-600', bg: 'bg-pink-50' },
+    { label: 'Recognitions Received', value: recognitionsReceived.length, icon: Heart, color: 'text-red-500', bg: 'bg-red-50' },
+    { label: 'Feedback Given', value: feedbackSubmitted.length, icon: MessageSquare, color: 'text-purple-600', bg: 'bg-purple-50' },
+    { label: 'Photos Shared', value: media.length, icon: Camera, color: 'text-indigo-600', bg: 'bg-indigo-50' },
   ];
 
   return (
-    <Card className="border-0 shadow-lg overflow-hidden">
-      <div className="p-6">
-        <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
-          <Trophy className="h-5 w-5 text-amber-500" />
-          Contributions & Achievements
-        </h3>
+    <div className="space-y-6">
+      {/* Stats Overview Card */}
+      <Card className="border-0 shadow-lg overflow-hidden">
+        <CardHeader className="bg-gradient-to-r from-int-navy to-purple-700 text-white">
+          <CardTitle className="flex items-center gap-2">
+            <TrendingUp className="h-5 w-5" />
+            Contributions Overview
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="pt-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            {stats.map((stat, idx) => (
+              <motion.div
+                key={stat.label}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: idx * 0.05 }}
+                className={`text-center p-4 ${stat.bg} rounded-xl`}
+              >
+                <stat.icon className={`h-6 w-6 mx-auto mb-2 ${stat.color}`} />
+                <p className="text-2xl font-bold text-slate-900">{stat.value}</p>
+                <p className="text-xs text-slate-600">{stat.label}</p>
+              </motion.div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          {stats.map((stat, idx) => (
-            <motion.div
-              key={stat.label}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: idx * 0.1 }}
-              className="text-center p-4 bg-slate-50 rounded-xl"
-            >
-              <stat.icon className={`h-6 w-6 mx-auto mb-2 ${stat.color}`} />
-              <p className="text-2xl font-bold text-slate-900">{stat.value}</p>
-              <p className="text-xs text-slate-500">{stat.label}</p>
-            </motion.div>
-          ))}
-        </div>
+      {/* Detailed Tabs */}
+      <Card className="border-0 shadow-lg overflow-hidden">
+        <div className="p-6">
 
-        <Tabs defaultValue="badges" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-4">
+        <Tabs defaultValue="recognition" className="w-full">
+          <TabsList className="grid w-full grid-cols-4 mb-4">
+            <TabsTrigger value="recognition">Recognition</TabsTrigger>
             <TabsTrigger value="badges">Badges</TabsTrigger>
             <TabsTrigger value="media">Media</TabsTrigger>
             <TabsTrigger value="activity">Activity</TabsTrigger>
           </TabsList>
+
+          {/* Recognition */}
+          <TabsContent value="recognition">
+            {recognitionsReceived.length === 0 ? (
+              <div className="text-center py-8 text-slate-500">
+                <Heart className="h-12 w-12 mx-auto mb-2 text-slate-300" />
+                <p>No recognitions received yet</p>
+                <p className="text-sm">Keep contributing and colleagues will recognize you!</p>
+              </div>
+            ) : (
+              <div className="space-y-3 max-h-80 overflow-y-auto">
+                {recognitionsReceived.slice(0, 10).map((rec, idx) => (
+                  <motion.div
+                    key={rec.id}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: idx * 0.05 }}
+                    className="p-4 bg-gradient-to-r from-pink-50 to-rose-50 rounded-xl border border-pink-100"
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className="w-10 h-10 rounded-full bg-pink-100 flex items-center justify-center flex-shrink-0">
+                        <Gift className="h-5 w-5 text-pink-600" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-slate-900 text-sm">From {rec.sender_name}</p>
+                        <p className="text-slate-600 text-sm mt-1">{rec.message}</p>
+                        <div className="flex items-center gap-2 mt-2">
+                          <Badge variant="outline" className="text-xs capitalize bg-white">
+                            {rec.category?.replace('_', ' ')}
+                          </Badge>
+                          {rec.points_awarded > 0 && (
+                            <Badge className="text-xs bg-amber-100 text-amber-700">
+                              +{rec.points_awarded} pts
+                            </Badge>
+                          )}
+                          <span className="text-xs text-slate-400 ml-auto">
+                            {format(new Date(rec.created_date), 'MMM d')}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            )}
+          </TabsContent>
 
           {/* Badges */}
           <TabsContent value="badges">
@@ -214,7 +286,8 @@ export default function ContributionsShowcase({ userEmail }) {
             )}
           </TabsContent>
         </Tabs>
-      </div>
-    </Card>
+        </div>
+      </Card>
+    </div>
   );
 }
