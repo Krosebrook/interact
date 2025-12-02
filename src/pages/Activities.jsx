@@ -14,7 +14,9 @@ import ActivityDetailDialog from '../components/activities/ActivityDetailDialog'
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import EmptyState from '../components/common/EmptyState';
 import SkeletonGrid from '../components/common/SkeletonGrid';
-import { Search } from 'lucide-react';
+import PageHeader, { SectionHeader } from '../components/common/PageHeader';
+import { Search, Sparkles, Plus } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '../utils';
@@ -96,7 +98,17 @@ export default function Activities() {
         <EmptyState
           icon={Search}
           title="No activities found"
-          description="Try adjusting your filters or search query"
+          description="We couldn't find any activities matching your criteria."
+          actionLabel="Clear Filters"
+          onAction={clearFilters}
+          secondaryActionLabel="Create Activity"
+          onSecondaryAction={() => setShowGenerator(true)}
+          tips={[
+            "Try using fewer or different keywords",
+            "Remove some filters to see more results",
+            "Create a custom activity with AI assistance"
+          ]}
+          type="navy"
         />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

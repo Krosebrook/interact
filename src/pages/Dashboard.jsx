@@ -113,9 +113,17 @@ export default function Dashboard() {
           <EmptyState
             icon={Calendar}
             title="No upcoming events"
-            description="Get started by scheduling your first activity"
+            description="Your calendar is clear! Get started by scheduling your first team activity."
             actionLabel="Schedule Event"
             onAction={() => navigate(createPageUrl('Calendar'))}
+            secondaryActionLabel="Browse Activities"
+            onSecondaryAction={() => navigate(createPageUrl('Activities'))}
+            tips={[
+              "Browse our activity library for ideas",
+              "Try a quick 15-minute icebreaker to start",
+              "Consider scheduling a recurring weekly event"
+            ]}
+            type="navy"
           />
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

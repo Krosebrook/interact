@@ -58,9 +58,14 @@ export default function Leaderboard({ currentUserEmail, onViewProfile }) {
               <Loader2 className="h-8 w-8 animate-spin text-int-orange" />
             </div>
           ) : rankings.length === 0 ? (
-            <div className="text-center py-12 text-slate-500">
-              <Trophy className="h-12 w-12 mx-auto mb-3 text-slate-300" />
-              <p>No rankings yet for this category</p>
+            <div className="text-center py-12 px-6">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-amber-50 flex items-center justify-center">
+                <Trophy className="h-8 w-8 text-amber-400" />
+              </div>
+              <h3 className="text-lg font-bold text-int-navy mb-2">No rankings yet</h3>
+              <p className="text-sm text-slate-500 max-w-xs mx-auto">
+                Be the first to earn points and appear on the leaderboard! Participate in events and activities.
+              </p>
             </div>
           ) : (
             <ScrollArea className="h-[500px] pr-4">

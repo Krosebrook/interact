@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import LoadingSpinner from '../components/common/LoadingSpinner';
+import EmptyState from '../components/common/EmptyState';
 import RecognitionForm from '../components/recognition/RecognitionForm';
 import RecognitionCard from '../components/recognition/RecognitionCard';
 import ModerationQueue from '../components/moderation/ModerationQueue';
@@ -236,15 +237,14 @@ export default function RecognitionPage() {
           {loadingRecognitions ? (
             <LoadingSpinner />
           ) : recognitions.length === 0 ? (
-            <Card className="p-8 text-center">
-              <Heart className="h-12 w-12 text-slate-300 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold mb-2">No recognitions yet</h3>
-              <p className="text-slate-500 mb-4">Be the first to recognize a teammate!</p>
-              <Button onClick={() => setShowForm(true)} className="bg-int-orange hover:bg-[#C46322]">
-                <Send className="h-4 w-4 mr-2" />
-                Give Recognition
-              </Button>
-            </Card>
+            <EmptyState
+              icon={Heart}
+              title="No recognitions yet"
+              description="Be the first to spread some positivity! Recognize a teammate for their great work."
+              actionLabel="Give Recognition"
+              onAction={() => setShowForm(true)}
+              type="orange"
+            />
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               {recognitions.map(recognition => (
@@ -263,11 +263,15 @@ export default function RecognitionPage() {
 
         <TabsContent value="received" className="space-y-4 mt-4">
           {myRecognitions.length === 0 ? (
-            <Card className="p-8 text-center">
-              <Award className="h-12 w-12 text-slate-300 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold mb-2">No recognitions received yet</h3>
-              <p className="text-slate-500">Keep up the great work and they'll come!</p>
-            </Card>
+            <EmptyState
+              icon={Award}
+              title="No recognitions received yet"
+              description="Keep up the great work and they'll come! In the meantime, why not recognize a teammate?"
+              actionLabel="Give Recognition"
+              onAction={() => setShowForm(true)}
+              type="default"
+              compact
+            />
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               {myRecognitions.map(recognition => (
@@ -284,15 +288,15 @@ export default function RecognitionPage() {
 
         <TabsContent value="sent" className="space-y-4 mt-4">
           {sentRecognitions.length === 0 ? (
-            <Card className="p-8 text-center">
-              <Send className="h-12 w-12 text-slate-300 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold mb-2">You haven't sent any recognitions yet</h3>
-              <p className="text-slate-500 mb-4">Spread some positivity!</p>
-              <Button onClick={() => setShowForm(true)} className="bg-int-orange hover:bg-[#C46322]">
-                <Send className="h-4 w-4 mr-2" />
-                Give Recognition
-              </Button>
-            </Card>
+            <EmptyState
+              icon={Send}
+              title="You haven't sent any recognitions yet"
+              description="Spread some positivity! Recognize a teammate for their great work."
+              actionLabel="Give Recognition"
+              onAction={() => setShowForm(true)}
+              type="default"
+              compact
+            />
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               {sentRecognitions.map(recognition => (
