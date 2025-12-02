@@ -1,6 +1,9 @@
 /**
  * CENTRALIZED UTILITY FUNCTIONS
  * Pure functions for data transformation and calculations
+ * 
+ * NOTE: Event-specific utilities are in components/utils/eventUtils.js
+ * This file contains general-purpose utilities used across the app.
  */
 
 import { ENGAGEMENT_WEIGHTS, LEVEL_THRESHOLDS } from './constants';
@@ -119,68 +122,18 @@ export function getPercentile(rank, total) {
 }
 
 // ============================================================================
-// EVENT UTILITIES
+// EVENT UTILITIES (DEPRECATED - Use components/utils/eventUtils.js instead)
+// These are kept for backward compatibility but should be migrated
 // ============================================================================
 
-export function filterUpcomingEvents(events, limit = 100) {
-  if (!events) return [];
-  const now = new Date();
-  
-  return events
-    .filter(e => new Date(e.scheduled_date) >= now && e.status === 'scheduled')
-    .sort((a, b) => new Date(a.scheduled_date) - new Date(b.scheduled_date))
-    .slice(0, limit);
-}
-
-export function filterPastEvents(events, limit = 100) {
-  if (!events) return [];
-  const now = new Date();
-  
-  return events
-    .filter(e => new Date(e.scheduled_date) < now || e.status === 'completed')
-    .sort((a, b) => new Date(b.scheduled_date) - new Date(a.scheduled_date))
-    .slice(0, limit);
-}
-
-export function getActivityForEvent(event, activities) {
-  if (!event || !activities) return null;
-  return activities.find(a => a.id === event.activity_id);
-}
-
-export function getParticipationStats(eventId, participations) {
-  const eventParticipations = participations?.filter(p => p.event_id === eventId) || [];
-  
-  return {
-    total: eventParticipations.length,
-    confirmed: eventParticipations.filter(p => p.rsvp_status === 'yes').length,
-    attended: eventParticipations.filter(p => p.attended).length,
-    maybe: eventParticipations.filter(p => p.rsvp_status === 'maybe').length
-  };
-}
-
-export function calculateDashboardStats(events, activities, participations) {
-  const now = new Date();
-  const thisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-  
-  const upcomingEvents = events?.filter(e => 
-    new Date(e.scheduled_date) >= now && e.status === 'scheduled'
-  ) || [];
-  
-  const completedThisMonth = events?.filter(e =>
-    e.status === 'completed' && new Date(e.scheduled_date) >= thisMonth
-  ).length || 0;
-  
-  const avgParticipation = participations?.length && events?.length
-    ? Math.round(participations.length / events.length)
-    : 0;
-  
-  return {
-    upcomingCount: upcomingEvents.length,
-    activitiesCount: activities?.length || 0,
-    completedThisMonth,
-    avgParticipation
-  };
-}
+// Re-export from eventUtils for backward compatibility
+export { 
+  filterUpcomingEvents, 
+  filterPastEvents, 
+  getActivityForEvent, 
+  getParticipationStats,
+  calculateDashboardStats 
+} from '../utils/eventUtils';
 
 // ============================================================================
 // STRING UTILITIES
