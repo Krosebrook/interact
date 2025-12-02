@@ -502,7 +502,26 @@ export default function GamificationDashboard() {
 
         {/* Challenges Tab */}
         <TabsContent value="challenges" className="mt-6">
-          <ChallengesSection userEmail={user?.email} />
+          <div className="space-y-8">
+            {/* Personal Challenges */}
+            <PersonalChallengesSection userEmail={user?.email} />
+            
+            {/* Team Challenges */}
+            <ChallengesSection userEmail={user?.email} />
+          </div>
+        </TabsContent>
+
+        {/* Tiers Tab */}
+        <TabsContent value="tiers" className="mt-6">
+          <AchievementTiersSection 
+            userEmail={user?.email} 
+            userPoints={currentUserPoints}
+          />
+        </TabsContent>
+
+        {/* Social Tab */}
+        <TabsContent value="social" className="mt-6">
+          <SocialFeedSection userEmail={user?.email} limit={20} />
         </TabsContent>
 
         {/* Rewards Tab */}
