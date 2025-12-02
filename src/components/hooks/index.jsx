@@ -1,6 +1,8 @@
 /**
  * HOOKS BARREL EXPORT
  * Centralized export for all custom hooks
+ * Version: 4.0.0
+ * Last Updated: 2025-12-02
  * 
  * Organization:
  * - Authentication & User: User state, auth, permissions
@@ -44,3 +46,8 @@ export { useModerationActions } from '../moderation/hooks/useModerationActions';
 export { useAvatarCustomization } from '../store/hooks/useAvatarCustomization';
 export { useActivityFilters } from '../activities/useActivityFilters';
 export { useTeamsNotification, useSendAnnouncement, useSendReminder, useSendRecap } from './useTeamsNotification';
+
+// ============================================================================
+// ANALYTICS HOOKS
+// ============================================================================
+export { useAnalyticsData } from '../analytics/useAnalyticsData';

@@ -1,50 +1,23 @@
 /**
- * LIB BARREL EXPORT
- * Centralized export for core library modules
+ * LIBRARY BARREL EXPORT
+ * Centralized exports for all core utilities
+ * Version: 4.0.0
  */
 
-// Configuration
-export { APP_CONFIG, FEATURE_FLAGS, API_CONFIG, AUTH_CONFIG } from './config';
+// API Layer
+export * from './api';
 
 // Constants
-export { 
-  POINTS_CONFIG, 
-  LEVEL_THRESHOLDS, 
-  BADGE_RARITIES,
-  EVENT_TYPES,
-  EVENT_STATUSES,
-  ACTIVITY_TYPES,
-  RECOGNITION_CATEGORIES,
-  BRAND_COLORS
-} from './constants';
-
-// API Layer
-export { 
-  fetchEntityList, 
-  fetchEntityById, 
-  createEntity, 
-  updateEntity, 
-  deleteEntity,
-  bulkCreateEntities,
-  getEntitySchema,
-  invokeFunction,
-  backendFunctions,
-  integrations
-} from './api';
-
-// Query Keys & Cache
-export { queryKeys, invalidationGroups } from './queryKeys';
-export { cachePresets, getCacheConfig, CACHE_TIMES } from './cacheConfig';
+export * from './constants';
 
 // Utilities
-export { 
-  formatDate, 
-  formatTime,
-  formatDateTime,
-  formatRelativeTime,
-  formatNumber,
-  formatCurrency,
-  formatPercentage,
-  calculateEngagementScore,
-  getUserLevel
-} from './utils';
+export * from './utils';
+
+// Query Keys
+export { queryKeys } from './queryKeys';
+
+// Cache Config
+export { cachePresets, CACHE_TIMES } from './cacheConfig';
+
+// Config
+export { config, featureFlags } from './config';

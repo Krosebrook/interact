@@ -1,278 +1,429 @@
 /**
- * CENTRALIZED UTILITY FUNCTIONS
- * Pure functions for data transformation and calculations
- * 
- * Organization:
- * - Date utilities: Formatting, relative time, comparisons
- * - Gamification utilities: Levels, points, engagement scores
- * - String utilities: Formatting, truncation, initials
- * - Number utilities: Formatting numbers, currency, percentages
- * - Array utilities: Grouping, sorting, deduplication
- * - Validation utilities: Email, required fields
- * 
- * NOTE: Event-specific utilities are in components/utils/eventUtils.js
+ * CENTRALIZED UTILITIES
+ * Pure utility functions for all domains
+ * Version: 4.0.0
+ * Last Updated: 2025-12-02
  */
 
-import { ENGAGEMENT_WEIGHTS, LEVEL_THRESHOLDS } from './constants';
+import { format, formatDistanceToNow, isAfter, isBefore, isToday, isTomorrow, addDays, subDays, differenceInDays, startOfWeek, endOfWeek, startOfMonth, endOfMonth, parseISO } from 'date-fns';
 
 // ============================================================================
 // DATE UTILITIES
 // ============================================================================
 
-/**
- * Format a date string with various format options
- * @param {string|Date} dateString - Date to format
- * @param {string} format - Format type: 'short', 'medium', 'full', 'time', 'datetime', 'relative'
- */
-export function formatDate(dateString, format = 'short') {
-  if (!dateString) return '';
-  const date = new Date(dateString);
-  
-  switch (format) {
-    case 'full':
-      return date.toLocaleDateString('en-US', {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-      });
-    case 'medium':
-      return date.toLocaleDateString('en-US', {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric'
-      });
-    case 'time':
-      return date.toLocaleTimeString('en-US', {
-        hour: '2-digit',
-        minute: '2-digit'
-      });
-    case 'datetime':
-      return `${formatDate(dateString, 'medium')} at ${formatDate(dateString, 'time')}`;
-    case 'relative':
-      return getRelativeTime(date);
-    default:
-      return date.toLocaleDateString();
-  }
-}
+export const formatDate = (date, formatStr = 'MMM dd, yyyy') => {
+  if (!date) return '';
+  const d = typeof date === 'string' ? parseISO(date) : date;
+  return format(d, formatStr);
+};
 
-// Aliases for clearer imports
-export const formatTime = (dateString) => formatDate(dateString, 'time');
-export const formatDateTime = (dateString) => formatDate(dateString, 'datetime');
-export const formatRelativeTime = (dateString) => formatDate(dateString, 'relative');
+export const formatDateTime = (date) => formatDate(date, 'MMM dd, yyyy h:mm a');
 
-export function getRelativeTime(date) {
+export const formatTime = (date) => formatDate(date, 'h:mm a');
+
+export const getRelativeTime = (date) => {
+  if (!date) return '';
+  const d = typeof date === 'string' ? parseISO(date) : date;
+  return formatDistanceToNow(d, { addSuffix: true });
+};
+
+export const isUpcoming = (date) => {
+  if (!date) return false;
+  const d = typeof date === 'string' ? parseISO(date) : date;
+  return isAfter(d, new Date());
+};
+
+export const isPast = (date) => {
+  if (!date) return false;
+  const d = typeof date === 'string' ? parseISO(date) : date;
+  return isBefore(d, new Date());
+};
+
+export const isTodayDate = (date) => {
+  if (!date) return false;
+  const d = typeof date === 'string' ? parseISO(date) : date;
+  return isToday(d);
+};
+
+export const isTomorrowDate = (date) => {
+  if (!date) return false;
+  const d = typeof date === 'string' ? parseISO(date) : date;
+  return isTomorrow(d);
+};
+
+export const getDateRange = (period) => {
   const now = new Date();
-  const diff = now - new Date(date);
-  const seconds = Math.floor(diff / 1000);
-  const minutes = Math.floor(seconds / 60);
-  const hours = Math.floor(minutes / 60);
-  const days = Math.floor(hours / 24);
+  switch (period) {
+    case 'today': return { start: now, end: now };
+    case 'week': return { start: startOfWeek(now), end: endOfWeek(now) };
+    case 'month': return { start: startOfMonth(now), end: endOfMonth(now) };
+    case '7days': return { start: subDays(now, 7), end: now };
+    case '30days': return { start: subDays(now, 30), end: now };
+    case '90days': return { start: subDays(now, 90), end: now };
+    default: return { start: null, end: null };
+  }
+};
 
-  if (seconds < 60) return 'Just now';
-  if (minutes < 60) return `${minutes}m ago`;
-  if (hours < 24) return `${hours}h ago`;
-  if (days < 7) return `${days}d ago`;
-  return formatDate(date, 'medium');
-}
-
-export function isToday(dateString) {
-  const date = new Date(dateString);
-  const today = new Date();
-  return date.toDateString() === today.toDateString();
-}
-
-export function isUpcoming(dateString) {
-  return new Date(dateString) > new Date();
-}
-
-export function isPast(dateString) {
-  return new Date(dateString) < new Date();
-}
+export const getDaysSince = (date) => {
+  if (!date) return null;
+  const d = typeof date === 'string' ? parseISO(date) : date;
+  return differenceInDays(new Date(), d);
+};
 
 // ============================================================================
 // GAMIFICATION UTILITIES
 // ============================================================================
 
-/**
- * Calculate user level from total points
- */
-export function calculateLevel(totalPoints) {
-  return Math.floor((totalPoints || 0) / LEVEL_THRESHOLDS.pointsPerLevel) + 1;
-}
+export const calculateLevel = (points, pointsPerLevel = 100) => {
+  return Math.floor(points / pointsPerLevel) + 1;
+};
 
-/**
- * Get user level info including title
- */
-export function getUserLevel(totalPoints) {
-  const level = calculateLevel(totalPoints);
-  return {
-    level,
-    title: getLevelTitle(level),
-    progress: getLevelProgress(totalPoints),
-    pointsToNext: getPointsToNextLevel(totalPoints)
+export const calculateXPProgress = (points, pointsPerLevel = 100) => {
+  const currentLevelPoints = points % pointsPerLevel;
+  return (currentLevelPoints / pointsPerLevel) * 100;
+};
+
+export const getXPToNextLevel = (points, pointsPerLevel = 100) => {
+  return pointsPerLevel - (points % pointsPerLevel);
+};
+
+export const getLevelTitle = (level) => {
+  const titles = {
+    1: 'Newcomer', 2: 'Explorer', 3: 'Contributor', 4: 'Connector',
+    5: 'Champion', 10: 'Ambassador', 15: 'Legend', 20: 'Icon'
   };
-}
-
-export function getPointsToNextLevel(totalPoints) {
-  const currentLevel = calculateLevel(totalPoints);
-  const pointsForNextLevel = currentLevel * LEVEL_THRESHOLDS.pointsPerLevel;
-  return pointsForNextLevel - (totalPoints || 0);
-}
-
-export function getLevelProgress(totalPoints) {
-  const pointsInLevel = (totalPoints || 0) % LEVEL_THRESHOLDS.pointsPerLevel;
-  return (pointsInLevel / LEVEL_THRESHOLDS.pointsPerLevel) * 100;
-}
-
-export function getLevelTitle(level) {
-  const titles = LEVEL_THRESHOLDS.titles;
-  const sortedLevels = Object.keys(titles).map(Number).sort((a, b) => b - a);
-  
-  for (const threshold of sortedLevels) {
-    if (level >= threshold) {
-      return titles[threshold];
-    }
+  const keys = Object.keys(titles).map(Number).sort((a, b) => b - a);
+  for (const key of keys) {
+    if (level >= key) return titles[key];
   }
-  return titles[1];
-}
+  return 'Newcomer';
+};
 
-export function calculateEngagementScore(userPoints) {
-  if (!userPoints) return 0;
+export const calculateEngagementScore = (userPoints, weights = {}) => {
+  const defaultWeights = {
+    events_attended: 10,
+    activities_completed: 15,
+    feedback_submitted: 5,
+    streak_days: 2,
+    badges_earned: 20
+  };
+  const w = { ...defaultWeights, ...weights };
   
   return (
-    (userPoints.events_attended || 0) * ENGAGEMENT_WEIGHTS.events_attended +
-    (userPoints.activities_completed || 0) * ENGAGEMENT_WEIGHTS.activities_completed +
-    (userPoints.feedback_submitted || 0) * ENGAGEMENT_WEIGHTS.feedback_submitted +
-    (userPoints.streak_days || 0) * ENGAGEMENT_WEIGHTS.streak_days +
-    (userPoints.badges_earned?.length || 0) * ENGAGEMENT_WEIGHTS.badges_earned
+    (userPoints.events_attended || 0) * w.events_attended +
+    (userPoints.activities_completed || 0) * w.activities_completed +
+    (userPoints.feedback_submitted || 0) * w.feedback_submitted +
+    (userPoints.streak_days || 0) * w.streak_days +
+    ((userPoints.badges_earned || []).length) * w.badges_earned
   );
-}
+};
 
-export function getPercentile(rank, total) {
-  if (!total || !rank) return 0;
-  return Math.round(((total - rank + 1) / total) * 100);
-}
+export const getPercentile = (rank, total) => {
+  if (total === 0) return 0;
+  return Math.round((1 - (rank - 1) / total) * 100);
+};
+
+export const getRankChange = (currentRank, previousRank) => {
+  if (!previousRank) return 0;
+  return previousRank - currentRank;
+};
+
+export const getTierForPoints = (lifetimePoints, tiers) => {
+  if (!tiers || tiers.length === 0) return null;
+  return tiers
+    .filter(t => lifetimePoints >= t.points_required)
+    .sort((a, b) => b.tier_level - a.tier_level)[0] || null;
+};
+
+export const getNextTier = (lifetimePoints, tiers) => {
+  if (!tiers || tiers.length === 0) return null;
+  return tiers
+    .filter(t => lifetimePoints < t.points_required)
+    .sort((a, b) => a.tier_level - b.tier_level)[0] || null;
+};
+
+export const getTierProgress = (lifetimePoints, currentTier, nextTier) => {
+  if (!nextTier) return 100;
+  const currentThreshold = currentTier?.points_required || 0;
+  const nextThreshold = nextTier.points_required;
+  const progress = ((lifetimePoints - currentThreshold) / (nextThreshold - currentThreshold)) * 100;
+  return Math.min(100, Math.max(0, progress));
+};
 
 // ============================================================================
-// EVENT UTILITIES (DEPRECATED - Use components/utils/eventUtils.js instead)
-// These are kept for backward compatibility but should be migrated
+// EVENT UTILITIES
 // ============================================================================
 
-// Re-export from eventUtils for backward compatibility
-export { 
-  filterUpcomingEvents, 
-  filterPastEvents, 
-  getActivityForEvent, 
-  getParticipationStats,
-  calculateDashboardStats 
-} from '../utils/eventUtils';
+export const filterUpcomingEvents = (events) => {
+  const now = new Date();
+  return events.filter(e => 
+    e.status === 'scheduled' && 
+    e.scheduled_date && 
+    isAfter(parseISO(e.scheduled_date), now)
+  ).sort((a, b) => new Date(a.scheduled_date) - new Date(b.scheduled_date));
+};
+
+export const filterPastEvents = (events) => {
+  const now = new Date();
+  return events.filter(e => 
+    (e.status === 'completed' || (e.scheduled_date && isBefore(parseISO(e.scheduled_date), now)))
+  ).sort((a, b) => new Date(b.scheduled_date) - new Date(a.scheduled_date));
+};
+
+export const filterTodayEvents = (events) => {
+  return events.filter(e => e.scheduled_date && isTodayDate(e.scheduled_date));
+};
+
+export const filterThisWeekEvents = (events) => {
+  const { start, end } = getDateRange('week');
+  return events.filter(e => {
+    if (!e.scheduled_date) return false;
+    const d = parseISO(e.scheduled_date);
+    return isAfter(d, start) && isBefore(d, end);
+  });
+};
+
+export const getEventActivity = (event, activities) => {
+  if (!event?.activity_id || !activities) return null;
+  return activities.find(a => a.id === event.activity_id);
+};
+
+export const getParticipationStats = (eventId, participations) => {
+  const eventParticipations = participations.filter(p => p.event_id === eventId);
+  const attended = eventParticipations.filter(p => p.attended);
+  const avgEngagement = attended.length > 0
+    ? attended.reduce((sum, p) => sum + (p.engagement_score || 0), 0) / attended.length
+    : 0;
+  
+  return {
+    total: eventParticipations.length,
+    attended: attended.length,
+    attendanceRate: eventParticipations.length > 0 
+      ? (attended.length / eventParticipations.length * 100).toFixed(0)
+      : 0,
+    avgEngagement: avgEngagement.toFixed(1)
+  };
+};
+
+export const generateMagicLink = () => {
+  return `event_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+};
+
+export const generateSeriesId = () => {
+  return `series_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+};
 
 // ============================================================================
 // STRING UTILITIES
 // ============================================================================
 
-export function truncate(str, maxLength = 100) {
-  if (!str || str.length <= maxLength) return str;
-  return str.slice(0, maxLength) + '...';
-}
-
-export function capitalize(str) {
+export const truncate = (str, length = 100, suffix = '...') => {
   if (!str) return '';
-  return str.charAt(0).toUpperCase() + str.slice(1);
-}
+  if (str.length <= length) return str;
+  return str.substring(0, length - suffix.length) + suffix;
+};
 
-export function getInitials(name) {
-  if (!name) return '?';
+export const capitalize = (str) => {
+  if (!str) return '';
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+};
+
+export const capitalizeWords = (str) => {
+  if (!str) return '';
+  return str.split(' ').map(capitalize).join(' ');
+};
+
+export const getInitials = (name, maxLength = 2) => {
+  if (!name) return '';
   return name
     .split(' ')
-    .map(part => part.charAt(0))
+    .map(word => word[0])
     .join('')
     .toUpperCase()
-    .slice(0, 2);
-}
+    .substring(0, maxLength);
+};
 
-export function slugify(str) {
+export const slugify = (str) => {
+  if (!str) return '';
   return str
     .toLowerCase()
     .replace(/[^\w\s-]/g, '')
-    .replace(/\s+/g, '-');
-}
+    .replace(/[\s_-]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+};
+
+export const pluralize = (count, singular, plural) => {
+  return count === 1 ? singular : (plural || `${singular}s`);
+};
 
 // ============================================================================
 // NUMBER UTILITIES
 // ============================================================================
 
-export function formatNumber(num) {
-  if (num === null || num === undefined) return '0';
+export const formatNumber = (num, options = {}) => {
+  if (num === null || num === undefined) return '';
+  return new Intl.NumberFormat('en-US', options).format(num);
+};
+
+export const formatCompact = (num) => {
   if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
   if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
   return num.toString();
-}
+};
 
-export function formatCurrency(cents) {
-  return `$${(cents / 100).toFixed(2)}`;
-}
+export const formatCurrency = (amount, currency = 'USD') => {
+  return new Intl.NumberFormat('en-US', { style: 'currency', currency }).format(amount);
+};
 
-export function formatPercentage(value, decimals = 0) {
-  return `${(value || 0).toFixed(decimals)}%`;
-}
+export const formatPercent = (value, decimals = 0) => {
+  if (value === null || value === undefined) return '';
+  return `${value.toFixed(decimals)}%`;
+};
+
+export const clamp = (value, min, max) => {
+  return Math.min(Math.max(value, min), max);
+};
 
 // ============================================================================
 // ARRAY UTILITIES
 // ============================================================================
 
-export function groupBy(array, key) {
+export const groupBy = (array, key) => {
   return array.reduce((groups, item) => {
-    const groupKey = typeof key === 'function' ? key(item) : item[key];
-    groups[groupKey] = groups[groupKey] || [];
-    groups[groupKey].push(item);
+    const value = typeof key === 'function' ? key(item) : item[key];
+    (groups[value] = groups[value] || []).push(item);
     return groups;
   }, {});
-}
+};
 
-export function sortBy(array, key, direction = 'asc') {
+export const sortBy = (array, key, direction = 'asc') => {
   return [...array].sort((a, b) => {
     const aVal = typeof key === 'function' ? key(a) : a[key];
     const bVal = typeof key === 'function' ? key(b) : b[key];
-    
-    if (direction === 'asc') {
-      return aVal > bVal ? 1 : -1;
-    }
-    return aVal < bVal ? 1 : -1;
+    if (aVal < bVal) return direction === 'asc' ? -1 : 1;
+    if (aVal > bVal) return direction === 'asc' ? 1 : -1;
+    return 0;
   });
-}
+};
 
-export function uniqueBy(array, key) {
+export const uniqueBy = (array, key) => {
   const seen = new Set();
   return array.filter(item => {
-    const val = typeof key === 'function' ? key(item) : item[key];
-    if (seen.has(val)) return false;
-    seen.add(val);
+    const value = typeof key === 'function' ? key(item) : item[key];
+    if (seen.has(value)) return false;
+    seen.add(value);
     return true;
   });
-}
+};
+
+export const chunk = (array, size) => {
+  const chunks = [];
+  for (let i = 0; i < array.length; i += size) {
+    chunks.push(array.slice(i, i + size));
+  }
+  return chunks;
+};
+
+export const shuffle = (array) => {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+};
 
 // ============================================================================
 // VALIDATION UTILITIES
 // ============================================================================
 
-export function isValidEmail(email) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-}
+export const isValidEmail = (email) => {
+  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return re.test(email);
+};
 
-export function isNotEmpty(value) {
-  if (value === null || value === undefined) return false;
-  if (typeof value === 'string') return value.trim().length > 0;
-  if (Array.isArray(value)) return value.length > 0;
-  if (typeof value === 'object') return Object.keys(value).length > 0;
-  return true;
-}
+export const validateRequired = (value, fieldName = 'Field') => {
+  if (!value || (typeof value === 'string' && !value.trim())) {
+    return `${fieldName} is required`;
+  }
+  return null;
+};
 
-export function validateRequired(fields, data) {
-  const missing = fields.filter(field => !isNotEmpty(data[field]));
-  return {
-    valid: missing.length === 0,
-    missing
+export const validateLength = (value, min, max, fieldName = 'Field') => {
+  if (!value) return null;
+  const len = value.length;
+  if (min && len < min) return `${fieldName} must be at least ${min} characters`;
+  if (max && len > max) return `${fieldName} must be at most ${max} characters`;
+  return null;
+};
+
+export const validateRange = (value, min, max, fieldName = 'Value') => {
+  if (value === null || value === undefined) return null;
+  if (min !== undefined && value < min) return `${fieldName} must be at least ${min}`;
+  if (max !== undefined && value > max) return `${fieldName} must be at most ${max}`;
+  return null;
+};
+
+// ============================================================================
+// COLOR UTILITIES
+// ============================================================================
+
+export const hexToRgba = (hex, alpha = 1) => {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  if (!result) return hex;
+  return `rgba(${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}, ${alpha})`;
+};
+
+export const getContrastColor = (hexColor) => {
+  const r = parseInt(hexColor.slice(1, 3), 16);
+  const g = parseInt(hexColor.slice(3, 5), 16);
+  const b = parseInt(hexColor.slice(5, 7), 16);
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  return luminance > 0.5 ? '#000000' : '#FFFFFF';
+};
+
+// ============================================================================
+// MISC UTILITIES
+// ============================================================================
+
+export const debounce = (fn, delay = 300) => {
+  let timeoutId;
+  return (...args) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => fn(...args), delay);
   };
-}
+};
+
+export const throttle = (fn, limit = 300) => {
+  let inThrottle;
+  return (...args) => {
+    if (!inThrottle) {
+      fn(...args);
+      inThrottle = true;
+      setTimeout(() => inThrottle = false, limit);
+    }
+  };
+};
+
+export const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+export const copyToClipboard = async (text) => {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+export const downloadFile = (content, filename, mimeType = 'text/plain') => {
+  const blob = new Blob([content], { type: mimeType });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+};

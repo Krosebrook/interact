@@ -1,6 +1,8 @@
 /**
  * CENTRALIZED CONSTANTS
  * All configuration, enums, and static data in one place
+ * Version: 4.0.0
+ * Last Updated: 2025-12-02
  */
 
 // ============================================================================
@@ -243,5 +245,158 @@ export const INTEGRATION_KEYS = {
   openai: 'OPENAI_API_KEY',
   claude: 'ANTHROPIC_API_KEY',
   gemini: 'GOOGLE_API_KEY',
-  stripe: 'STRIPE_SECRET_KEY'
+  stripe: 'STRIPE_SECRET_KEY',
+  perplexity: 'PERPLEXITY_API_KEY'
+};
+
+// ============================================================================
+// ACHIEVEMENT TIER CONSTANTS (v4.0)
+// ============================================================================
+
+export const ACHIEVEMENT_TIERS = {
+  bronze: { level: 1, points: 0, color: '#CD7F32', icon: '🥉', multiplier: 1 },
+  silver: { level: 2, points: 500, color: '#C0C0C0', icon: '🥈', multiplier: 1.1 },
+  gold: { level: 3, points: 1500, color: '#FFD700', icon: '🥇', multiplier: 1.25 },
+  platinum: { level: 4, points: 3500, color: '#00CED1', icon: '💎', multiplier: 1.4 },
+  diamond: { level: 5, points: 7500, color: '#4169E1', icon: '💠', multiplier: 1.5 },
+  master: { level: 6, points: 15000, color: '#9400D3', icon: '👑', multiplier: 1.75 },
+  grandmaster: { level: 7, points: 30000, color: '#FF4500', icon: '🌟', multiplier: 2 },
+  legend: { level: 8, points: 50000, color: '#FFD700', icon: '✨', multiplier: 2.5 }
+};
+
+// ============================================================================
+// CHALLENGE CONSTANTS (v4.0)
+// ============================================================================
+
+export const CHALLENGE_TYPES = {
+  daily: { label: 'Daily', icon: '📅', duration: 1 },
+  weekly: { label: 'Weekly', icon: '📆', duration: 7 },
+  milestone: { label: 'Milestone', icon: '🎯', duration: null },
+  streak: { label: 'Streak', icon: '🔥', duration: null },
+  social: { label: 'Social', icon: '🤝', duration: 7 },
+  skill: { label: 'Skill', icon: '📚', duration: 14 },
+  exploration: { label: 'Exploration', icon: '🗺️', duration: 30 }
+};
+
+export const CHALLENGE_DIFFICULTIES = {
+  easy: { label: 'Easy', color: 'green', multiplier: 1 },
+  medium: { label: 'Medium', color: 'amber', multiplier: 1.5 },
+  hard: { label: 'Hard', color: 'red', multiplier: 2 },
+  epic: { label: 'Epic', color: 'purple', multiplier: 3 }
+};
+
+export const CHALLENGE_METRICS = {
+  events_attended: { label: 'Events Attended', unit: 'events' },
+  feedback_submitted: { label: 'Feedback Submitted', unit: 'submissions' },
+  recognitions_given: { label: 'Recognitions Given', unit: 'recognitions' },
+  recognitions_received: { label: 'Recognitions Received', unit: 'recognitions' },
+  streak_days: { label: 'Streak Days', unit: 'days' },
+  activities_completed: { label: 'Activities Completed', unit: 'activities' },
+  team_events: { label: 'Team Events', unit: 'events' },
+  points_earned: { label: 'Points Earned', unit: 'points' },
+  badges_earned: { label: 'Badges Earned', unit: 'badges' },
+  connections_made: { label: 'Connections Made', unit: 'connections' }
+};
+
+// ============================================================================
+// SOCIAL SHARING CONSTANTS (v4.0)
+// ============================================================================
+
+export const SHARE_TYPES = {
+  badge_earned: { label: 'Badge Earned', icon: '🎖️' },
+  level_up: { label: 'Level Up', icon: '⬆️' },
+  tier_achieved: { label: 'Tier Achieved', icon: '🏆' },
+  challenge_completed: { label: 'Challenge Completed', icon: '✅' },
+  leaderboard_rank: { label: 'Leaderboard Rank', icon: '🏅' },
+  streak_milestone: { label: 'Streak Milestone', icon: '🔥' },
+  recognition_received: { label: 'Recognition Received', icon: '🎉' }
+};
+
+export const SHARE_PLATFORMS = {
+  internal: { label: 'Internal Feed', icon: '🏠' },
+  linkedin: { label: 'LinkedIn', icon: '💼' },
+  twitter: { label: 'Twitter/X', icon: '🐦' },
+  slack: { label: 'Slack', icon: '💬' },
+  teams: { label: 'Teams', icon: '👥' },
+  email: { label: 'Email', icon: '📧' }
+};
+
+export const SHARE_REACTIONS = {
+  likes: { label: 'Like', emoji: '👍' },
+  celebrates: { label: 'Celebrate', emoji: '🎉' },
+  inspired: { label: 'Inspired', emoji: '💡' }
+};
+
+// ============================================================================
+// A/B TESTING CONSTANTS (v4.0)
+// ============================================================================
+
+export const AB_TEST_ELEMENT_TYPES = {
+  badge: { label: 'Badge', icon: '🎖️' },
+  challenge: { label: 'Challenge', icon: '🎯' },
+  points_multiplier: { label: 'Points Multiplier', icon: '⚡' },
+  reward: { label: 'Reward', icon: '🎁' },
+  leaderboard: { label: 'Leaderboard', icon: '🏆' },
+  notification: { label: 'Notification', icon: '🔔' },
+  ui_element: { label: 'UI Element', icon: '🎨' }
+};
+
+export const AB_TEST_METRICS = {
+  engagement_rate: { label: 'Engagement Rate', unit: '%' },
+  completion_rate: { label: 'Completion Rate', unit: '%' },
+  points_earned: { label: 'Points Earned', unit: 'points' },
+  retention: { label: 'Retention', unit: '%' },
+  badge_claims: { label: 'Badge Claims', unit: 'claims' },
+  challenge_participation: { label: 'Challenge Participation', unit: '%' }
+};
+
+export const AB_TEST_STATUS = {
+  draft: { label: 'Draft', color: 'slate' },
+  running: { label: 'Running', color: 'green' },
+  paused: { label: 'Paused', color: 'amber' },
+  completed: { label: 'Completed', color: 'blue' },
+  archived: { label: 'Archived', color: 'slate' }
+};
+
+// ============================================================================
+// LEADERBOARD SEGMENT CONSTANTS (v4.0)
+// ============================================================================
+
+export const LEADERBOARD_SEGMENTS = {
+  new_users: { 
+    label: 'Newcomer League', 
+    icon: '🌱', 
+    description: 'Users with less than 30 days',
+    metric: 'weekly_points'
+  },
+  power_users: { 
+    label: 'Champions Arena', 
+    icon: '⚡', 
+    description: 'Top performers',
+    metric: 'total_points'
+  },
+  streak_masters: { 
+    label: 'Streak Warriors', 
+    icon: '🔥', 
+    description: 'Longest active streaks',
+    metric: 'streak_days'
+  },
+  social_stars: { 
+    label: 'Recognition Stars', 
+    icon: '💫', 
+    description: 'Most recognitions',
+    metric: 'recognitions'
+  },
+  event_enthusiasts: { 
+    label: 'Event Champions', 
+    icon: '🎯', 
+    description: 'Most active in events',
+    metric: 'events_attended'
+  }
+};
+
+export const LEADERBOARD_DISPLAY_STYLES = {
+  podium: { label: 'Podium', description: 'Top 3 showcase' },
+  list: { label: 'List', description: 'Traditional ranking list' },
+  cards: { label: 'Cards', description: 'Card-based grid' }
 };
