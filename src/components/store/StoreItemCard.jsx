@@ -104,7 +104,7 @@ export default function StoreItemCard({
 
           {/* Power-up info */}
           {item.category === 'power_up' && item.effect_config && (
-            <div className="flex items-center gap-1 text-xs text-purple-600 bg-purple-50 px-2 py-1 rounded">
+            <div className="flex items-center gap-1 text-xs text-purple-700 font-medium bg-purple-50 px-2 py-1 rounded">
               <Sparkles className="h-3 w-3" />
               {item.effect_config.type === 'points_multiplier' && `${item.effect_config.multiplier}x Points`}
               {item.effect_config.type === 'visibility_boost' && 'Visibility Boost'}
@@ -121,7 +121,7 @@ export default function StoreItemCard({
           <div className="flex items-center justify-between pt-2 border-t">
             <div className="flex flex-col gap-1">
               {item.points_cost > 0 && (
-                <div className={`flex items-center gap-1 ${canAffordPoints ? 'text-int-orange' : 'text-slate-400'}`}>
+                <div className={`flex items-center gap-1 ${canAffordPoints ? 'text-int-orange' : 'text-slate-500'}`}>
                   <Coins className="h-4 w-4" />
                   <span className="font-bold">{item.points_cost.toLocaleString()}</span>
                 </div>

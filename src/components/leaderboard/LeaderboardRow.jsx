@@ -29,7 +29,7 @@ function RankBadge({ rank }) {
   }
   
   return (
-    <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center font-bold text-slate-600">
+    <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center font-bold text-slate-700">
       {rank}
     </div>
   );

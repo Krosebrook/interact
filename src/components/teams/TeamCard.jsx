@@ -58,7 +58,7 @@ export default function TeamCard({
             <Button
               onClick={() => onJoin(team)}
               disabled={isJoining}
-              className="w-full bg-int-orange hover:bg-[#C46322] text-white"
+              className="w-full bg-int-orange hover:bg-[#C46322] text-slate-900 font-semibold"
               size="sm"
             >
               Join Team
