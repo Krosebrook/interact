@@ -84,7 +84,7 @@ export default function RoleSelection() {
             <Sparkles className="h-8 w-8 text-white" />
           </div>
           <h1 className="text-4xl font-bold text-int-navy mb-4">
-            Welcome to Team Engage, {user?.full_name?.split(' ')[0]}!
+            Welcome to INTeract, {user?.full_name?.split(' ')[0]}!
           </h1>
           <p className="text-xl text-slate-600 max-w-2xl mx-auto">
             Let's get you set up. How will you be using the platform?
