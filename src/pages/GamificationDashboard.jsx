@@ -61,6 +61,9 @@ import DashboardCustomizer from '../components/dashboard/DashboardCustomizer';
 import GamificationAnalyticsDashboard from '../components/gamification/GamificationAnalyticsDashboard';
 import ChallengeCard from '../components/gamification/ChallengeCard';
 import RewardCard from '../components/gamification/RewardCard';
+import PersonalChallengesSection from '../components/gamification/PersonalChallengesSection';
+import AchievementTiersSection from '../components/gamification/AchievementTiersSection';
+import SocialFeedSection from '../components/gamification/SocialFeedSection';
 
 const CHART_COLORS = ['#D97230', '#14294D', '#8B5CF6', '#10B981', '#F59E0B', '#EC4899'];
 
