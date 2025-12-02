@@ -65,7 +65,7 @@ export default function Teams() {
         {!myTeam && (
           <Button 
             onClick={() => setShowCreateDialog(true)} 
-            className="bg-int-orange hover:bg-[#C46322] text-white"
+            className="bg-int-orange hover:bg-[#C46322] text-slate-900 font-semibold"
           >
             <Plus className="h-4 w-4 mr-2" />
             Create Team
