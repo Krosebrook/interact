@@ -68,7 +68,7 @@ export default function Dashboard() {
           </div>
           <div className="flex gap-3">
             <Link to={createPageUrl('Activities')}>
-              <Button className="bg-gradient-orange hover:opacity-90 text-white shadow-lg hover:shadow-xl transition-all press-effect">
+              <Button className="bg-int-orange hover:bg-int-orange/90 text-slate-900 font-semibold shadow-lg hover:shadow-xl transition-all press-effect">
                 <Sparkles className="h-4 w-4 mr-2" />
                 Browse Activities
               </Button>
