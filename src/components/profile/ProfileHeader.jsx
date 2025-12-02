@@ -241,7 +241,7 @@ export default function ProfileHeader({ user, profile, userPoints, onUpdate }) {
                   />
                 ) : (
                   <div className="w-20 h-20 rounded-full bg-slate-100 flex items-center justify-center">
-                    <User className="h-10 w-10 text-slate-400" />
+                    <User className="h-10 w-10 text-slate-500" />
                   </div>
                 )}
                 <label className="absolute bottom-0 right-0 w-7 h-7 bg-int-orange text-white rounded-full flex items-center justify-center cursor-pointer hover:bg-[#C46322] transition-colors shadow-lg">
@@ -321,7 +321,7 @@ export default function ProfileHeader({ user, profile, userPoints, onUpdate }) {
                 Cancel
               </Button>
               <Button 
-                className="flex-1 bg-int-orange hover:bg-[#C46322]" 
+                className="flex-1 bg-int-orange hover:bg-int-orange/90 text-slate-900 font-semibold" 
                 onClick={handleSave}
                 disabled={updateMutation.isPending}
               >
