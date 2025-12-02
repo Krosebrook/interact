@@ -307,7 +307,7 @@ Return as JSON: { "suggestions": ["message1", "message2", "message3"] }`,
         <Button
           onClick={() => submitMutation.mutate()}
           disabled={!isValid || submitMutation.isLoading}
-          className="w-full bg-int-orange hover:bg-[#C46322]"
+          className="w-full bg-int-orange hover:bg-int-orange/90 text-slate-900 font-semibold"
         >
           {submitMutation.isLoading ? (
             <Loader2 className="h-4 w-4 animate-spin mr-2" />

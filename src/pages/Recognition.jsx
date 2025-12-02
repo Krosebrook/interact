@@ -134,7 +134,7 @@ export default function RecognitionPage() {
 
           <Button
             onClick={() => setShowForm(!showForm)}
-            className="bg-int-orange hover:bg-[#C46322]"
+            className="bg-int-orange hover:bg-int-orange/90 text-slate-900 font-semibold"
           >
             <Send className="h-4 w-4 mr-2" />
             Give Recognition
