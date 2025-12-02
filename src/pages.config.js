@@ -30,6 +30,7 @@ import Recognition from './pages/Recognition';
 import Leaderboards from './pages/Leaderboards';
 import PublicProfile from './pages/PublicProfile';
 import RoleSelection from './pages/RoleSelection';
+import AdvancedGamificationAnalytics from './pages/AdvancedGamificationAnalytics';
 import __Layout from './Layout.jsx';
 
 
@@ -66,6 +67,7 @@ export const PAGES = {
     "Leaderboards": Leaderboards,
     "PublicProfile": PublicProfile,
     "RoleSelection": RoleSelection,
+    "AdvancedGamificationAnalytics": AdvancedGamificationAnalytics,
 }
 
 export const pagesConfig = {
