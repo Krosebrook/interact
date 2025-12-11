@@ -9,9 +9,13 @@ import ProfileEventsDashboard from '../components/profile/ProfileEventsDashboard
 import ActivityHistoryTimeline from '../components/profile/ActivityHistoryTimeline';
 import SkillsInterestsManager from '../components/profile/SkillsInterestsManager';
 import SkillsDevelopmentTracker from '../components/profile/SkillsDevelopmentTracker';
+import NotificationSettings from '../components/profile/NotificationSettings';
+import PrivacySettings from '../components/profile/PrivacySettings';
+import PersonalizationSettings from '../components/profile/PersonalizationSettings';
+import AccessibilitySettings from '../components/profile/AccessibilitySettings';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { User, Settings, Trophy, Calendar, History, Heart, Target, Award } from 'lucide-react';
+import { User, Settings, Trophy, Calendar, History, Heart, Target, Bell, Shield, Sparkles, Accessibility } from 'lucide-react';
 
 export default function UserProfilePage() {
   const { user, loading: userLoading } = useUserData(true, false);
@@ -101,11 +105,62 @@ export default function UserProfilePage() {
 
         {/* Settings & Preferences */}
         <TabsContent value="settings">
-          <ProfilePreferencesEditor
-            profile={{ ...profile, user_email: user.email }}
-            onSave={() => refetchProfile()}
-            onCancel={() => {}}
-          />
+          <Tabs defaultValue="notifications" className="w-full">
+            <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4 mb-6">
+              <TabsTrigger value="notifications" className="flex items-center gap-2">
+                <Bell className="h-4 w-4" />
+                Notifications
+              </TabsTrigger>
+              <TabsTrigger value="privacy" className="flex items-center gap-2">
+                <Shield className="h-4 w-4" />
+                Privacy
+              </TabsTrigger>
+              <TabsTrigger value="personalization" className="flex items-center gap-2">
+                <Sparkles className="h-4 w-4" />
+                Personalization
+              </TabsTrigger>
+              <TabsTrigger value="accessibility" className="flex items-center gap-2">
+                <Accessibility className="h-4 w-4" />
+                Accessibility
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="notifications">
+              <NotificationSettings 
+                profile={profile}
+                onSave={async (updates) => {
+                  await refetchProfile();
+                }}
+              />
+            </TabsContent>
+
+            <TabsContent value="privacy">
+              <PrivacySettings
+                profile={profile}
+                onSave={async (updates) => {
+                  await refetchProfile();
+                }}
+              />
+            </TabsContent>
+
+            <TabsContent value="personalization">
+              <PersonalizationSettings
+                profile={profile}
+                onSave={async (updates) => {
+                  await refetchProfile();
+                }}
+              />
+            </TabsContent>
+
+            <TabsContent value="accessibility">
+              <AccessibilitySettings
+                profile={profile}
+                onSave={async (updates) => {
+                  await refetchProfile();
+                }}
+              />
+            </TabsContent>
+          </Tabs>
         </TabsContent>
       </Tabs>
     </div>
