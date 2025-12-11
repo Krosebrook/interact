@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { AlertTriangle, RefreshCw, Home } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '../../utils';
+import { logError, getErrorDisplay } from '../lib/errors';
 
 /**
  * Error Boundary Component
@@ -21,8 +22,10 @@ class ErrorBoundary extends React.Component {
 
   componentDidCatch(error, errorInfo) {
     this.setState({ error, errorInfo });
-    // Log to error reporting service in production
-    console.error('ErrorBoundary caught:', error, errorInfo);
+    logError(error, {
+      componentStack: errorInfo.componentStack,
+      boundary: 'ErrorBoundary'
+    });
   }
 
   handleRetry = () => {
@@ -31,6 +34,8 @@ class ErrorBoundary extends React.Component {
 
   render() {
     if (this.state.hasError) {
+      const errorDisplay = getErrorDisplay(this.state.error);
+      
       return (
         <div className="min-h-[400px] flex items-center justify-center p-6">
           <Card className="max-w-md w-full border-2 border-red-200 bg-red-50/50">
@@ -39,12 +44,21 @@ class ErrorBoundary extends React.Component {
                 <AlertTriangle className="h-8 w-8 text-red-600" />
               </div>
               <h2 className="text-xl font-bold text-slate-900 mb-2">
-                Something went wrong
+                {errorDisplay.title}
               </h2>
               <p className="text-slate-600 mb-6">
-                {this.props.fallbackMessage || 
-                  "We encountered an unexpected error. Please try again or return to the dashboard."}
+                {this.props.fallbackMessage || errorDisplay.message}
               </p>
+              {process.env.NODE_ENV === 'development' && this.state.error && (
+                <details className="mb-4 text-left">
+                  <summary className="cursor-pointer text-xs text-slate-500 hover:text-slate-700 mb-2">
+                    Error Details
+                  </summary>
+                  <pre className="text-xs bg-slate-100 p-2 rounded overflow-auto max-h-32">
+                    {this.state.error.stack}
+                  </pre>
+                </details>
+              )}
               <div className="flex gap-3 justify-center">
                 <Button
                   variant="outline"
@@ -52,7 +66,7 @@ class ErrorBoundary extends React.Component {
                   className="gap-2"
                 >
                   <RefreshCw className="h-4 w-4" />
-                  Try Again
+                  {errorDisplay.action}
                 </Button>
                 <Link to={createPageUrl('Dashboard')}>
                   <Button className="bg-gradient-orange text-white gap-2">
