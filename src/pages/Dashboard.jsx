@@ -19,6 +19,7 @@ import ActivityGenerator from '../components/ai/ActivityGenerator';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import EmptyState from '../components/common/EmptyState';
 import { useEventActions } from '../components/events/useEventActions';
+import OnboardingWidget from '../components/dashboard/OnboardingWidget';
 import {
   Calendar,
   Users,
@@ -54,6 +55,9 @@ export default function Dashboard() {
 
   return (
     <div className="bg-blue-50 opacity-100 space-y-8 animate-fade-in">
+      {/* Onboarding Widget */}
+      <OnboardingWidget variant="banner" />
+
       {/* Welcome Header - Glass Panel */}
       <div className="glass-panel-solid relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-int-navy/5 via-transparent to-int-orange/5 pointer-events-none" />

@@ -32,6 +32,7 @@ import PublicProfile from './pages/PublicProfile';
 import RoleSelection from './pages/RoleSelection';
 import AdvancedGamificationAnalytics from './pages/AdvancedGamificationAnalytics';
 import RoleSetup from './pages/RoleSetup';
+import OnboardingHub from './pages/OnboardingHub';
 import __Layout from './Layout.jsx';
 
 
@@ -70,6 +71,7 @@ export const PAGES = {
     "RoleSelection": RoleSelection,
     "AdvancedGamificationAnalytics": AdvancedGamificationAnalytics,
     "RoleSetup": RoleSetup,
+    "OnboardingHub": OnboardingHub,
 }
 
 export const pagesConfig = {
