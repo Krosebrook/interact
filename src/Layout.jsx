@@ -23,6 +23,10 @@ import { Button } from '@/components/ui/button';
 import NotificationBell from './components/notifications/NotificationBell';
 import PWAInstallPrompt from './components/pwa/PWAInstallPrompt';
 import ServiceWorkerInit from './components/pwa/ServiceWorkerInit';
+import { OnboardingProvider } from './components/onboarding/OnboardingProvider';
+import OnboardingModal from './components/onboarding/OnboardingModal';
+import OnboardingProgress from './components/onboarding/OnboardingProgress';
+import OnboardingTrigger from './components/onboarding/OnboardingTrigger';
 
 const HEADER_IMAGE = 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/691e3ae3bd4916f2e05ae35e/1b2b117bd_ChatGPTImageNov25202503_31_49PM.png';
 
@@ -144,63 +148,69 @@ export default function Layout({ children, currentPageName }) {
   const navigation = getNavigation();
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-100">
-      {/* Header with scenic image */}
-      <header 
-        className="relative h-20 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url(${HEADER_IMAGE})`, backgroundPosition: 'center top' }}
-      >
-        <div className="absolute inset-0 bg-gradient-to-b from-black/30 to-black/10" />
-        <div className="relative z-10 h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-          {/* Left: Menu + Logo */}
-          <div className="flex items-center gap-4">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-white hover:bg-white/20"
-              onClick={() => setSidebarOpen(true)}
-            >
-              <Menu className="h-6 w-6" />
-            </Button>
-            <Link to={createPageUrl('Dashboard')} className="flex items-center gap-3">
-              <div className="h-10 w-10 bg-int-orange rounded-xl flex items-center justify-center shadow-lg">
-                <Sparkles className="h-6 w-6 text-white" />
-              </div>
-              <div className="hidden sm:block">
-                <h1 className="text-xl font-bold text-white drop-shadow-lg">INTeract</h1>
-                <p className="text-xs text-white/80">Employee Engagement</p>
-              </div>
-            </Link>
-          </div>
-
-          {/* Right: User info */}
-          <div className="flex items-center gap-3">
-            {user && (
-              <>
-                <NotificationBell userEmail={user.email} />
-                <div className="hidden sm:block text-right">
-                  <p className="text-sm font-medium text-white drop-shadow">{user.full_name}</p>
-                  <p className="text-xs text-white/80">{user.role}</p>
+    <OnboardingProvider>
+      <div className="min-h-screen flex flex-col bg-slate-100">
+        {/* Header with scenic image */}
+        <header 
+          className="relative h-20 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: `url(${HEADER_IMAGE})`, backgroundPosition: 'center top' }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-b from-black/30 to-black/10" />
+          <div className="relative z-10 h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+            {/* Left: Menu + Logo */}
+            <div className="flex items-center gap-4">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-white hover:bg-white/20"
+                onClick={() => setSidebarOpen(true)}
+              >
+                <Menu className="h-6 w-6" />
+              </Button>
+              <Link to={createPageUrl('Dashboard')} className="flex items-center gap-3">
+                <div className="h-10 w-10 bg-int-orange rounded-xl flex items-center justify-center shadow-lg">
+                  <Sparkles className="h-6 w-6 text-white" />
                 </div>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={handleLogout}
-                  className="text-white hover:bg-white/20"
-                >
-                  <LogOut className="h-5 w-5" />
-                </Button>
-              </>
-            )}
+                <div className="hidden sm:block">
+                  <h1 className="text-xl font-bold text-white drop-shadow-lg">INTeract</h1>
+                  <p className="text-xs text-white/80">Employee Engagement</p>
+                </div>
+              </Link>
+            </div>
+
+            {/* Right: User info */}
+            <div className="flex items-center gap-3">
+              {user && (
+                <>
+                  <OnboardingTrigger />
+                  <NotificationBell userEmail={user.email} />
+                  <div className="hidden sm:block text-right">
+                    <p className="text-sm font-medium text-white drop-shadow">{user.full_name}</p>
+                    <p className="text-xs text-white/80">{user.role}</p>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={handleLogout}
+                    className="text-white hover:bg-white/20"
+                  >
+                    <LogOut className="h-5 w-5" />
+                  </Button>
+                </>
+              )}
+            </div>
           </div>
-        </div>
-      </header>
+        </header>
 
       {/* PWA Install Prompt */}
-                  <PWAInstallPrompt />
+                <PWAInstallPrompt />
 
-                  {/* Service Worker & Offline Status */}
-                  <ServiceWorkerInit />
+                {/* Service Worker & Offline Status */}
+                <ServiceWorkerInit />
+
+        {/* Onboarding System */}
+        <OnboardingModal />
+        <OnboardingProgress />
 
       {/* Main Content */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -311,6 +321,7 @@ export default function Layout({ children, currentPageName }) {
           </Button>
         </div>
       </aside>
-    </div>
+      </div>
+    </OnboardingProvider>
   );
 }
