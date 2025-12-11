@@ -1,39 +1,52 @@
-import React from 'react';
+/**
+ * REFACTORED USER PROFILE PAGE
+ * Production-grade central hub with RBAC, optimistic updates, and comprehensive settings
+ */
+
+import React, { Suspense } from 'react';
 import { useUserData } from '../components/hooks/useUserData.jsx';
 import { useUserProfile } from '../components/hooks/useUserProfile';
-import ProfileHeader from '../components/profile/ProfileHeader';
-import ProfilePreferencesEditor from '../components/profile/ProfilePreferencesEditor';
-import ContributionsShowcase from '../components/profile/ContributionsShowcase';
-import ProfileBadgesShowcase from '../components/profile/ProfileBadgesShowcase';
-import ProfileEventsDashboard from '../components/profile/ProfileEventsDashboard';
-import ActivityHistoryTimeline from '../components/profile/ActivityHistoryTimeline';
-import SkillsInterestsManager from '../components/profile/SkillsInterestsManager';
-import SkillsDevelopmentTracker from '../components/profile/SkillsDevelopmentTracker';
-import NotificationSettings from '../components/profile/NotificationSettings';
-import PrivacySettings from '../components/profile/PrivacySettings';
-import PersonalizationSettings from '../components/profile/PersonalizationSettings';
-import AccessibilitySettings from '../components/profile/AccessibilitySettings';
+import { usePermissions } from '../components/hooks/usePermissions';
+import ErrorBoundary from '../components/common/ErrorBoundary';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { User, Settings, Trophy, Calendar, History, Heart, Target, Bell, Shield, Sparkles, Accessibility } from 'lucide-react';
 
+// Lazy load heavy components
+const ProfileHeader = React.lazy(() => import('../components/profile/ProfileHeader'));
+const ContributionsShowcase = React.lazy(() => import('../components/profile/ContributionsShowcase'));
+const ProfileBadgesShowcase = React.lazy(() => import('../components/profile/ProfileBadgesShowcase'));
+const SkillsDevelopmentTracker = React.lazy(() => import('../components/profile/SkillsDevelopmentTracker'));
+const ActivityHistoryTimeline = React.lazy(() => import('../components/profile/ActivityHistoryTimeline'));
+const ProfileEventsDashboard = React.lazy(() => import('../components/profile/ProfileEventsDashboard'));
+const SkillsInterestsManager = React.lazy(() => import('../components/profile/SkillsInterestsManager'));
+const NotificationSettings = React.lazy(() => import('../components/profile/NotificationSettings'));
+const PrivacySettings = React.lazy(() => import('../components/profile/PrivacySettings'));
+const PersonalizationSettings = React.lazy(() => import('../components/profile/PersonalizationSettings'));
+const AccessibilitySettings = React.lazy(() => import('../components/profile/AccessibilitySettings'));
+
 export default function UserProfilePage() {
   const { user, loading: userLoading } = useUserData(true, false);
-  const { profile, userPoints, refetchProfile } = useUserProfile(user?.email);
+  const { profile, userPoints, refetchProfile, isLoading: profileLoading } = useUserProfile(user?.email);
+  const { canViewSensitiveData } = usePermissions();
 
   if (userLoading || !user) {
-    return <LoadingSpinner className="min-h-[60vh]" />;
+    return <LoadingSpinner className="min-h-[60vh]" message="Loading profile..." />;
   }
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6">
-      {/* Profile Header with Avatar, Bio, Level, Stats */}
-      <ProfileHeader 
-        user={user}
-        profile={profile} 
-        userPoints={userPoints}
-        onUpdate={refetchProfile}
-      />
+    <ErrorBoundary>
+      <div className="max-w-6xl mx-auto space-y-6 animate-fade-in">
+        {/* Profile Header with Avatar, Bio, Level, Stats */}
+        <Suspense fallback={<LoadingSpinner size="large" />}>
+          <ProfileHeader 
+            user={user}
+            profile={profile} 
+            userPoints={userPoints}
+            onUpdate={refetchProfile}
+            isLoading={profileLoading}
+          />
+        </Suspense>
 
       <Tabs defaultValue="overview" className="w-full">
         <TabsList className="grid w-full grid-cols-3 lg:grid-cols-7 mb-6 h-auto gap-1 p-1">
@@ -69,38 +82,50 @@ export default function UserProfilePage() {
 
         {/* Overview - Contributions & Recognition */}
         <TabsContent value="overview">
-          <ContributionsShowcase userEmail={user.email} />
+          <Suspense fallback={<LoadingSpinner size="small" />}>
+            <ContributionsShowcase userEmail={user.email} />
+          </Suspense>
         </TabsContent>
 
         {/* Badges & Achievements */}
         <TabsContent value="badges">
-          <ProfileBadgesShowcase userEmail={user.email} />
+          <Suspense fallback={<LoadingSpinner size="small" />}>
+            <ProfileBadgesShowcase userEmail={user.email} />
+          </Suspense>
         </TabsContent>
 
         {/* Skills Development */}
         <TabsContent value="skills">
-          <SkillsDevelopmentTracker 
-            userEmail={user.email} 
-            profile={profile}
-          />
+          <Suspense fallback={<LoadingSpinner size="small" />}>
+            <SkillsDevelopmentTracker 
+              userEmail={user.email} 
+              profile={profile}
+            />
+          </Suspense>
         </TabsContent>
 
         {/* Activity History Timeline */}
         <TabsContent value="history">
-          <ActivityHistoryTimeline userEmail={user.email} />
+          <Suspense fallback={<LoadingSpinner size="small" />}>
+            <ActivityHistoryTimeline userEmail={user.email} />
+          </Suspense>
         </TabsContent>
 
         {/* Upcoming Events Dashboard */}
         <TabsContent value="events">
-          <ProfileEventsDashboard userEmail={user.email} />
+          <Suspense fallback={<LoadingSpinner size="small" />}>
+            <ProfileEventsDashboard userEmail={user.email} />
+          </Suspense>
         </TabsContent>
 
         {/* Skills & Interests Manager */}
         <TabsContent value="interests">
-          <SkillsInterestsManager 
-            profile={profile} 
-            onUpdate={refetchProfile}
-          />
+          <Suspense fallback={<LoadingSpinner size="small" />}>
+            <SkillsInterestsManager 
+              profile={profile} 
+              onUpdate={refetchProfile}
+            />
+          </Suspense>
         </TabsContent>
 
         {/* Settings & Preferences */}
@@ -126,43 +151,45 @@ export default function UserProfilePage() {
             </TabsList>
 
             <TabsContent value="notifications">
-              <NotificationSettings 
-                profile={profile}
-                onSave={async (updates) => {
-                  await refetchProfile();
-                }}
-              />
+              <Suspense fallback={<LoadingSpinner size="small" />}>
+                <NotificationSettings 
+                  profile={profile}
+                  onSave={refetchProfile}
+                />
+              </Suspense>
             </TabsContent>
 
             <TabsContent value="privacy">
-              <PrivacySettings
-                profile={profile}
-                onSave={async (updates) => {
-                  await refetchProfile();
-                }}
-              />
+              <Suspense fallback={<LoadingSpinner size="small" />}>
+                <PrivacySettings
+                  profile={profile}
+                  onSave={refetchProfile}
+                  canViewSensitiveData={canViewSensitiveData}
+                />
+              </Suspense>
             </TabsContent>
 
             <TabsContent value="personalization">
-              <PersonalizationSettings
-                profile={profile}
-                onSave={async (updates) => {
-                  await refetchProfile();
-                }}
-              />
+              <Suspense fallback={<LoadingSpinner size="small" />}>
+                <PersonalizationSettings
+                  profile={profile}
+                  onSave={refetchProfile}
+                />
+              </Suspense>
             </TabsContent>
 
             <TabsContent value="accessibility">
-              <AccessibilitySettings
-                profile={profile}
-                onSave={async (updates) => {
-                  await refetchProfile();
-                }}
-              />
+              <Suspense fallback={<LoadingSpinner size="small" />}>
+                <AccessibilitySettings
+                  profile={profile}
+                  onSave={refetchProfile}
+                />
+              </Suspense>
             </TabsContent>
           </Tabs>
         </TabsContent>
       </Tabs>
-    </div>
+      </div>
+    </ErrorBoundary>
   );
 }

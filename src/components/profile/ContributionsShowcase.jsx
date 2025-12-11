@@ -1,6 +1,12 @@
-import React from 'react';
+/**
+ * REFACTORED CONTRIBUTIONS SHOWCASE
+ * Production-grade with apiClient, memoization, and RBAC
+ */
+
+import React, { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { apiClient } from '../lib/apiClient';
+import { queryKeys } from '../lib/queryKeys';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -19,57 +25,93 @@ import { motion } from 'framer-motion';
 import { format } from 'date-fns';
 
 export default function ContributionsShowcase({ userEmail }) {
+  // Fetch data with apiClient and proper caching
   const { data: media = [] } = useQuery({
-    queryKey: ['user-media', userEmail],
-    queryFn: () => base44.entities.EventMedia.filter({ uploaded_by_email: userEmail }),
-    enabled: !!userEmail
+    queryKey: queryKeys.profile.media(userEmail),
+    queryFn: () => apiClient.list('EventMedia', { 
+      filters: { uploaded_by_email: userEmail },
+      limit: 20 
+    }),
+    enabled: !!userEmail,
+    staleTime: 60000
   });
 
   const { data: participations = [] } = useQuery({
-    queryKey: ['user-participations', userEmail],
-    queryFn: () => base44.entities.Participation.filter({ participant_email: userEmail }),
-    enabled: !!userEmail
+    queryKey: queryKeys.profile.participations(userEmail),
+    queryFn: () => apiClient.list('Participation', { 
+      filters: { participant_email: userEmail },
+      sort: '-created_date',
+      limit: 100 
+    }),
+    enabled: !!userEmail,
+    staleTime: 30000
   });
 
   const { data: userPoints } = useQuery({
-    queryKey: ['user-points', userEmail],
+    queryKey: queryKeys.gamification.userPoints.byEmail(userEmail),
     queryFn: async () => {
-      const points = await base44.entities.UserPoints.filter({ user_email: userEmail });
+      const points = await apiClient.list('UserPoints', { 
+        filters: { user_email: userEmail } 
+      });
       return points[0];
     },
-    enabled: !!userEmail
+    enabled: !!userEmail,
+    staleTime: 30000
   });
 
   const { data: badges = [] } = useQuery({
-    queryKey: ['badges'],
-    queryFn: () => base44.entities.Badge.list()
+    queryKey: queryKeys.gamification.badges.active,
+    queryFn: () => apiClient.list('Badge', { 
+      filters: { is_active: true } 
+    }),
+    staleTime: 60000
   });
 
   const { data: recognitionsSent = [] } = useQuery({
-    queryKey: ['recognitions-sent', userEmail],
-    queryFn: () => base44.entities.Recognition.filter({ sender_email: userEmail }),
-    enabled: !!userEmail
+    queryKey: queryKeys.recognition.sent(userEmail),
+    queryFn: () => apiClient.list('Recognition', { 
+      filters: { sender_email: userEmail },
+      sort: '-created_date',
+      limit: 50 
+    }),
+    enabled: !!userEmail,
+    staleTime: 30000
   });
 
   const { data: recognitionsReceived = [] } = useQuery({
-    queryKey: ['recognitions-received', userEmail],
-    queryFn: () => base44.entities.Recognition.filter({ recipient_email: userEmail }),
-    enabled: !!userEmail
+    queryKey: queryKeys.recognition.received(userEmail),
+    queryFn: () => apiClient.list('Recognition', { 
+      filters: { recipient_email: userEmail },
+      sort: '-created_date',
+      limit: 50 
+    }),
+    enabled: !!userEmail,
+    staleTime: 30000
   });
 
-  const earnedBadges = badges.filter(b => userPoints?.badges_earned?.includes(b.id));
-  const completedActivities = participations.filter(p => p.activity_completed);
-  const feedbackSubmitted = participations.filter(p => p.feedback_submitted);
-  const eventsAttended = participations.filter(p => p.attended);
+  // Memoized computed values
+  const stats = useMemo(() => {
+    const earnedBadges = badges.filter(b => userPoints?.badges_earned?.includes(b.id));
+    const completedActivities = participations.filter(p => p.activity_completed);
+    const feedbackSubmitted = participations.filter(p => p.feedback_submitted);
+    const eventsAttended = participations.filter(p => p.attended);
 
-  const stats = [
-    { label: 'Events Attended', value: eventsAttended.length, icon: Calendar, color: 'text-blue-600', bg: 'bg-blue-50' },
-    { label: 'Badges Earned', value: earnedBadges.length, icon: Award, color: 'text-amber-600', bg: 'bg-amber-50' },
+    return {
+      earnedBadges,
+      completedActivities,
+      feedbackSubmitted,
+      eventsAttended
+    };
+  }, [badges, userPoints, participations]);
+
+  const statCards = useMemo(() => [
+    { label: 'Events Attended', value: stats.eventsAttended.length, icon: Calendar, color: 'text-blue-600', bg: 'bg-blue-50' },
+    { label: 'Badges Earned', value: stats.earnedBadges.length, icon: Award, color: 'text-amber-600', bg: 'bg-amber-50' },
     { label: 'Recognitions Given', value: recognitionsSent.length, icon: Gift, color: 'text-pink-600', bg: 'bg-pink-50' },
     { label: 'Recognitions Received', value: recognitionsReceived.length, icon: Heart, color: 'text-red-500', bg: 'bg-red-50' },
-    { label: 'Feedback Given', value: feedbackSubmitted.length, icon: MessageSquare, color: 'text-purple-600', bg: 'bg-purple-50' },
+    { label: 'Feedback Given', value: stats.feedbackSubmitted.length, icon: MessageSquare, color: 'text-purple-600', bg: 'bg-purple-50' },
     { label: 'Photos Shared', value: media.length, icon: Camera, color: 'text-indigo-600', bg: 'bg-indigo-50' },
-  ];
+  ], [stats, recognitionsSent, recognitionsReceived, media]);
 
   return (
     <div className="space-y-6">
@@ -83,7 +125,7 @@ export default function ContributionsShowcase({ userEmail }) {
         </CardHeader>
         <CardContent className="pt-6">
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {stats.map((stat, idx) => (
+            {statCards.map((stat, idx) => (
               <motion.div
                 key={stat.label}
                 initial={{ opacity: 0, y: 20 }}
@@ -160,7 +202,7 @@ export default function ContributionsShowcase({ userEmail }) {
 
           {/* Badges */}
           <TabsContent value="badges">
-            {earnedBadges.length === 0 ? (
+            {stats.earnedBadges.length === 0 ? (
               <div className="text-center py-8 text-slate-500">
                 <Award className="h-12 w-12 mx-auto mb-2 text-slate-300" />
                 <p>No badges earned yet</p>
@@ -168,7 +210,7 @@ export default function ContributionsShowcase({ userEmail }) {
               </div>
             ) : (
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {earnedBadges.map((badge, idx) => (
+                {stats.earnedBadges.map((badge, idx) => (
                   <motion.div
                     key={badge.id}
                     initial={{ opacity: 0, scale: 0.8 }}
