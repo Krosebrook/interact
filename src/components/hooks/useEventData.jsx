@@ -1,17 +1,17 @@
+/**
+ * REFACTORED EVENT DATA HOOK
+ * Production-grade with apiClient, error handling, RBAC, and optimistic updates
+ */
+
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { apiClient } from '../lib/apiClient';
 import { queryKeys } from '../lib/queryKeys';
 import { cachePresets } from '../lib/cacheConfig';
+import { usePermissions } from './usePermissions';
+import { transformOutput } from '../lib/dataTransformers';
 
 /**
- * Central hook for event-related data
- * Used by Dashboard, Calendar, FacilitatorDashboard, Analytics
- * 
- * @param {Object} options
- * @param {number} options.limit - Max events to fetch
- * @param {boolean} options.enabled - Enable/disable fetching
- * @param {number|null} options.refetchInterval - Auto-refetch interval
- * @param {boolean} options.includeParticipations - Include participation data
+ * Central hook for event-related data with RBAC and security
  */
 export function useEventData(options = {}) {
   const { 
@@ -22,7 +22,9 @@ export function useEventData(options = {}) {
   } = options;
   
   const queryClient = useQueryClient();
+  const { canViewAllEmployees } = usePermissions();
 
+  // Events with automatic retry and error handling
   const { 
     data: events = [], 
     isLoading: eventsLoading, 
@@ -30,30 +32,45 @@ export function useEventData(options = {}) {
     error: eventsError 
   } = useQuery({
     queryKey: queryKeys.events.list({ limit }),
-    queryFn: () => base44.entities.Event.list('-scheduled_date', limit),
+    queryFn: () => apiClient.list('Event', { 
+      sort: '-scheduled_date', 
+      limit 
+    }),
     enabled,
     ...cachePresets.events,
     refetchInterval
   });
 
+  // Activities with caching
   const { 
     data: activities = [], 
     isLoading: activitiesLoading,
     error: activitiesError 
   } = useQuery({
     queryKey: queryKeys.activities.all,
-    queryFn: () => base44.entities.Activity.list(),
+    queryFn: () => apiClient.list('Activity'),
     enabled,
     ...cachePresets.activities
   });
 
+  // Participations with RBAC filtering
   const { 
     data: participations = [], 
     isLoading: participationsLoading,
     error: participationsError 
   } = useQuery({
     queryKey: queryKeys.participations.all,
-    queryFn: () => base44.entities.Participation.list('-created_date', 500),
+    queryFn: async () => {
+      const data = await apiClient.list('Participation', {
+        sort: '-created_date',
+        limit: 500
+      });
+      
+      // Filter sensitive data based on permissions
+      return transformOutput(data, {
+        removeFields: canViewAllEmployees ? [] : ['participant_name', 'participant_email']
+      });
+    },
     enabled: enabled && includeParticipations,
     ...cachePresets.participations,
     refetchInterval

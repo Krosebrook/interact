@@ -1,53 +1,34 @@
 /**
- * HOOKS BARREL EXPORT
- * Centralized export for all custom hooks
- * Version: 4.0.0
- * Last Updated: 2025-12-02
- * 
- * Organization:
- * - Authentication & User: User state, auth, permissions
- * - Data Fetching: Entity data fetching hooks
- * - Actions & Mutations: State management and mutations
- * - Feature Hooks: Re-exported from feature directories
+ * CENTRALIZED HOOKS EXPORTS
+ * Single import point for all custom hooks
  */
 
-// ============================================================================
-// AUTHENTICATION & USER
-// ============================================================================
+// Core Hooks
 export { useUserData } from './useUserData';
 export { useAuth } from './useAuth';
-export { useUserProfile } from './useUserProfile';
-export { usePermissions } from './usePermissions';
+export { useUser } from '../contexts/UserContext';
+export { usePermissions, PermissionGuard } from './usePermissions';
+export { useAuthMonitor } from '../lib/authManager';
 
-// ============================================================================
-// DATA FETCHING
-// ============================================================================
+// Data Hooks (refactored with apiClient)
 export { useEventData } from './useEventData';
+export { useGamificationData } from './useGamificationData';
 export { useActivities } from './useActivities';
 export { useTeamData } from './useTeamData';
-export { useEntities } from './useEntities';
-export { useGamificationData } from './useGamificationData';
 export { useLeaderboard } from './useLeaderboard';
+export { useRecognitionData } from './useRecognitionData';
+export { useStoreData } from './useStoreData';
+export { useNotifications } from './useNotifications';
+export { useChannelData } from './useChannelData';
 
-// ============================================================================
-// ACTIONS & MUTATIONS
-// ============================================================================
+// Feature Hooks
+export { useUserProfile } from './useUserProfile';
 export { useEventScheduling } from './useEventScheduling';
-export { useFormState, useDialogForm } from './useFormState';
+export { useTeamsNotification } from './useTeamsNotification';
 
-// ============================================================================
-// FEATURE HOOKS (Re-exported from feature directories)
-// ============================================================================
-export { useEventActions } from '../events/useEventActions';
-export { useTeamActions } from '../teams/useTeamActions';
-export { useStoreActions } from '../store/hooks/useStoreActions';
-export { useSocialActions } from '../profile/hooks/useSocialActions';
-export { useModerationActions } from '../moderation/hooks/useModerationActions';
-export { useAvatarCustomization } from '../store/hooks/useAvatarCustomization';
+// Utility Hooks
+export { useFormState } from './useFormState';
 export { useActivityFilters } from '../activities/useActivityFilters';
-export { useTeamsNotification, useSendAnnouncement, useSendReminder, useSendRecap } from './useTeamsNotification';
 
-// ============================================================================
-// ANALYTICS HOOKS
-// ============================================================================
-export { useAnalyticsData } from '../analytics/useAnalyticsData';
+// Entity Hooks (for backwards compatibility)
+export * from './useEntities';
