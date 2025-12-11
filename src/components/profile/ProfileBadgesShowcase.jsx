@@ -1,6 +1,12 @@
-import React from 'react';
+/**
+ * REFACTORED BADGES SHOWCASE
+ * Production-grade with apiClient and performance optimizations
+ */
+
+import React, { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { apiClient } from '../lib/apiClient';
+import { queryKeys } from '../lib/queryKeys';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Award, Trophy, Star, Sparkles } from 'lucide-react';
@@ -24,41 +30,62 @@ const rarityTextColors = {
 };
 
 export default function ProfileBadgesShowcase({ userEmail }) {
+  // Optimized queries with proper caching
   const { data: userPoints } = useQuery({
-    queryKey: ['user-points', userEmail],
+    queryKey: queryKeys.gamification.userPoints.byEmail(userEmail),
     queryFn: async () => {
-      const points = await base44.entities.UserPoints.filter({ user_email: userEmail });
+      const points = await apiClient.list('UserPoints', { 
+        filters: { user_email: userEmail } 
+      });
       return points[0];
     },
-    enabled: !!userEmail
+    enabled: !!userEmail,
+    staleTime: 30000
   });
 
   const { data: badges = [] } = useQuery({
-    queryKey: ['badges'],
-    queryFn: () => base44.entities.Badge.list()
+    queryKey: queryKeys.gamification.badges.active,
+    queryFn: () => apiClient.list('Badge', { 
+      filters: { is_active: true } 
+    }),
+    staleTime: 60000
   });
 
   const { data: badgeAwards = [] } = useQuery({
-    queryKey: ['badge-awards', userEmail],
-    queryFn: () => base44.entities.BadgeAward.filter({ user_email: userEmail }),
-    enabled: !!userEmail
+    queryKey: queryKeys.gamification.badgeAwards.list({ userEmail }),
+    queryFn: () => apiClient.list('BadgeAward', { 
+      filters: { user_email: userEmail },
+      sort: '-created_date' 
+    }),
+    enabled: !!userEmail,
+    staleTime: 30000
   });
 
-  const earnedBadgeIds = userPoints?.badges_earned || [];
-  const earnedBadges = badges.filter(b => earnedBadgeIds.includes(b.id));
-  
-  // Group by rarity
-  const badgesByRarity = {
-    legendary: earnedBadges.filter(b => b.rarity === 'legendary'),
-    epic: earnedBadges.filter(b => b.rarity === 'epic'),
-    rare: earnedBadges.filter(b => b.rarity === 'rare'),
-    uncommon: earnedBadges.filter(b => b.rarity === 'uncommon'),
-    common: earnedBadges.filter(b => b.rarity === 'common' || !b.rarity)
-  };
+  // Memoized computations
+  const { earnedBadges, badgesByRarity, totalBadges, earnedCount, completionPercent } = useMemo(() => {
+    const earnedBadgeIds = userPoints?.badges_earned || [];
+    const earned = badges.filter(b => earnedBadgeIds.includes(b.id));
+    
+    const byRarity = {
+      legendary: earned.filter(b => b.rarity === 'legendary'),
+      epic: earned.filter(b => b.rarity === 'epic'),
+      rare: earned.filter(b => b.rarity === 'rare'),
+      uncommon: earned.filter(b => b.rarity === 'uncommon'),
+      common: earned.filter(b => b.rarity === 'common' || !b.rarity)
+    };
 
-  const totalBadges = badges.length;
-  const earnedCount = earnedBadges.length;
-  const completionPercent = totalBadges > 0 ? Math.round((earnedCount / totalBadges) * 100) : 0;
+    const total = badges.length;
+    const count = earned.length;
+    const percent = total > 0 ? Math.round((count / total) * 100) : 0;
+
+    return {
+      earnedBadges: earned,
+      badgesByRarity: byRarity,
+      totalBadges: total,
+      earnedCount: count,
+      completionPercent: percent
+    };
+  }, [badges, userPoints]);
 
   return (
     <Card className="border-0 shadow-lg">

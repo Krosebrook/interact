@@ -1,6 +1,12 @@
-import React from 'react';
+/**
+ * REFACTORED ACTIVITY HISTORY TIMELINE
+ * Production-grade with apiClient, memoization, and performance
+ */
+
+import React, { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { apiClient } from '../lib/apiClient';
+import { queryKeys } from '../lib/queryKeys';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { 
@@ -24,45 +30,67 @@ const TYPE_COLORS = {
 };
 
 export default function ActivityHistoryTimeline({ userEmail }) {
+  // Optimized queries with caching
   const { data: participations = [], isLoading } = useQuery({
-    queryKey: ['user-participations-full', userEmail],
-    queryFn: () => base44.entities.Participation.filter({ participant_email: userEmail }),
-    enabled: !!userEmail
+    queryKey: queryKeys.profile.participations(userEmail),
+    queryFn: () => apiClient.list('Participation', { 
+      filters: { participant_email: userEmail },
+      sort: '-created_date',
+      limit: 100 
+    }),
+    enabled: !!userEmail,
+    staleTime: 30000
   });
 
   const { data: events = [] } = useQuery({
-    queryKey: ['events-for-history'],
-    queryFn: () => base44.entities.Event.list('-scheduled_date', 100)
+    queryKey: queryKeys.events.list({ limit: 100 }),
+    queryFn: () => apiClient.list('Event', {
+      sort: '-scheduled_date',
+      limit: 100
+    }),
+    staleTime: 60000
   });
 
   const { data: activities = [] } = useQuery({
-    queryKey: ['activities'],
-    queryFn: () => base44.entities.Activity.list()
+    queryKey: queryKeys.activities.all,
+    queryFn: () => apiClient.list('Activity'),
+    staleTime: 60000
   });
 
-  // Merge participation with event and activity data
-  const history = participations
-    .map(p => {
-      const event = events.find(e => e.id === p.event_id);
-      const activity = activities.find(a => a.id === event?.activity_id);
-      return {
-        ...p,
-        event,
-        activity,
-        date: event?.scheduled_date || p.created_date
-      };
-    })
-    .filter(h => h.event)
-    .sort((a, b) => new Date(b.date) - new Date(a.date))
-    .slice(0, 20);
+  // Memoized history computation
+  const { history, stats } = useMemo(() => {
+    const merged = participations
+      .map(p => {
+        const event = events.find(e => e.id === p.event_id);
+        const activity = activities.find(a => a.id === event?.activity_id);
+        return {
+          ...p,
+          event,
+          activity,
+          date: event?.scheduled_date || p.created_date
+        };
+      })
+      .filter(h => h.event)
+      .sort((a, b) => new Date(b.date) - new Date(a.date))
+      .slice(0, 20);
 
-  // Calculate stats
-  const totalEvents = history.length;
-  const attendedEvents = history.filter(h => h.attended).length;
-  const feedbackGiven = history.filter(h => h.feedback_submitted).length;
-  const avgEngagement = history.length > 0
-    ? Math.round(history.reduce((sum, h) => sum + (h.engagement_score || 0), 0) / history.length * 10) / 10
-    : 0;
+    const totalEvents = merged.length;
+    const attendedEvents = merged.filter(h => h.attended).length;
+    const feedbackGiven = merged.filter(h => h.feedback_submitted).length;
+    const avgEngagement = merged.length > 0
+      ? Math.round(merged.reduce((sum, h) => sum + (h.engagement_score || 0), 0) / merged.length * 10) / 10
+      : 0;
+
+    return {
+      history: merged,
+      stats: {
+        totalEvents,
+        attendedEvents,
+        feedbackGiven,
+        avgEngagement
+      }
+    };
+  }, [participations, events, activities]);
 
   if (isLoading) {
     return (
@@ -81,10 +109,10 @@ export default function ActivityHistoryTimeline({ userEmail }) {
     <div className="space-y-6">
       {/* Stats Summary */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <StatCard icon={<Calendar className="h-5 w-5" />} value={totalEvents} label="Total Events" color="blue" />
-        <StatCard icon={<CheckCircle2 className="h-5 w-5" />} value={attendedEvents} label="Attended" color="emerald" />
-        <StatCard icon={<MessageSquare className="h-5 w-5" />} value={feedbackGiven} label="Feedback Given" color="purple" />
-        <StatCard icon={<Star className="h-5 w-5" />} value={avgEngagement} label="Avg Engagement" color="amber" />
+        <StatCard icon={<Calendar className="h-5 w-5" />} value={stats.totalEvents} label="Total Events" color="blue" />
+        <StatCard icon={<CheckCircle2 className="h-5 w-5" />} value={stats.attendedEvents} label="Attended" color="emerald" />
+        <StatCard icon={<MessageSquare className="h-5 w-5" />} value={stats.feedbackGiven} label="Feedback Given" color="purple" />
+        <StatCard icon={<Star className="h-5 w-5" />} value={stats.avgEngagement} label="Avg Engagement" color="amber" />
       </div>
 
       {/* Timeline */}

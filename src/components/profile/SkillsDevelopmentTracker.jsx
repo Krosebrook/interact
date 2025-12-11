@@ -1,6 +1,12 @@
-import React from 'react';
+/**
+ * REFACTORED SKILLS DEVELOPMENT TRACKER
+ * Production-grade with apiClient and memoization
+ */
+
+import React, { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { apiClient } from '../lib/apiClient';
+import { queryKeys } from '../lib/queryKeys';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
@@ -29,36 +35,47 @@ const SKILL_PROGRESS = {
 };
 
 export default function SkillsDevelopmentTracker({ userEmail, profile }) {
-  // Fetch participation data to calculate skills gained from events
+  // Optimized queries
   const { data: participations = [] } = useQuery({
-    queryKey: ['user-participations', userEmail],
-    queryFn: () => base44.entities.Participation.filter({ participant_email: userEmail }),
-    enabled: !!userEmail
+    queryKey: queryKeys.profile.participations(userEmail),
+    queryFn: () => apiClient.list('Participation', { 
+      filters: { participant_email: userEmail },
+      limit: 100 
+    }),
+    enabled: !!userEmail,
+    staleTime: 30000
   });
 
-  // Fetch skill tracking records
   const { data: skillTracking = [] } = useQuery({
-    queryKey: ['skill-tracking', userEmail],
-    queryFn: () => base44.entities.SkillTracking.filter({ user_email: userEmail }),
-    enabled: !!userEmail
+    queryKey: queryKeys.profile.skillTracking(userEmail),
+    queryFn: () => apiClient.list('SkillTracking', { 
+      filters: { user_email: userEmail } 
+    }),
+    enabled: !!userEmail,
+    staleTime: 60000
   });
 
-  const skillLevels = profile?.skill_levels || [];
-  const skillInterests = profile?.skill_interests || [];
-  const expertiseAreas = profile?.expertise_areas || [];
-  const learningGoals = profile?.learning_goals || [];
+  // Memoized profile data
+  const { skillLevels, skillInterests, expertiseAreas, learningGoals } = useMemo(() => ({
+    skillLevels: profile?.skill_levels || [],
+    skillInterests: profile?.skill_interests || [],
+    expertiseAreas: profile?.expertise_areas || [],
+    learningGoals: profile?.learning_goals || []
+  }), [profile]);
 
-  // Calculate skills gained from events
-  const skillsFromEvents = participations
-    .flatMap(p => p.skills_gained || [])
-    .reduce((acc, skill) => {
-      acc[skill] = (acc[skill] || 0) + 1;
-      return acc;
-    }, {});
+  // Memoized skills from events calculation
+  const topSkillsFromEvents = useMemo(() => {
+    const skillsFromEvents = participations
+      .flatMap(p => p.skills_gained || [])
+      .reduce((acc, skill) => {
+        acc[skill] = (acc[skill] || 0) + 1;
+        return acc;
+      }, {});
 
-  const topSkillsFromEvents = Object.entries(skillsFromEvents)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 6);
+    return Object.entries(skillsFromEvents)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 6);
+  }, [participations]);
 
   return (
     <div className="space-y-6">

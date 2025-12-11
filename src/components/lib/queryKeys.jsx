@@ -1,184 +1,163 @@
 /**
- * QUERY KEY FACTORY
- * Centralized query key management for React Query
- * Ensures consistent cache invalidation and data fetching
+ * EXTENDED QUERY KEYS
+ * Comprehensive type-safe query key factory for all entities
  */
 
 export const queryKeys = {
-  // ============================================================================
-  // CORE ENTITIES
-  // ============================================================================
+  // Events
   events: {
     all: ['events'],
-    list: (filters = {}) => ['events', 'list', filters],
+    list: (params) => ['events', 'list', params],
     detail: (id) => ['events', 'detail', id],
+    byActivity: (activityId) => ['events', 'byActivity', activityId],
     upcoming: () => ['events', 'upcoming'],
-    past: () => ['events', 'past'],
-    byActivity: (activityId) => ['events', 'activity', activityId],
-    byFacilitator: (email) => ['events', 'facilitator', email],
+    completed: () => ['events', 'completed']
   },
-  
+
+  // Activities
   activities: {
     all: ['activities'],
-    list: (filters = {}) => ['activities', 'list', filters],
+    list: (params) => ['activities', 'list', params],
     detail: (id) => ['activities', 'detail', id],
-    byType: (type) => ['activities', 'type', type],
-    templates: () => ['activities', 'templates'],
+    byType: (type) => ['activities', 'byType', type]
   },
-  
+
+  // Participations
   participations: {
     all: ['participations'],
-    byEvent: (eventId) => ['participations', 'event', eventId],
-    byUser: (email) => ['participations', 'user', email],
-    byEventAndUser: (eventId, email) => ['participations', 'event', eventId, 'user', email],
+    list: (params) => ['participations', 'list', params],
+    byEvent: (eventId) => ['participations', 'byEvent', eventId],
+    byUser: (userEmail) => ['participations', 'byUser', userEmail]
   },
 
-  // ============================================================================
-  // GAMIFICATION
-  // ============================================================================
-  userPoints: {
-    all: ['user-points'],
-    byUser: (email) => ['user-points', email],
-    leaderboard: (period) => ['user-points', 'leaderboard', period],
-  },
-  
-  badges: {
-    all: ['badges'],
-    detail: (id) => ['badges', 'detail', id],
-    awards: (email) => ['badges', 'awards', email],
-    byCategory: (category) => ['badges', 'category', category],
-  },
-  
-  leaderboard: {
-    all: ['leaderboard'],
-    byPeriod: (period, category) => ['leaderboard', period, category],
-    teams: (period) => ['leaderboard', 'teams', period],
+  // Gamification
+  gamification: {
+    userPoints: {
+      all: ['user-points'],
+      list: (params) => ['user-points', 'list', params],
+      byEmail: (email) => ['user-points', 'byEmail', email]
+    },
+    badges: {
+      all: ['badges'],
+      active: ['badges', 'active'],
+      byType: (type) => ['badges', 'byType', type]
+    },
+    badgeAwards: {
+      all: ['badge-awards'],
+      list: (params) => ['badge-awards', 'list', params],
+      byUser: (userEmail) => ['badge-awards', 'byUser', userEmail]
+    },
+    rewards: {
+      all: ['rewards'],
+      available: ['rewards', 'available'],
+      detail: (id) => ['rewards', 'detail', id]
+    },
+    redemptions: {
+      all: ['redemptions'],
+      list: (params) => ['redemptions', 'list', params],
+      byUser: (userEmail) => ['redemptions', 'byUser', userEmail]
+    },
+    challenges: {
+      all: ['challenges'],
+      active: ['challenges', 'active'],
+      byUser: (userEmail) => ['challenges', 'byUser', userEmail]
+    },
+    tiers: {
+      all: ['achievement-tiers'],
+      list: () => ['achievement-tiers', 'list']
+    },
+    leaderboards: {
+      all: ['leaderboards'],
+      byCategory: (category, period) => ['leaderboards', category, period]
+    }
   },
 
-  // ============================================================================
-  // TEAMS & SOCIAL
-  // ============================================================================
+  // Recognition
+  recognition: {
+    all: ['recognition'],
+    list: (params) => ['recognition', 'list', params],
+    sent: (userEmail) => ['recognition', 'sent', userEmail],
+    received: (userEmail) => ['recognition', 'received', userEmail],
+    public: () => ['recognition', 'public']
+  },
+
+  // Teams
   teams: {
     all: ['teams'],
     detail: (id) => ['teams', 'detail', id],
-    members: (teamId) => ['teams', 'members', teamId],
-    byUser: (email) => ['teams', 'user', email],
-    challenges: (teamId) => ['teams', 'challenges', teamId],
+    memberships: {
+      all: ['team-memberships'],
+      list: (params) => ['team-memberships', 'list', params],
+      byUser: (userEmail) => ['team-memberships', 'byUser', userEmail],
+      byTeam: (teamId) => ['team-memberships', 'byTeam', teamId]
+    },
+    invitations: {
+      all: ['team-invitations'],
+      list: (params) => ['team-invitations', 'list', params],
+      byUser: (userEmail) => ['team-invitations', 'byUser', userEmail]
+    },
+    challenges: {
+      all: ['team-challenges'],
+      active: ['team-challenges', 'active'],
+      byTeam: (teamId) => ['team-challenges', 'byTeam', teamId]
+    }
   },
-  
+
+  // Store
+  store: {
+    items: {
+      all: ['store-items'],
+      available: ['store-items', 'available'],
+      byCategory: (category) => ['store-items', 'category', category]
+    },
+    inventory: {
+      all: ['user-inventory'],
+      list: (params) => ['user-inventory', 'list', params],
+      byUser: (userEmail) => ['user-inventory', 'byUser', userEmail]
+    },
+    avatar: {
+      all: ['user-avatar'],
+      byUser: (userEmail) => ['user-avatar', 'byUser', userEmail]
+    },
+    transactions: {
+      all: ['store-transactions'],
+      list: (params) => ['store-transactions', 'list', params],
+      byUser: (userEmail) => ['store-transactions', 'byUser', userEmail]
+    }
+  },
+
+  // Notifications
+  notifications: {
+    all: ['notifications'],
+    list: (params) => ['notifications', 'list', params],
+    unread: (userEmail) => ['notifications', 'unread', userEmail]
+  },
+
+  // Channels
   channels: {
     all: ['channels'],
     detail: (id) => ['channels', 'detail', id],
-    messages: (channelId, limit) => ['channels', 'messages', channelId, limit],
-    byUser: (email) => ['channels', 'user', email],
-  },
-  
-  recognition: {
-    all: ['recognition'],
-    sent: (email) => ['recognition', 'sent', email],
-    received: (email) => ['recognition', 'received', email],
-    featured: () => ['recognition', 'featured'],
-    pending: () => ['recognition', 'pending'],
+    messages: {
+      all: ['channel-messages'],
+      list: (params) => ['channel-messages', 'list', params],
+      byChannel: (channelId) => ['channel-messages', 'byChannel', channelId]
+    }
   },
 
-  // ============================================================================
-  // STORE & INVENTORY
-  // ============================================================================
-  storeItems: {
-    all: ['store-items'],
-    available: () => ['store-items', 'available'],
-    byCategory: (category) => ['store-items', 'category', category],
-    detail: (id) => ['store-items', 'detail', id],
-  },
-  
-  inventory: {
-    byUser: (email) => ['inventory', email],
-    equipped: (email) => ['inventory', 'equipped', email],
-  },
-  
-  transactions: {
-    byUser: (email) => ['transactions', email],
+  // Profile
+  profile: {
+    all: ['user-profile'],
+    byEmail: (email) => ['user-profile', 'byEmail', email],
+    media: (userEmail) => ['user-media', userEmail],
+    participations: (userEmail) => ['user-participations', userEmail],
+    skillTracking: (userEmail) => ['skill-tracking', userEmail],
+    preferences: (userEmail) => ['activity-preferences', userEmail]
   },
 
-  // ============================================================================
-  // USER & PROFILE
-  // ============================================================================
-  user: {
-    current: ['user', 'current'],
-    profile: (email) => ['user', 'profile', email],
-    preferences: (email) => ['user', 'preferences', email],
-    avatar: (email) => ['user', 'avatar', email],
-    notifications: (email) => ['user', 'notifications', email],
-  },
-
-  // ============================================================================
-  // POLLS & SURVEYS
-  // ============================================================================
-  polls: {
-    all: ['time-slot-polls'],
-    active: () => ['time-slot-polls', 'active'],
-    byEvent: (eventId) => ['time-slot-polls', 'event', eventId],
-    byCreator: (email) => ['time-slot-polls', 'creator', email],
-  },
-
-  // ============================================================================
-  // ANALYTICS
-  // ============================================================================
+  // Analytics
   analytics: {
-    dashboard: () => ['analytics', 'dashboard'],
+    overview: () => ['analytics', 'overview'],
     engagement: (period) => ['analytics', 'engagement', period],
-    skills: () => ['analytics', 'skills'],
-    attendance: (period) => ['analytics', 'attendance', period],
-    trends: (metric) => ['analytics', 'trends', metric],
-  },
-
-  // ============================================================================
-  // SKILLS
-  // ============================================================================
-  skills: {
-    tracking: (email) => ['skills', 'tracking', email],
-    trends: () => ['skills', 'trends'],
-    byActivity: (activityId) => ['skills', 'activity', activityId],
-  },
-
-  // ============================================================================
-  // MEDIA & ASSETS
-  // ============================================================================
-  media: {
-    byEvent: (eventId) => ['media', 'event', eventId],
-    byUser: (email) => ['media', 'user', email],
-    featured: () => ['media', 'featured'],
-  },
-};
-
-/**
- * Helper to invalidate related queries
- */
-export const invalidationGroups = {
-  // When an event changes, invalidate these
-  eventChange: [
-    queryKeys.events.all,
-    queryKeys.participations.all,
-  ],
-  
-  // When gamification changes
-  gamificationChange: (email) => [
-    queryKeys.userPoints.byUser(email),
-    queryKeys.badges.awards(email),
-    queryKeys.leaderboard.all,
-  ],
-  
-  // When team data changes
-  teamChange: (teamId) => [
-    queryKeys.teams.detail(teamId),
-    queryKeys.teams.members(teamId),
-    queryKeys.leaderboard.teams('all'),
-  ],
-  
-  // When user profile changes
-  profileChange: (email) => [
-    queryKeys.user.profile(email),
-    queryKeys.user.avatar(email),
-    queryKeys.inventory.byUser(email),
-  ],
+    skills: () => ['analytics', 'skills']
+  }
 };
