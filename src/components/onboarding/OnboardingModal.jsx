@@ -1,0 +1,331 @@
+/**
+ * ONBOARDING MODAL
+ * Main interactive onboarding UI component with accessibility
+ */
+
+import React, { useEffect } from 'react';
+import { useOnboarding } from './OnboardingProvider';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Progress } from '@/components/ui/progress';
+import { Badge } from '@/components/ui/badge';
+import { 
+  ChevronLeft, 
+  ChevronRight, 
+  X, 
+  CheckCircle2,
+  Clock,
+  Sparkles,
+  Award,
+  Target,
+  Users,
+  Calendar,
+  BarChart3,
+  MessageSquare,
+  Gift
+} from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
+import { createPageUrl } from '../../utils';
+
+const STEP_ICONS = {
+  welcome: Sparkles,
+  profile: Users,
+  activity: Target,
+  event: Calendar,
+  gamification: Award,
+  team: Users,
+  analytics: BarChart3,
+  recognition: MessageSquare,
+  rewards: Gift,
+  complete: CheckCircle2
+};
+
+export default function OnboardingModal() {
+  const navigate = useNavigate();
+  const {
+    isOnboardingActive,
+    currentStep,
+    currentStepIndex,
+    steps,
+    progress,
+    totalTime,
+    completeStep,
+    skipStep,
+    previousStep,
+    dismissOnboarding
+  } = useOnboarding();
+
+  // Keyboard navigation
+  useEffect(() => {
+    if (!isOnboardingActive) return;
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        dismissOnboarding();
+      } else if (e.key === 'ArrowRight') {
+        handleNext();
+      } else if (e.key === 'ArrowLeft' && currentStepIndex > 0) {
+        previousStep();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOnboardingActive, currentStepIndex]);
+
+  if (!isOnboardingActive || !currentStep) return null;
+
+  const handleNext = async () => {
+    await completeStep(currentStep.id);
+  };
+
+  const handleSkip = async () => {
+    await skipStep(currentStep.id);
+  };
+
+  const handleAction = (action) => {
+    if (action.type === 'navigate') {
+      navigate(createPageUrl(action.target.replace('/', '')));
+      handleNext();
+    } else if (action.type === 'next') {
+      handleNext();
+    } else if (action.type === 'restart') {
+      // Handle restart in parent
+    }
+  };
+
+  const Icon = STEP_ICONS[currentStep.id.split('-')[1]] || Sparkles;
+  const isLastStep = currentStepIndex === steps.length - 1;
+
+  return (
+    <Dialog open={isOnboardingActive} onOpenChange={(open) => !open && dismissOnboarding()}>
+      <DialogContent 
+        className="max-w-3xl max-h-[90vh] overflow-y-auto"
+        aria-labelledby="onboarding-title"
+        aria-describedby="onboarding-description"
+      >
+        {/* Header with Progress */}
+        <DialogHeader>
+          <div className="flex items-center justify-between mb-4">
+            <Badge variant="outline" className="text-xs">
+              Step {currentStepIndex + 1} of {steps.length}
+            </Badge>
+            <div className="flex items-center gap-2 text-xs text-slate-500">
+              <Clock className="h-3 w-3" />
+              <span>{currentStep.estimatedTime}</span>
+              <span className="mx-1">•</span>
+              <span>{totalTime} total</span>
+            </div>
+          </div>
+
+          <Progress value={progress} className="h-2 mb-4" />
+
+          <div className="flex items-start gap-4">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-int-orange to-int-gold flex items-center justify-center flex-shrink-0">
+              <Icon className="h-6 w-6 text-white" />
+            </div>
+            <div className="flex-1">
+              <DialogTitle id="onboarding-title" className="text-2xl font-bold text-int-navy mb-2">
+                {currentStep.title}
+              </DialogTitle>
+              <DialogDescription id="onboarding-description" className="text-slate-600">
+                {currentStep.description}
+              </DialogDescription>
+            </div>
+          </div>
+        </DialogHeader>
+
+        {/* Content */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentStep.id}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.3 }}
+            className="py-6"
+          >
+            <StepContent step={currentStep} />
+          </motion.div>
+        </AnimatePresence>
+
+        {/* Actions */}
+        <div className="flex items-center justify-between pt-6 border-t">
+          <div className="flex gap-2">
+            {currentStepIndex > 0 && (
+              <Button
+                variant="ghost"
+                onClick={previousStep}
+                className="gap-2"
+              >
+                <ChevronLeft className="h-4 w-4" />
+                Back
+              </Button>
+            )}
+            <Button
+              variant="ghost"
+              onClick={handleSkip}
+              className="text-slate-500 hover:text-slate-700"
+            >
+              Skip
+            </Button>
+            <Button
+              variant="ghost"
+              onClick={dismissOnboarding}
+              className="text-slate-500 hover:text-slate-700"
+            >
+              <X className="h-4 w-4 mr-1" />
+              Close
+            </Button>
+          </div>
+
+          <div className="flex gap-2">
+            {currentStep.actions?.map((action, idx) => (
+              <Button
+                key={idx}
+                onClick={() => handleAction(action)}
+                variant={idx === 0 ? 'default' : 'outline'}
+                className={idx === 0 ? 'bg-int-orange hover:bg-int-orange/90' : ''}
+              >
+                {action.label}
+                {idx === 0 && <ChevronRight className="h-4 w-4 ml-1" />}
+              </Button>
+            ))}
+            {currentStep.actions?.length === 0 && (
+              <Button
+                onClick={handleNext}
+                className="bg-int-orange hover:bg-int-orange/90"
+              >
+                {isLastStep ? 'Finish' : 'Next'}
+                <ChevronRight className="h-4 w-4 ml-1" />
+              </Button>
+            )}
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function StepContent({ step }) {
+  const { content } = step;
+
+  // Render different content types
+  if (content.type === 'animated-intro') {
+    return (
+      <div className="text-center py-8">
+        <div className="text-6xl mb-6">🎉</div>
+        <div className="space-y-3">
+          {content.highlights.map((highlight, idx) => (
+            <motion.div
+              key={idx}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: idx * 0.1 }}
+              className="text-lg text-slate-700"
+            >
+              {highlight}
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (content.type === 'feature-overview') {
+    return (
+      <div className="grid grid-cols-2 gap-4">
+        {content.features.map((feature, idx) => (
+          <motion.div
+            key={idx}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: idx * 0.1 }}
+            className="p-4 rounded-xl bg-slate-50 border border-slate-200"
+          >
+            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-int-orange to-int-gold flex items-center justify-center mb-3">
+              <span className="text-white text-lg">{feature.icon === 'Trophy' ? '🏆' : '⭐'}</span>
+            </div>
+            <h4 className="font-semibold text-slate-900 mb-1">{feature.title}</h4>
+            <p className="text-sm text-slate-600">{feature.description}</p>
+          </motion.div>
+        ))}
+      </div>
+    );
+  }
+
+  if (content.type === 'step-by-step') {
+    return (
+      <div className="space-y-3">
+        {content.steps.map((stepText, idx) => (
+          <motion.div
+            key={idx}
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: idx * 0.1 }}
+            className="flex items-start gap-3 p-3 rounded-lg bg-slate-50"
+          >
+            <div className="w-6 h-6 rounded-full bg-int-orange text-white flex items-center justify-center text-sm font-medium flex-shrink-0">
+              {idx + 1}
+            </div>
+            <p className="text-slate-700">{stepText}</p>
+          </motion.div>
+        ))}
+      </div>
+    );
+  }
+
+  if (content.type === 'completion-celebration') {
+    return (
+      <div className="text-center py-8">
+        <motion.div
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ type: 'spring', duration: 0.6 }}
+          className="w-20 h-20 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center mx-auto mb-6"
+        >
+          <CheckCircle2 className="h-10 w-10 text-white" />
+        </motion.div>
+        
+        <h3 className="text-xl font-bold text-slate-900 mb-4">Achievements Unlocked!</h3>
+        
+        <div className="grid grid-cols-2 gap-3 mb-6">
+          {content.achievements.map((achievement, idx) => (
+            <motion.div
+              key={idx}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: idx * 0.1 }}
+              className="p-3 rounded-lg bg-emerald-50 border border-emerald-200"
+            >
+              <CheckCircle2 className="h-4 w-4 text-emerald-600 mx-auto mb-1" />
+              <p className="text-sm text-slate-700">{achievement}</p>
+            </motion.div>
+          ))}
+        </div>
+
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <h4 className="font-semibold text-slate-900 mb-2">Next Steps</h4>
+          <ul className="text-left text-sm text-slate-600 space-y-1">
+            {content.nextSteps?.map((step, idx) => (
+              <li key={idx} className="flex items-start gap-2">
+                <ChevronRight className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
+                {step}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    );
+  }
+
+  // Default rendering
+  return (
+    <div className="prose prose-slate max-w-none">
+      <p className="text-slate-600">
+        Follow the guided steps to complete this section of your onboarding.
+      </p>
+    </div>
+  );
+}

@@ -1,5 +1,5 @@
 /**
- * EXTENDED QUERY KEYS
+ * EXTENDED QUERY KEYS WITH ONBOARDING
  * Comprehensive type-safe query key factory for all entities
  */
 
@@ -159,5 +159,11 @@ export const queryKeys = {
     overview: () => ['analytics', 'overview'],
     engagement: (period) => ['analytics', 'engagement', period],
     skills: () => ['analytics', 'skills']
+  },
+
+  // Onboarding
+  onboarding: {
+    all: ['onboarding'],
+    byEmail: (email) => ['onboarding', 'byEmail', email]
   }
 };
