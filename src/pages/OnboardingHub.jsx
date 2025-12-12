@@ -1,205 +1,282 @@
 /**
- * ONBOARDING HUB PAGE
- * Dedicated page for managing and viewing onboarding progress
+ * ONBOARDING HUB
+ * Central page for tutorials, quests, and progress tracking
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useUserData } from '../components/hooks/useUserData';
 import { useOnboarding } from '../components/onboarding/OnboardingProvider';
+import LoadingSpinner from '../components/common/LoadingSpinner';
+import OnboardingQuestSystem from '../components/onboarding/OnboardingQuestSystem';
+import InteractiveTutorial, { TUTORIALS } from '../components/onboarding/InteractiveTutorial';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import OnboardingChecklist from '../components/onboarding/OnboardingChecklist';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
-  BookOpen, 
-  CheckCircle2, 
-  Clock,
+  GraduationCap, 
+  Trophy, 
+  PlayCircle,
+  CheckCircle2,
+  RotateCcw,
   Sparkles,
-  Award,
-  TrendingUp,
-  RefreshCw
+  Target,
+  Award
 } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { format } from 'date-fns';
+import { Progress } from '@/components/ui/progress';
 
 export default function OnboardingHub() {
-  const { user } = useUserData(true);
-  const {
-    onboardingState,
+  const { user, loading, isAdmin, isFacilitator } = useUserData(true);
+  const { 
+    progress, 
     isComplete,
-    progress,
-    steps,
-    startOnboarding,
-    restartOnboarding
+    completedStepsCount,
+    totalStepsCount,
+    restartOnboarding,
+    startOnboarding 
   } = useOnboarding();
 
-  const completedSteps = onboardingState?.completed_steps || [];
-  const timeSpent = onboardingState?.total_time_spent || 0;
-  const timeSpentMinutes = Math.floor(timeSpent / 60);
+  const [activeTutorial, setActiveTutorial] = useState(null);
+  const [completedTutorials, setCompletedTutorials] = useState([]);
+
+  if (loading) {
+    return <LoadingSpinner className="min-h-[60vh]" />;
+  }
+
+  const userRole = isAdmin || isFacilitator ? 'admin' : 'participant';
+
+  const availableTutorials = Object.values(TUTORIALS);
+
+  const handleTutorialComplete = (tutorialId) => {
+    setCompletedTutorials([...completedTutorials, tutorialId]);
+    setActiveTutorial(null);
+  };
+
+  const handleTutorialSkip = (tutorialId) => {
+    setActiveTutorial(null);
+  };
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6">
+    <div className="space-y-6 animate-fade-in">
       {/* Header */}
       <div className="glass-panel-solid">
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-bold text-int-navy mb-2 font-display">
-              <span className="text-gradient-orange">Onboarding</span> Tutorial
-            </h1>
-            <p className="text-slate-600">
-              Master INTeract with our interactive guided tour
-            </p>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center shadow-lg">
+              <GraduationCap className="h-8 w-8 text-white" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold text-int-navy font-display">
+                Onboarding Hub
+              </h1>
+              <p className="text-slate-600">
+                Complete tutorials and quests to master INTeract
+              </p>
+            </div>
           </div>
-          <Badge className={isComplete ? 'bg-emerald-100 text-emerald-700' : 'bg-blue-100 text-blue-700'}>
-            {isComplete ? 'Completed' : `${progress}% Complete`}
-          </Badge>
-        </div>
-      </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Stats */}
-        <div className="lg:col-span-1 space-y-4">
-          <Card className="border-0 shadow-lg">
-            <CardHeader>
-              <CardTitle className="text-lg">Your Progress</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="text-center py-4">
-                <div className={`w-20 h-20 rounded-full mx-auto mb-4 flex items-center justify-center ${
-                  isComplete 
-                    ? 'bg-gradient-to-br from-emerald-400 to-teal-500' 
-                    : 'bg-gradient-to-br from-int-orange to-int-gold'
-                }`}>
-                  {isComplete ? (
-                    <CheckCircle2 className="h-10 w-10 text-white" />
-                  ) : (
-                    <span className="text-2xl font-bold text-white">{progress}%</span>
-                  )}
-                </div>
-                
-                <p className="text-2xl font-bold text-slate-900 mb-1">
-                  {completedSteps.length}/{steps.length}
-                </p>
-                <p className="text-sm text-slate-500">Steps Completed</p>
-              </div>
-
-              <div className="space-y-3 pt-4 border-t">
-                <StatRow 
-                  icon={<Clock className="h-4 w-4" />}
-                  label="Time Spent"
-                  value={`${timeSpentMinutes} min`}
-                />
-                <StatRow 
-                  icon={<TrendingUp className="h-4 w-4" />}
-                  label="Completion Rate"
-                  value={`${progress}%`}
-                />
-                {onboardingState?.started_date && (
-                  <StatRow 
-                    icon={<BookOpen className="h-4 w-4" />}
-                    label="Started"
-                    value={format(new Date(onboardingState.started_date), 'MMM d, yyyy')}
-                  />
-                )}
-                {onboardingState?.completed_date && (
-                  <StatRow 
-                    icon={<CheckCircle2 className="h-4 w-4" />}
-                    label="Completed"
-                    value={format(new Date(onboardingState.completed_date), 'MMM d, yyyy')}
-                  />
-                )}
-              </div>
-
-              {isComplete && (
+          {isComplete ? (
+            <div className="text-right">
+              <Badge className="bg-emerald-500 text-white text-lg px-4 py-2 mb-2">
+                <CheckCircle2 className="h-5 w-5 mr-2" />
+                Onboarding Complete
+              </Badge>
+              <div>
                 <Button
-                  onClick={restartOnboarding}
                   variant="outline"
-                  className="w-full gap-2"
+                  size="sm"
+                  onClick={restartOnboarding}
+                  className="gap-2"
                 >
-                  <RefreshCw className="h-4 w-4" />
+                  <RotateCcw className="h-4 w-4" />
                   Restart Tutorial
                 </Button>
-              )}
-            </CardContent>
-          </Card>
-
-          {isComplete && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2 }}
-            >
-              <Card className="border-0 shadow-lg bg-gradient-to-br from-amber-50 to-yellow-50 border-amber-200">
-                <CardContent className="pt-6 text-center">
-                  <Award className="h-12 w-12 text-amber-600 mx-auto mb-3" />
-                  <h3 className="font-bold text-slate-900 mb-2">Tutorial Master!</h3>
-                  <p className="text-sm text-slate-600">
-                    You've completed the onboarding tutorial. You're ready to maximize your INTeract experience!
-                  </p>
-                </CardContent>
-              </Card>
-            </motion.div>
+              </div>
+            </div>
+          ) : (
+            <div className="text-right">
+              <div className="text-2xl font-bold text-purple-600 mb-1">
+                {Math.round(progress)}%
+              </div>
+              <p className="text-sm text-slate-600 mb-2">
+                {completedStepsCount} of {totalStepsCount} steps
+              </p>
+              <Button
+                onClick={startOnboarding}
+                className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"
+              >
+                <PlayCircle className="h-4 w-4 mr-2" />
+                Continue Tutorial
+              </Button>
+            </div>
           )}
         </div>
-
-        {/* Checklist */}
-        <div className="lg:col-span-2">
-          <OnboardingChecklist />
-        </div>
       </div>
 
-      {/* Tips & Resources */}
-      {!isComplete && (
-        <Card className="border-0 shadow-lg">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Sparkles className="h-5 w-5 text-int-orange" />
-              Quick Tips
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <TipCard
-                title="Take your time"
-                description="There's no rush! Complete the tutorial at your own pace."
-              />
-              <TipCard
-                title="Interactive learning"
-                description="Click through the app as you follow along for hands-on experience."
-              />
-              <TipCard
-                title="Skip if needed"
-                description="Already familiar with a feature? Feel free to skip that step."
-              />
-              <TipCard
-                title="Always accessible"
-                description="Access this tutorial anytime from the Tutorial menu in the header."
+      {/* Overall Progress */}
+      <Card className="border-2 border-purple-200 bg-gradient-to-br from-purple-50 to-indigo-50">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Sparkles className="h-5 w-5 text-purple-600" />
+            Your Learning Journey
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="bg-white rounded-xl p-4 border border-purple-100">
+              <div className="flex items-center gap-3 mb-2">
+                <Target className="h-8 w-8 text-blue-500" />
+                <div>
+                  <div className="text-2xl font-bold text-slate-900">
+                    {completedStepsCount}/{totalStepsCount}
+                  </div>
+                  <p className="text-sm text-slate-600">Tutorial Steps</p>
+                </div>
+              </div>
+              <Progress value={progress} className="h-2" />
+            </div>
+
+            <div className="bg-white rounded-xl p-4 border border-purple-100">
+              <div className="flex items-center gap-3 mb-2">
+                <PlayCircle className="h-8 w-8 text-purple-500" />
+                <div>
+                  <div className="text-2xl font-bold text-slate-900">
+                    {completedTutorials.length}/{availableTutorials.length}
+                  </div>
+                  <p className="text-sm text-slate-600">Interactive Tutorials</p>
+                </div>
+              </div>
+              <Progress 
+                value={(completedTutorials.length / availableTutorials.length) * 100} 
+                className="h-2" 
               />
             </div>
-          </CardContent>
-        </Card>
+
+            <div className="bg-white rounded-xl p-4 border border-purple-100">
+              <div className="flex items-center gap-3 mb-2">
+                <Trophy className="h-8 w-8 text-amber-500" />
+                <div>
+                  <div className="text-2xl font-bold text-slate-900">
+                    {isComplete ? '100' : Math.round(progress)}%
+                  </div>
+                  <p className="text-sm text-slate-600">Overall Progress</p>
+                </div>
+              </div>
+              <Progress value={isComplete ? 100 : progress} className="h-2" />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Active Tutorial */}
+      {activeTutorial && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <InteractiveTutorial
+            tutorialId={activeTutorial}
+            onComplete={handleTutorialComplete}
+            onSkip={handleTutorialSkip}
+          />
+        </motion.div>
       )}
-    </div>
-  );
-}
 
-function StatRow({ icon, label, value }) {
-  return (
-    <div className="flex items-center justify-between text-sm">
-      <div className="flex items-center gap-2 text-slate-600">
-        {icon}
-        <span>{label}</span>
-      </div>
-      <span className="font-medium text-slate-900">{value}</span>
-    </div>
-  );
-}
+      {/* Tabs */}
+      <Tabs defaultValue="quests" className="space-y-6">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="quests" className="gap-2">
+            <Trophy className="h-4 w-4" />
+            Onboarding Quests
+          </TabsTrigger>
+          <TabsTrigger value="tutorials" className="gap-2">
+            <PlayCircle className="h-4 w-4" />
+            Interactive Tutorials
+          </TabsTrigger>
+        </TabsList>
 
-function TipCard({ title, description }) {
-  return (
-    <div className="p-4 rounded-lg bg-blue-50 border border-blue-200">
-      <h4 className="font-semibold text-slate-900 text-sm mb-1">{title}</h4>
-      <p className="text-xs text-slate-600">{description}</p>
+        <TabsContent value="quests">
+          <OnboardingQuestSystem 
+            userEmail={user?.email} 
+            userRole={userRole}
+          />
+        </TabsContent>
+
+        <TabsContent value="tutorials">
+          <div className="grid gap-4">
+            {availableTutorials.map((tutorial, idx) => {
+              const isCompleted = completedTutorials.includes(tutorial.id);
+              return (
+                <motion.div
+                  key={tutorial.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.1 }}
+                >
+                  <Card className={`hover:shadow-lg transition-all ${
+                    isCompleted ? 'border-emerald-200 bg-emerald-50/50' : ''
+                  }`}>
+                    <CardContent className="p-6">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-start gap-4">
+                          <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                            isCompleted ? 'bg-emerald-500' : 'bg-gradient-to-br from-blue-500 to-cyan-500'
+                          }`}>
+                            {isCompleted ? (
+                              <CheckCircle2 className="h-6 w-6 text-white" />
+                            ) : (
+                              <PlayCircle className="h-6 w-6 text-white" />
+                            )}
+                          </div>
+                          <div className="flex-1">
+                            <h3 className="font-bold text-lg text-slate-900 mb-1">
+                              {tutorial.title}
+                            </h3>
+                            <p className="text-sm text-slate-600 mb-2">
+                              {tutorial.description}
+                            </p>
+                            <div className="flex items-center gap-3">
+                              <Badge variant="outline">
+                                {tutorial.duration}
+                              </Badge>
+                              <Badge variant="outline">
+                                {tutorial.steps.length} steps
+                              </Badge>
+                              {isCompleted && (
+                                <Badge className="bg-emerald-500 text-white">
+                                  Completed
+                                </Badge>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                        <Button
+                          onClick={() => setActiveTutorial(tutorial.id)}
+                          variant={isCompleted ? 'outline' : 'default'}
+                          className={!isCompleted ? 'bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600' : ''}
+                        >
+                          {isCompleted ? (
+                            <>
+                              <RotateCcw className="h-4 w-4 mr-2" />
+                              Review
+                            </>
+                          ) : (
+                            <>
+                              <PlayCircle className="h-4 w-4 mr-2" />
+                              Start Tutorial
+                            </>
+                          )}
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              );
+            })}
+          </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

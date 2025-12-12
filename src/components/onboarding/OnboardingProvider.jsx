@@ -193,7 +193,11 @@ export function OnboardingProvider({ children }) {
     // Helpers
     isLoading,
     isComplete: onboardingState?.onboarding_completed || false,
-    isDismissed: onboardingState?.dismissed || false
+    isDismissed: onboardingState?.dismissed || false,
+    
+    // Quest tracking
+    completedStepsCount: onboardingState?.completed_steps?.length || 0,
+    totalStepsCount: steps.length
   };
 
   return (
