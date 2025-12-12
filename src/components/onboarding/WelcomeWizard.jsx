@@ -5,6 +5,8 @@
 
 import React, { useState } from 'react';
 import { useOnboarding } from './OnboardingProvider';
+import { usePermissions } from '../hooks/usePermissions';
+import { useQueryClient } from '@tanstack/react-query';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -17,10 +19,14 @@ import {
   Heart,
   Gift,
   ChevronRight,
-  CheckCircle2
+  CheckCircle2,
+  Target
 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { cn } from '@/lib/utils';
 import confetti from 'canvas-confetti';
+import { base44 } from '@/api/base44Client';
+import { queryKeys } from '../lib/queryKeys';
 
 export default function WelcomeWizard({ isOpen, onComplete }) {
   const [step, setStep] = useState(0);
@@ -222,12 +228,27 @@ function GoalSelector() {
       try {
         const preferredTypes = [...new Set(newSelected.map(id => goalToActivityMap[id]))];
         
-        await apiClient.update('UserProfile', user.email, {
-          activity_preferences: {
-            preferred_types: preferredTypes,
-            ai_creativity_level: 'balanced'
-          }
-        });
+        // Get existing profiles
+        const profiles = await base44.entities.UserProfile.filter({ user_email: user.email });
+        
+        if (profiles.length > 0) {
+          // Update existing profile
+          await base44.entities.UserProfile.update(profiles[0].id, {
+            activity_preferences: {
+              preferred_types: preferredTypes,
+              ai_creativity_level: 'balanced'
+            }
+          });
+        } else {
+          // Create new profile
+          await base44.entities.UserProfile.create({
+            user_email: user.email,
+            activity_preferences: {
+              preferred_types: preferredTypes,
+              ai_creativity_level: 'balanced'
+            }
+          });
+        }
 
         queryClient.invalidateQueries(queryKeys.profile.byEmail(user.email));
       } catch (error) {

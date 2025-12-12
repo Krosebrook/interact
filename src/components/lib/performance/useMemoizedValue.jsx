@@ -3,7 +3,7 @@
  * Advanced memoization and performance helpers
  */
 
-import { useMemo, useRef, useCallback } from 'react';
+import { useMemo, useRef, useCallback, useState, useEffect } from 'react';
 import { isEqual } from 'lodash';
 
 // Deep comparison memoization
