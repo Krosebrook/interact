@@ -168,7 +168,7 @@ export default function OnboardingModal() {
               onClick={handleSkip}
               className="text-slate-500 hover:text-slate-700"
             >
-              Skip
+              Next
             </Button>
             <Button
               variant="ghost"
