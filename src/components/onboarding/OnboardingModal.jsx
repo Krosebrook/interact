@@ -3,12 +3,15 @@
  * Main interactive onboarding UI component with accessibility
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useOnboarding } from './OnboardingProvider';
+import { useStepValidation } from './useStepValidation';
+import { usePermissions } from '../hooks/usePermissions';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { 
   ChevronLeft, 
   ChevronRight, 
@@ -22,11 +25,14 @@ import {
   Calendar,
   BarChart3,
   MessageSquare,
-  Gift
+  Gift,
+  AlertCircle
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '../../utils';
+import { BadgeAwardSimulation, PointsIncrementAnimation } from './GamificationSimulation';
+import { OnboardingSpotlight } from './OnboardingSpotlight';
 
 const STEP_ICONS = {
   welcome: Sparkles,
@@ -43,6 +49,7 @@ const STEP_ICONS = {
 
 export default function OnboardingModal() {
   const navigate = useNavigate();
+  const { user } = usePermissions();
   const {
     isOnboardingActive,
     currentStep,
@@ -55,6 +62,11 @@ export default function OnboardingModal() {
     previousStep,
     dismissOnboarding
   } = useOnboarding();
+  
+  const { isValid, validationMessage } = useStepValidation(user, currentStep);
+  const [showBadge, setShowBadge] = useState(false);
+  const [showPoints, setShowPoints] = useState(false);
+  const [showSpotlight, setShowSpotlight] = useState(false);
 
   // Keyboard navigation
   useEffect(() => {
@@ -77,6 +89,15 @@ export default function OnboardingModal() {
   if (!isOnboardingActive || !currentStep) return null;
 
   const handleNext = async () => {
+    // Show gamification feedback for milestone steps
+    if (currentStep.id.includes('gamification') || currentStep.id.includes('complete')) {
+      setShowBadge(true);
+      setTimeout(() => setShowBadge(false), 3000);
+    } else {
+      setShowPoints(true);
+      setTimeout(() => setShowPoints(false), 2000);
+    }
+    
     await completeStep(currentStep.id);
   };
 
@@ -87,7 +108,12 @@ export default function OnboardingModal() {
   const handleAction = (action) => {
     if (action.type === 'navigate') {
       navigate(createPageUrl(action.target.replace('/', '')));
-      handleNext();
+      // Show spotlight on target page
+      if (currentStep.target) {
+        setTimeout(() => setShowSpotlight(true), 500);
+      } else {
+        handleNext();
+      }
     } else if (action.type === 'next') {
       handleNext();
     } else if (action.type === 'restart') {
@@ -95,16 +121,60 @@ export default function OnboardingModal() {
     }
   };
 
+  // Keyboard accessibility improvements
+  useEffect(() => {
+    if (!isOnboardingActive) return;
+
+    const handleKeyDown = (e) => {
+      // Announce step changes to screen readers
+      const announcement = document.getElementById('onboarding-announcement');
+      if (announcement) {
+        announcement.textContent = `${currentStep.title}. ${currentStep.description}`;
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOnboardingActive, currentStep]);
+
   const Icon = STEP_ICONS[currentStep.id.split('-')[1]] || Sparkles;
   const isLastStep = currentStepIndex === steps.length - 1;
 
   return (
-    <Dialog open={isOnboardingActive} onOpenChange={(open) => !open && dismissOnboarding()}>
-      <DialogContent 
-        className="max-w-3xl max-h-[90vh] overflow-y-auto"
-        aria-labelledby="onboarding-title"
-        aria-describedby="onboarding-description"
-      >
+    <>
+      {/* Screen reader announcements */}
+      <div 
+        id="onboarding-announcement" 
+        className="sr-only" 
+        role="status" 
+        aria-live="polite" 
+        aria-atomic="true"
+      />
+
+      {/* Gamification feedback */}
+      <BadgeAwardSimulation show={showBadge} badgeName="Tutorial Master" />
+      <PointsIncrementAnimation show={showPoints} points={10} reason="Tutorial Progress" />
+
+      {/* Cross-page spotlight */}
+      <OnboardingSpotlight
+        targetSelector={currentStep?.target}
+        title={currentStep?.title}
+        description={currentStep?.description}
+        placement={currentStep?.placement}
+        isVisible={showSpotlight}
+        onNext={() => {
+          setShowSpotlight(false);
+          handleNext();
+        }}
+        onDismiss={() => setShowSpotlight(false)}
+      />
+
+      <Dialog open={isOnboardingActive} onOpenChange={(open) => !open && dismissOnboarding()}>
+        <DialogContent 
+          className="max-w-3xl max-h-[90vh] overflow-y-auto"
+          aria-labelledby="onboarding-title"
+          aria-describedby="onboarding-description"
+        >
         {/* Header with Progress */}
         <DialogHeader>
           <div className="flex items-center justify-between mb-4">
@@ -150,6 +220,16 @@ export default function OnboardingModal() {
           </motion.div>
         </AnimatePresence>
 
+        {/* Validation Warning */}
+        {validationMessage && !isValid && (
+          <Alert variant="warning" className="mb-4">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>
+              {validationMessage}
+            </AlertDescription>
+          </Alert>
+        )}
+
         {/* Actions */}
         <div className="flex items-center justify-between pt-6 border-t">
           <div className="flex gap-2">
@@ -158,6 +238,7 @@ export default function OnboardingModal() {
                 variant="ghost"
                 onClick={previousStep}
                 className="gap-2"
+                aria-label="Go to previous step"
               >
                 <ChevronLeft className="h-4 w-4" />
                 Back
@@ -167,6 +248,7 @@ export default function OnboardingModal() {
               variant="ghost"
               onClick={handleSkip}
               className="text-slate-500 hover:text-slate-700"
+              aria-label="Skip this step"
             >
               Next
             </Button>
@@ -174,6 +256,7 @@ export default function OnboardingModal() {
               variant="ghost"
               onClick={dismissOnboarding}
               className="text-slate-500 hover:text-slate-700"
+              aria-label="Close onboarding"
             >
               <X className="h-4 w-4 mr-1" />
               Close
@@ -187,6 +270,8 @@ export default function OnboardingModal() {
                 onClick={() => handleAction(action)}
                 variant={idx === 0 ? 'default' : 'outline'}
                 className={idx === 0 ? 'bg-int-orange hover:bg-int-orange/90' : ''}
+                disabled={!isValid && !currentStep.validation?.optional}
+                aria-label={action.label}
               >
                 {action.label}
                 {idx === 0 && <ChevronRight className="h-4 w-4 ml-1" />}
@@ -196,6 +281,8 @@ export default function OnboardingModal() {
               <Button
                 onClick={handleNext}
                 className="bg-int-orange hover:bg-int-orange/90"
+                disabled={!isValid && !currentStep.validation?.optional}
+                aria-label={isLastStep ? 'Finish onboarding' : 'Continue to next step'}
               >
                 {isLastStep ? 'Finish' : 'Next'}
                 <ChevronRight className="h-4 w-4 ml-1" />
@@ -203,8 +290,9 @@ export default function OnboardingModal() {
             )}
           </div>
         </div>
-      </DialogContent>
-    </Dialog>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
 

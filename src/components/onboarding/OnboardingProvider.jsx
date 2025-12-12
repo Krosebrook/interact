@@ -54,15 +54,26 @@ export function OnboardingProvider({ children }) {
     }
   });
 
-  // Auto-start onboarding for new users
+  // Auto-start onboarding for new users OR resume incomplete onboarding
   useEffect(() => {
-    if (!isLoading && user && !onboardingState && !isOnboardingActive) {
+    if (!isLoading && user && !isOnboardingActive) {
       const hasSeenOnboarding = localStorage.getItem(`onboarding-seen-${user.email}`);
-      if (!hasSeenOnboarding) {
+      
+      // Resume incomplete onboarding on login
+      if (onboardingState && !onboardingState.onboarding_completed && !onboardingState.dismissed) {
+        const lastStepIndex = steps.findIndex(s => s.id === onboardingState.current_step);
+        if (lastStepIndex >= 0) {
+          setCurrentStepIndex(lastStepIndex);
+          setIsOnboardingActive(true);
+          setStartTime(Date.now());
+        }
+      }
+      // Start fresh for new users
+      else if (!onboardingState && !hasSeenOnboarding) {
         startOnboarding();
       }
     }
-  }, [isLoading, user, onboardingState, isOnboardingActive]);
+  }, [isLoading, user, onboardingState, isOnboardingActive, steps]);
 
   // Start onboarding
   const startOnboarding = useCallback(() => {

@@ -188,6 +188,18 @@ function FeatureCard({ icon: Icon, label }) {
 
 function GoalSelector() {
   const [selected, setSelected] = useState([]);
+  const { user } = usePermissions();
+  const queryClient = useQueryClient();
+
+  // Map goals to activity types
+  const goalToActivityMap = {
+    connect: 'social',
+    learn: 'learning',
+    fun: 'icebreaker',
+    wellness: 'wellness',
+    recognition: 'social',
+    rewards: 'competitive'
+  };
 
   const goals = [
     { id: 'connect', label: 'Connect with teammates', icon: Users },
@@ -198,12 +210,30 @@ function GoalSelector() {
     { id: 'rewards', label: 'Earn rewards', icon: Gift }
   ];
 
-  const toggleGoal = (goalId) => {
-    setSelected(prev => 
-      prev.includes(goalId) 
-        ? prev.filter(id => id !== goalId)
-        : [...prev, goalId]
-    );
+  const toggleGoal = async (goalId) => {
+    const newSelected = selected.includes(goalId) 
+      ? selected.filter(id => id !== goalId)
+      : [...selected, goalId];
+    
+    setSelected(newSelected);
+
+    // Update user profile with selected activity preferences
+    if (user?.email) {
+      try {
+        const preferredTypes = [...new Set(newSelected.map(id => goalToActivityMap[id]))];
+        
+        await apiClient.update('UserProfile', user.email, {
+          activity_preferences: {
+            preferred_types: preferredTypes,
+            ai_creativity_level: 'balanced'
+          }
+        });
+
+        queryClient.invalidateQueries(queryKeys.profile.byEmail(user.email));
+      } catch (error) {
+        console.error('Failed to update preferences:', error);
+      }
+    }
   };
 
   return (
