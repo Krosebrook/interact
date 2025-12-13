@@ -66,6 +66,18 @@ export default function Calendar() {
     }
   });
 
+  // Delete event mutation (soft delete)
+  const deleteEventMutation = useMutation({
+    mutationFn: (event) => base44.entities.Event.update(event.id, { 
+      status: 'cancelled',
+      cancellation_reason: 'Cancelled by organizer',
+      cancelled_at: new Date().toISOString()
+    }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['events'] });
+    },
+  });
+
   const upcomingEvents = filterUpcomingEvents(events);
   const pastEvents = filterPastEvents(events);
 
@@ -101,7 +113,10 @@ export default function Calendar() {
         participations={participations}
         isLoading={isLoading}
         userEmail={user?.email}
-        eventActions={eventActions}
+        eventActions={{
+          ...eventActions,
+          onDelete: deleteEventMutation.mutate
+        }}
         onReschedule={setRescheduleEvent}
         emptyTitle="No upcoming events"
         emptyDescription="Schedule your first event to get started"
