@@ -80,6 +80,7 @@ export default function EventsList({
               onSendReminder={showReminder ? eventActions?.handleSendReminder : undefined}
               onSendRecap={showRecap ? eventActions?.handleSendRecap : undefined}
               onCancel={showCancel ? eventActions?.handleCancelEvent : undefined}
+              onDelete={eventActions?.onDelete}
               onReschedule={onReschedule}
               userEmail={userEmail}
             />
