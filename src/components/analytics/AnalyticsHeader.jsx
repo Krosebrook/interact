@@ -3,6 +3,37 @@ import StatsCard from '../dashboard/StatsCard';
 import { TrendingUp, Users, Star, Calendar } from 'lucide-react';
 
 export default function AnalyticsHeader({ metrics }) {
+  const [isExporting, setIsExporting] = useState(false);
+
+  const handleExport = async (format) => {
+    setIsExporting(true);
+    try {
+      const response = await base44.functions.invoke('exportAnalyticsReport', { 
+        format,
+        dateRange: 'all'
+      });
+
+      // Create download link
+      const blob = new Blob([response.data], { 
+        type: format === 'pdf' ? 'application/pdf' : 'text/csv' 
+      });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `analytics-report-${Date.now()}.${format}`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      a.remove();
+
+      toast.success(`Analytics exported as ${format.toUpperCase()}`);
+    } catch (error) {
+      console.error('Export error:', error);
+      toast.error('Failed to export analytics');
+    } finally {
+      setIsExporting(false);
+    }
+  };
   return (
     <div className="space-y-6">
       <div>

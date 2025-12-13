@@ -27,6 +27,7 @@ import { OnboardingProvider } from './components/onboarding/OnboardingProvider';
 import OnboardingModal from './components/onboarding/OnboardingModal';
 import OnboardingProgress from './components/onboarding/OnboardingProgress';
 import OnboardingTrigger from './components/onboarding/OnboardingTrigger';
+import KeyboardShortcuts from './components/core/KeyboardShortcuts';
 
 const HEADER_IMAGE = 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/691e3ae3bd4916f2e05ae35e/1b2b117bd_ChatGPTImageNov25202503_31_49PM.png';
 
@@ -211,6 +212,9 @@ export default function Layout({ children, currentPageName }) {
         {/* Onboarding System */}
         <OnboardingModal />
         <OnboardingProgress />
+
+        {/* Global Keyboard Shortcuts */}
+        <KeyboardShortcuts />
 
       {/* Main Content */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
