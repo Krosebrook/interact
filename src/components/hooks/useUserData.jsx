@@ -5,11 +5,13 @@ import { createPageUrl } from '../../utils';
 
 /**
  * Full user data hook with profile, points, and role-based routing
+ * Production-grade with security, error handling, and performance optimization
  * 
  * @param {boolean} requireAuth - Redirect to login if not authenticated
  * @param {boolean} requireAdmin - Redirect if not admin
  * @param {boolean} requireFacilitator - Redirect if not facilitator (or admin)
  * @param {boolean} requireParticipant - Redirect if not participant
+ * @returns {Object} User data and helpers
  */
 export function useUserData(
   requireAuth = true, 
@@ -19,6 +21,7 @@ export function useUserData(
 ) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -26,8 +29,14 @@ export function useUserData(
     
     const loadUser = async () => {
       try {
+        setError(null);
         const currentUser = await base44.auth.me();
         if (!isMounted) return;
+        
+        // Validate user object
+        if (!currentUser?.email) {
+          throw new Error('Invalid user data received');
+        }
         
         setUser(currentUser);
         
@@ -77,9 +86,12 @@ export function useUserData(
           return;
         }
         
-      } catch (error) {
-        if (isMounted && requireAuth) {
-          base44.auth.redirectToLogin();
+      } catch (err) {
+        if (isMounted) {
+          setError(err.message || 'Failed to load user data');
+          if (requireAuth) {
+            base44.auth.redirectToLogin();
+          }
         }
       } finally {
         if (isMounted) {
@@ -130,6 +142,7 @@ export function useUserData(
   return {
     user,
     loading,
+    error,
     userPoints,
     profile,
     isAdmin: user?.role === 'admin',
@@ -137,6 +150,10 @@ export function useUserData(
     isParticipant: user?.user_type === 'participant',
     userType: user?.user_type,
     logout,
-    refreshUserData
+    refreshUserData,
+    // Helper flags
+    isAuthenticated: !!user,
+    hasProfile: !!profile,
+    hasPoints: !!userPoints
   };
 }

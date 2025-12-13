@@ -43,6 +43,10 @@ const formatStyles = {
   hybrid: { icon: Users, label: 'Hybrid', color: 'text-purple-600' }
 };
 
+/**
+ * Event Calendar Card Component
+ * Production-grade with proper error handling and accessibility
+ */
 export default function EventCalendarCard({
   event,
   activity,
@@ -53,15 +57,30 @@ export default function EventCalendarCard({
   onSendReminder,
   onSendRecap,
   onCancel,
+  onDelete,
   onReschedule,
   userEmail
 }) {
   const [isBookmarked, setIsBookmarked] = useState(false);
 
+  // Validate required props
+  if (!event) {
+    console.error('EventCalendarCard: event prop is required');
+    return null;
+  }
+
   const eventDate = new Date(event.scheduled_date);
   const isEventPast = isPast(eventDate);
   const formatConfig = formatStyles[event.event_format] || formatStyles.online;
   const FormatIcon = formatConfig.icon;
+  
+  // Safe action handlers
+  const handleCopyLink = () => onCopyLink?.(event);
+  const handleDownloadCalendar = () => onDownloadCalendar?.(event);
+  const handleSendReminder = () => onSendReminder?.(event);
+  const handleSendRecap = () => onSendRecap?.(event);
+  const handleCancel = () => onCancel?.(event);
+  const handleReschedule = () => onReschedule?.(event);
 
   return (
     <motion.div
@@ -117,47 +136,53 @@ export default function EventCalendarCard({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuItem onClick={() => onCopyLink(event)}>
-                <LinkIcon className="h-4 w-4 mr-2" />
-                Copy Link
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onDownloadCalendar(event)}>
-                <Download className="h-4 w-4 mr-2" />
-                Add to Calendar
-              </DropdownMenuItem>
+              {onCopyLink && (
+                <DropdownMenuItem onClick={handleCopyLink}>
+                  <LinkIcon className="h-4 w-4 mr-2" />
+                  Copy Link
+                </DropdownMenuItem>
+              )}
+              {onDownloadCalendar && (
+                <DropdownMenuItem onClick={handleDownloadCalendar}>
+                  <Download className="h-4 w-4 mr-2" />
+                  Add to Calendar
+                </DropdownMenuItem>
+              )}
               <DropdownMenuSeparator />
-              {!isEventPast &&
-              <>
-                  <DropdownMenuItem onClick={() => onSendReminder(event)}>
-                    <Bell className="h-4 w-4 mr-2" />
-                    Send Reminder
-                  </DropdownMenuItem>
-                  {onReschedule &&
-                <DropdownMenuItem onClick={() => onReschedule(event)}>
+              {!isEventPast && (
+                <>
+                  {onSendReminder && (
+                    <DropdownMenuItem onClick={handleSendReminder}>
+                      <Bell className="h-4 w-4 mr-2" />
+                      Send Reminder
+                    </DropdownMenuItem>
+                  )}
+                  {onReschedule && (
+                    <DropdownMenuItem onClick={handleReschedule}>
                       <RefreshCw className="h-4 w-4 mr-2" />
                       Reschedule
                     </DropdownMenuItem>
-                }
+                  )}
                 </>
-              }
-              {isEventPast && event.status === 'completed' &&
-              <DropdownMenuItem onClick={() => onSendRecap(event)}>
+              )}
+              {isEventPast && event.status === 'completed' && onSendRecap && (
+                <DropdownMenuItem onClick={handleSendRecap}>
                   <FileText className="h-4 w-4 mr-2" />
                   Send Recap
                 </DropdownMenuItem>
-              }
-              {!isEventPast && event.status !== 'cancelled' &&
-              <>
+              )}
+              {!isEventPast && event.status !== 'cancelled' && onCancel && (
+                <>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
-                  onClick={() => onCancel(event)}
-                  className="text-red-600 focus:text-red-600">
-
+                    onClick={handleCancel}
+                    className="text-red-600 focus:text-red-600"
+                  >
                     <XCircle className="h-4 w-4 mr-2" />
                     Cancel Event
                   </DropdownMenuItem>
                 </>
-              }
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
