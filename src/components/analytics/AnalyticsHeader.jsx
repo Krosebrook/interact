@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
-export default function AnalyticsHeader({ metrics }) {
+export default function AnalyticsHeader({ metrics = {} }) {
   const [isExporting, setIsExporting] = useState(false);
 
   const handleExport = async (format) => {
@@ -78,28 +78,28 @@ export default function AnalyticsHeader({ metrics }) {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatsCard
           title="Total Events"
-          value={metrics.totalEvents}
+          value={metrics.totalEvents || 0}
           subtitle="All time"
           icon={Calendar}
           color="indigo"
         />
         <StatsCard
           title="Avg Attendance"
-          value={metrics.avgParticipation}
+          value={metrics.avgParticipation || 0}
           subtitle="Per event"
           icon={Users}
           color="coral"
         />
         <StatsCard
           title="Engagement Score"
-          value={metrics.avgEngagement}
+          value={metrics.avgEngagement || 0}
           subtitle="Out of 10"
           icon={Star}
           color="mint"
         />
         <StatsCard
           title="Completion Rate"
-          value={`${metrics.completionRate}%`}
+          value={`${metrics.completionRate || 0}%`}
           subtitle="Events completed"
           icon={TrendingUp}
           color="sky"
