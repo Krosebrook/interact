@@ -61,9 +61,10 @@ export default function EventCalendarCard({
   onReschedule,
   userEmail
 }) {
+  // All hooks must be called before any conditional returns
   const [isBookmarked, setIsBookmarked] = useState(false);
 
-  // Validate required props
+  // Validate required props after hooks
   if (!event) {
     console.error('EventCalendarCard: event prop is required');
     return null;
