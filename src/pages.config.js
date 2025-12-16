@@ -33,6 +33,7 @@ import RoleSelection from './pages/RoleSelection';
 import AdvancedGamificationAnalytics from './pages/AdvancedGamificationAnalytics';
 import RoleSetup from './pages/RoleSetup';
 import OnboardingHub from './pages/OnboardingHub';
+import EmployeeDirectory from './pages/EmployeeDirectory';
 import __Layout from './Layout.jsx';
 
 
@@ -72,6 +73,7 @@ export const PAGES = {
     "AdvancedGamificationAnalytics": AdvancedGamificationAnalytics,
     "RoleSetup": RoleSetup,
     "OnboardingHub": OnboardingHub,
+    "EmployeeDirectory": EmployeeDirectory,
 }
 
 export const pagesConfig = {
