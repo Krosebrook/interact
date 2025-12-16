@@ -23,6 +23,7 @@ import {
 import AIEventThemeGenerator from './AIEventThemeGenerator';
 
 export default function AISuggestionsWidget({ onScheduleActivity, onGenerateCustom }) {
+  // All hooks must be called before any conditional returns
   const [showThemeGenerator, setShowThemeGenerator] = useState(false);
   const queryClient = useQueryClient();
 
@@ -78,6 +79,7 @@ export default function AISuggestionsWidget({ onScheduleActivity, onGenerateCust
     hybrid: '✨'
   };
 
+  // Conditional rendering after all hooks
   if (isLoading) {
     return (
       <div className="glass-panel-solid">
