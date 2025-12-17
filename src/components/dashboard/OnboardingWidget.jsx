@@ -19,6 +19,7 @@ import {
 import { motion } from 'framer-motion';
 
 export default function OnboardingWidget({ variant = 'card' }) {
+  // All hooks must be called before any conditional returns
   const {
     isComplete,
     progress,
@@ -32,7 +33,7 @@ export default function OnboardingWidget({ variant = 'card' }) {
   const totalSteps = steps.length;
   const remainingSteps = totalSteps - completedCount;
 
-  // Don't show if dismissed - check after all hooks
+  // Conditional rendering after all hooks
   if (onboardingState?.dismissed) return null;
 
   // Compact banner variant
