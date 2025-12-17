@@ -17,7 +17,8 @@ import {
   User,
   Download,
   Plug,
-  ChevronRight
+  ChevronRight,
+  Shield
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import NotificationBell from './components/notifications/NotificationBell';

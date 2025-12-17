@@ -1,4 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useUserData } from '../components/hooks/useUserData.jsx';
+import { useUserPermissions } from '../components/hooks/useRBACGuard';
+import UserManagementPanel from '../components/admin/UserManagementPanel';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import ProtectedRoute from '../components/common/ProtectedRoute';
 import AISettingsPanel from '../components/settings/AISettingsPanel';
