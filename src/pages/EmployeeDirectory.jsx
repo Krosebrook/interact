@@ -5,7 +5,7 @@
 
 import React, { useState } from 'react';
 import { useUserData } from '../components/hooks/useUserData.jsx';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
@@ -30,16 +30,32 @@ import {
   Award,
   TrendingUp,
   Filter,
-  Users
+  Users,
+  UserPlus,
+  Shield,
+  Ban,
+  CheckCircle,
+  Settings
 } from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import EmptyState from '../components/common/EmptyState';
+import { toast } from 'sonner';
+import { isOwner, getEffectiveRole, hasPermission } from '../components/lib/rbac/roles';
 
 export default function EmployeeDirectory() {
   const { user, loading: userLoading, isAdmin } = useUserData(true, true);
   const [searchQuery, setSearchQuery] = useState('');
   const [departmentFilter, setDepartmentFilter] = useState('all');
   const [roleFilter, setRoleFilter] = useState('all');
+  const [showInviteDialog, setShowInviteDialog] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const queryClient = useQueryClient();
 
   // Fetch all users (admin only)
   const { data: allUsers = [], isLoading: usersLoading } = useQuery({
@@ -89,6 +105,10 @@ export default function EmployeeDirectory() {
     return matchesSearch && matchesDepartment && matchesRole;
   });
 
+  const userIsOwner = isOwner(user);
+  const canInvite = hasPermission(user, 'INVITE_USERS');
+  const canManageRoles = hasPermission(user, 'MANAGE_ROLES');
+
   return (
     <div className="space-y-6 animate-fade-in">
       {/* Header */}
@@ -97,6 +117,15 @@ export default function EmployeeDirectory() {
           <h1 className="text-3xl font-bold text-int-navy mb-2">Employee Directory</h1>
           <p className="text-slate-600">{employees.length} employees • View profiles and team insights</p>
         </div>
+        {canInvite && (
+          <Button 
+            onClick={() => setShowInviteDialog(true)}
+            className="bg-int-orange hover:bg-int-orange/90"
+          >
+            <UserPlus className="h-4 w-4 mr-2" />
+            Invite Users
+          </Button>
+        )}
       </div>
 
       {/* Filters */}
@@ -157,19 +186,48 @@ export default function EmployeeDirectory() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredEmployees.map(employee => (
-            <EmployeeCard key={employee.id} employee={employee} />
+            <EmployeeCard 
+              key={employee.id} 
+              employee={employee}
+              currentUser={user}
+              canManage={canManageRoles}
+              onManage={(emp) => setSelectedUser(emp)}
+            />
           ))}
         </div>
+      )}
+
+      {/* Invite Dialog */}
+      <InviteUsersDialog 
+        open={showInviteDialog} 
+        onOpenChange={setShowInviteDialog}
+        currentUser={user}
+      />
+
+      {/* Manage User Dialog */}
+      {selectedUser && (
+        <ManageUserDialog
+          open={!!selectedUser}
+          onOpenChange={(open) => !open && setSelectedUser(null)}
+          user={selectedUser}
+          currentUser={user}
+          onSuccess={() => {
+            queryClient.invalidateQueries(['all-users']);
+            queryClient.invalidateQueries(['all-profiles']);
+            setSelectedUser(null);
+          }}
+        />
       )}
     </div>
   );
 }
 
-function EmployeeCard({ employee }) {
+function EmployeeCard({ employee, currentUser, canManage, onManage }) {
   const { profile, points } = employee;
+  const isSuspended = profile?.status === 'suspended';
   
   return (
-    <Card className="p-4 hover:shadow-lg transition-shadow">
+    <Card className={`p-4 hover:shadow-lg transition-shadow ${isSuspended ? 'opacity-60 border-red-200' : ''}`}>
       <div className="flex items-start gap-3 mb-3">
         {/* Avatar */}
         <div className="relative">
@@ -245,12 +303,232 @@ function EmployeeCard({ employee }) {
         </div>
       )}
 
-      {/* View Profile Button */}
-      <Link to={createPageUrl('PublicProfile') + `?email=${employee.email}`}>
-        <Button variant="outline" className="w-full" size="sm">
-          View Profile
-        </Button>
-      </Link>
+      {/* Actions */}
+      <div className="flex gap-2">
+        <Link to={createPageUrl('PublicProfile') + `?email=${employee.email}`} className="flex-1">
+          <Button variant="outline" className="w-full" size="sm">
+            View Profile
+          </Button>
+        </Link>
+        {canManage && currentUser.email !== employee.email && (
+          <Button 
+            variant="outline" 
+            size="sm"
+            onClick={() => onManage(employee)}
+          >
+            <Settings className="h-4 w-4" />
+          </Button>
+        )}
+      </div>
+
+      {isSuspended && (
+        <div className="mt-2 flex items-center gap-1 text-xs text-red-600">
+          <Ban className="h-3 w-3" />
+          <span>Suspended</span>
+        </div>
+      )}
     </Card>
+  );
+}
+
+// Invite Users Dialog Component
+function InviteUsersDialog({ open, onOpenChange, currentUser }) {
+  const [emails, setEmails] = useState('');
+  const [role, setRole] = useState('participant');
+  const [message, setMessage] = useState('');
+  const queryClient = useQueryClient();
+
+  const inviteMutation = useMutation({
+    mutationFn: (data) => base44.functions.invoke('inviteUser', data),
+    onSuccess: (response) => {
+      toast.success(response.data.summary || 'Invitations sent!');
+      queryClient.invalidateQueries(['all-users']);
+      setEmails('');
+      setMessage('');
+      onOpenChange(false);
+    },
+    onError: (error) => toast.error(error.message || 'Failed to send invitations')
+  });
+
+  const handleSubmit = () => {
+    const emailList = emails.split(/[\n,]/).map(e => e.trim()).filter(Boolean);
+    if (emailList.length === 0) {
+      toast.error('Please enter at least one email');
+      return;
+    }
+    inviteMutation.mutate({ emails: emailList, role, message });
+  };
+
+  const userIsOwner = isOwner(currentUser);
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-lg">
+        <DialogHeader>
+          <DialogTitle>Invite Users</DialogTitle>
+        </DialogHeader>
+        
+        <div className="space-y-4">
+          <div>
+            <label className="text-sm font-medium text-slate-700">Email Addresses</label>
+            <textarea
+              value={emails}
+              onChange={(e) => setEmails(e.target.value)}
+              placeholder="Enter emails (one per line or comma-separated)&#10;john@intinc.com&#10;jane@intinc.com"
+              className="w-full mt-1 p-2 border border-slate-300 rounded-md h-32 text-sm"
+            />
+            <p className="text-xs text-slate-500 mt-1">Only @intinc.com emails allowed</p>
+          </div>
+
+          <div>
+            <label className="text-sm font-medium text-slate-700">Assign Role</label>
+            <Select value={role} onValueChange={setRole}>
+              <SelectTrigger className="mt-1">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="participant">Employee</SelectItem>
+                <SelectItem value="facilitator">Facilitator</SelectItem>
+                {userIsOwner && <SelectItem value="admin">Admin</SelectItem>}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div>
+            <label className="text-sm font-medium text-slate-700">Welcome Message (Optional)</label>
+            <textarea
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              placeholder="Add a personal welcome message..."
+              className="w-full mt-1 p-2 border border-slate-300 rounded-md h-20 text-sm"
+            />
+          </div>
+
+          <div className="flex gap-3">
+            <Button variant="outline" className="flex-1" onClick={() => onOpenChange(false)}>
+              Cancel
+            </Button>
+            <Button 
+              className="flex-1 bg-int-orange hover:bg-int-orange/90"
+              onClick={handleSubmit}
+              disabled={inviteMutation.isPending}
+            >
+              {inviteMutation.isPending ? 'Sending...' : 'Send Invitations'}
+            </Button>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+// Manage User Dialog Component
+function ManageUserDialog({ open, onOpenChange, user: targetUser, currentUser, onSuccess }) {
+  const [action, setAction] = useState('');
+  const queryClient = useQueryClient();
+
+  const manageMutation = useMutation({
+    mutationFn: (data) => base44.functions.invoke('manageUserRole', data),
+    onSuccess: (response) => {
+      toast.success(response.data.message || 'User updated');
+      queryClient.invalidateQueries(['all-users']);
+      queryClient.invalidateQueries(['all-profiles']);
+      onSuccess();
+    },
+    onError: (error) => toast.error(error.message || 'Failed to update user')
+  });
+
+  const handleAction = (actionType, data = {}) => {
+    manageMutation.mutate({
+      action: actionType,
+      targetEmail: targetUser.email,
+      ...data
+    });
+  };
+
+  const userIsOwner = isOwner(currentUser);
+  const isSuspended = targetUser.profile?.status === 'suspended';
+  const effectiveRole = getEffectiveRole(targetUser);
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-md">
+        <DialogHeader>
+          <DialogTitle>Manage User</DialogTitle>
+        </DialogHeader>
+        
+        <div className="space-y-4">
+          <div className="p-3 bg-slate-50 rounded-lg">
+            <p className="font-medium text-slate-900">{targetUser.full_name}</p>
+            <p className="text-sm text-slate-600">{targetUser.email}</p>
+            <Badge className="mt-2">{effectiveRole}</Badge>
+          </div>
+
+          {userIsOwner && (
+            <div>
+              <label className="text-sm font-medium text-slate-700 mb-2 block">Change Role</label>
+              <div className="space-y-2">
+                <Button
+                  variant="outline"
+                  className="w-full justify-start"
+                  onClick={() => handleAction('change_role', { newRole: 'admin', newUserType: null })}
+                  disabled={manageMutation.isPending || targetUser.role === 'admin'}
+                >
+                  <Shield className="h-4 w-4 mr-2" />
+                  Make Admin
+                </Button>
+                <Button
+                  variant="outline"
+                  className="w-full justify-start"
+                  onClick={() => handleAction('change_role', { newRole: 'user', newUserType: 'facilitator' })}
+                  disabled={manageMutation.isPending || targetUser.user_type === 'facilitator'}
+                >
+                  <Users className="h-4 w-4 mr-2" />
+                  Make Facilitator
+                </Button>
+                <Button
+                  variant="outline"
+                  className="w-full justify-start"
+                  onClick={() => handleAction('change_role', { newRole: 'user', newUserType: 'participant' })}
+                  disabled={manageMutation.isPending || targetUser.user_type === 'participant'}
+                >
+                  <User className="h-4 w-4 mr-2" />
+                  Make Employee
+                </Button>
+              </div>
+            </div>
+          )}
+
+          <div className="pt-3 border-t border-slate-200">
+            <label className="text-sm font-medium text-slate-700 mb-2 block">Account Status</label>
+            {isSuspended ? (
+              <Button
+                variant="outline"
+                className="w-full justify-start text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50"
+                onClick={() => handleAction('activate')}
+                disabled={manageMutation.isPending}
+              >
+                <CheckCircle className="h-4 w-4 mr-2" />
+                Activate User
+              </Button>
+            ) : (
+              <Button
+                variant="outline"
+                className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50"
+                onClick={() => handleAction('suspend')}
+                disabled={manageMutation.isPending}
+              >
+                <Ban className="h-4 w-4 mr-2" />
+                Suspend User
+              </Button>
+            )}
+          </div>
+
+          <Button variant="outline" className="w-full" onClick={() => onOpenChange(false)}>
+            Close
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }
