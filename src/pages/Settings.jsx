@@ -1,19 +1,26 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useUserData } from '../components/hooks/useUserData.jsx';
 import { useUserPermissions } from '../components/hooks/useRBACGuard';
 import UserManagementPanel from '../components/admin/UserManagementPanel';
 import BulkUserImport from '../components/admin/BulkUserImport';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import ProtectedRoute from '../components/common/ProtectedRoute';
 import AISettingsPanel from '../components/settings/AISettingsPanel';
 import TeamsConfigPanel from '../components/teams/TeamsConfigPanel';
 import RoleManagement from '../components/admin/RoleManagement';
 import UserTypeManager from '../components/admin/UserTypeManager';
 import { Settings as SettingsIcon, Sparkles, Shield, MessageSquare, Users } from 'lucide-react';
 
-function SettingsContent() {
-  const { user } = useUserData(true, true);
+export default function Settings() {
+  const { user, loading } = useUserData(true, true);
   const permissions = useUserPermissions(user);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="animate-spin h-8 w-8 border-4 border-int-orange border-t-transparent rounded-full" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8 max-w-5xl">
@@ -82,13 +89,5 @@ function SettingsContent() {
         </TabsContent>
       </Tabs>
     </div>
-  );
-}
-
-export default function Settings() {
-  return (
-    <ProtectedRoute requireAdmin>
-      <SettingsContent />
-    </ProtectedRoute>
   );
 }
