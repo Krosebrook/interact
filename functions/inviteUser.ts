@@ -78,8 +78,7 @@ Deno.serve(async (req) => {
         const invitation = await base44.asServiceRole.entities.UserInvitation.create({
           email,
           invited_by: currentUser.email,
-          role: role === 'admin' ? 'admin' : 'user',
-          user_type: role === 'admin' ? null : role,
+          role: role === 'admin' ? 'admin' : (role === 'facilitator' ? 'facilitator' : 'participant'),
           token,
           status: 'pending',
           expires_at: expiresAt.toISOString(),
