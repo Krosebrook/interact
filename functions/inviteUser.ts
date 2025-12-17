@@ -16,8 +16,8 @@ Deno.serve(async (req) => {
     }
 
     // RBAC: Admin or owner can invite
-    const OWNER_EMAILS = ['owner@intinc.com'];
-    const isOwner = OWNER_EMAILS.includes(currentUser.email.toLowerCase());
+    const OWNER_EMAILS = []; // Configure if needed
+    const isOwner = OWNER_EMAILS.length > 0 && OWNER_EMAILS.includes(currentUser.email.toLowerCase());
     const isAdmin = currentUser.role === 'admin' || isOwner;
     
     if (!isAdmin) {

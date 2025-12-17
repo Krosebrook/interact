@@ -3,9 +3,12 @@
  * Production-grade role definitions and permission checking
  */
 
-// Owner email(s) - only these can be owners
+// Owner email(s) - Configure with actual owner emails
+// Support multiple companies: Intinc, Edgewater, etc.
 export const OWNER_EMAILS = [
-  'owner@intinc.com', // Replace with actual owner email
+  // 'owner@intinc.com',
+  // 'admin@edgewater.com',
+  // Add owner emails here - leave empty if using all admins
 ];
 
 export const ROLES = {

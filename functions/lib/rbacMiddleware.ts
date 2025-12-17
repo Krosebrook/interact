@@ -3,7 +3,7 @@
  * Centralized permission checking for server-side operations
  */
 
-const OWNER_EMAILS = ['owner@intinc.com']; // Configure with actual owner email
+const OWNER_EMAILS = []; // Configure with actual owner emails - leave empty if none
 
 export const ROLES = {
   OWNER: 'owner',

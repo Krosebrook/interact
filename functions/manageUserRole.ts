@@ -16,9 +16,9 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // RBAC: Only owner can manage roles
-    const OWNER_EMAILS = ['owner@intinc.com']; // Configure this
-    const isOwner = OWNER_EMAILS.includes(currentUser.email.toLowerCase());
+    // RBAC: Owner or admin can manage roles
+    const OWNER_EMAILS = []; // Configure if specific owner emails needed
+    const isOwner = OWNER_EMAILS.length > 0 && OWNER_EMAILS.includes(currentUser.email.toLowerCase());
     
     if (!isOwner && currentUser.role !== 'admin') {
       return Response.json({ error: 'Forbidden: Owner permission required' }, { status: 403 });
