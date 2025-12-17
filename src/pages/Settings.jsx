@@ -10,7 +10,7 @@ import RoleManagement from '../components/admin/RoleManagement';
 import UserTypeManager from '../components/admin/UserTypeManager';
 import { Settings as SettingsIcon, Sparkles, Shield, MessageSquare, Users } from 'lucide-react';
 
-export default function Settings() {
+function SettingsContent() {
   const { user, loading } = useUserData(true, true);
   const permissions = useUserPermissions(user);
 
@@ -90,4 +90,8 @@ export default function Settings() {
       </Tabs>
     </div>
   );
+}
+
+export default function Settings() {
+  return <SettingsContent />;
 }
