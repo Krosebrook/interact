@@ -22,6 +22,7 @@ export function useUserData(
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [redirecting, setRedirecting] = useState(false);
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -47,12 +48,14 @@ export function useUserData(
         
         // If non-admin user has no user_type, redirect to role selection
         if (hasNoUserType && !requireAdmin) {
+          setRedirecting(true);
           window.location.href = createPageUrl('RoleSelection');
           return;
         }
         
         // Admin-only pages
         if (requireAdmin && !isAdmin) {
+          setRedirecting(true);
           // Non-admins go to their appropriate dashboard
           if (isFacilitator) {
             window.location.href = createPageUrl('FacilitatorDashboard');
@@ -66,6 +69,7 @@ export function useUserData(
         
         // Facilitator-only pages (admins can also access)
         if (requireFacilitator && !isAdmin && !isFacilitator) {
+          setRedirecting(true);
           if (isParticipant) {
             window.location.href = createPageUrl('ParticipantPortal');
           } else {
@@ -76,6 +80,7 @@ export function useUserData(
         
         // Participant-only pages
         if (requireParticipant && !isParticipant) {
+          setRedirecting(true);
           if (isAdmin) {
             window.location.href = createPageUrl('Dashboard');
           } else if (isFacilitator) {
@@ -90,11 +95,12 @@ export function useUserData(
         if (isMounted) {
           setError(err.message || 'Failed to load user data');
           if (requireAuth) {
+            setRedirecting(true);
             base44.auth.redirectToLogin();
           }
         }
       } finally {
-        if (isMounted) {
+        if (isMounted && !redirecting) {
           setLoading(false);
         }
       }
@@ -141,8 +147,9 @@ export function useUserData(
 
   return {
     user,
-    loading,
+    loading: loading || redirecting,
     error,
+    redirecting,
     userPoints,
     profile,
     isAdmin: user?.role === 'admin',
