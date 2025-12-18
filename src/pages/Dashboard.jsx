@@ -31,14 +31,9 @@ import {
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  // Admin-only dashboard
-  const { user, loading: userLoading, isAdmin, isRedirecting } = useUserData(true, true, false, false);
   
-  // Early return if redirecting to prevent hook count mismatch
-  if (isRedirecting) {
-    return <LoadingSpinner className="min-h-[60vh]" />;
-  }
-
+  // CRITICAL: All hooks must be called unconditionally to prevent order drift
+  const { user, loading: userLoading, isAdmin, isRedirecting } = useUserData(true, true, false, false);
   const { events, activities, participations, isLoading } = useEventData({ limit: 100 });
   const [showGenerator, setShowGenerator] = useState(false);
   const eventActions = useEventActions();
@@ -47,6 +42,11 @@ export default function Dashboard() {
   const upcomingEvents = filterUpcomingEvents(events);
   const stats = calculateDashboardStats(events, activities, participations);
 
+  // Early returns AFTER all hooks are called
+  if (isRedirecting || userLoading || !user) {
+    return <LoadingSpinner className="min-h-[60vh]" />;
+  }
+
   const handleScheduleActivity = (activity) => {
     navigate(`${createPageUrl('Calendar')}?activity=${activity.id}`);
   };
@@ -54,11 +54,6 @@ export default function Dashboard() {
   const handleActivityCreated = (activity) => {
     handleScheduleActivity(activity);
   };
-
-  // Show loading state
-  if (userLoading || isLoading || !user) {
-    return <LoadingSpinner className="min-h-[60vh]" />;
-  }
 
   return (
     <div className="bg-blue-50 opacity-100 space-y-8 animate-fade-in">
