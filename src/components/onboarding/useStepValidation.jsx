@@ -1,6 +1,7 @@
 /**
  * STEP VALIDATION HOOK
  * Monitors app state to auto-validate onboarding steps
+ * FIXED: All hooks called unconditionally at top level
  */
 
 import { useEffect, useState } from 'react';
@@ -10,18 +11,21 @@ import { useUserProfile } from '../hooks/useUserProfile';
 import { useGamificationData } from '../hooks/useGamificationData';
 
 export function useStepValidation(user, currentStep) {
+  // ALL HOOKS MUST BE CALLED UNCONDITIONALLY
   const [isValid, setIsValid] = useState(false);
   const [validationMessage, setValidationMessage] = useState('');
 
-  // Data hooks for validation
-  const { events } = useEventData();
-  const { teams } = useTeamData();
+  // Data hooks for validation - always called with enabled flags
+  const { events } = useEventData({ enabled: !!user });
+  const { teams } = useTeamData({ enabled: !!user });
   const { profile } = useUserProfile(user?.email);
-  const { badges, userPoints } = useGamificationData(user?.email);
+  const { badges, userPoints } = useGamificationData({ enabled: !!user, userEmail: user?.email });
 
+  // Validation logic in useEffect
   useEffect(() => {
     if (!currentStep?.validation) {
       setIsValid(true);
+      setValidationMessage('');
       return;
     }
 

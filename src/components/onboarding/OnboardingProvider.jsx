@@ -1,9 +1,10 @@
 /**
  * ONBOARDING PROVIDER
  * Context and state management for onboarding system
+ * FIXED: Removed circular dependencies and ensured stable hook order
  */
 
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from '../lib/apiClient';
 import { queryKeys } from '../lib/queryKeys';
@@ -13,22 +14,27 @@ import { usePermissions } from '../hooks/usePermissions';
 const OnboardingContext = createContext(null);
 
 export function OnboardingProvider({ children }) {
+  // ALL HOOKS AT TOP LEVEL
   const { user, isAdmin, isFacilitator } = usePermissions();
   const queryClient = useQueryClient();
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [isOnboardingActive, setIsOnboardingActive] = useState(false);
   const [startTime, setStartTime] = useState(null);
 
-  // Determine user role for onboarding
-  const onboardingRole = isAdmin || isFacilitator ? 'admin' : 'participant';
-  const steps = getOnboardingSteps(onboardingRole);
+  // Determine user role for onboarding - memoized to prevent recalculation
+  const onboardingRole = useMemo(() => {
+    return isAdmin || isFacilitator ? 'admin' : 'participant';
+  }, [isAdmin, isFacilitator]);
+  
+  const steps = useMemo(() => getOnboardingSteps(onboardingRole), [onboardingRole]);
 
   // Fetch onboarding state
   const { data: onboardingState, isLoading } = useQuery({
     queryKey: queryKeys.onboarding.byEmail(user?.email),
     queryFn: async () => {
+      if (!user?.email) return null;
       const records = await apiClient.list('UserOnboarding', {
-        filters: { user_email: user?.email }
+        filters: { user_email: user.email }
       });
       return records[0] || null;
     },
@@ -54,9 +60,26 @@ export function OnboardingProvider({ children }) {
     }
   });
 
+  // Start onboarding - removed circular dependency by using functional setState
+  const startOnboarding = useCallback(() => {
+    setIsOnboardingActive(true);
+    setCurrentStepIndex(0);
+    setStartTime(Date.now());
+    
+    // Use steps from closure safely
+    const firstStepId = steps[0]?.id;
+    if (firstStepId && !onboardingState) {
+      updateOnboardingMutation.mutate({
+        current_step: firstStepId,
+        completed_steps: [],
+        completion_percentage: 0
+      });
+    }
+  }, [steps, onboardingState, updateOnboardingMutation]);
+
   // Auto-start onboarding for new users OR resume incomplete onboarding
   useEffect(() => {
-    if (!isLoading && user && !isOnboardingActive) {
+    if (!isLoading && user && !isOnboardingActive && steps.length > 0) {
       const hasSeenOnboarding = localStorage.getItem(`onboarding-seen-${user.email}`);
       
       // Resume incomplete onboarding on login
@@ -73,22 +96,7 @@ export function OnboardingProvider({ children }) {
         startOnboarding();
       }
     }
-  }, [isLoading, user, onboardingState, isOnboardingActive, steps]);
-
-  // Start onboarding
-  const startOnboarding = useCallback(() => {
-    setIsOnboardingActive(true);
-    setCurrentStepIndex(0);
-    setStartTime(Date.now());
-    
-    if (!onboardingState) {
-      updateOnboardingMutation.mutate({
-        current_step: steps[0].id,
-        completed_steps: [],
-        completion_percentage: 0
-      });
-    }
-  }, [steps, onboardingState, updateOnboardingMutation]);
+  }, [isLoading, user?.email, onboardingState?.id, isOnboardingActive, steps.length]);
 
   // Complete current step
   const completeStep = useCallback(async (stepId) => {
@@ -110,11 +118,13 @@ export function OnboardingProvider({ children }) {
 
     if (isComplete) {
       setIsOnboardingActive(false);
-      localStorage.setItem(`onboarding-seen-${user.email}`, 'true');
+      if (user?.email) {
+        localStorage.setItem(`onboarding-seen-${user.email}`, 'true');
+      }
     } else {
       setCurrentStepIndex(nextIndex);
     }
-  }, [currentStepIndex, steps, onboardingState, updateOnboardingMutation, startTime, user]);
+  }, [currentStepIndex, steps, onboardingState, updateOnboardingMutation, startTime, user?.email]);
 
   // Skip current step
   const skipStep = useCallback(async (stepId) => {
@@ -148,15 +158,17 @@ export function OnboardingProvider({ children }) {
       dismissed: true,
       last_step_date: new Date().toISOString()
     });
-    localStorage.setItem(`onboarding-seen-${user.email}`, 'true');
-  }, [updateOnboardingMutation, user]);
+    if (user?.email) {
+      localStorage.setItem(`onboarding-seen-${user.email}`, 'true');
+    }
+  }, [updateOnboardingMutation, user?.email]);
 
   // Restart onboarding
   const restartOnboarding = useCallback(async () => {
     setCurrentStepIndex(0);
     setStartTime(Date.now());
     await updateOnboardingMutation.mutateAsync({
-      current_step: steps[0].id,
+      current_step: steps[0]?.id,
       completed_steps: [],
       skipped_steps: [],
       completion_percentage: 0,
@@ -165,14 +177,16 @@ export function OnboardingProvider({ children }) {
       total_time_spent: 0
     });
     setIsOnboardingActive(true);
-    localStorage.removeItem(`onboarding-seen-${user.email}`);
-  }, [steps, updateOnboardingMutation, user]);
+    if (user?.email) {
+      localStorage.removeItem(`onboarding-seen-${user.email}`);
+    }
+  }, [steps, updateOnboardingMutation, user?.email]);
 
   const currentStep = steps[currentStepIndex];
   const progress = onboardingState?.completion_percentage || 0;
-  const totalTime = calculateTotalTime(steps);
+  const totalTime = useMemo(() => calculateTotalTime(steps), [steps]);
 
-  const value = {
+  const value = useMemo(() => ({
     // State
     isOnboardingActive,
     currentStep,
@@ -198,7 +212,22 @@ export function OnboardingProvider({ children }) {
     // Quest tracking
     completedStepsCount: onboardingState?.completed_steps?.length || 0,
     totalStepsCount: steps.length
-  };
+  }), [
+    isOnboardingActive,
+    currentStep,
+    currentStepIndex,
+    steps,
+    onboardingState,
+    progress,
+    totalTime,
+    startOnboarding,
+    completeStep,
+    skipStep,
+    previousStep,
+    dismissOnboarding,
+    restartOnboarding,
+    isLoading
+  ]);
 
   return (
     <OnboardingContext.Provider value={value}>
