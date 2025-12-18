@@ -33,11 +33,12 @@ export default function OnboardingWidget({ variant = 'card' }) {
   const totalSteps = steps.length;
   const remainingSteps = totalSteps - completedCount;
 
-  // Conditional rendering after all hooks
+  // Conditional rendering after all hooks - FIXED: moved to end
   if (onboardingState?.dismissed) return null;
+  if (isComplete && variant === 'banner') return null;
 
   // Compact banner variant
-  if (variant === 'banner' && !isComplete) {
+  if (variant === 'banner') {
     return (
       <motion.div
         initial={{ opacity: 0, y: -10 }}
