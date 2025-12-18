@@ -93,10 +93,12 @@ const ROLE_PERMISSIONS = {
 
 /**
  * Hook for checking user permissions
+ * CRITICAL: Always calls useUserData with requireAuth=false to prevent redirects
  * @returns {Object} Permission checking utilities
  */
 export function usePermissions() {
-  const { user, isAdmin, userType } = useUserData(false);
+  // MUST call with requireAuth=false to avoid redirect logic affecting hook order
+  const { user, isAdmin, userType } = useUserData(false, false, false, false);
   
   // Memoize user permissions based on role and user_type
   const userPermissions = useMemo(() => {
@@ -212,6 +214,7 @@ export function usePermissions() {
     user,
     userPermissions,
     isAdmin,
+    isFacilitator: user?.user_type === 'facilitator' || user?.role === 'admin',
     userType,
     
     // Permission checkers
