@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
+import { useQueryClient, useQuery } from '@tanstack/react-query';
+import { base44 } from '@/api/base44Client';
 import { useUserData } from '../components/hooks/useUserData';
 import { useActivities } from '../components/hooks/useActivities';
 import { useActivityFilters } from '../components/activities/useActivityFilters';
@@ -26,20 +27,33 @@ export default function Activities() {
   const queryClient = useQueryClient();
   const { user, loading } = useUserData(true, true);
   const { activities, isLoading, duplicateActivity } = useActivities();
+
+  // Fetch user's favorites
+  const { data: favorites = [] } = useQuery({
+    queryKey: ['activity-favorites', user?.email],
+    queryFn: () => base44.entities.ActivityFavorite.filter({ user_email: user?.email }),
+    enabled: !!user?.email
+  });
+
+  const favoriteIds = favorites.map(f => f.activity_id);
   
   // Use centralized filter hook
   const {
     filters,
     allSkills,
+    allInteractionTypes,
     filteredActivities,
     setSearch,
     setType,
     setDuration,
     setSkill,
     setSkillLevel,
+    setMaterials,
+    setInteractionType,
+    setFavoritesOnly,
     setSortBy,
     clearFilters
-  } = useActivityFilters(activities || []);
+  } = useActivityFilters(activities || [], favoriteIds);
 
   // Dialog states
   const [viewingActivity, setViewingActivity] = useState(null);
@@ -83,9 +97,16 @@ export default function Activities() {
         onSkillChange={setSkill}
         selectedSkillLevel={filters.skillLevel}
         onSkillLevelChange={setSkillLevel}
+        selectedMaterials={filters.materials}
+        onMaterialsChange={setMaterials}
+        selectedInteractionType={filters.interactionType}
+        onInteractionTypeChange={setInteractionType}
+        favoritesOnly={filters.favoritesOnly}
+        onFavoritesOnlyChange={setFavoritesOnly}
         sortBy={filters.sortBy}
         onSortChange={setSortBy}
         allSkills={allSkills}
+        allInteractionTypes={allInteractionTypes}
         totalCount={activities?.length || 0}
         filteredCount={filteredActivities.length}
         onClearAll={clearFilters}
@@ -119,6 +140,8 @@ export default function Activities() {
               onSchedule={handleSchedule}
               onDuplicate={handleDuplicate}
               onView={setViewingActivity}
+              isFavorite={favoriteIds.includes(activity.id)}
+              userEmail={user?.email}
             />
           ))}
         </div>
