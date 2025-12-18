@@ -33,7 +33,10 @@ export default function Dashboard() {
   const navigate = useNavigate();
   // Admin-only dashboard
   const { user, loading: userLoading, redirecting, isAdmin } = useUserData(true, true, false, false);
-  const { events, activities, participations, isLoading } = useEventData(100, !redirecting);
+  const { events, activities, participations, isLoading } = useEventData({ 
+    limit: 100, 
+    enabled: !redirecting 
+  });
   const [showGenerator, setShowGenerator] = useState(false);
   const eventActions = useEventActions();
 
