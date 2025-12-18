@@ -79,7 +79,8 @@ export function OnboardingProvider({ children }) {
 
   // Auto-start onboarding for new users OR resume incomplete onboarding
   useEffect(() => {
-    if (!isLoading && user && !isOnboardingActive && steps.length > 0) {
+    // Don't auto-start if user is null (logged out)
+    if (!isLoading && user?.email && !isOnboardingActive && steps.length > 0) {
       const hasSeenOnboarding = localStorage.getItem(`onboarding-seen-${user.email}`);
       
       // Resume incomplete onboarding on login
@@ -96,7 +97,12 @@ export function OnboardingProvider({ children }) {
         startOnboarding();
       }
     }
-  }, [isLoading, user?.email, onboardingState?.id, isOnboardingActive, steps.length]);
+    
+    // Clean up onboarding if user logs out
+    if (!user?.email && isOnboardingActive) {
+      setIsOnboardingActive(false);
+    }
+  }, [isLoading, user?.email, onboardingState?.id, isOnboardingActive, steps.length, startOnboarding]);
 
   // Complete current step
   const completeStep = useCallback(async (stepId) => {

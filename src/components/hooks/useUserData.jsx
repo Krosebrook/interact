@@ -27,12 +27,13 @@ export function useUserData(
 
   useEffect(() => {
     let isMounted = true;
+    const abortController = new AbortController();
     
     const loadUser = async () => {
       try {
         setError(null);
         const currentUser = await base44.auth.me();
-        if (!isMounted) return;
+        if (!isMounted || abortController.signal.aborted) return;
         
         // Validate user object
         if (!currentUser?.email) {
@@ -107,7 +108,10 @@ export function useUserData(
     };
     
     loadUser();
-    return () => { isMounted = false; };
+    return () => { 
+      isMounted = false;
+      abortController.abort();
+    };
   }, [requireAuth, requireAdmin, requireFacilitator, requireParticipant]);
 
   // Fetch user points
@@ -140,10 +144,16 @@ export function useUserData(
     }
   }, [queryClient, user?.email]);
 
-  // Logout helper
+  // Logout helper with cleanup
   const logout = useCallback((redirectUrl) => {
+    // Clear all React Query cache to prevent refetch during logout
+    queryClient.clear();
+    // Clear user state immediately
+    setUser(null);
+    setLoading(false);
+    // Perform logout
     base44.auth.logout(redirectUrl);
-  }, []);
+  }, [queryClient]);
 
   return {
     user,

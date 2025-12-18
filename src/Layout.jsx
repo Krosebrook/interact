@@ -78,6 +78,8 @@ export default function Layout({ children, currentPageName }) {
   };
 
   const handleLogout = () => {
+    // Prevent multiple logout clicks
+    if (window.location.pathname.includes('login')) return;
     base44.auth.logout();
   };
 

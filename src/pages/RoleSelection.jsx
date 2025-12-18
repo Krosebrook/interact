@@ -17,33 +17,43 @@ export default function RoleSelection() {
   const [selectedRole, setSelectedRole] = useState(null);
 
   useEffect(() => {
+    let isMounted = true;
+    
     const loadUser = async () => {
       try {
         const currentUser = await base44.auth.me();
+        if (!isMounted) return;
+        
         setUser(currentUser);
         
         // If admin, redirect to admin dashboard
         if (currentUser.role === 'admin') {
-          navigate(createPageUrl('Dashboard'));
+          navigate(createPageUrl('Dashboard'), { replace: true });
           return;
         }
         
         // If user already has a user_type, redirect appropriately
         if (currentUser.user_type === 'facilitator') {
-          navigate(createPageUrl('FacilitatorDashboard'));
+          navigate(createPageUrl('FacilitatorDashboard'), { replace: true });
           return;
         }
         if (currentUser.user_type === 'participant') {
-          navigate(createPageUrl('ParticipantPortal'));
+          navigate(createPageUrl('ParticipantPortal'), { replace: true });
           return;
         }
       } catch (error) {
-        base44.auth.redirectToLogin();
+        if (isMounted) {
+          base44.auth.redirectToLogin();
+        }
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     };
+    
     loadUser();
+    return () => { isMounted = false; };
   }, [navigate]);
 
   const handleSelectRole = async (roleType) => {
