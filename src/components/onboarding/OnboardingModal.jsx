@@ -360,47 +360,49 @@ export default function OnboardingModal() {
             )}
             <Button
               variant="ghost"
-              onClick={handleSkip}
-              className="text-slate-500 hover:text-slate-700"
-              aria-label="Skip this step"
-            >
-              Skip
-            </Button>
-            <Button
-              variant="ghost"
               onClick={dismissOnboarding}
               className="text-slate-500 hover:text-slate-700"
-              aria-label="Close onboarding"
+              aria-label="Skip entire tutorial"
             >
-              <X className="h-4 w-4 mr-1" />
-              Close
+              Skip Tutorial
             </Button>
           </div>
 
           <div className="flex gap-2">
-            {currentStep.actions?.map((action, idx) => (
-              <Button
-                key={idx}
-                onClick={() => handleAction(action)}
-                variant={idx === 0 ? 'default' : 'outline'}
-                className={idx === 0 ? 'bg-int-orange hover:bg-int-orange/90' : ''}
-                disabled={!isValid && !currentStep.validation?.optional}
-                aria-label={action.label}
-              >
-                {action.label}
-                {idx === 0 && <ChevronRight className="h-4 w-4 ml-1" />}
-              </Button>
-            ))}
-            {currentStep.actions?.length === 0 && (
-              <Button
-                onClick={handleNext}
-                className="bg-int-orange hover:bg-int-orange/90"
-                disabled={!isValid && !currentStep.validation?.optional}
-                aria-label={isLastStep ? 'Finish onboarding' : 'Continue to next step'}
-              >
-                {isLastStep ? 'Finish' : 'Next'}
-                <ChevronRight className="h-4 w-4 ml-1" />
-              </Button>
+            {!currentStep.actions || currentStep.actions.length === 0 ? (
+              <>
+                <Button
+                  variant="outline"
+                  onClick={handleSkip}
+                  disabled={!isValid && !currentStep.validation?.optional}
+                  aria-label="Skip this step"
+                >
+                  Skip Step
+                </Button>
+                <Button
+                  onClick={handleNext}
+                  className="bg-int-orange hover:bg-int-orange/90"
+                  disabled={!isValid && !currentStep.validation?.optional}
+                  aria-label={isLastStep ? 'Finish onboarding' : 'Continue to next step'}
+                >
+                  {isLastStep ? 'Finish' : 'Next'}
+                  <ChevronRight className="h-4 w-4 ml-1" />
+                </Button>
+              </>
+            ) : (
+              currentStep.actions.map((action, idx) => (
+                <Button
+                  key={idx}
+                  onClick={() => handleAction(action)}
+                  variant={idx === 0 ? 'default' : 'outline'}
+                  className={idx === 0 ? 'bg-int-orange hover:bg-int-orange/90 gap-1' : ''}
+                  disabled={!isValid && !currentStep.validation?.optional}
+                  aria-label={action.label}
+                >
+                  {action.label}
+                  {idx === 0 && <ChevronRight className="h-4 w-4" />}
+                </Button>
+              ))
             )}
           </div>
         </div>
