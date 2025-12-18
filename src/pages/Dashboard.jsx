@@ -32,11 +32,8 @@ import {
 export default function Dashboard() {
   const navigate = useNavigate();
   // Admin-only dashboard
-  const { user, loading: userLoading, redirecting, isAdmin } = useUserData(true, true, false, false);
-  const { events, activities, participations, isLoading } = useEventData({ 
-    limit: 100, 
-    enabled: !redirecting 
-  });
+  const { user, loading: userLoading, isAdmin } = useUserData(true, true, false, false);
+  const { events, activities, participations, isLoading } = useEventData({ limit: 100 });
   const [showGenerator, setShowGenerator] = useState(false);
   const eventActions = useEventActions();
 
@@ -52,8 +49,8 @@ export default function Dashboard() {
     handleScheduleActivity(activity);
   };
 
-  // Show loading for any loading/redirect state
-  if (userLoading || redirecting || isLoading || !user) {
+  // Show loading state
+  if (userLoading || isLoading || !user) {
     return <LoadingSpinner className="min-h-[60vh]" />;
   }
 
