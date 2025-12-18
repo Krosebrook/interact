@@ -32,7 +32,13 @@ import {
 export default function Dashboard() {
   const navigate = useNavigate();
   // Admin-only dashboard
-  const { user, loading: userLoading, isAdmin } = useUserData(true, true, false, false);
+  const { user, loading: userLoading, isAdmin, isRedirecting } = useUserData(true, true, false, false);
+  
+  // Early return if redirecting to prevent hook count mismatch
+  if (isRedirecting) {
+    return <LoadingSpinner className="min-h-[60vh]" />;
+  }
+
   const { events, activities, participations, isLoading } = useEventData({ limit: 100 });
   const [showGenerator, setShowGenerator] = useState(false);
   const eventActions = useEventActions();

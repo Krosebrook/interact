@@ -155,6 +155,7 @@ export function useUserData(
     isFacilitator: user?.user_type === 'facilitator' || user?.role === 'admin',
     isParticipant: user?.user_type === 'participant',
     userType: user?.user_type,
+    isRedirecting: redirectInitiated.current,
     logout,
     refreshUserData,
     // Helper flags
