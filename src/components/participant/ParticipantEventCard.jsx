@@ -98,17 +98,24 @@ export default function ParticipantEventCard({
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
-                  <DropdownMenuItem onClick={() => {
-                    onRSVP(participation.id, 'yes');
-                  }}>
+                  <DropdownMenuItem 
+                    onClick={() => onRSVP(participation.id, 'yes')}
+                    disabled={participation?.rsvp_status === 'yes'}
+                  >
                     <CheckCircle2 className="h-4 w-4 mr-2 text-green-600" />
                     Yes, I'll attend ✨
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => onRSVP(participation.id, 'maybe')}>
+                  <DropdownMenuItem 
+                    onClick={() => onRSVP(participation.id, 'maybe')}
+                    disabled={participation?.rsvp_status === 'maybe'}
+                  >
                     <HelpCircle className="h-4 w-4 mr-2 text-yellow-600" />
                     Maybe
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => onRSVP(participation.id, 'no')}>
+                  <DropdownMenuItem 
+                    onClick={() => onRSVP(participation.id, 'no')}
+                    disabled={participation?.rsvp_status === 'no'}
+                  >
                     <XCircle className="h-4 w-4 mr-2 text-red-600" />
                     Can't make it
                   </DropdownMenuItem>

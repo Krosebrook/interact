@@ -7,6 +7,7 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+import { useDebounce } from '../shared/hooks/useDebounce';
 import {
   Select,
   SelectContent,
@@ -60,6 +61,22 @@ export default function ActivitiesFilters({
     selectedSkill !== 'all' || selectedSkillLevel !== 'all' || selectedMaterials !== 'all' ||
     selectedInteractionType !== 'all' || favoritesOnly || searchQuery;
 
+  // Debounce search query internally
+  const [localSearchQuery, setLocalSearchQuery] = React.useState(searchQuery);
+  const debouncedSearch = useDebounce(localSearchQuery, 300);
+
+  // Sync debounced value with parent
+  React.useEffect(() => {
+    if (debouncedSearch !== searchQuery) {
+      onSearchChange(debouncedSearch);
+    }
+  }, [debouncedSearch]);
+
+  // Sync external changes with local state
+  React.useEffect(() => {
+    setLocalSearchQuery(searchQuery);
+  }, [searchQuery]);
+
   return (
     <div className="glass-card-solid space-y-4">
       {/* Search Bar, Favorites Toggle & Sort */}
@@ -68,13 +85,16 @@ export default function ActivitiesFilters({
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500" />
           <Input
             placeholder="Search by name, description, or skills..."
-            value={searchQuery}
-            onChange={(e) => onSearchChange(e.target.value)}
+            value={localSearchQuery}
+            onChange={(e) => setLocalSearchQuery(e.target.value)}
             className="pl-10 h-11 border-slate-200 focus:border-int-orange focus:ring-int-orange/20 font-medium"
           />
-          {searchQuery && (
+          {localSearchQuery && (
             <button 
-              onClick={() => onSearchChange('')}
+              onClick={() => {
+                setLocalSearchQuery('');
+                onSearchChange('');
+              }}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-int-orange transition-colors"
             >
               <X className="h-4 w-4" />

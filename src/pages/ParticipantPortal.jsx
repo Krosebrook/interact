@@ -16,6 +16,7 @@ import FeedbackForm from '../components/participant/FeedbackForm';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import { Calendar, Sparkles, MessageSquare, TrendingUp } from 'lucide-react';
 import { toast } from 'sonner';
+import ErrorBoundary from '../components/common/ErrorBoundary';
 
 export default function ParticipantPortal() {
   const queryClient = useQueryClient();
@@ -50,9 +51,30 @@ export default function ParticipantPortal() {
   const rsvpMutation = useMutation({
     mutationFn: ({ participationId, status }) => 
       base44.entities.Participation.update(participationId, { rsvp_status: status }),
+    onMutate: async ({ participationId, status }) => {
+      // Cancel outgoing queries
+      await queryClient.cancelQueries(['my-participations', user?.email]);
+      
+      // Snapshot previous value
+      const previousParticipations = queryClient.getQueryData(['my-participations', user?.email]);
+      
+      // Optimistically update
+      queryClient.setQueryData(['my-participations', user?.email], (old = []) => 
+        old.map(p => p.id === participationId ? { ...p, rsvp_status: status } : p)
+      );
+      
+      return { previousParticipations };
+    },
+    onError: (err, variables, context) => {
+      // Rollback on error
+      queryClient.setQueryData(['my-participations', user?.email], context.previousParticipations);
+      toast.error('Failed to update RSVP');
+    },
     onSuccess: () => {
-      queryClient.invalidateQueries(['my-participations']);
       toast.success('RSVP updated!');
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries(['my-participations', user?.email]);
     }
   });
 
@@ -86,10 +108,11 @@ export default function ParticipantPortal() {
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 py-8 px-4">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
+    <ErrorBoundary fallbackMessage="Unable to load your portal. Please refresh the page.">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 py-8 px-4">
+        <div className="max-w-7xl mx-auto">
+          {/* Header */}
+          <div className="mb-8">
           <h1 className="text-4xl font-bold text-slate-900 mb-2">
             Welcome, {user.full_name}! 👋
           </h1>
@@ -249,7 +272,8 @@ export default function ParticipantPortal() {
             }}
           />
         )}
+        </div>
       </div>
-    </div>
+    </ErrorBoundary>
   );
 }

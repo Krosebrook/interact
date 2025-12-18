@@ -28,6 +28,7 @@ import {
   ArrowRight,
   Zap } from
 'lucide-react';
+import ErrorBoundary from '../components/common/ErrorBoundary';
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -56,12 +57,13 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="bg-blue-50 opacity-100 space-y-8 animate-fade-in">
-      {/* Onboarding Widget */}
-      <OnboardingWidget variant="banner" />
+    <ErrorBoundary fallbackMessage="Dashboard failed to load. Please try refreshing.">
+      <div className="bg-blue-50 opacity-100 space-y-8 animate-fade-in">
+        {/* Onboarding Widget */}
+        <OnboardingWidget variant="banner" />
 
-      {/* Welcome Header - Glass Panel */}
-      <div className="glass-panel-solid relative overflow-hidden">
+        {/* Welcome Header - Glass Panel */}
+        <div className="glass-panel-solid relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-int-navy/5 via-transparent to-int-orange/5 pointer-events-none" />
         <div className="relative flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
@@ -183,12 +185,14 @@ export default function Dashboard() {
 
       </div>
 
-      {/* Activity Generator Dialog */}
-      <ActivityGenerator
-        open={showGenerator}
-        onOpenChange={setShowGenerator}
-        onActivityCreated={handleActivityCreated} />
+        {/* Activity Generator Dialog */}
+        <ActivityGenerator
+          open={showGenerator}
+          onOpenChange={setShowGenerator}
+          onActivityCreated={handleActivityCreated} />
 
-    </div>);
+      </div>
+    </ErrorBoundary>
+  );
 
 }

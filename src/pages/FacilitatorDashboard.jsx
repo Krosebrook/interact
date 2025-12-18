@@ -34,6 +34,7 @@ import {
   BarChart3
 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import ErrorBoundary from '../components/common/ErrorBoundary';
 
 function FacilitatorDashboardContent() {
   const { user, isRedirecting } = useUserData(true, false, true, false);
@@ -77,9 +78,10 @@ function FacilitatorDashboardContent() {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <motion.div 
+    <ErrorBoundary fallbackMessage="Unable to load facilitator dashboard. Please refresh.">
+      <div className="space-y-6">
+        {/* Header */}
+        <motion.div 
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
@@ -227,10 +229,11 @@ function FacilitatorDashboardContent() {
       />
 
       {/* Support Chat Sidebar */}
-      {showSupport && (
-        <FacilitatorSupportChat onClose={() => setShowSupport(false)} />
-      )}
-    </div>
+        {showSupport && (
+          <FacilitatorSupportChat onClose={() => setShowSupport(false)} />
+        )}
+      </div>
+    </ErrorBoundary>
   );
 }
 
