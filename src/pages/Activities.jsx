@@ -4,6 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { useUserData } from '../components/hooks/useUserData';
 import { useActivities } from '../components/hooks/useActivities';
 import { useActivityFilters } from '../components/activities/useActivityFilters';
+import { useRolePermissions } from '../components/hooks/useRolePermissions';
 import ActivityCard from '../components/activities/ActivityCard';
 import ActivityGenerator from '../components/ai/ActivityGenerator';
 import AIActivityPlanner from '../components/ai/AIActivityPlanner';
@@ -25,7 +26,8 @@ import { createPageUrl } from '../utils';
 export default function Activities() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { user, loading } = useUserData(true, true);
+  const { user, loading } = useUserData(true);
+  const { canCreateActivities, canEditActivities, canDeleteActivities } = useRolePermissions();
   const { activities, isLoading, duplicateActivity } = useActivities();
 
   // Fetch user's favorites
@@ -79,10 +81,11 @@ export default function Activities() {
       {/* Header */}
       <ActivitiesHeader
         activityCount={filteredActivities.length}
-        onOpenPlanner={() => setShowPlanner(true)}
-        onOpenSuggester={() => setShowSuggester(true)}
-        onOpenModuleBuilder={() => setShowModuleBuilder(true)}
-        onOpenGenerator={() => setShowGenerator(true)}
+        onOpenPlanner={canCreateActivities ? () => setShowPlanner(true) : undefined}
+        onOpenSuggester={canCreateActivities ? () => setShowSuggester(true) : undefined}
+        onOpenModuleBuilder={canCreateActivities ? () => setShowModuleBuilder(true) : undefined}
+        onOpenGenerator={canCreateActivities ? () => setShowGenerator(true) : undefined}
+        canCreate={canCreateActivities}
       />
 
       {/* Search and Filters */}
@@ -138,10 +141,12 @@ export default function Activities() {
               key={activity.id}
               activity={activity}
               onSchedule={handleSchedule}
-              onDuplicate={handleDuplicate}
+              onDuplicate={canEditActivities ? handleDuplicate : undefined}
               onView={setViewingActivity}
               isFavorite={favoriteIds.includes(activity.id)}
               userEmail={user?.email}
+              canEdit={canEditActivities}
+              canDelete={canDeleteActivities}
             />
           ))}
         </div>

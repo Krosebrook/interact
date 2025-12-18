@@ -28,7 +28,7 @@ const defaultImages = {
   social: 'https://images.unsplash.com/photo-1543269865-cbf427effbad?w=400&h=300&fit=crop'
 };
 
-export default function ActivityCard({ activity, onSchedule, onDuplicate, onView, isFavorite = false, userEmail }) {
+export default function ActivityCard({ activity, onSchedule, onDuplicate, onView, isFavorite = false, userEmail, canEdit = true, canDelete = true }) {
   const queryClient = useQueryClient();
   const config = typeConfig[activity.type] || typeConfig.social;
   const imageUrl = activity.image_url || defaultImages[activity.type] || defaultImages.social;
@@ -189,17 +189,19 @@ export default function ActivityCard({ activity, onSchedule, onDuplicate, onView
             >
               <ChevronRight className="h-4 w-4" />
             </Button>
-            <Button 
-              onClick={(e) => {
-                e.stopPropagation();
-                onDuplicate(activity);
-              }}
-              variant="outline"
-              size="sm"
-              className="border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300"
-            >
-              <Copy className="h-4 w-4" />
-            </Button>
+            {canEdit && onDuplicate && (
+              <Button 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDuplicate(activity);
+                }}
+                variant="outline"
+                size="sm"
+                className="border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300"
+              >
+                <Copy className="h-4 w-4" />
+              </Button>
+            )}
           </div>
         </div>
       </div>
