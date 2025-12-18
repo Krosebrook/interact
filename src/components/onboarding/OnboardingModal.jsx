@@ -390,19 +390,29 @@ export default function OnboardingModal() {
                 </Button>
               </>
             ) : (
-              currentStep.actions.map((action, idx) => (
+              <>
                 <Button
-                  key={idx}
-                  onClick={() => handleAction(action)}
-                  variant={idx === 0 ? 'default' : 'outline'}
-                  className={idx === 0 ? 'bg-int-orange hover:bg-int-orange/90 gap-1' : ''}
+                  variant="outline"
+                  onClick={handleSkip}
                   disabled={!isValid && !currentStep.validation?.optional}
-                  aria-label={action.label}
+                  aria-label="Skip this step"
                 >
-                  {action.label}
-                  {idx === 0 && <ChevronRight className="h-4 w-4" />}
+                  Skip Step
                 </Button>
-              ))
+                {currentStep.actions.map((action, idx) => (
+                  <Button
+                    key={idx}
+                    onClick={() => handleAction(action)}
+                    variant={idx === 0 ? 'default' : 'outline'}
+                    className={idx === 0 ? 'bg-int-orange hover:bg-int-orange/90 gap-1' : ''}
+                    disabled={!isValid && !currentStep.validation?.optional}
+                    aria-label={action.label}
+                  >
+                    {action.label}
+                    {idx === 0 && <ChevronRight className="h-4 w-4" />}
+                  </Button>
+                ))}
+              </>
             )}
           </div>
         </div>
