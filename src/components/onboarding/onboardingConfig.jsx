@@ -12,20 +12,18 @@ export const ONBOARDING_STEPS = {
       description: 'Your command center for employee engagement',
       target: null, // Full-screen modal
       content: {
-        type: 'video-intro',
-        video_url: 'https://example.com/admin-intro.mp4',
+        type: 'animated-intro',
         highlights: [
-          'Schedule engaging team events',
-          'Configure gamification & rewards',
-          'Track engagement analytics',
-          'Build team culture'
+          '📅 Schedule engaging team events in minutes',
+          '🏆 Configure gamification & rewards to motivate employees',
+          '📊 Track engagement analytics and measure ROI',
+          '🎯 Build stronger team culture and connections'
         ]
       },
       actions: [
         {
-          label: 'Set Up My Profile',
-          type: 'navigate',
-          target: '/UserProfile'
+          label: 'Get Started',
+          type: 'next'
         }
       ],
       validation: null,
@@ -43,14 +41,15 @@ export const ONBOARDING_STEPS = {
       },
       actions: [
         {
-          label: 'Upload Photo',
-          type: 'trigger',
-          target: 'upload-avatar'
+          label: 'Set Up Profile',
+          type: 'navigate',
+          target: '/UserProfile'
         }
       ],
       validation: {
         check: 'profile.avatar_url && profile.bio',
-        message: 'Upload a profile picture and add a short bio'
+        message: 'Complete your profile to help your team recognize you',
+        optional: true
       },
       estimatedTime: '3 min'
     },
@@ -108,7 +107,8 @@ export const ONBOARDING_STEPS = {
       ],
       validation: {
         check: 'events.length > 0',
-        message: 'Schedule at least one event'
+        message: 'Try scheduling an event to see how easy it is',
+        optional: true
       },
       estimatedTime: '7 min'
     },
@@ -183,7 +183,8 @@ export const ONBOARDING_STEPS = {
       ],
       validation: {
         check: 'teams.length > 0',
-        message: 'Create at least one team'
+        message: 'Teams help organize employees - try creating one',
+        optional: true
       },
       estimatedTime: '5 min'
     },
