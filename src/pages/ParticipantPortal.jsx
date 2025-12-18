@@ -23,20 +23,28 @@ export default function ParticipantPortal() {
   const { user, loading: userLoading, userPoints: myUserPoints } = useUserData(true, false, false, true);
   const [selectedEventForFeedback, setSelectedEventForFeedback] = useState(null);
 
-  const { data: myParticipations = [] } = useQuery({
+  const { data: myParticipations = [], isLoading: participationsLoading } = useQuery({
     queryKey: ['my-participations', user?.email],
     queryFn: () => base44.entities.Participation.filter({ participant_email: user.email }),
-    enabled: !!user
+    enabled: !!user?.email,
+    retry: 2,
+    staleTime: 30000
   });
 
-  const { data: allEvents = [] } = useQuery({
+  const { data: allEvents = [], isLoading: eventsLoading } = useQuery({
     queryKey: ['events'],
-    queryFn: () => base44.entities.Event.list('-scheduled_date', 100)
+    queryFn: () => base44.entities.Event.list('-scheduled_date', 100),
+    enabled: !!user?.email,
+    retry: 2,
+    staleTime: 60000
   });
 
-  const { data: activities = [] } = useQuery({
+  const { data: activities = [], isLoading: activitiesLoading } = useQuery({
     queryKey: ['activities'],
-    queryFn: () => base44.entities.Activity.list()
+    queryFn: () => base44.entities.Activity.list(),
+    enabled: !!user?.email,
+    retry: 2,
+    staleTime: 300000 // 5 minutes
   });
 
   const rsvpMutation = useMutation({
@@ -69,8 +77,10 @@ export default function ParticipantPortal() {
     return !participation?.feedback;
   });
 
-  if (userLoading || !user) {
-    return <LoadingSpinner className="min-h-[60vh]" />;
+  const isLoading = userLoading || participationsLoading || eventsLoading || activitiesLoading;
+
+  if (isLoading || !user) {
+    return <LoadingSpinner className="min-h-[60vh]" message="Loading your portal..." />;
   }
 
 

@@ -36,8 +36,8 @@ import {
 import { motion } from 'framer-motion';
 
 function FacilitatorDashboardContent() {
-  const { user } = useUserData(true, false, true, false);
-  const { events, activities, participations, isLoading } = useEventData();
+  const { user, isRedirecting } = useUserData(true, false, true, false);
+  const { events, activities, participations, isLoading, error } = useEventData();
   const eventActions = useEventActions();
   const [showSupport, setShowSupport] = useState(false);
   const [showAgentChat, setShowAgentChat] = useState(false);
@@ -50,8 +50,20 @@ function FacilitatorDashboardContent() {
   const tomorrowEvents = filterTomorrowEvents(upcomingEvents);
   const thisWeekEvents = filterThisWeekEvents(upcomingEvents);
 
-  if (isLoading || !user) {
+  if (isRedirecting || isLoading || !user) {
     return <LoadingSpinner className="min-h-[60vh]" message="Loading dashboard..." />;
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-[60vh] flex items-center justify-center">
+        <Card className="p-8 max-w-md text-center">
+          <h3 className="text-lg font-semibold text-red-600 mb-2">Failed to Load Dashboard</h3>
+          <p className="text-slate-600 mb-4">Please try refreshing the page.</p>
+          <Button onClick={() => window.location.reload()}>Refresh</Button>
+        </Card>
+      </div>
+    );
   }
 
   const handleEventAction = (action, event) => {
