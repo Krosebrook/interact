@@ -11,15 +11,23 @@ const DEFAULT_FILTERS = {
   duration: 'all',
   skill: 'all',
   skillLevel: 'all',
+  materials: 'all',
+  interactionType: 'all',
+  favoritesOnly: false,
   sortBy: 'newest'
 };
 
-export function useActivityFilters(activities = []) {
+export function useActivityFilters(activities = [], favoriteIds = []) {
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
 
   // Get unique skills from all activities
   const allSkills = useMemo(() => {
     return [...new Set(activities.flatMap(a => a.skills_developed || []))].sort();
+  }, [activities]);
+
+  // Get unique interaction types
+  const allInteractionTypes = useMemo(() => {
+    return [...new Set(activities.map(a => a.interaction_type).filter(Boolean))].sort();
   }, [activities]);
 
   // Apply filters
@@ -54,6 +62,25 @@ export function useActivityFilters(activities = []) {
     // Skill level filter
     if (filters.skillLevel !== 'all') {
       result = result.filter(a => a.skill_level === filters.skillLevel);
+    }
+
+    // Materials filter
+    if (filters.materials !== 'all') {
+      if (filters.materials === 'none') {
+        result = result.filter(a => !a.materials_needed || a.materials_needed.trim() === '');
+      } else if (filters.materials === 'required') {
+        result = result.filter(a => a.materials_needed && a.materials_needed.trim() !== '');
+      }
+    }
+
+    // Interaction type filter
+    if (filters.interactionType !== 'all') {
+      result = result.filter(a => a.interaction_type === filters.interactionType);
+    }
+
+    // Favorites filter
+    if (filters.favoritesOnly) {
+      result = result.filter(a => favoriteIds.includes(a.id));
     }
 
     // Sorting
@@ -93,6 +120,9 @@ export function useActivityFilters(activities = []) {
            filters.duration !== 'all' || 
            filters.skill !== 'all' || 
            filters.skillLevel !== 'all' || 
+           filters.materials !== 'all' ||
+           filters.interactionType !== 'all' ||
+           filters.favoritesOnly ||
            filters.search !== '';
   }, [filters]);
 
@@ -100,6 +130,7 @@ export function useActivityFilters(activities = []) {
     // State
     filters,
     allSkills,
+    allInteractionTypes,
     filteredActivities,
     hasActiveFilters,
     
@@ -114,6 +145,9 @@ export function useActivityFilters(activities = []) {
     setDuration: (value) => setFilter('duration', value),
     setSkill: (value) => setFilter('skill', value),
     setSkillLevel: (value) => setFilter('skillLevel', value),
+    setMaterials: (value) => setFilter('materials', value),
+    setInteractionType: (value) => setFilter('interactionType', value),
+    setFavoritesOnly: (value) => setFilter('favoritesOnly', value),
     setSortBy: (value) => setFilter('sortBy', value)
   };
 }

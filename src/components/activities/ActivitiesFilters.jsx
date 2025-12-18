@@ -14,11 +14,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Search, Filter, X, Clock, Zap, GraduationCap, SortAsc } from 'lucide-react';
+import { Search, Filter, X, Clock, Zap, GraduationCap, SortAsc, Package, Star, MessageSquare } from 'lucide-react';
 
 const TYPES = ['all', 'icebreaker', 'creative', 'competitive', 'wellness', 'learning', 'social'];
 const DURATIONS = ['all', '5-15min', '15-30min', '30+min'];
 const SKILL_LEVELS = ['all', 'beginner', 'intermediate', 'advanced'];
+const MATERIALS = ['all', 'none', 'required'];
 
 const TYPE_COLORS = {
   all: 'bg-int-orange',
@@ -41,19 +42,27 @@ export default function ActivitiesFilters({
   onSkillChange,
   selectedSkillLevel,
   onSkillLevelChange,
+  selectedMaterials,
+  onMaterialsChange,
+  selectedInteractionType,
+  onInteractionTypeChange,
+  favoritesOnly,
+  onFavoritesOnlyChange,
   sortBy,
   onSortChange,
   allSkills = [],
+  allInteractionTypes = [],
   totalCount,
   filteredCount,
   onClearAll
 }) {
   const hasActiveFilters = selectedType !== 'all' || selectedDuration !== 'all' || 
-    selectedSkill !== 'all' || selectedSkillLevel !== 'all' || searchQuery;
+    selectedSkill !== 'all' || selectedSkillLevel !== 'all' || selectedMaterials !== 'all' ||
+    selectedInteractionType !== 'all' || favoritesOnly || searchQuery;
 
   return (
     <div className="glass-card-solid space-y-4">
-      {/* Search Bar & Sort */}
+      {/* Search Bar, Favorites Toggle & Sort */}
       <div className="flex flex-col sm:flex-row gap-4">
         <div className="flex-1 relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500" />
@@ -72,6 +81,14 @@ export default function ActivitiesFilters({
             </button>
           )}
         </div>
+        <Button
+          variant={favoritesOnly ? "default" : "outline"}
+          className={favoritesOnly ? "bg-int-orange hover:bg-int-orange/90 text-white font-semibold" : "border-slate-300 text-slate-700 hover:bg-slate-100 font-medium"}
+          onClick={() => onFavoritesOnlyChange(!favoritesOnly)}
+        >
+          <Star className={`h-4 w-4 mr-2 ${favoritesOnly ? 'fill-white' : ''}`} />
+          Favorites
+        </Button>
         <div className="flex items-center gap-2">
           <SortAsc className="h-4 w-4 text-int-navy" />
           <Select value={sortBy} onValueChange={onSortChange}>
@@ -158,7 +175,81 @@ export default function ActivitiesFilters({
         </div>
       </div>
 
-      {/* Filter Row 3: Skills Developed */}
+      {/* Filter Row 3: Materials & Interaction Type */}
+      <div className="flex flex-wrap items-center gap-4">
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="flex items-center gap-2 mr-2">
+            <Package className="h-4 w-4 text-amber-600" />
+            <span className="text-sm font-semibold text-int-navy">Materials:</span>
+          </div>
+          {MATERIALS.map(material => (
+            <Badge
+              key={material}
+              variant={selectedMaterials === material ? 'default' : 'outline'}
+              className={`cursor-pointer transition-all font-medium ${
+                selectedMaterials === material 
+                  ? 'bg-gradient-competitive text-white shadow-sm' 
+                  : 'hover:bg-slate-100 text-slate-700 border-slate-300'
+              }`}
+              onClick={() => onMaterialsChange(material)}
+            >
+              {material === 'all' ? 'Any' : material === 'none' ? 'No Materials' : 'Materials Needed'}
+            </Badge>
+          ))}
+        </div>
+
+        {allInteractionTypes.length > 0 && (
+          <>
+            <div className="h-6 w-px bg-slate-200 hidden sm:block" />
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="flex items-center gap-2 mr-2">
+                <MessageSquare className="h-4 w-4 text-cyan-600" />
+                <span className="text-sm font-semibold text-int-navy">Interaction:</span>
+              </div>
+              <Badge
+                variant={selectedInteractionType === 'all' ? 'default' : 'outline'}
+                className={`cursor-pointer transition-all font-medium ${
+                  selectedInteractionType === 'all' 
+                    ? 'bg-gradient-learning text-white shadow-sm' 
+                    : 'hover:bg-slate-100 text-slate-700 border-slate-300'
+                }`}
+                onClick={() => onInteractionTypeChange('all')}
+              >
+                All Types
+              </Badge>
+              {allInteractionTypes.slice(0, 5).map(type => (
+                <Badge
+                  key={type}
+                  variant={selectedInteractionType === type ? 'default' : 'outline'}
+                  className={`cursor-pointer transition-all font-medium ${
+                    selectedInteractionType === type 
+                      ? 'bg-gradient-learning text-white shadow-sm' 
+                      : 'hover:bg-slate-100 text-slate-700 border-slate-300'
+                  }`}
+                  onClick={() => onInteractionTypeChange(type)}
+                >
+                  {type.replace('_', ' ')}
+                </Badge>
+              ))}
+              {allInteractionTypes.length > 5 && (
+                <Select value={selectedInteractionType} onValueChange={onInteractionTypeChange}>
+                  <SelectTrigger className="w-[140px] h-7 text-xs font-medium">
+                    <SelectValue placeholder="More types..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Types</SelectItem>
+                    {allInteractionTypes.map(type => (
+                      <SelectItem key={type} value={type}>{type.replace('_', ' ')}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            </div>
+          </>
+        )}
+      </div>
+
+      {/* Filter Row 4: Skills Developed */}
       {allSkills.length > 0 && (
         <div className="flex flex-wrap items-center gap-2">
           <div className="flex items-center gap-2 mr-2">
