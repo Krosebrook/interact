@@ -47,6 +47,128 @@ const STEP_ICONS = {
   complete: CheckCircle2
 };
 
+function StepContent({ step }) {
+  const { content } = step;
+
+  // Render different content types
+  if (content.type === 'animated-intro') {
+    return (
+      <div className="text-center py-8">
+        <div className="text-6xl mb-6">🎉</div>
+        <div className="space-y-3">
+          {content.highlights.map((highlight, idx) => (
+            <motion.div
+              key={idx}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: idx * 0.1 }}
+              className="text-lg text-slate-700"
+            >
+              {highlight}
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (content.type === 'feature-overview') {
+    return (
+      <div className="grid grid-cols-2 gap-4">
+        {content.features.map((feature, idx) => (
+          <motion.div
+            key={idx}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: idx * 0.1 }}
+            className="p-4 rounded-xl bg-slate-50 border border-slate-200"
+          >
+            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-int-orange to-int-gold flex items-center justify-center mb-3">
+              <span className="text-white text-lg">{feature.icon === 'Trophy' ? '🏆' : '⭐'}</span>
+            </div>
+            <h4 className="font-semibold text-slate-900 mb-1">{feature.title}</h4>
+            <p className="text-sm text-slate-600">{feature.description}</p>
+          </motion.div>
+        ))}
+      </div>
+    );
+  }
+
+  if (content.type === 'step-by-step') {
+    return (
+      <div className="space-y-3">
+        {content.steps.map((stepText, idx) => (
+          <motion.div
+            key={idx}
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: idx * 0.1 }}
+            className="flex items-start gap-3 p-3 rounded-lg bg-slate-50"
+          >
+            <div className="w-6 h-6 rounded-full bg-int-orange text-white flex items-center justify-center text-sm font-medium flex-shrink-0">
+              {idx + 1}
+            </div>
+            <p className="text-slate-700">{stepText}</p>
+          </motion.div>
+        ))}
+      </div>
+    );
+  }
+
+  if (content.type === 'completion-celebration') {
+    return (
+      <div className="text-center py-8">
+        <motion.div
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ type: 'spring', duration: 0.6 }}
+          className="w-20 h-20 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center mx-auto mb-6"
+        >
+          <CheckCircle2 className="h-10 w-10 text-white" />
+        </motion.div>
+        
+        <h3 className="text-xl font-bold text-slate-900 mb-4">Achievements Unlocked!</h3>
+        
+        <div className="grid grid-cols-2 gap-3 mb-6">
+          {content.achievements.map((achievement, idx) => (
+            <motion.div
+              key={idx}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: idx * 0.1 }}
+              className="p-3 rounded-lg bg-emerald-50 border border-emerald-200"
+            >
+              <CheckCircle2 className="h-4 w-4 text-emerald-600 mx-auto mb-1" />
+              <p className="text-sm text-slate-700">{achievement}</p>
+            </motion.div>
+          ))}
+        </div>
+
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <h4 className="font-semibold text-slate-900 mb-2">Next Steps</h4>
+          <ul className="text-left text-sm text-slate-600 space-y-1">
+            {content.nextSteps?.map((step, idx) => (
+              <li key={idx} className="flex items-start gap-2">
+                <ChevronRight className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
+                {step}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    );
+  }
+
+  // Default rendering
+  return (
+    <div className="prose prose-slate max-w-none">
+      <p className="text-slate-600">
+        Follow the guided steps to complete this section of your onboarding.
+      </p>
+    </div>
+  );
+}
+
 export default function OnboardingModal() {
   // ALL HOOKS MUST BE AT THE TOP - BEFORE ANY CONDITIONAL LOGIC
   const navigate = useNavigate();
@@ -285,249 +407,5 @@ export default function OnboardingModal() {
         </DialogContent>
       </Dialog>
     </>
-  );
-}
-
-function StepContent({ step }) {
-  const { content } = step;
-
-  // Render different content types
-  if (content.type === 'animated-intro') {
-    return (
-      <div className="text-center py-8">
-        <div className="text-6xl mb-6">🎉</div>
-        <div className="space-y-3">
-          {content.highlights.map((highlight, idx) => (
-            <motion.div
-              key={idx}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: idx * 0.1 }}
-              className="text-lg text-slate-700"
-            >
-              {highlight}
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    );
-  }
-
-  if (content.type === 'feature-overview') {
-    return (
-      <div className="grid grid-cols-2 gap-4">
-        {content.features.map((feature, idx) => (
-          <motion.div
-            key={idx}
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: idx * 0.1 }}
-            className="p-4 rounded-xl bg-slate-50 border border-slate-200"
-          >
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-int-orange to-int-gold flex items-center justify-center mb-3">
-              <span className="text-white text-lg">{feature.icon === 'Trophy' ? '🏆' : '⭐'}</span>
-            </div>
-            <h4 className="font-semibold text-slate-900 mb-1">{feature.title}</h4>
-            <p className="text-sm text-slate-600">{feature.description}</p>
-          </motion.div>
-        ))}
-      </div>
-    );
-  }
-
-  if (content.type === 'step-by-step') {
-    return (
-      <div className="space-y-3">
-        {content.steps.map((stepText, idx) => (
-          <motion.div
-            key={idx}
-            initial={{ opacity: 0, x: -10 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: idx * 0.1 }}
-            className="flex items-start gap-3 p-3 rounded-lg bg-slate-50"
-          >
-            <div className="w-6 h-6 rounded-full bg-int-orange text-white flex items-center justify-center text-sm font-medium flex-shrink-0">
-              {idx + 1}
-            </div>
-            <p className="text-slate-700">{stepText}</p>
-          </motion.div>
-        ))}
-      </div>
-    );
-  }
-
-  if (content.type === 'completion-celebration') {
-    return (
-      <div className="text-center py-8">
-        <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ type: 'spring', duration: 0.6 }}
-          className="w-20 h-20 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center mx-auto mb-6"
-        >
-          <CheckCircle2 className="h-10 w-10 text-white" />
-        </motion.div>
-        
-        <h3 className="text-xl font-bold text-slate-900 mb-4">Achievements Unlocked!</h3>
-        
-        <div className="grid grid-cols-2 gap-3 mb-6">
-          {content.achievements.map((achievement, idx) => (
-            <motion.div
-              key={idx}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: idx * 0.1 }}
-              className="p-3 rounded-lg bg-emerald-50 border border-emerald-200"
-            >
-              <CheckCircle2 className="h-4 w-4 text-emerald-600 mx-auto mb-1" />
-              <p className="text-sm text-slate-700">{achievement}</p>
-            </motion.div>
-          ))}
-        </div>
-
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-          <h4 className="font-semibold text-slate-900 mb-2">Next Steps</h4>
-          <ul className="text-left text-sm text-slate-600 space-y-1">
-            {content.nextSteps?.map((step, idx) => (
-              <li key={idx} className="flex items-start gap-2">
-                <ChevronRight className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
-                {step}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-    );
-  }
-
-  // Default rendering
-  return (
-    <div className="prose prose-slate max-w-none">
-      <p className="text-slate-600">
-        Follow the guided steps to complete this section of your onboarding.
-      </p>
-    </div>
-  );
-}
-
-function StepContent({ step }) {
-  const { content } = step;
-
-  // Render different content types
-  if (content.type === 'animated-intro') {
-    return (
-      <div className="text-center py-8">
-        <div className="text-6xl mb-6">🎉</div>
-        <div className="space-y-3">
-          {content.highlights.map((highlight, idx) => (
-            <motion.div
-              key={idx}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: idx * 0.1 }}
-              className="text-lg text-slate-700"
-            >
-              {highlight}
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    );
-  }
-
-  if (content.type === 'feature-overview') {
-    return (
-      <div className="grid grid-cols-2 gap-4">
-        {content.features.map((feature, idx) => (
-          <motion.div
-            key={idx}
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: idx * 0.1 }}
-            className="p-4 rounded-xl bg-slate-50 border border-slate-200"
-          >
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-int-orange to-int-gold flex items-center justify-center mb-3">
-              <span className="text-white text-lg">{feature.icon === 'Trophy' ? '🏆' : '⭐'}</span>
-            </div>
-            <h4 className="font-semibold text-slate-900 mb-1">{feature.title}</h4>
-            <p className="text-sm text-slate-600">{feature.description}</p>
-          </motion.div>
-        ))}
-      </div>
-    );
-  }
-
-  if (content.type === 'step-by-step') {
-    return (
-      <div className="space-y-3">
-        {content.steps.map((stepText, idx) => (
-          <motion.div
-            key={idx}
-            initial={{ opacity: 0, x: -10 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: idx * 0.1 }}
-            className="flex items-start gap-3 p-3 rounded-lg bg-slate-50"
-          >
-            <div className="w-6 h-6 rounded-full bg-int-orange text-white flex items-center justify-center text-sm font-medium flex-shrink-0">
-              {idx + 1}
-            </div>
-            <p className="text-slate-700">{stepText}</p>
-          </motion.div>
-        ))}
-      </div>
-    );
-  }
-
-  if (content.type === 'completion-celebration') {
-    return (
-      <div className="text-center py-8">
-        <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ type: 'spring', duration: 0.6 }}
-          className="w-20 h-20 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center mx-auto mb-6"
-        >
-          <CheckCircle2 className="h-10 w-10 text-white" />
-        </motion.div>
-        
-        <h3 className="text-xl font-bold text-slate-900 mb-4">Achievements Unlocked!</h3>
-        
-        <div className="grid grid-cols-2 gap-3 mb-6">
-          {content.achievements.map((achievement, idx) => (
-            <motion.div
-              key={idx}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: idx * 0.1 }}
-              className="p-3 rounded-lg bg-emerald-50 border border-emerald-200"
-            >
-              <CheckCircle2 className="h-4 w-4 text-emerald-600 mx-auto mb-1" />
-              <p className="text-sm text-slate-700">{achievement}</p>
-            </motion.div>
-          ))}
-        </div>
-
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-          <h4 className="font-semibold text-slate-900 mb-2">Next Steps</h4>
-          <ul className="text-left text-sm text-slate-600 space-y-1">
-            {content.nextSteps?.map((step, idx) => (
-              <li key={idx} className="flex items-start gap-2">
-                <ChevronRight className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
-                {step}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-    );
-  }
-
-  // Default rendering
-  return (
-    <div className="prose prose-slate max-w-none">
-      <p className="text-slate-600">
-        Follow the guided steps to complete this section of your onboarding.
-      </p>
-    </div>
   );
 }
