@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { createPageUrl } from '../../utils';
@@ -22,6 +22,7 @@ export function useUserData(
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const redirectInitiated = useRef(false);
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -46,13 +47,15 @@ export function useUserData(
         const hasNoUserType = !currentUser.user_type && !isAdmin;
         
         // If non-admin user has no user_type, redirect to role selection
-        if (hasNoUserType && !requireAdmin) {
+        if (hasNoUserType && !requireAdmin && !redirectInitiated.current) {
+          redirectInitiated.current = true;
           window.location.href = createPageUrl('RoleSelection');
           return;
         }
         
         // Admin-only pages
-        if (requireAdmin && !isAdmin) {
+        if (requireAdmin && !isAdmin && !redirectInitiated.current) {
+          redirectInitiated.current = true;
           // Non-admins go to their appropriate dashboard
           if (isFacilitator) {
             window.location.href = createPageUrl('FacilitatorDashboard');
@@ -65,7 +68,8 @@ export function useUserData(
         }
         
         // Facilitator-only pages (admins can also access)
-        if (requireFacilitator && !isAdmin && !isFacilitator) {
+        if (requireFacilitator && !isAdmin && !isFacilitator && !redirectInitiated.current) {
+          redirectInitiated.current = true;
           if (isParticipant) {
             window.location.href = createPageUrl('ParticipantPortal');
           } else {
@@ -75,7 +79,8 @@ export function useUserData(
         }
         
         // Participant-only pages
-        if (requireParticipant && !isParticipant) {
+        if (requireParticipant && !isParticipant && !redirectInitiated.current) {
+          redirectInitiated.current = true;
           if (isAdmin) {
             window.location.href = createPageUrl('Dashboard');
           } else if (isFacilitator) {
@@ -89,7 +94,8 @@ export function useUserData(
       } catch (err) {
         if (isMounted) {
           setError(err.message || 'Failed to load user data');
-          if (requireAuth) {
+          if (requireAuth && !redirectInitiated.current) {
+            redirectInitiated.current = true;
             base44.auth.redirectToLogin();
           }
         }
