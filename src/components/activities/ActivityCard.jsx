@@ -3,6 +3,9 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Clock, Users, Calendar, Copy, GraduationCap, ChevronRight, Star } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { base44 } from '@/api/base44Client';
+import { toast } from 'sonner';
 
 const typeConfig = {
   icebreaker: { emoji: '❄️', label: 'Icebreaker', badgeClass: 'activity-badge-icebreaker' },
@@ -25,9 +28,41 @@ const defaultImages = {
   social: 'https://images.unsplash.com/photo-1543269865-cbf427effbad?w=400&h=300&fit=crop'
 };
 
-export default function ActivityCard({ activity, onSchedule, onDuplicate, onView }) {
+export default function ActivityCard({ activity, onSchedule, onDuplicate, onView, isFavorite = false, userEmail }) {
+  const queryClient = useQueryClient();
   const config = typeConfig[activity.type] || typeConfig.social;
   const imageUrl = activity.image_url || defaultImages[activity.type] || defaultImages.social;
+
+  const toggleFavoriteMutation = useMutation({
+    mutationFn: async () => {
+      if (isFavorite) {
+        const favorites = await base44.entities.ActivityFavorite.filter({ 
+          user_email: userEmail, 
+          activity_id: activity.id 
+        });
+        if (favorites[0]) {
+          await base44.entities.ActivityFavorite.delete(favorites[0].id);
+        }
+      } else {
+        await base44.entities.ActivityFavorite.create({
+          user_email: userEmail,
+          activity_id: activity.id
+        });
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['activity-favorites', userEmail]);
+      toast.success(isFavorite ? 'Removed from favorites' : 'Added to favorites');
+    },
+    onError: () => {
+      toast.error('Failed to update favorites');
+    }
+  });
+
+  const handleToggleFavorite = (e) => {
+    e.stopPropagation();
+    toggleFavoriteMutation.mutate();
+  };
 
   return (
     <motion.div
@@ -53,6 +88,20 @@ export default function ActivityCard({ activity, onSchedule, onDuplicate, onView
           <div className={`absolute top-3 right-3 ${config.badgeClass} px-2.5 py-1 rounded-full text-xs font-semibold backdrop-blur-sm`}>
             {config.emoji} {config.label}
           </div>
+
+          {/* Favorite button - top left */}
+          <button
+            onClick={handleToggleFavorite}
+            className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm hover:bg-white p-2 rounded-full shadow-sm transition-all hover:scale-110"
+          >
+            <Star 
+              className={`h-4 w-4 transition-all ${
+                isFavorite 
+                  ? 'fill-int-orange text-int-orange' 
+                  : 'text-slate-400 hover:text-int-orange'
+              }`}
+            />
+          </button>
         </div>
         
         {/* Content - separate from image, no overlay */}
