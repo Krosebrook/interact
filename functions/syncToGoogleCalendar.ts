@@ -1,94 +1,138 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.4';
 
+/**
+ * Syncs an event to Google Calendar
+ * Creates or updates a calendar event in the user's Google Calendar
+ */
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
     const user = await base44.auth.me();
-
+    
     if (!user) {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { eventId } = await req.json();
+    const { event_id, action = 'create' } = await req.json();
 
     // Get event details
-    const events = await base44.asServiceRole.entities.Event.filter({ id: eventId });
-    if (!events.length) {
+    const events = await base44.entities.Event.filter({ id: event_id });
+    const event = events[0];
+    
+    if (!event) {
       return Response.json({ error: 'Event not found' }, { status: 404 });
     }
-    const event = events[0];
 
-    // Get activity for description
-    const activities = await base44.asServiceRole.entities.Activity.filter({ id: event.activity_id });
+    // Get activity details for description
+    const activities = await base44.entities.Activity.filter({ id: event.activity_id });
     const activity = activities[0];
 
-    // Build Google Calendar event
-    const startDateTime = new Date(event.scheduled_date);
-    const endDateTime = new Date(startDateTime.getTime() + (event.duration_minutes || 30) * 60000);
+    // Get Google Calendar access token
+    const accessToken = await base44.asServiceRole.connectors.getAccessToken('googlecalendar');
+
+    if (!accessToken) {
+      return Response.json({ 
+        error: 'Google Calendar not connected',
+        requiresAuth: true 
+      }, { status: 403 });
+    }
+
+    // Format event for Google Calendar
+    const startDate = new Date(event.scheduled_date);
+    const endDate = new Date(startDate);
+    endDate.setMinutes(endDate.getMinutes() + (event.duration_minutes || 60));
 
     const calendarEvent = {
       summary: event.title,
-      description: activity?.description || '',
+      description: `${activity?.description || ''}\n\n${event.custom_instructions || ''}\n\nMeeting Link: ${event.meeting_link || 'N/A'}`,
       start: {
-        dateTime: startDateTime.toISOString(),
-        timeZone: 'UTC'
+        dateTime: startDate.toISOString(),
+        timeZone: 'UTC',
       },
       end: {
-        dateTime: endDateTime.toISOString(),
-        timeZone: 'UTC'
+        dateTime: endDate.toISOString(),
+        timeZone: 'UTC',
       },
-      location: event.meeting_link || event.location || 'Virtual',
+      location: event.event_format === 'online' ? event.meeting_link : event.location,
       reminders: {
         useDefault: false,
         overrides: [
           { method: 'email', minutes: 24 * 60 },
-          { method: 'popup', minutes: 60 }
-        ]
-      }
+          { method: 'popup', minutes: 60 },
+        ],
+      },
     };
 
-    // Call Google Calendar API
-    const GOOGLE_API_KEY = Deno.env.get('GOOGLE_API_KEY');
+    let response;
     
-    if (!GOOGLE_API_KEY) {
-      return Response.json({ 
-        error: 'Google API key not configured',
-        calendar_event: calendarEvent 
-      }, { status: 400 });
-    }
-
-    const response = await fetch(
-      `https://www.googleapis.com/calendar/v3/calendars/primary/events`,
-      {
+    if (action === 'create') {
+      // Create new calendar event
+      response = await fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${GOOGLE_API_KEY}`,
-          'Content-Type': 'application/json'
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(calendarEvent)
-      }
-    );
-
-    if (!response.ok) {
-      const error = await response.text();
-      throw new Error(`Google Calendar API error: ${error}`);
+        body: JSON.stringify(calendarEvent),
+      });
+    } else if (action === 'update' && event.google_calendar_id) {
+      // Update existing calendar event
+      response = await fetch(
+        `https://www.googleapis.com/calendar/v3/calendars/primary/events/${event.google_calendar_id}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(calendarEvent),
+        }
+      );
+    } else if (action === 'delete' && event.google_calendar_id) {
+      // Delete calendar event
+      response = await fetch(
+        `https://www.googleapis.com/calendar/v3/calendars/primary/events/${event.google_calendar_id}`,
+        {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${accessToken}`,
+          },
+        }
+      );
+      
+      return Response.json({ 
+        success: true,
+        message: 'Event removed from Google Calendar' 
+      });
     }
 
-    const gcalEvent = await response.json();
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error?.message || 'Failed to sync with Google Calendar');
+    }
 
-    // Update event with Google Calendar ID
-    await base44.asServiceRole.entities.Event.update(eventId, {
-      google_calendar_id: gcalEvent.id,
-      google_calendar_link: gcalEvent.htmlLink
-    });
+    const data = await response.json();
+
+    // Update event with Google Calendar ID for future updates/deletes
+    if (action === 'create' && data.id) {
+      await base44.asServiceRole.entities.Event.update(event_id, {
+        google_calendar_id: data.id,
+        google_calendar_link: data.htmlLink,
+      });
+    }
 
     return Response.json({
       success: true,
-      calendar_event_id: gcalEvent.id,
-      calendar_link: gcalEvent.htmlLink
+      calendar_event_id: data.id,
+      calendar_link: data.htmlLink,
+      message: action === 'create' ? 'Event added to Google Calendar' : 'Event updated in Google Calendar',
     });
 
   } catch (error) {
-    return Response.json({ error: error.message }, { status: 500 });
+    console.error('Google Calendar sync error:', error);
+    return Response.json({ 
+      error: error.message,
+      details: 'Failed to sync with Google Calendar' 
+    }, { status: 500 });
   }
 });

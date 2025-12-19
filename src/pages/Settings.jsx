@@ -6,6 +6,7 @@ import BulkUserImport from '../components/admin/BulkUserImport';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AISettingsPanel from '../components/settings/AISettingsPanel';
 import TeamsConfigPanel from '../components/teams/TeamsConfigPanel';
+import GoogleCalendarConnect from '../components/integrations/GoogleCalendarConnect';
 import RoleManagement from '../components/admin/RoleManagement';
 import UserTypeManager from '../components/admin/UserTypeManager';
 import { Settings as SettingsIcon, Sparkles, Shield, MessageSquare, Users } from 'lucide-react';
@@ -74,6 +75,11 @@ function SettingsContent() {
 
         <TabsContent value="teams" className="mt-6">
           <TeamsConfigPanel />
+          
+          <div id="integrations">
+            <h2 className="text-2xl font-bold text-int-navy mb-4">Integrations</h2>
+            <GoogleCalendarConnect />
+          </div>
         </TabsContent>
 
         <TabsContent value="users" className="mt-6">
