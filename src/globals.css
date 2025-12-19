@@ -8,7 +8,9 @@ css
   /* Brand Colors */
   --int-navy: #14294D;
   --int-orange: #D97230;
+  --int-orange-dark: #C46322; /* Darker variant for better contrast */
   --slate-gray: #64748b;
+  --slate-gray-dark: #475569; /* WCAG AA compliant */
   --int-gold: #F5C16A;
   --int-teal: #2DD4BF;
   

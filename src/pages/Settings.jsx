@@ -3,6 +3,7 @@ import { useUserData } from '../components/hooks/useUserData.jsx';
 import { useUserPermissions } from '../components/hooks/useRBACGuard';
 import UserManagementPanel from '../components/admin/UserManagementPanel';
 import BulkUserImport from '../components/admin/BulkUserImport';
+import SurveyManagement from '../components/admin/SurveyManagement';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AISettingsPanel from '../components/settings/AISettingsPanel';
 import TeamsConfigPanel from '../components/teams/TeamsConfigPanel';

@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.4';
+import { validateTeamsWebhook, sanitizeForExternalNotification, checkRateLimit } from './lib/webhookValidation.js';
 
 Deno.serve(async (req) => {
     try {
@@ -20,9 +21,15 @@ Deno.serve(async (req) => {
         const config = configs[0];
 
         // Validate webhook URL to prevent SSRF attacks
-        if (!config.webhook_url.startsWith('https://outlook.office.com/webhook/') && 
-            !config.webhook_url.startsWith('https://outlook.office365.com/webhook/')) {
-            return Response.json({ error: 'Invalid Teams webhook URL' }, { status: 400 });
+        try {
+            validateTeamsWebhook(config.webhook_url);
+        } catch (error) {
+            return Response.json({ error: error.message }, { status: 400 });
+        }
+
+        // Rate limiting (10 notifications per minute)
+        if (!checkRateLimit(`teams-notification-${user.email}`, 10, 60000)) {
+            return Response.json({ error: 'Rate limit exceeded. Please wait before sending more notifications.' }, { status: 429 });
         }
 
         // Check if this notification type is enabled

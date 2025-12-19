@@ -112,6 +112,8 @@ export default function Layout({ children, currentPageName }) {
         { name: 'Gamification Settings', icon: SettingsIcon, page: 'GamificationSettings' },
         { name: 'Gamification Analytics', icon: BarChart3, page: 'AdvancedGamificationAnalytics' },
         { name: 'AI Event Planner', icon: Sparkles, page: 'AIEventPlanner' },
+        { name: 'Surveys', icon: FileText, page: 'Surveys' },
+        { name: 'Milestones', icon: Cake, page: 'Milestones' },
         { name: 'Analytics', icon: BarChart3, page: 'Analytics' },
         { name: 'Audit Log', icon: Shield, page: 'AuditLog' },
         { name: 'Integrations', icon: Plug, page: 'Integrations' },
@@ -140,16 +142,22 @@ export default function Layout({ children, currentPageName }) {
       { name: 'Teams', icon: Users, page: 'Teams' },
       { name: 'Channels', icon: Users, page: 'Channels' },
       { name: 'Recognition', icon: Gift, page: 'Recognition' },
+      { name: 'Surveys', icon: FileText, page: 'Surveys' },
+      { name: 'Milestones', icon: Cake, page: 'Milestones' },
       { name: 'Rewards', icon: Gift, page: 'RewardsStore' },
       { name: 'Point Store', icon: Gift, page: 'PointStore' },
       { name: 'Leaderboards', icon: BarChart3, page: 'Leaderboards' },
       { name: 'My Profile', icon: User, page: 'UserProfile' },
     ];
-  }, [isAdmin, isFacilitator, isParticipant]);
+    }, [isAdmin, isFacilitator, isParticipant]);
 
   return (
     <OnboardingProvider>
       <div className="min-h-screen flex flex-col bg-slate-100">
+        {/* Skip to main content - WCAG 2.4.1 */}
+        <a href="#main-content" className="skip-to-main">
+          Skip to main content
+        </a>
         {/* Header with scenic image */}
         <header 
           className="relative h-20 bg-cover bg-center bg-no-repeat"
@@ -216,7 +224,7 @@ export default function Layout({ children, currentPageName }) {
         <KeyboardShortcuts />
 
       {/* Main Content */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main id="main-content" className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <ErrorBoundary>
           {children}
         </ErrorBoundary>
