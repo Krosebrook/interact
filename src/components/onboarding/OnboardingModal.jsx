@@ -44,11 +44,18 @@ const STEP_ICONS = {
   analytics: BarChart3,
   recognition: MessageSquare,
   rewards: Gift,
-  complete: CheckCircle2
+  complete: CheckCircle2,
+  dashboard: BarChart3
 };
 
 function StepContent({ step }) {
   const { content } = step;
+  
+  // Render custom component if specified
+  if (content?.type === 'custom-component' && content.component) {
+    const Component = content.component;
+    return <Component />;
+  }
 
   // Render different content types
   if (content.type === 'animated-intro') {
