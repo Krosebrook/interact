@@ -19,7 +19,9 @@ import {
   Download,
   Plug,
   ChevronRight,
-  Shield
+  Shield,
+  FileText,
+  Cake
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import NotificationBell from './components/notifications/NotificationBell';

@@ -10,7 +10,7 @@ import TeamsConfigPanel from '../components/teams/TeamsConfigPanel';
 import GoogleCalendarConnect from '../components/integrations/GoogleCalendarConnect';
 import RoleManagement from '../components/admin/RoleManagement';
 import UserTypeManager from '../components/admin/UserTypeManager';
-import { Settings as SettingsIcon, Sparkles, Shield, MessageSquare, Users } from 'lucide-react';
+import { Settings as SettingsIcon, Sparkles, Shield, MessageSquare, Users, FileText, Plug } from 'lucide-react';
 
 function SettingsContent() {
   const { user, loading } = useUserData(true, true);
@@ -35,7 +35,7 @@ function SettingsContent() {
       </div>
 
       <Tabs defaultValue="invites" className="w-full">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="invites" className="flex items-center gap-2">
             <Users className="h-4 w-4" />
             Invitations
@@ -52,9 +52,13 @@ function SettingsContent() {
             <MessageSquare className="h-4 w-4" />
             Teams
           </TabsTrigger>
-          <TabsTrigger value="users" className="flex items-center gap-2">
-            <Users className="h-4 w-4" />
-            Users
+          <TabsTrigger value="integrations" className="flex items-center gap-2">
+            <Plug className="h-4 w-4" />
+            Integrations
+          </TabsTrigger>
+          <TabsTrigger value="surveys" className="flex items-center gap-2">
+            <FileText className="h-4 w-4" />
+            Surveys
           </TabsTrigger>
         </TabsList>
 
@@ -76,11 +80,17 @@ function SettingsContent() {
 
         <TabsContent value="teams" className="mt-6">
           <TeamsConfigPanel />
-          
-          <div id="integrations">
-            <h2 className="text-2xl font-bold text-int-navy mb-4">Integrations</h2>
+        </TabsContent>
+
+        <TabsContent value="integrations" className="mt-6">
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold text-int-navy mb-4">External Integrations</h2>
             <GoogleCalendarConnect />
           </div>
+        </TabsContent>
+
+        <TabsContent value="surveys" className="mt-6">
+          <SurveyManagement />
         </TabsContent>
 
         <TabsContent value="users" className="mt-6">
