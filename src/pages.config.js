@@ -36,6 +36,8 @@ import TeamDashboard from './pages/TeamDashboard';
 import TeamPerformanceDashboard from './pages/TeamPerformanceDashboard';
 import Teams from './pages/Teams';
 import UserProfile from './pages/UserProfile';
+import Surveys from './pages/Surveys';
+import Milestones from './pages/Milestones';
 import __Layout from './Layout.jsx';
 
 
@@ -78,6 +80,8 @@ export const PAGES = {
     "TeamPerformanceDashboard": TeamPerformanceDashboard,
     "Teams": Teams,
     "UserProfile": UserProfile,
+    "Surveys": Surveys,
+    "Milestones": Milestones,
 }
 
 export const pagesConfig = {
