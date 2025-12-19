@@ -19,6 +19,12 @@ Deno.serve(async (req) => {
 
         const config = configs[0];
 
+        // Validate webhook URL to prevent SSRF attacks
+        if (!config.webhook_url.startsWith('https://outlook.office.com/webhook/') && 
+            !config.webhook_url.startsWith('https://outlook.office365.com/webhook/')) {
+            return Response.json({ error: 'Invalid Teams webhook URL' }, { status: 400 });
+        }
+
         // Check if this notification type is enabled
         if (!config.notifications_enabled) {
             return Response.json({ message: 'Notifications disabled' }, { status: 200 });

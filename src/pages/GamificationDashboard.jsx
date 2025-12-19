@@ -87,8 +87,16 @@ export default function GamificationDashboard() {
   });
 
   const { data: users = [] } = useQuery({
-    queryKey: ['users'],
-    queryFn: () => base44.entities.User.list()
+    queryKey: ['users-basic'],
+    queryFn: async () => {
+      // Only fetch minimal user data needed for leaderboards (no PII)
+      const allUsers = await base44.entities.User.list();
+      return allUsers.map(u => ({
+        email: u.email,
+        full_name: u.full_name,
+        role: u.role
+      }));
+    }
   });
 
   const { data: teams = [] } = useQuery({

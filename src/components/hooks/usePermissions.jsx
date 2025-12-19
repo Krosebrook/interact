@@ -182,7 +182,17 @@ export function usePermissions() {
   /**
    * Filter sensitive fields from data based on permissions
    */
-  const filterSensitiveFields = (data, sensitiveFields = ['salary', 'ssn', 'address']) => {
+  const filterSensitiveFields = (data, sensitiveFields = [
+    'salary', 
+    'ssn', 
+    'address', 
+    'years_at_company', 
+    'previous_event_attendance',
+    'engagement_stats',
+    'achievements',
+    'skill_levels',
+    'personality_traits'
+  ]) => {
     if (canViewAllEmployees) return data; // HR can see everything
     
     if (Array.isArray(data)) {

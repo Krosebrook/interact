@@ -95,6 +95,10 @@ export default function RecognitionPage() {
   // Feature recognition (admin only)
   const featureMutation = useMutation({
     mutationFn: async (recognitionId) => {
+      // Double-check admin permission
+      if (!isAdmin) {
+        throw new Error('Unauthorized - admin access required');
+      }
       return base44.entities.Recognition.update(recognitionId, {
         is_featured: true,
         featured_by: user.email,
@@ -105,6 +109,9 @@ export default function RecognitionPage() {
       queryClient.invalidateQueries(['recognitions']);
       queryClient.invalidateQueries(['recognitions-featured']);
       toast.success('Recognition featured!');
+    },
+    onError: (error) => {
+      toast.error(error.message || 'Failed to feature recognition');
     }
   });
 

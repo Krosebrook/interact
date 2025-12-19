@@ -30,6 +30,7 @@ import OnboardingModal from './components/onboarding/OnboardingModal';
 import OnboardingProgress from './components/onboarding/OnboardingProgress';
 import OnboardingTrigger from './components/onboarding/OnboardingTrigger';
 import KeyboardShortcuts from './components/core/KeyboardShortcuts';
+import { useSessionTimeout } from './components/hooks/useSessionTimeout';
 
 const HEADER_IMAGE = 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/691e3ae3bd4916f2e05ae35e/1b2b117bd_ChatGPTImageNov25202503_31_49PM.png';
 
@@ -38,6 +39,9 @@ export default function Layout({ children, currentPageName }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [installPrompt, setInstallPrompt] = useState(null);
   const [showInstallBanner, setShowInstallBanner] = useState(false);
+
+  // Enable 8-hour session timeout
+  useSessionTimeout(true);
 
   useEffect(() => {
 

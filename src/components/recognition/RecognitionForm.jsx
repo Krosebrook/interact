@@ -37,10 +37,19 @@ export default function RecognitionForm({ currentUser, onSuccess }) {
   const [aiLoading, setAiLoading] = useState(false);
   const [aiSuggestions, setAiSuggestions] = useState([]);
 
-  // Fetch users for recipient selection
+  // Fetch users for recipient selection (only basic info, no PII)
   const { data: users = [] } = useQuery({
-    queryKey: ['users-list'],
-    queryFn: () => base44.entities.User.list()
+    queryKey: ['users-list-basic'],
+    queryFn: async () => {
+      const allUsers = await base44.entities.User.list();
+      // Filter to only show id, email, full_name (no PII)
+      return allUsers.map(u => ({
+        id: u.id,
+        email: u.email,
+        full_name: u.full_name,
+        role: u.role
+      }));
+    }
   });
 
   const filteredUsers = users.filter(u => 
@@ -104,7 +113,7 @@ Return as JSON: { "suggestions": ["message1", "message2", "message3"] }`,
         visibility,
         ai_suggested: isAiSuggested,
         points_awarded: 10,
-        status: 'approved'
+        status: 'pending' // Changed to pending for moderation
       });
     },
     onSuccess: () => {

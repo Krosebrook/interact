@@ -26,7 +26,7 @@ const DEFAULT_RETRY_CONFIG = {
   }
 };
 
-const REQUEST_TIMEOUT = 30000; // 30 seconds
+const REQUEST_TIMEOUT = 15000; // 15 seconds (reduced from 30s for better UX)
 
 // ============================================================================
 // REQUEST QUEUE & DEDUPLICATION
