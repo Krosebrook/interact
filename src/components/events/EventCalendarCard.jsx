@@ -26,6 +26,7 @@ import {
   Video,
   RefreshCw } from
 'lucide-react';
+import GoogleCalendarActions from './GoogleCalendarActions';
 import { format, isPast } from 'date-fns';
 import { motion } from 'framer-motion';
 
@@ -146,9 +147,13 @@ export default function EventCalendarCard({
               {onDownloadCalendar && (
                 <DropdownMenuItem onClick={handleDownloadCalendar}>
                   <Download className="h-4 w-4 mr-2" />
-                  Add to Calendar
+                  Add to Calendar (.ics)
                 </DropdownMenuItem>
               )}
+              <DropdownMenuSeparator />
+              <div className="px-2 py-1.5">
+                <GoogleCalendarActions eventId={event.id} />
+              </div>
               <DropdownMenuSeparator />
               {!isEventPast && (
                 <>

@@ -85,8 +85,17 @@ export default function Calendar() {
     return <LoadingSpinner className="min-h-[60vh]" />;
   }
 
+  const refetchEvents = () => {
+    queryClient.invalidateQueries(['events']);
+  };
+
   return (
     <div className="space-y-8">
+      {/* Google Calendar Integration */}
+      <div className="glass-panel-solid">
+        <GoogleCalendarActions onImportComplete={refetchEvents} />
+      </div>
+
       <CalendarHeader
         onScheduleEvent={() => setShowScheduleDialog(true)}
         onCreatePoll={() => setShowPollDialog(true)}
