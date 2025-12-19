@@ -14,7 +14,8 @@ import {
   Users,
   Sparkles,
   Star,
-  Target
+  Target,
+  CheckCircle2
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
