@@ -34,8 +34,8 @@ const REQUEST_TIMEOUT = 30000; // 30 seconds
 
 const pendingRequests = new Map();
 
-function generateRequestKey(method, url, data) {
-  return `${method}:${url}:${JSON.stringify(data || {})}`;
+function generateRequestKey(method, url, data, userId = 'anonymous') {
+  return `${userId}:${method}:${url}:${JSON.stringify(data || {})}`;
 }
 
 function deduplicateRequest(key, requestFn) {
@@ -119,6 +119,12 @@ export const apiClient = {
 
     const requestFn = async () => {
       try {
+        // Check authentication before API call
+        const isAuth = await base44.auth.isAuthenticated();
+        if (!isAuth) {
+          throw new AuthenticationError('Session expired. Please log in again.');
+        }
+
         const promise = base44.entities[entityName].filter(filters);
         const result = await (timeout ? withTimeout(promise, timeout) : promise);
         return result;
@@ -132,7 +138,15 @@ export const apiClient = {
     const executeFn = retry ? () => executeWithRetry(requestFn) : requestFn;
 
     if (deduplicate) {
-      const key = generateRequestKey('GET', entityName, filters);
+      // Get current user for request key (prevents cross-user cache pollution)
+      let userId = 'anonymous';
+      try {
+        const user = await base44.auth.me();
+        userId = user?.id || user?.email || 'anonymous';
+      } catch (e) {
+        // User not authenticated, use anonymous
+      }
+      const key = generateRequestKey('GET', entityName, filters, userId);
       return deduplicateRequest(key, executeFn);
     }
 

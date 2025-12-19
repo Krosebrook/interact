@@ -23,6 +23,11 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Event not found' }, { status: 404 });
     }
 
+    // Verify user owns event or is admin
+    if (event.facilitator_email !== user.email && user.role !== 'admin') {
+      return Response.json({ error: 'Unauthorized - you can only sync your own events' }, { status: 403 });
+    }
+
     // Get activity details for description
     const activities = await base44.entities.Activity.filter({ id: event.activity_id });
     const activity = activities[0];

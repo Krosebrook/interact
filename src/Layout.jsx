@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from './utils';
 import { base44 } from '@/api/base44Client';
+import { useUserData } from './components/hooks/useUserData';
 import ErrorBoundary from './components/common/ErrorBoundary';
 import { 
   LayoutDashboard, 
@@ -33,21 +34,12 @@ import KeyboardShortcuts from './components/core/KeyboardShortcuts';
 const HEADER_IMAGE = 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/691e3ae3bd4916f2e05ae35e/1b2b117bd_ChatGPTImageNov25202503_31_49PM.png';
 
 export default function Layout({ children, currentPageName }) {
-  const [user, setUser] = useState(null);
+  const { user, loading: userLoading } = useUserData(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [installPrompt, setInstallPrompt] = useState(null);
   const [showInstallBanner, setShowInstallBanner] = useState(false);
 
   useEffect(() => {
-    const loadUser = async () => {
-      try {
-        const currentUser = await base44.auth.me();
-        setUser(currentUser);
-      } catch (error) {
-        setUser(null);
-      }
-    };
-    loadUser();
 
     const handleBeforeInstall = (e) => {
       e.preventDefault();
@@ -79,7 +71,7 @@ export default function Layout({ children, currentPageName }) {
 
   const handleLogout = () => {
     // Prevent multiple logout clicks
-    if (window.location.pathname.includes('login')) return;
+    if (currentPageName === 'Login') return;
     base44.auth.logout();
   };
 
@@ -97,7 +89,7 @@ export default function Layout({ children, currentPageName }) {
   const isParticipant = user?.user_type === 'participant';
 
   // Navigation based on role hierarchy: Admin > Facilitator > Participant
-  const getNavigation = () => {
+  const navigation = useMemo(() => {
     if (isAdmin) {
       return [
         { name: 'Dashboard', icon: LayoutDashboard, page: 'Dashboard' },
@@ -149,9 +141,7 @@ export default function Layout({ children, currentPageName }) {
       { name: 'Leaderboards', icon: BarChart3, page: 'Leaderboards' },
       { name: 'My Profile', icon: User, page: 'UserProfile' },
     ];
-  };
-
-  const navigation = getNavigation();
+  }, [isAdmin, isFacilitator, isParticipant]);
 
   return (
     <OnboardingProvider>
