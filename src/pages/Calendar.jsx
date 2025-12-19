@@ -17,6 +17,7 @@ import EventsList from '../components/events/EventsList';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import { useEventActions } from '../components/events/useEventActions';
 import { useTeamData } from '../components/hooks/useTeamData';
+import GoogleCalendarActions from '../components/events/GoogleCalendarActions';
 import { toast } from 'sonner';
 
 export default function Calendar() {
