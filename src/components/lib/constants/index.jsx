@@ -17,6 +17,22 @@ export const LEVEL_THRESHOLDS = [
   { level: 10, points: 5000, title: 'Hall of Fame' }
 ];
 
+// Helper function to calculate level from points
+export function calculateLevelFromPoints(points) {
+  if (!points || points < 0) return 1;
+  
+  const levelData = [...LEVEL_THRESHOLDS]
+    .reverse()
+    .find(threshold => points >= threshold.points);
+  
+  return levelData ? levelData.level : 1;
+}
+
+// Helper function to get level info
+export function getLevelInfo(level) {
+  return LEVEL_THRESHOLDS.find(t => t.level === level) || LEVEL_THRESHOLDS[0];
+}
+
 // Company domain for email validation
 export const ALLOWED_EMAIL_DOMAIN = 'intinc.com';
 
