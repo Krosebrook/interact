@@ -104,6 +104,7 @@ export default function Layout({ children, currentPageName }) {
         { name: 'Templates', icon: LayoutDashboard, page: 'EventTemplates' },
         { name: 'Calendar', icon: Calendar, page: 'Calendar' },
         { name: 'Employee Directory', icon: Users, page: 'EmployeeDirectory' },
+        { name: 'Learning Paths', icon: FileText, page: 'LearningDashboard' },
         { name: 'Teams', icon: Users, page: 'Teams' },
         { name: 'Channels', icon: Users, page: 'Channels' },
         { name: 'Recognition', icon: Gift, page: 'Recognition' },
@@ -131,6 +132,7 @@ export default function Layout({ children, currentPageName }) {
         { name: 'Team Leader', icon: Users, page: 'TeamLeaderDashboard' },
         { name: 'Activities', icon: Sparkles, page: 'Activities' },
         { name: 'Calendar', icon: Calendar, page: 'Calendar' },
+        { name: 'Learning', icon: FileText, page: 'LearningDashboard' },
         { name: 'Teams', icon: Users, page: 'Teams' },
         { name: 'Channels', icon: Users, page: 'Channels' },
         { name: 'Recognition', icon: Gift, page: 'Recognition' },
@@ -142,6 +144,7 @@ export default function Layout({ children, currentPageName }) {
     // Participant navigation
     return [
       { name: 'My Events', icon: Calendar, page: 'ParticipantPortal' },
+      { name: 'Learning', icon: FileText, page: 'LearningDashboard' },
       { name: 'Teams', icon: Users, page: 'Teams' },
       { name: 'Channels', icon: Users, page: 'Channels' },
       { name: 'Recognition', icon: Gift, page: 'Recognition' },
