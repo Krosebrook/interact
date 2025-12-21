@@ -20,6 +20,7 @@ import Home from './pages/Home';
 import Integrations from './pages/Integrations';
 import Leaderboards from './pages/Leaderboards';
 import Milestones from './pages/Milestones';
+import NewEmployeeOnboarding from './pages/NewEmployeeOnboarding';
 import OnboardingHub from './pages/OnboardingHub';
 import ParticipantEvent from './pages/ParticipantEvent';
 import ParticipantPortal from './pages/ParticipantPortal';
@@ -40,7 +41,6 @@ import TeamLeaderDashboard from './pages/TeamLeaderDashboard';
 import TeamPerformanceDashboard from './pages/TeamPerformanceDashboard';
 import Teams from './pages/Teams';
 import UserProfile from './pages/UserProfile';
-import NewEmployeeOnboarding from './pages/NewEmployeeOnboarding';
 import __Layout from './Layout.jsx';
 
 
@@ -67,6 +67,7 @@ export const PAGES = {
     "Integrations": Integrations,
     "Leaderboards": Leaderboards,
     "Milestones": Milestones,
+    "NewEmployeeOnboarding": NewEmployeeOnboarding,
     "OnboardingHub": OnboardingHub,
     "ParticipantEvent": ParticipantEvent,
     "ParticipantPortal": ParticipantPortal,
@@ -87,7 +88,6 @@ export const PAGES = {
     "TeamPerformanceDashboard": TeamPerformanceDashboard,
     "Teams": Teams,
     "UserProfile": UserProfile,
-    "NewEmployeeOnboarding": NewEmployeeOnboarding,
 }
 
 export const pagesConfig = {

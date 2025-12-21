@@ -292,6 +292,108 @@ For each resource provide:
         return Response.json({ success: true, resources: resources.resources });
       }
 
+      case 'suggest_projects': {
+        const { role, skills } = context;
+
+        const prompt = `You are an AI career advisor suggesting initial projects for a new employee.
+
+New Employee Profile:
+- Role: ${role || user.user_type}
+- Skills: ${skills?.join(', ') || profile?.skill_interests?.join(', ') || 'General'}
+- Department: ${profile?.department || 'General'}
+- Experience Level: New hire (first 30 days)
+
+Suggest 3-5 starter projects/initiatives that:
+1. Match their skill level and role
+2. Provide quick wins (completable in 1-2 weeks)
+3. Help them learn the company's processes
+4. Build relationships with team members
+5. Create visible impact
+
+For each project provide:
+- Project name
+- Description (2-3 sentences)
+- Expected duration (1-2 weeks, 2-4 weeks)
+- Skills developed
+- Key stakeholders to collaborate with
+- Success criteria
+- Why it's a good first project`;
+
+        const projects = await base44.asServiceRole.integrations.Core.InvokeLLM({
+          prompt,
+          response_json_schema: {
+            type: "object",
+            properties: {
+              projects: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    name: { type: "string" },
+                    description: { type: "string" },
+                    duration: { type: "string" },
+                    skills_developed: { type: "array", items: { type: "string" } },
+                    stakeholders: { type: "array", items: { type: "string" } },
+                    success_criteria: { type: "array", items: { type: "string" } },
+                    why_good_fit: { type: "string" }
+                  }
+                }
+              }
+            }
+          }
+        });
+
+        return Response.json({ success: true, projects: projects.projects });
+      }
+
+      case 'generate_welcome_messages': {
+        const { team_members } = context;
+
+        const prompt = `You are generating personalized welcome messages from team members to a new hire.
+
+New Employee: ${user.full_name}
+Role: ${user.user_type}
+Department: ${profile?.department || 'General'}
+
+Generate 3-5 warm, authentic welcome messages from different team members:
+1. Direct manager/team lead
+2. Senior team member (mentor figure)
+3. Peer in same role
+4. Cross-functional collaborator
+5. Culture/social committee member
+
+Each message should:
+- Be personal and welcoming (not generic)
+- Mention something specific they can help with
+- Include an invitation to connect (coffee chat, lunch, etc.)
+- Be 2-3 sentences
+- Sound authentic, not corporate
+
+Make each message distinct in tone and personality.`;
+
+        const messages = await base44.asServiceRole.integrations.Core.InvokeLLM({
+          prompt,
+          response_json_schema: {
+            type: "object",
+            properties: {
+              welcome_messages: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    from_role: { type: "string" },
+                    message: { type: "string" },
+                    invitation: { type: "string" }
+                  }
+                }
+              }
+            }
+          }
+        });
+
+        return Response.json({ success: true, welcome_messages: messages.welcome_messages });
+      }
+
       default:
         return Response.json({ error: 'Invalid action' }, { status: 400 });
     }

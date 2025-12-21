@@ -14,7 +14,9 @@ import {
   BookOpen,
   MessageCircle,
   Rocket,
-  Target
+  Target,
+  Heart,
+  Briefcase
 } from 'lucide-react';
 import OnboardingChatbot from '../components/onboarding/OnboardingChatbot';
 import OnboardingPlanDisplay from '../components/onboarding/OnboardingPlanDisplay';
@@ -96,6 +98,37 @@ export default function NewEmployeeOnboarding() {
     }
   });
 
+  // Generate project suggestions
+  const projectsMutation = useMutation({
+    mutationFn: async () => {
+      const response = await base44.functions.invoke('newEmployeeOnboardingAI', {
+        action: 'suggest_projects',
+        context: {
+          role: user?.user_type,
+          skills: profile?.skill_interests || []
+        }
+      });
+      return response.data;
+    },
+    onSuccess: (data) => {
+      setOnboardingData(prev => ({ ...prev, projects: data.projects }));
+    }
+  });
+
+  // Generate welcome messages
+  const welcomeMessagesMutation = useMutation({
+    mutationFn: async () => {
+      const response = await base44.functions.invoke('newEmployeeOnboardingAI', {
+        action: 'generate_welcome_messages',
+        context: {}
+      });
+      return response.data;
+    },
+    onSuccess: (data) => {
+      setOnboardingData(prev => ({ ...prev, welcome_messages: data.welcome_messages }));
+    }
+  });
+
   // Initialize onboarding
   useEffect(() => {
     if (user && !onboardingData) {
@@ -103,6 +136,8 @@ export default function NewEmployeeOnboarding() {
       introsMutation.mutate();
       tasksMutation.mutate();
       resourcesMutation.mutate();
+      projectsMutation.mutate();
+      welcomeMessagesMutation.mutate();
     }
   }, [user]);
 
@@ -122,7 +157,8 @@ export default function NewEmployeeOnboarding() {
   const progress = totalTasks > 0 ? (completedTasks.size / totalTasks) * 100 : 0;
 
   const isLoading = planMutation.isPending || introsMutation.isPending || 
-                    tasksMutation.isPending || resourcesMutation.isPending;
+                    tasksMutation.isPending || resourcesMutation.isPending ||
+                    projectsMutation.isPending || welcomeMessagesMutation.isPending;
 
   if (isLoading && !onboardingData) {
     return (
@@ -161,9 +197,13 @@ export default function NewEmployeeOnboarding() {
         {/* Main Content */}
         <div className="lg:col-span-2">
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-4 mb-6">
+            <TabsList className="grid w-full grid-cols-5 mb-6">
               <TabsTrigger value="welcome" className="gap-1">
                 <Sparkles className="h-4 w-4" />
+                Welcome
+              </TabsTrigger>
+              <TabsTrigger value="plan" className="gap-1">
+                <Target className="h-4 w-4" />
                 Plan
               </TabsTrigger>
               <TabsTrigger value="team" className="gap-1">
@@ -181,6 +221,10 @@ export default function NewEmployeeOnboarding() {
             </TabsList>
 
             <TabsContent value="welcome">
+              <WelcomeMessages messages={onboardingData?.welcome_messages} />
+            </TabsContent>
+
+            <TabsContent value="plan">
               {onboardingData?.plan && (
                 <OnboardingPlanDisplay plan={onboardingData.plan} />
               )}
@@ -203,7 +247,10 @@ export default function NewEmployeeOnboarding() {
             </TabsContent>
 
             <TabsContent value="learn">
-              <LearningResources resources={onboardingData?.resources} />
+              <div className="space-y-6">
+                <LearningResources resources={onboardingData?.resources} />
+                <StarterProjects projects={onboardingData?.projects} />
+              </div>
             </TabsContent>
           </Tabs>
         </div>
@@ -396,5 +443,99 @@ function ResourceCard({ resource }) {
       <p className="text-xs text-slate-600 mb-2">{resource.relevance}</p>
       <p className="text-xs text-slate-500">⏱️ {resource.estimated_time}</p>
     </div>
+  );
+}
+
+function WelcomeMessages({ messages }) {
+  if (!messages) {
+    return <Card><CardContent className="py-12 text-center"><LoadingSpinner /></CardContent></Card>;
+  }
+
+  return (
+    <div className="space-y-4">
+      <Card className="bg-gradient-to-br from-int-orange/10 to-int-gold/10 border-int-orange/30">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Heart className="h-5 w-5 text-int-orange" />
+            Welcome Messages from Your Team
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {messages.map((msg, idx) => (
+            <div key={idx} className="p-4 rounded-lg bg-white border border-slate-200">
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-bold flex-shrink-0">
+                  {msg.from_role.charAt(0)}
+                </div>
+                <div className="flex-1">
+                  <p className="font-semibold text-sm text-slate-900 mb-1">{msg.from_role}</p>
+                  <p className="text-sm text-slate-700 leading-relaxed mb-2">{msg.message}</p>
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-2">
+                    <p className="text-xs font-medium text-blue-800">{msg.invitation}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+function StarterProjects({ projects }) {
+  if (!projects) {
+    return <Card><CardContent className="py-12 text-center"><LoadingSpinner /></CardContent></Card>;
+  }
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <Briefcase className="h-5 w-5 text-purple-600" />
+          Starter Projects for You
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        {projects.map((project, idx) => (
+          <div key={idx} className="p-4 rounded-lg bg-slate-50 border">
+            <div className="flex items-start justify-between mb-2">
+              <h4 className="font-semibold text-slate-900">{project.name}</h4>
+              <Badge variant="outline" className="text-xs">{project.duration}</Badge>
+            </div>
+            <p className="text-sm text-slate-700 mb-3">{project.description}</p>
+            
+            <div className="space-y-2 text-xs">
+              <div>
+                <p className="font-medium text-slate-600 mb-1">Skills you'll develop:</p>
+                <div className="flex flex-wrap gap-1">
+                  {project.skills_developed.map((skill, i) => (
+                    <Badge key={i} variant="secondary" className="text-xs">{skill}</Badge>
+                  ))}
+                </div>
+              </div>
+              
+              <div>
+                <p className="font-medium text-slate-600 mb-1">Collaborate with:</p>
+                <p className="text-slate-600">{project.stakeholders.join(', ')}</p>
+              </div>
+              
+              <div>
+                <p className="font-medium text-slate-600 mb-1">Success looks like:</p>
+                <ul className="space-y-0.5 ml-3">
+                  {project.success_criteria.map((criteria, i) => (
+                    <li key={i} className="text-slate-600">• {criteria}</li>
+                  ))}
+                </ul>
+              </div>
+              
+              <div className="bg-emerald-50 border border-emerald-200 rounded p-2 mt-2">
+                <p className="text-emerald-800"><strong>Why this project?</strong> {project.why_good_fit}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </CardContent>
+    </Card>
   );
 }
