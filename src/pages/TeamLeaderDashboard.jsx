@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { useUserData } from '../components/hooks/useUserData';
+import { useTeamLeaderData } from '../components/hooks/useTeamLeaderData';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
@@ -111,8 +110,7 @@ export default function TeamLeaderDashboard() {
     );
   }
 
-  const activeChallenges = teamChallenges.filter(c => c.status === 'active').length;
-  const completedChallenges = teamChallenges.filter(c => c.status === 'completed').length;
+
 
   return (
     <div className="max-w-7xl mx-auto py-8 px-4">
@@ -136,7 +134,7 @@ export default function TeamLeaderDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-slate-600">Team Members</p>
-                <p className="text-2xl font-bold text-int-navy">{teamMembers.length}</p>
+                <p className="text-2xl font-bold text-int-navy">{stats.memberCount}</p>
               </div>
               <Users className="h-8 w-8 text-blue-600" />
             </div>
@@ -148,7 +146,7 @@ export default function TeamLeaderDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-slate-600">Team Points</p>
-                <p className="text-2xl font-bold text-int-orange">{myTeam.total_points || 0}</p>
+                <p className="text-2xl font-bold text-int-orange">{stats.totalPoints}</p>
               </div>
               <Award className="h-8 w-8 text-int-orange" />
             </div>
@@ -160,7 +158,7 @@ export default function TeamLeaderDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-slate-600">Active Challenges</p>
-                <p className="text-2xl font-bold text-emerald-600">{activeChallenges}</p>
+                <p className="text-2xl font-bold text-emerald-600">{stats.activeChallenges}</p>
               </div>
               <Target className="h-8 w-8 text-emerald-600" />
             </div>
@@ -172,7 +170,7 @@ export default function TeamLeaderDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-slate-600">Pending Approvals</p>
-                <p className="text-2xl font-bold text-purple-600">{pendingRecognitions.length}</p>
+                <p className="text-2xl font-bold text-purple-600">{stats.pendingApprovals}</p>
               </div>
               <Clock className="h-8 w-8 text-purple-600" />
             </div>
@@ -200,8 +198,8 @@ export default function TeamLeaderDashboard() {
           <TabsTrigger value="approvals" className="gap-2">
             <CheckCircle className="h-4 w-4" />
             Approvals
-            {pendingRecognitions.length > 0 && (
-              <Badge className="ml-2 bg-red-500">{pendingRecognitions.length}</Badge>
+            {stats.pendingApprovals > 0 && (
+              <Badge className="ml-2 bg-red-500">{stats.pendingApprovals}</Badge>
             )}
           </TabsTrigger>
         </TabsList>
