@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Sparkles } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
-import { CheckCircle, XCircle, AlertCircle, MessageSquare, Clock } from 'lucide-react';
+import { CheckCircle, XCircle, AlertCircle, MessageSquare, Clock, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 
@@ -106,7 +105,7 @@ function RecognitionApprovalCard({
     try {
       const response = await base44.functions.invoke('teamLeaderAIAssistant', {
         action: 'draft_approval',
-        team_id: recognition.team_id,
+        team_id: window.teamIdContext || 'unknown',
         context: {
           recognition_details: `${recognition.sender_name} recognized ${recognition.recipient_name} for ${recognition.category}: "${recognition.message}"`
         }
@@ -114,9 +113,11 @@ function RecognitionApprovalCard({
       
       if (response.data?.data?.approval_message) {
         setNotes(response.data.data.approval_message);
+        toast.success('Draft generated!');
       }
     } catch (error) {
       console.error('Failed to generate draft:', error);
+      toast.error('Failed to generate draft');
     } finally {
       setIsGeneratingDraft(false);
     }

@@ -16,7 +16,7 @@ import {
 
 export default function TeamAnalyticsDashboard({ team, members }) {
   // Fetch team member points
-  const { data: memberPoints = [] } = useQuery({
+  const { data: memberPoints = [], isLoading: pointsLoading } = useQuery({
     queryKey: ['team-member-points', team?.id],
     queryFn: async () => {
       const allPoints = await base44.entities.UserPoints.filter({});
@@ -26,7 +26,7 @@ export default function TeamAnalyticsDashboard({ team, members }) {
   });
 
   // Fetch team participations
-  const { data: teamParticipations = [] } = useQuery({
+  const { data: teamParticipations = [], isLoading: participationsLoading } = useQuery({
     queryKey: ['team-participations', members],
     queryFn: async () => {
       if (!members.length) return [];
@@ -38,7 +38,7 @@ export default function TeamAnalyticsDashboard({ team, members }) {
   });
 
   // Fetch team recognitions
-  const { data: teamRecognitions = [] } = useQuery({
+  const { data: teamRecognitions = [], isLoading: recognitionsLoading } = useQuery({
     queryKey: ['team-recognitions', members],
     queryFn: async () => {
       if (!members.length) return [];
@@ -53,6 +53,8 @@ export default function TeamAnalyticsDashboard({ team, members }) {
     },
     enabled: members.length > 0
   });
+
+  const isLoading = pointsLoading || participationsLoading || recognitionsLoading;
 
   // Calculate metrics
   const totalPoints = memberPoints.reduce((sum, p) => sum + (p.total_points || 0), 0);
@@ -74,6 +76,17 @@ export default function TeamAnalyticsDashboard({ team, members }) {
   const engagementRate = members.length > 0 
     ? Math.round((recentParticipations.length / members.length) * 100) 
     : 0;
+
+  if (isLoading) {
+    return (
+      <Card>
+        <CardContent className="py-12 text-center">
+          <div className="animate-spin h-8 w-8 border-4 border-int-orange border-t-transparent rounded-full mx-auto" />
+          <p className="text-sm text-slate-600 mt-4">Loading analytics...</p>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <div className="space-y-6">

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { useUserData } from '../components/hooks/useUserData';
@@ -14,7 +14,8 @@ import {
   BarChart3,
   CheckCircle,
   Clock,
-  Plus
+  Plus,
+  Sparkles
 } from 'lucide-react';
 import TeamChallengeManager from '../components/teamLeader/TeamChallengeManager';
 import TeamAnalyticsDashboard from '../components/teamLeader/TeamAnalyticsDashboard';
@@ -27,7 +28,12 @@ export default function TeamLeaderDashboard() {
   const { user } = useUserData(true);
   const [activeTab, setActiveTab] = useState('overview');
 
-  // Fetch team where user is leader
+  // Store team ID globally for AI functions
+  useEffect(() => {
+    if (myTeam?.id) {
+      window.teamIdContext = myTeam.id;
+    }
+  }, [myTeam]);
   const { data: myTeam, isLoading: teamLoading } = useQuery({
     queryKey: ['my-led-team', user?.email],
     queryFn: async () => {
