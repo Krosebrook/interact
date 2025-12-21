@@ -223,7 +223,6 @@ export default function GamificationDashboard() {
         <AIGamificationEngine team={userTeam} selectedUser={selectedUser} />
       )}
       
-      <div className="space-y-8"
       {/* Header */}
       <div className="glass-panel-solid relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 via-transparent to-int-orange/5 pointer-events-none" />
@@ -592,7 +591,6 @@ export default function GamificationDashboard() {
         open={showCustomizer}
         onOpenChange={setShowCustomizer}
       />
-      </div>
     </div>
   );
 }
