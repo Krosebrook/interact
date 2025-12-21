@@ -40,6 +40,7 @@ import TeamLeaderDashboard from './pages/TeamLeaderDashboard';
 import TeamPerformanceDashboard from './pages/TeamPerformanceDashboard';
 import Teams from './pages/Teams';
 import UserProfile from './pages/UserProfile';
+import NewEmployeeOnboarding from './pages/NewEmployeeOnboarding';
 import __Layout from './Layout.jsx';
 
 
@@ -86,6 +87,7 @@ export const PAGES = {
     "TeamPerformanceDashboard": TeamPerformanceDashboard,
     "Teams": Teams,
     "UserProfile": UserProfile,
+    "NewEmployeeOnboarding": NewEmployeeOnboarding,
 }
 
 export const pagesConfig = {

@@ -1,0 +1,400 @@
+import React, { useState, useEffect } from 'react';
+import { useMutation } from '@tanstack/react-query';
+import { base44 } from '@/api/base44Client';
+import { useUserData } from '../components/hooks/useUserData';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Button } from '@/components/ui/button';
+import { Progress } from '@/components/ui/progress';
+import { Badge } from '@/components/ui/badge';
+import { 
+  Sparkles, 
+  Users, 
+  CheckCircle, 
+  BookOpen,
+  MessageCircle,
+  Rocket,
+  Target
+} from 'lucide-react';
+import OnboardingChatbot from '../components/onboarding/OnboardingChatbot';
+import OnboardingPlanDisplay from '../components/onboarding/OnboardingPlanDisplay';
+import LoadingSpinner from '../components/common/LoadingSpinner';
+import { toast } from 'sonner';
+
+export default function NewEmployeeOnboarding() {
+  const { user, profile } = useUserData(true);
+  const [activeTab, setActiveTab] = useState('welcome');
+  const [onboardingData, setOnboardingData] = useState(null);
+  const [completedTasks, setCompletedTasks] = useState(new Set());
+
+  // Check if onboarding is already completed
+  useEffect(() => {
+    if (profile?.onboarding_completed) {
+      // Redirect to dashboard
+      window.location.href = '/Dashboard';
+    }
+  }, [profile]);
+
+  // Generate onboarding plan
+  const planMutation = useMutation({
+    mutationFn: async () => {
+      const response = await base44.functions.invoke('newEmployeeOnboardingAI', {
+        action: 'generate_plan',
+        context: {
+          role: user?.user_type,
+          department: profile?.department
+        }
+      });
+      return response.data;
+    },
+    onSuccess: (data) => {
+      setOnboardingData(prev => ({ ...prev, plan: data.plan }));
+    }
+  });
+
+  // Generate introductions
+  const introsMutation = useMutation({
+    mutationFn: async () => {
+      const response = await base44.functions.invoke('newEmployeeOnboardingAI', {
+        action: 'generate_introductions',
+        context: {}
+      });
+      return response.data;
+    },
+    onSuccess: (data) => {
+      setOnboardingData(prev => ({ ...prev, introductions: data.introductions, team_leaders: data.team_leaders }));
+    }
+  });
+
+  // Generate tasks
+  const tasksMutation = useMutation({
+    mutationFn: async () => {
+      const response = await base44.functions.invoke('newEmployeeOnboardingAI', {
+        action: 'suggest_tasks',
+        context: {}
+      });
+      return response.data;
+    },
+    onSuccess: (data) => {
+      setOnboardingData(prev => ({ ...prev, tasks: data.tasks, upcoming_events: data.upcoming_events }));
+    }
+  });
+
+  // Generate learning resources
+  const resourcesMutation = useMutation({
+    mutationFn: async () => {
+      const response = await base44.functions.invoke('newEmployeeOnboardingAI', {
+        action: 'learning_resources',
+        context: {
+          interests: profile?.skill_interests || []
+        }
+      });
+      return response.data;
+    },
+    onSuccess: (data) => {
+      setOnboardingData(prev => ({ ...prev, resources: data.resources }));
+    }
+  });
+
+  // Initialize onboarding
+  useEffect(() => {
+    if (user && !onboardingData) {
+      planMutation.mutate();
+      introsMutation.mutate();
+      tasksMutation.mutate();
+      resourcesMutation.mutate();
+    }
+  }, [user]);
+
+  const toggleTask = (taskId) => {
+    setCompletedTasks(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(taskId)) {
+        newSet.delete(taskId);
+      } else {
+        newSet.add(taskId);
+      }
+      return newSet;
+    });
+  };
+
+  const totalTasks = onboardingData?.tasks?.reduce((sum, cat) => sum + cat.tasks.length, 0) || 0;
+  const progress = totalTasks > 0 ? (completedTasks.size / totalTasks) * 100 : 0;
+
+  const isLoading = planMutation.isPending || introsMutation.isPending || 
+                    tasksMutation.isPending || resourcesMutation.isPending;
+
+  if (isLoading && !onboardingData) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <LoadingSpinner message="Preparing your personalized onboarding..." size="large" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="max-w-7xl mx-auto py-8 px-4">
+      {/* Welcome Header */}
+      <div className="mb-8 text-center">
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-int-orange to-int-gold mb-4">
+          <Rocket className="h-8 w-8 text-white" />
+        </div>
+        <h1 className="text-4xl font-bold text-int-navy mb-2">
+          Welcome to INTeract, {user?.full_name?.split(' ')[0]}! 🎉
+        </h1>
+        <p className="text-lg text-slate-600">
+          Your personalized onboarding journey starts here
+        </p>
+        
+        {totalTasks > 0 && (
+          <div className="max-w-md mx-auto mt-6">
+            <div className="flex items-center justify-between text-sm text-slate-600 mb-2">
+              <span>Onboarding Progress</span>
+              <span className="font-medium">{completedTasks.size}/{totalTasks} tasks</span>
+            </div>
+            <Progress value={progress} className="h-3" />
+          </div>
+        )}
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Main Content */}
+        <div className="lg:col-span-2">
+          <Tabs value={activeTab} onValueChange={setActiveTab}>
+            <TabsList className="grid w-full grid-cols-4 mb-6">
+              <TabsTrigger value="welcome" className="gap-1">
+                <Sparkles className="h-4 w-4" />
+                Plan
+              </TabsTrigger>
+              <TabsTrigger value="team" className="gap-1">
+                <Users className="h-4 w-4" />
+                Team
+              </TabsTrigger>
+              <TabsTrigger value="tasks" className="gap-1">
+                <CheckCircle className="h-4 w-4" />
+                Tasks
+              </TabsTrigger>
+              <TabsTrigger value="learn" className="gap-1">
+                <BookOpen className="h-4 w-4" />
+                Learn
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="welcome">
+              {onboardingData?.plan && (
+                <OnboardingPlanDisplay plan={onboardingData.plan} />
+              )}
+            </TabsContent>
+
+            <TabsContent value="team">
+              <TeamIntroductions 
+                introductions={onboardingData?.introductions} 
+                teamLeaders={onboardingData?.team_leaders}
+              />
+            </TabsContent>
+
+            <TabsContent value="tasks">
+              <TasksList 
+                tasks={onboardingData?.tasks}
+                completedTasks={completedTasks}
+                toggleTask={toggleTask}
+                upcomingEvents={onboardingData?.upcoming_events}
+              />
+            </TabsContent>
+
+            <TabsContent value="learn">
+              <LearningResources resources={onboardingData?.resources} />
+            </TabsContent>
+          </Tabs>
+        </div>
+
+        {/* AI Chatbot Sidebar */}
+        <div className="lg:col-span-1">
+          <OnboardingChatbot userName={user?.full_name} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function TeamIntroductions({ introductions, teamLeaders }) {
+  if (!introductions) {
+    return <Card><CardContent className="py-12 text-center"><LoadingSpinner /></CardContent></Card>;
+  }
+
+  return (
+    <div className="space-y-4">
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Users className="h-5 w-5 text-blue-600" />
+            Key People to Meet
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {introductions.map((intro, idx) => (
+            <div key={idx} className="p-4 rounded-lg bg-slate-50 border">
+              <h4 className="font-semibold text-int-navy mb-2">{intro.person_role}</h4>
+              <p className="text-sm text-slate-700 mb-2">{intro.why_connect}</p>
+              <div className="bg-white p-3 rounded border border-blue-200 mb-2">
+                <p className="text-xs font-medium text-blue-700 mb-1">Icebreaker:</p>
+                <p className="text-sm italic text-slate-600">"{intro.icebreaker}"</p>
+              </div>
+              <p className="text-xs text-slate-500">{intro.context}</p>
+            </div>
+          ))}
+        </CardContent>
+      </Card>
+
+      {teamLeaders && teamLeaders.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Available Team Leaders</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {teamLeaders.map((leader, idx) => (
+                <div key={idx} className="flex items-center gap-3 p-2 rounded hover:bg-slate-50">
+                  <div className="w-10 h-10 rounded-full bg-int-orange text-white flex items-center justify-center font-medium">
+                    {leader.name?.charAt(0)}
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-medium text-sm">{leader.name}</p>
+                    <p className="text-xs text-slate-500">{leader.email}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+    </div>
+  );
+}
+
+function TasksList({ tasks, completedTasks, toggleTask, upcomingEvents }) {
+  if (!tasks) {
+    return <Card><CardContent className="py-12 text-center"><LoadingSpinner /></CardContent></Card>;
+  }
+
+  return (
+    <div className="space-y-4">
+      {tasks.map((category, catIdx) => (
+        <Card key={catIdx}>
+          <CardHeader>
+            <CardTitle className="text-base">{category.category}</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {category.tasks.map((task, taskIdx) => {
+              const taskId = `${catIdx}-${taskIdx}`;
+              const isCompleted = completedTasks.has(taskId);
+              
+              return (
+                <div key={taskIdx} className={`p-3 rounded-lg border ${isCompleted ? 'bg-emerald-50 border-emerald-200' : 'bg-white'}`}>
+                  <div className="flex items-start gap-3">
+                    <button
+                      onClick={() => toggleTask(taskId)}
+                      className={`mt-0.5 w-5 h-5 rounded border-2 flex items-center justify-center transition-colors ${
+                        isCompleted ? 'bg-emerald-500 border-emerald-500' : 'border-slate-300 hover:border-int-orange'
+                      }`}
+                    >
+                      {isCompleted && <CheckCircle className="h-4 w-4 text-white" />}
+                    </button>
+                    <div className="flex-1">
+                      <h5 className={`font-medium text-sm ${isCompleted ? 'line-through text-slate-500' : 'text-slate-900'}`}>
+                        {task.title}
+                      </h5>
+                      <p className="text-xs text-slate-600 mt-1">{task.description}</p>
+                      <div className="flex items-center gap-2 mt-2">
+                        <Badge variant="outline" className="text-xs">{task.estimated_time}</Badge>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </CardContent>
+        </Card>
+      ))}
+
+      {upcomingEvents && upcomingEvents.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Upcoming Events to Join</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {upcomingEvents.map((event) => (
+                <div key={event.id} className="p-3 rounded-lg bg-blue-50 border border-blue-200">
+                  <p className="font-medium text-sm">{event.title}</p>
+                  <p className="text-xs text-slate-600 mt-1">
+                    {new Date(event.date).toLocaleDateString('en-US', { 
+                      weekday: 'short', 
+                      month: 'short', 
+                      day: 'numeric' 
+                    })}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+    </div>
+  );
+}
+
+function LearningResources({ resources }) {
+  if (!resources) {
+    return <Card><CardContent className="py-12 text-center"><LoadingSpinner /></CardContent></Card>;
+  }
+
+  const highPriority = resources.filter(r => r.priority === 'high');
+  const mediumPriority = resources.filter(r => r.priority === 'medium');
+
+  return (
+    <div className="space-y-4">
+      {highPriority.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base flex items-center gap-2">
+              <Target className="h-4 w-4 text-red-600" />
+              Priority Resources
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {highPriority.map((resource, idx) => (
+              <ResourceCard key={idx} resource={resource} />
+            ))}
+          </CardContent>
+        </Card>
+      )}
+
+      {mediumPriority.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Additional Learning</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {mediumPriority.map((resource, idx) => (
+              <ResourceCard key={idx} resource={resource} />
+            ))}
+          </CardContent>
+        </Card>
+      )}
+    </div>
+  );
+}
+
+function ResourceCard({ resource }) {
+  return (
+    <div className="p-3 rounded-lg bg-slate-50 border">
+      <div className="flex items-start justify-between mb-2">
+        <h5 className="font-medium text-sm">{resource.title}</h5>
+        <Badge variant="outline" className="text-xs">{resource.type}</Badge>
+      </div>
+      <p className="text-xs text-slate-600 mb-2">{resource.relevance}</p>
+      <p className="text-xs text-slate-500">⏱️ {resource.estimated_time}</p>
+    </div>
+  );
+}
