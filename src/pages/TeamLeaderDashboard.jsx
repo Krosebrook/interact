@@ -19,6 +19,7 @@ import {
 import TeamChallengeManager from '../components/teamLeader/TeamChallengeManager';
 import TeamAnalyticsDashboard from '../components/teamLeader/TeamAnalyticsDashboard';
 import TeamApprovalQueue from '../components/teamLeader/TeamApprovalQueue';
+import TeamLeaderAIAssistant from '../components/teamLeader/TeamLeaderAIAssistant';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 
 export default function TeamLeaderDashboard() {
@@ -170,6 +171,11 @@ export default function TeamLeaderDashboard() {
             </div>
           </CardContent>
         </Card>
+      </div>
+
+      {/* AI Assistant */}
+      <div className="mb-8">
+        <TeamLeaderAIAssistant team={myTeam} />
       </div>
 
       {/* Main Content Tabs */}

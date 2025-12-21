@@ -36,10 +36,10 @@ import SkillsDashboard from './pages/SkillsDashboard';
 import Surveys from './pages/Surveys';
 import TeamCompetition from './pages/TeamCompetition';
 import TeamDashboard from './pages/TeamDashboard';
+import TeamLeaderDashboard from './pages/TeamLeaderDashboard';
 import TeamPerformanceDashboard from './pages/TeamPerformanceDashboard';
 import Teams from './pages/Teams';
 import UserProfile from './pages/UserProfile';
-import TeamLeaderDashboard from './pages/TeamLeaderDashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -82,10 +82,10 @@ export const PAGES = {
     "Surveys": Surveys,
     "TeamCompetition": TeamCompetition,
     "TeamDashboard": TeamDashboard,
+    "TeamLeaderDashboard": TeamLeaderDashboard,
     "TeamPerformanceDashboard": TeamPerformanceDashboard,
     "Teams": Teams,
     "UserProfile": UserProfile,
-    "TeamLeaderDashboard": TeamLeaderDashboard,
 }
 
 export const pagesConfig = {

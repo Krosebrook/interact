@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
+import { Sparkles } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -98,6 +99,28 @@ function RecognitionApprovalCard({
   isProcessing 
 }) {
   const [notes, setNotes] = useState('');
+  const [isGeneratingDraft, setIsGeneratingDraft] = useState(false);
+
+  const generateAIDraft = async () => {
+    setIsGeneratingDraft(true);
+    try {
+      const response = await base44.functions.invoke('teamLeaderAIAssistant', {
+        action: 'draft_approval',
+        team_id: recognition.team_id,
+        context: {
+          recognition_details: `${recognition.sender_name} recognized ${recognition.recipient_name} for ${recognition.category}: "${recognition.message}"`
+        }
+      });
+      
+      if (response.data?.data?.approval_message) {
+        setNotes(response.data.data.approval_message);
+      }
+    } catch (error) {
+      console.error('Failed to generate draft:', error);
+    } finally {
+      setIsGeneratingDraft(false);
+    }
+  };
 
   const categoryConfig = {
     teamwork: { icon: '🤝', color: 'bg-blue-100 text-blue-800' },
@@ -152,9 +175,28 @@ function RecognitionApprovalCard({
         <CardContent className="border-t pt-4">
           <div className="space-y-4">
             <div>
-              <label className="text-sm font-medium text-slate-700 mb-2 block">
-                Moderation Notes (Optional)
-              </label>
+              <div className="flex items-center justify-between mb-2">
+                <label className="text-sm font-medium text-slate-700">
+                  Moderation Notes (Optional)
+                </label>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={generateAIDraft}
+                  disabled={isGeneratingDraft}
+                  className="text-purple-600 hover:text-purple-700 hover:bg-purple-50 gap-1"
+                >
+                  {isGeneratingDraft ? (
+                    <>Generating...</>
+                  ) : (
+                    <>
+                      <Sparkles className="h-3 w-3" />
+                      AI Draft
+                    </>
+                  )}
+                </Button>
+              </div>
               <Textarea
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
