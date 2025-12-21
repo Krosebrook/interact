@@ -18,6 +18,7 @@ import GamificationSettings from './pages/GamificationSettings';
 import Home from './pages/Home';
 import Integrations from './pages/Integrations';
 import Leaderboards from './pages/Leaderboards';
+import Milestones from './pages/Milestones';
 import OnboardingHub from './pages/OnboardingHub';
 import ParticipantEvent from './pages/ParticipantEvent';
 import ParticipantPortal from './pages/ParticipantPortal';
@@ -31,13 +32,13 @@ import RoleSelection from './pages/RoleSelection';
 import RoleSetup from './pages/RoleSetup';
 import Settings from './pages/Settings';
 import SkillsDashboard from './pages/SkillsDashboard';
+import Surveys from './pages/Surveys';
 import TeamCompetition from './pages/TeamCompetition';
 import TeamDashboard from './pages/TeamDashboard';
 import TeamPerformanceDashboard from './pages/TeamPerformanceDashboard';
 import Teams from './pages/Teams';
 import UserProfile from './pages/UserProfile';
-import Surveys from './pages/Surveys';
-import Milestones from './pages/Milestones';
+import GamificationRulesAdmin from './pages/GamificationRulesAdmin';
 import __Layout from './Layout.jsx';
 
 
@@ -62,6 +63,7 @@ export const PAGES = {
     "Home": Home,
     "Integrations": Integrations,
     "Leaderboards": Leaderboards,
+    "Milestones": Milestones,
     "OnboardingHub": OnboardingHub,
     "ParticipantEvent": ParticipantEvent,
     "ParticipantPortal": ParticipantPortal,
@@ -75,13 +77,13 @@ export const PAGES = {
     "RoleSetup": RoleSetup,
     "Settings": Settings,
     "SkillsDashboard": SkillsDashboard,
+    "Surveys": Surveys,
     "TeamCompetition": TeamCompetition,
     "TeamDashboard": TeamDashboard,
     "TeamPerformanceDashboard": TeamPerformanceDashboard,
     "Teams": Teams,
     "UserProfile": UserProfile,
-    "Surveys": Surveys,
-    "Milestones": Milestones,
+    "GamificationRulesAdmin": GamificationRulesAdmin,
 }
 
 export const pagesConfig = {
