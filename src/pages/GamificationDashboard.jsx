@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
+import AIGamificationEngine from '../components/gamification/AIGamificationEngine';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -70,11 +71,19 @@ import TailoredLeaderboardFormats from '../components/gamification/TailoredLeade
 const CHART_COLORS = ['#D97230', '#14294D', '#8B5CF6', '#10B981', '#F59E0B', '#EC4899'];
 
 export default function GamificationDashboard() {
-  const { user, loading: userLoading } = useUserData(true, true);
+  const { user, loading: userLoading, isAdmin } = useUserData(true, true);
   const [dateRange, setDateRange] = useState('30days');
   const [userSegment, setUserSegment] = useState('all');
   const [showCustomizer, setShowCustomizer] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
+  const [selectedUser, setSelectedUser] = useState(null);
+
+  // Initialize selectedUser when user loads
+  React.useEffect(() => {
+    if (user?.email && !selectedUser) {
+      setSelectedUser(user.email);
+    }
+  }, [user, selectedUser]);
 
   const { data: userPoints = [], isLoading: pointsLoading } = useQuery({
     queryKey: ['user-points'],
@@ -192,12 +201,29 @@ export default function GamificationDashboard() {
     ).slice(0, 8);
   }, [badges, currentUserPoints.badges_earned]);
 
+  // Fetch user's team
+  const { data: userTeam } = useQuery({
+    queryKey: ['user-team', user?.email],
+    queryFn: async () => {
+      if (!currentUserPoints.team_id) return null;
+      const teams = await base44.entities.Team.filter({ id: currentUserPoints.team_id });
+      return teams[0] || null;
+    },
+    enabled: !!user?.email && !!currentUserPoints.team_id
+  });
+
   if (userLoading || pointsLoading) {
     return <LoadingSpinner className="min-h-[60vh]" message="Loading gamification data..." />;
   }
 
   return (
     <div className="space-y-8 animate-fade-in">
+      {/* AI Engine (Admin Only) */}
+      {isAdmin && (
+        <AIGamificationEngine team={userTeam} selectedUser={selectedUser} />
+      )}
+      
+      <div className="space-y-8"
       {/* Header */}
       <div className="glass-panel-solid relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 via-transparent to-int-orange/5 pointer-events-none" />
@@ -566,6 +592,7 @@ export default function GamificationDashboard() {
         open={showCustomizer}
         onOpenChange={setShowCustomizer}
       />
+      </div>
     </div>
   );
 }
