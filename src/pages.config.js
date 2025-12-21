@@ -14,6 +14,7 @@ import FacilitatorDashboard from './pages/FacilitatorDashboard';
 import FacilitatorView from './pages/FacilitatorView';
 import Gamification from './pages/Gamification';
 import GamificationDashboard from './pages/GamificationDashboard';
+import GamificationRulesAdmin from './pages/GamificationRulesAdmin';
 import GamificationSettings from './pages/GamificationSettings';
 import Home from './pages/Home';
 import Integrations from './pages/Integrations';
@@ -38,7 +39,7 @@ import TeamDashboard from './pages/TeamDashboard';
 import TeamPerformanceDashboard from './pages/TeamPerformanceDashboard';
 import Teams from './pages/Teams';
 import UserProfile from './pages/UserProfile';
-import GamificationRulesAdmin from './pages/GamificationRulesAdmin';
+import TeamLeaderDashboard from './pages/TeamLeaderDashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -59,6 +60,7 @@ export const PAGES = {
     "FacilitatorView": FacilitatorView,
     "Gamification": Gamification,
     "GamificationDashboard": GamificationDashboard,
+    "GamificationRulesAdmin": GamificationRulesAdmin,
     "GamificationSettings": GamificationSettings,
     "Home": Home,
     "Integrations": Integrations,
@@ -83,7 +85,7 @@ export const PAGES = {
     "TeamPerformanceDashboard": TeamPerformanceDashboard,
     "Teams": Teams,
     "UserProfile": UserProfile,
-    "GamificationRulesAdmin": GamificationRulesAdmin,
+    "TeamLeaderDashboard": TeamLeaderDashboard,
 }
 
 export const pagesConfig = {

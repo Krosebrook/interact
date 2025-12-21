@@ -128,6 +128,7 @@ export default function Layout({ children, currentPageName }) {
     if (isFacilitator) {
       return [
         { name: 'Dashboard', icon: LayoutDashboard, page: 'FacilitatorDashboard' },
+        { name: 'Team Leader', icon: Users, page: 'TeamLeaderDashboard' },
         { name: 'Activities', icon: Sparkles, page: 'Activities' },
         { name: 'Calendar', icon: Calendar, page: 'Calendar' },
         { name: 'Teams', icon: Users, page: 'Teams' },
