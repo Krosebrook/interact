@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
+import { useGamificationTrigger } from '../hooks/useGamificationTrigger';
 import {
   Dialog,
   DialogContent,
@@ -18,6 +19,7 @@ import { motion } from 'framer-motion';
 export default function FeedbackForm({ event, participation, onClose, onSubmit }) {
   const [engagementScore, setEngagementScore] = useState(participation?.engagement_score || 0);
   const [feedback, setFeedback] = useState(participation?.feedback || '');
+  const { trigger } = useGamificationTrigger();
 
   const submitFeedbackMutation = useMutation({
     mutationFn: async () => {
@@ -27,8 +29,16 @@ export default function FeedbackForm({ event, participation, onClose, onSubmit }
         attended: true
       });
     },
-    onSuccess: () => {
+    onSuccess: async () => {
       toast.success('Thank you for your feedback! 🙏');
+      
+      // Trigger gamification rules
+      await trigger('feedback_submitted', participation.user_email, {
+        event_id: event.id,
+        engagement_score: engagementScore,
+        reference_id: participation.id
+      });
+      
       onSubmit();
     }
   });

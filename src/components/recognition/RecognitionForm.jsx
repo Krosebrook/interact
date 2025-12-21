@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
+import { useGamificationTrigger } from '../hooks/useGamificationTrigger';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -27,6 +28,7 @@ const COMPANY_VALUES = [
 
 export default function RecognitionForm({ currentUser, onSuccess }) {
   const queryClient = useQueryClient();
+  const { trigger } = useGamificationTrigger();
   const [recipientEmail, setRecipientEmail] = useState('');
   const [recipientName, setRecipientName] = useState('');
   const [message, setMessage] = useState('');
@@ -113,12 +115,26 @@ Return as JSON: { "suggestions": ["message1", "message2", "message3"] }`,
         visibility,
         ai_suggested: isAiSuggested,
         points_awarded: 10,
-        status: 'pending' // Changed to pending for moderation
+        status: 'approved'
       });
     },
-    onSuccess: () => {
+    onSuccess: async (recognition) => {
       queryClient.invalidateQueries(['recognitions']);
       toast.success(`Recognition sent to ${recipientName}! 🎉`);
+      
+      // Trigger gamification rules for both sender and recipient
+      await trigger('recognition_given', currentUser.email, {
+        recognition_id: recognition.id,
+        category,
+        reference_id: recognition.id
+      });
+      
+      await trigger('recognition_received', recipientEmail, {
+        recognition_id: recognition.id,
+        category,
+        reference_id: recognition.id
+      });
+      
       // Reset form
       setRecipientEmail('');
       setRecipientName('');

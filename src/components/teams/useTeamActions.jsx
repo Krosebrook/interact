@@ -1,9 +1,11 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
+import { useGamificationTrigger } from '../hooks/useGamificationTrigger';
 
 export function useTeamActions(user, userPoints, myTeam) {
   const queryClient = useQueryClient();
+  const { trigger } = useGamificationTrigger();
 
   const invalidateTeamData = () => {
     queryClient.invalidateQueries(['teams']);
@@ -50,10 +52,19 @@ export function useTeamActions(user, userPoints, myTeam) {
       await base44.entities.Team.update(team.id, {
         member_count: team.member_count + 1
       });
+      
+      return team;
     },
-    onSuccess: () => {
+    onSuccess: async (team) => {
       invalidateTeamData();
       toast.success('Joined team successfully! 🎉');
+      
+      // Trigger gamification rule
+      await trigger('team_join', user?.email, {
+        team_id: team.id,
+        team_name: team.team_name,
+        reference_id: team.id
+      });
     },
     onError: (error) => {
       toast.error(error.message);

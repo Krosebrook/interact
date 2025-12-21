@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
+import { useGamificationTrigger } from '../hooks/useGamificationTrigger';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -19,6 +20,7 @@ import { ChevronLeft, ChevronRight, Send, Loader2 } from 'lucide-react';
  */
 export default function SurveyForm({ survey, userEmail, onComplete }) {
   const queryClient = useQueryClient();
+  const { trigger } = useGamificationTrigger();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [responses, setResponses] = useState({});
   const [startTime] = useState(Date.now());
@@ -42,7 +44,7 @@ export default function SurveyForm({ survey, userEmail, onComplete }) {
         time_taken_seconds: Math.floor((Date.now() - startTime) / 1000)
       });
     },
-    onSuccess: async () => {
+    onSuccess: async (response) => {
       // Update survey response count
       await base44.entities.Survey.update(survey.id, {
         response_count: (survey.response_count || 0) + 1
@@ -51,6 +53,14 @@ export default function SurveyForm({ survey, userEmail, onComplete }) {
       queryClient.invalidateQueries(['surveys']);
       queryClient.invalidateQueries(['survey-responses']);
       toast.success('Survey submitted! Thank you for your feedback.');
+      
+      // Trigger gamification rule
+      await trigger('survey_completed', userEmail, {
+        survey_id: survey.id,
+        survey_type: survey.survey_type,
+        reference_id: response.id
+      });
+      
       onComplete?.();
     },
     onError: () => {
