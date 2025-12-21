@@ -20,6 +20,7 @@ import TeamChallengeManager from '../components/teamLeader/TeamChallengeManager'
 import TeamAnalyticsDashboard from '../components/teamLeader/TeamAnalyticsDashboard';
 import TeamApprovalQueue from '../components/teamLeader/TeamApprovalQueue';
 import TeamLeaderAIAssistant from '../components/teamLeader/TeamLeaderAIAssistant';
+import TeamCoachingModule from '../components/teamLeader/TeamCoachingModule';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 
 export default function TeamLeaderDashboard() {
@@ -173,9 +174,10 @@ export default function TeamLeaderDashboard() {
         </Card>
       </div>
 
-      {/* AI Assistant */}
-      <div className="mb-8">
+      {/* AI Tools */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         <TeamLeaderAIAssistant team={myTeam} />
+        <TeamCoachingModule team={myTeam} />
       </div>
 
       {/* Main Content Tabs */}
