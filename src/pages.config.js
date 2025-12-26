@@ -19,6 +19,7 @@ import GamificationSettings from './pages/GamificationSettings';
 import Home from './pages/Home';
 import Integrations from './pages/Integrations';
 import Leaderboards from './pages/Leaderboards';
+import LearningDashboard from './pages/LearningDashboard';
 import Milestones from './pages/Milestones';
 import NewEmployeeOnboarding from './pages/NewEmployeeOnboarding';
 import OnboardingHub from './pages/OnboardingHub';
@@ -41,7 +42,6 @@ import TeamLeaderDashboard from './pages/TeamLeaderDashboard';
 import TeamPerformanceDashboard from './pages/TeamPerformanceDashboard';
 import Teams from './pages/Teams';
 import UserProfile from './pages/UserProfile';
-import LearningDashboard from './pages/LearningDashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -67,6 +67,7 @@ export const PAGES = {
     "Home": Home,
     "Integrations": Integrations,
     "Leaderboards": Leaderboards,
+    "LearningDashboard": LearningDashboard,
     "Milestones": Milestones,
     "NewEmployeeOnboarding": NewEmployeeOnboarding,
     "OnboardingHub": OnboardingHub,
@@ -89,7 +90,6 @@ export const PAGES = {
     "TeamPerformanceDashboard": TeamPerformanceDashboard,
     "Teams": Teams,
     "UserProfile": UserProfile,
-    "LearningDashboard": LearningDashboard,
 }
 
 export const pagesConfig = {

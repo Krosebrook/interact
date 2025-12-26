@@ -29,6 +29,39 @@ export default function NewEmployeeOnboarding() {
   const [onboardingData, setOnboardingData] = useState(null);
   const [completedTasks, setCompletedTasks] = useState(new Set());
 
+  const [onboardingRecord, setOnboardingRecord] = useState(null);
+
+  // Fetch or create UserOnboarding record
+  useEffect(() => {
+    const fetchOnboarding = async () => {
+      if (!user?.email) return;
+      
+      try {
+        const records = await base44.entities.UserOnboarding.filter({ user_email: user.email });
+        
+        if (records.length > 0) {
+          setOnboardingRecord(records[0]);
+        } else {
+          // Create new onboarding record
+          const newRecord = await base44.entities.UserOnboarding.create({
+            user_email: user.email,
+            start_date: new Date().toISOString(),
+            expected_completion_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+            status: 'in_progress',
+            role: user.user_type || 'participant',
+            department: profile?.department || 'General'
+          });
+          setOnboardingRecord(newRecord);
+        }
+      } catch (error) {
+        console.error('Error with onboarding record:', error);
+        toast.error('Failed to initialize onboarding');
+      }
+    };
+    
+    fetchOnboarding();
+  }, [user, profile]);
+
   // Check if onboarding is already completed
   useEffect(() => {
     if (profile?.onboarding_completed) {
