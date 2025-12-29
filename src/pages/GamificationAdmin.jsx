@@ -11,10 +11,12 @@ import EngagementAnalytics from '../components/admin/gamification/EngagementAnal
 import SkillDevelopmentTrends from '../components/admin/gamification/SkillDevelopmentTrends';
 import ContentIntegrationManager from '../components/admin/gamification/ContentIntegrationManager';
 import AIContentGenerator from '../components/admin/gamification/AIContentGenerator';
+import { useGamificationStats } from '../components/admin/gamification/QuickStatsLoader';
 
 export default function GamificationAdmin() {
   const { user, loading } = useUserData(true, true); // Require auth and admin
   const [activeTab, setActiveTab] = useState('overview');
+  const stats = useGamificationStats();
 
   if (loading) {
     return <LoadingSpinner className="min-h-[60vh]" />;
@@ -42,7 +44,7 @@ export default function GamificationAdmin() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-slate-600">Active Users</p>
-                <p className="text-2xl font-bold text-int-navy">--</p>
+                <p className="text-2xl font-bold text-int-navy">{stats.activeUsers}</p>
               </div>
               <Users className="h-8 w-8 text-blue-600 opacity-20" />
             </div>
@@ -54,7 +56,7 @@ export default function GamificationAdmin() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-slate-600">Total Points Awarded</p>
-                <p className="text-2xl font-bold text-int-navy">--</p>
+                <p className="text-2xl font-bold text-int-navy">{stats.totalPoints.toLocaleString()}</p>
               </div>
               <Zap className="h-8 w-8 text-amber-600 opacity-20" />
             </div>
@@ -66,7 +68,7 @@ export default function GamificationAdmin() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-slate-600">Badges Earned</p>
-                <p className="text-2xl font-bold text-int-navy">--</p>
+                <p className="text-2xl font-bold text-int-navy">{stats.totalBadges}</p>
               </div>
               <Award className="h-8 w-8 text-purple-600 opacity-20" />
             </div>
@@ -78,7 +80,7 @@ export default function GamificationAdmin() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-slate-600">Learning Paths Active</p>
-                <p className="text-2xl font-bold text-int-navy">--</p>
+                <p className="text-2xl font-bold text-int-navy">{stats.activeLearningPaths}</p>
               </div>
               <BookOpen className="h-8 w-8 text-emerald-600 opacity-20" />
             </div>
@@ -88,7 +90,7 @@ export default function GamificationAdmin() {
 
       {/* Main Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-7">
+        <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 lg:grid-cols-7">
           <TabsTrigger value="overview" className="gap-2">
             <Users className="h-4 w-4" />
             Overview

@@ -112,6 +112,7 @@ export default function Layout({ children, currentPageName }) {
         { name: 'Team Competition', icon: Users, page: 'TeamCompetition' },
         { name: 'Skills', icon: BarChart3, page: 'SkillsDashboard' },
         { name: 'Gamification', icon: Gift, page: 'GamificationDashboard' },
+        { name: 'Gamification Admin', icon: Shield, page: 'GamificationAdmin' },
         { name: 'Gamification Settings', icon: SettingsIcon, page: 'GamificationSettings' },
         { name: 'Gamification Analytics', icon: BarChart3, page: 'AdvancedGamificationAnalytics' },
         { name: 'AI Event Planner', icon: Sparkles, page: 'AIEventPlanner' },

@@ -199,6 +199,9 @@ function RuleForm({ rule, badges, onSuccess }) {
 
   const saveMutation = useMutation({
     mutationFn: async () => {
+      if (!formData.rule_name || !formData.trigger_event) {
+        throw new Error('Rule name and trigger event are required');
+      }
       if (rule) {
         await base44.entities.GamificationRule.update(rule.id, formData);
       } else {
@@ -209,6 +212,9 @@ function RuleForm({ rule, badges, onSuccess }) {
       toast.success(rule ? 'Rule updated' : 'Rule created');
       queryClient.invalidateQueries(['gamification-rules-config']);
       onSuccess();
+    },
+    onError: (error) => {
+      toast.error('Failed to save rule: ' + error.message);
     }
   });
 

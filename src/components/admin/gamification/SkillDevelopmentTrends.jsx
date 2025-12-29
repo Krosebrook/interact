@@ -49,19 +49,21 @@ export default function SkillDevelopmentTrends() {
       .reduce((sum, m) => sum + m.quiz_score, 0) / 
       (moduleCompletions?.filter(m => m.quiz_score > 0).length || 1);
 
-    // Popular skills
+    // Popular skills with validation
     const skillCounts = {};
     learningPaths?.forEach(path => {
       if (path.target_skill) {
-        skillCounts[path.target_skill] = (skillCounts[path.target_skill] || 0) + 
-          (learningProgress?.filter(p => p.learning_path_id === path.id).length || 0);
+        const enrollments = learningProgress?.filter(p => p.learning_path_id === path.id).length || 0;
+        if (enrollments > 0) {
+          skillCounts[path.target_skill] = (skillCounts[path.target_skill] || 0) + enrollments;
+        }
       }
     });
 
     const topSkills = Object.entries(skillCounts)
       .sort((a, b) => b[1] - a[1])
       .slice(0, 10)
-      .map(([skill, count]) => ({ skill, learners: count }));
+      .map(([skill, learners]) => ({ skill, learners }));
 
     // Difficulty distribution
     const difficultyStats = {

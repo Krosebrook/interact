@@ -44,25 +44,29 @@ export default function UserProgressOverview() {
     return <LoadingSpinner />;
   }
 
-  // Combine data
-  const userData = allUsers?.map(user => {
-    const points = allUserPoints?.find(p => p.user_email === user.email);
-    const badges = badgeAwards?.filter(b => b.user_email === user.email) || [];
-    const learning = learningProgress?.filter(l => l.user_email === user.email) || [];
-    const activePaths = learning.filter(l => l.status === 'in_progress').length;
-    const completedPaths = learning.filter(l => l.status === 'completed').length;
+  // Combine data with safe null checks
+  const userData = React.useMemo(() => {
+    if (!allUsers) return [];
+    
+    return allUsers.map(user => {
+      const points = allUserPoints?.find(p => p.user_email === user.email);
+      const badges = badgeAwards?.filter(b => b.user_email === user.email) || [];
+      const learning = learningProgress?.filter(l => l.user_email === user.email) || [];
+      const activePaths = learning.filter(l => l.status === 'in_progress').length;
+      const completedPaths = learning.filter(l => l.status === 'completed').length;
 
-    return {
-      ...user,
-      points: points?.total_points || 0,
-      tier: points?.tier || 'bronze',
-      current_streak: points?.current_streak || 0,
-      badge_count: badges.length,
-      active_paths: activePaths,
-      completed_paths: completedPaths,
-      team_id: points?.team_id
-    };
-  }) || [];
+      return {
+        ...user,
+        points: points?.total_points || 0,
+        tier: points?.tier || 'bronze',
+        current_streak: points?.current_streak || 0,
+        badge_count: badges.length,
+        active_paths: activePaths,
+        completed_paths: completedPaths,
+        team_id: points?.team_id
+      };
+    });
+  }, [allUsers, allUserPoints, badgeAwards, learningProgress]);
 
   // Filter and sort
   let filteredData = userData.filter(user => {

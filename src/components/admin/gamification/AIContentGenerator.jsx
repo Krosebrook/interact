@@ -82,6 +82,9 @@ function LearningPathGenerator() {
     onSuccess: (data) => {
       setGeneratedPath(data.learning_path);
       toast.success('Learning path generated!');
+    },
+    onError: (error) => {
+      toast.error('Failed to generate: ' + error.message);
     }
   });
 
@@ -230,6 +233,9 @@ function QuizGenerator() {
     onSuccess: (data) => {
       setGeneratedQuiz(data.questions);
       toast.success(`Generated ${data.questions.length} quiz questions!`);
+    },
+    onError: (error) => {
+      toast.error('Failed to generate quiz: ' + error.message);
     }
   });
 
@@ -373,6 +379,9 @@ function VideoScriptGenerator() {
     onSuccess: (data) => {
       setGeneratedScript(data.script);
       toast.success('Video script generated!');
+    },
+    onError: (error) => {
+      toast.error('Failed to generate script: ' + error.message);
     }
   });
 

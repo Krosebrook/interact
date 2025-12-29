@@ -69,10 +69,10 @@ export default function MicroLearningModule({ module, userEmail, skillGap, onCom
         description: module.title
       });
 
-      if (data?.badge_earned) {
+      if (data?.badge_earned?.badge_name) {
         setTimeout(() => {
-          toast.success(`🏆 Badge Unlocked: ${data.badge_name}!`, {
-            description: data.badge_description
+          toast.success(`🏆 Badge Unlocked: ${data.badge_earned.badge_name}!`, {
+            description: data.badge_earned.badge_description
           });
         }, 1000);
       }
@@ -81,6 +81,9 @@ export default function MicroLearningModule({ module, userEmail, skillGap, onCom
       queryClient.invalidateQueries(['user-badges']);
       
       if (onComplete) onComplete();
+    },
+    onError: (error) => {
+      toast.error('Failed to complete module: ' + error.message);
     }
   });
 

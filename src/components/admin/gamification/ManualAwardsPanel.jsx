@@ -35,6 +35,9 @@ export default function ManualAwardsPanel() {
   // Award points mutation
   const awardPointsMutation = useMutation({
     mutationFn: async () => {
+      if (!selectedUser || !points || parseInt(points) <= 0) {
+        throw new Error('Invalid input');
+      }
       await base44.functions.invoke('recordPointsTransaction', {
         user_email: selectedUser,
         amount: parseInt(points),
@@ -50,6 +53,7 @@ export default function ManualAwardsPanel() {
       });
       toast.success(`Successfully awarded ${points} points!`);
       queryClient.invalidateQueries(['all-user-points']);
+      queryClient.invalidateQueries(['recent-manual-awards']);
       setSelectedUser('');
       setPoints('');
       setReason('');
@@ -62,7 +66,25 @@ export default function ManualAwardsPanel() {
   // Award badge mutation
   const awardBadgeMutation = useMutation({
     mutationFn: async () => {
-      const user = users.find(u => u.email === selectedUser);
+      if (!selectedUser || !selectedBadge) {
+        throw new Error('Invalid input');
+      }
+      
+      const user = users?.find(u => u.email === selectedUser);
+      if (!user) {
+        throw new Error('User not found');
+      }
+
+      // Check if badge already awarded to prevent duplicates
+      const existingAward = await base44.entities.BadgeAward.filter({
+        user_email: selectedUser,
+        badge_id: selectedBadge
+      });
+
+      if (existingAward.length > 0) {
+        throw new Error('Badge already awarded to this user');
+      }
+
       await base44.entities.BadgeAward.create({
         user_email: selectedUser,
         badge_id: selectedBadge,
@@ -71,7 +93,7 @@ export default function ManualAwardsPanel() {
       });
 
       // Also award points if badge has point value
-      const badge = badges.find(b => b.id === selectedBadge);
+      const badge = badges?.find(b => b.id === selectedBadge);
       if (badge?.points_value > 0) {
         await base44.functions.invoke('recordPointsTransaction', {
           user_email: selectedUser,
@@ -94,6 +116,8 @@ export default function ManualAwardsPanel() {
       toast.success(`Badge awarded to ${data.user.full_name}!`);
       queryClient.invalidateQueries(['all-badge-awards']);
       queryClient.invalidateQueries(['all-user-points']);
+      queryClient.invalidateQueries(['recent-manual-awards']);
+      queryClient.invalidateQueries(['recent-badge-awards-admin']);
       setSelectedUser('');
       setSelectedBadge('');
       setReason('');

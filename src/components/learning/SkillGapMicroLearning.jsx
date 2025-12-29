@@ -23,8 +23,13 @@ export default function SkillGapMicroLearning({ userEmail }) {
     },
     onSuccess: (data) => {
       if (data?.gaps?.length > 0) {
-        toast.success(`Found ${data.gaps.length} skill gaps with micro-learning modules!`);
+        toast.success(`Found ${data.gaps.length} skill gap${data.gaps.length > 1 ? 's' : ''}!`);
+      } else {
+        toast.info('No skill gaps detected - great job!');
       }
+    },
+    onError: (error) => {
+      toast.error('Analysis failed: ' + error.message);
     }
   });
 
@@ -39,14 +44,19 @@ export default function SkillGapMicroLearning({ userEmail }) {
           skill_gap: skillGap
         }
       });
-      return { skill: skillGap, modules: response.data.modules };
+      return { skill: skillGap, modules: response.data.modules || [] };
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       setGeneratingModules(false);
-      toast.success('Micro-learning modules generated!');
+      if (data.modules.length > 0) {
+        toast.success(`Generated ${data.modules.length} micro-learning modules!`);
+      } else {
+        toast.warning('No modules generated');
+      }
     },
-    onError: () => {
+    onError: (error) => {
       setGeneratingModules(false);
+      toast.error('Failed to generate modules: ' + error.message);
     }
   });
 
