@@ -1,29 +1,19 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-import { 
-  BookOpen, 
-  CheckCircle, 
-  Circle, 
-  Clock, 
-  Award,
-  ChevronDown,
-  ChevronUp,
-  Play
-} from 'lucide-react';
+import { BookOpen, Clock, Target, Award, CheckCircle } from 'lucide-react';
 import { toast } from 'sonner';
-import { useGamificationTrigger } from '../hooks/useGamificationTrigger';
+import { useNavigate } from 'react-router-dom';
+import { createPageUrl } from '../../utils';
 
-export default function LearningPathCard({ path, progress, userEmail }) {
-  const [expanded, setExpanded] = useState(false);
+export default function LearningPathCard({ path, userEmail, isEnrolled, progress }) {
   const queryClient = useQueryClient();
-  const { trigger } = useGamificationTrigger();
+  const navigate = useNavigate();
 
-  const startPathMutation = useMutation({
+  const enrollMutation = useMutation({
     mutationFn: async () => {
       return await base44.entities.LearningPathProgress.create({
         user_email: userEmail,
@@ -34,163 +24,83 @@ export default function LearningPathCard({ path, progress, userEmail }) {
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(['learning-progress']);
-      toast.success('Learning path started!');
-    }
-  });
-
-  const completeMilestoneMutation = useMutation({
-    mutationFn: async (milestoneId) => {
-      const newCompleted = [
-        ...(progress.milestones_completed || []),
-        { milestone_id: milestoneId, completed_date: new Date().toISOString() }
-      ];
-      const progressPercent = (newCompleted.length / path.milestones.length) * 100;
-
-      return await base44.entities.LearningPathProgress.update(progress.id, {
-        milestones_completed: newCompleted,
-        progress_percentage: progressPercent,
-        last_activity_date: new Date().toISOString(),
-        status: progressPercent === 100 ? 'completed' : 'in_progress',
-        completed_date: progressPercent === 100 ? new Date().toISOString() : null
-      });
-    },
-    onSuccess: async (data) => {
-      queryClient.invalidateQueries(['learning-progress']);
-      if (data.status === 'completed') {
-        await trigger('activity_completion', userEmail, { 
-          reference_id: path.id,
-          points: path.points_reward || 100
-        });
-        toast.success(`🎉 Path completed! +${path.points_reward || 100} points`);
-      } else {
-        toast.success('Milestone completed!');
-      }
+      queryClient.invalidateQueries(['my-learning-progress']);
+      toast.success('Enrolled! Let\'s start learning 🎓');
+      navigate(createPageUrl(`LearningPath?id=${path.id}`));
     }
   });
 
   const difficultyColors = {
     beginner: 'bg-green-100 text-green-800',
-    intermediate: 'bg-blue-100 text-blue-800',
-    advanced: 'bg-purple-100 text-purple-800',
+    intermediate: 'bg-yellow-100 text-yellow-800',
+    advanced: 'bg-orange-100 text-orange-800',
     expert: 'bg-red-100 text-red-800'
   };
 
-  const completedMilestoneIds = progress?.milestones_completed?.map(m => m.milestone_id) || [];
-  const progressPercent = progress?.progress_percentage || 0;
-
   return (
     <Card className="hover:shadow-lg transition-shadow">
-      <CardHeader>
-        <div className="flex items-start justify-between">
+      <CardContent className="pt-6">
+        <div className="flex items-start justify-between mb-3">
           <div className="flex-1">
-            <CardTitle className="text-lg mb-2">{path.title}</CardTitle>
-            <p className="text-sm text-slate-600">{path.description}</p>
-            <div className="flex flex-wrap gap-2 mt-3">
-              <Badge className={difficultyColors[path.difficulty_level]}>
-                {path.difficulty_level}
-              </Badge>
-              <Badge variant="outline" className="gap-1">
-                <Clock className="h-3 w-3" />
-                {path.estimated_duration}
-              </Badge>
-              <Badge variant="outline" className="gap-1">
-                <Award className="h-3 w-3" />
-                {path.points_reward} pts
-              </Badge>
-            </div>
+            <h4 className="font-bold text-lg text-int-navy mb-1">{path.title}</h4>
+            <p className="text-sm text-slate-600 line-clamp-2">{path.description}</p>
           </div>
-          {!progress && (
-            <Button
-              onClick={() => startPathMutation.mutate()}
-              disabled={startPathMutation.isPending}
-              size="sm"
-              className="bg-int-orange hover:bg-int-orange/90"
-            >
-              <Play className="h-4 w-4 mr-1" />
-              Start
-            </Button>
+          {isEnrolled && progress && (
+            <Badge className="bg-emerald-100 text-emerald-800 ml-3">
+              {Math.round(progress.progress_percentage || 0)}%
+            </Badge>
           )}
         </div>
-      </CardHeader>
 
-      {progress && (
-        <CardContent>
-          <div className="space-y-4">
-            <div>
-              <div className="flex items-center justify-between text-sm mb-2">
-                <span className="text-slate-600">Progress</span>
-                <span className="font-medium">{Math.round(progressPercent)}%</span>
-              </div>
-              <Progress value={progressPercent} className="h-2" />
-            </div>
+        <div className="flex flex-wrap gap-2 mb-4">
+          <Badge className={difficultyColors[path.difficulty_level]}>
+            {path.difficulty_level}
+          </Badge>
+          <Badge variant="outline" className="flex items-center gap-1">
+            <Target className="h-3 w-3" />
+            {path.target_skill}
+          </Badge>
+          <Badge variant="outline" className="flex items-center gap-1">
+            <Clock className="h-3 w-3" />
+            {path.estimated_duration}
+          </Badge>
+          <Badge variant="outline" className="flex items-center gap-1">
+            <Award className="h-3 w-3" />
+            {path.points_reward} pts
+          </Badge>
+        </div>
 
-            <Button
-              onClick={() => setExpanded(!expanded)}
-              variant="ghost"
-              size="sm"
-              className="w-full justify-between"
-            >
-              <span>
-                {completedMilestoneIds.length}/{path.milestones?.length || 0} Milestones
-              </span>
-              {expanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-            </Button>
-
-            {expanded && (
-              <div className="space-y-3 pt-2">
-                {path.milestones?.sort((a, b) => a.order - b.order).map((milestone) => {
-                  const isCompleted = completedMilestoneIds.includes(milestone.id);
-                  const resources = path.resources?.filter(r => r.milestone_id === milestone.id) || [];
-
-                  return (
-                    <div key={milestone.id} className={`p-3 rounded-lg border ${isCompleted ? 'bg-emerald-50 border-emerald-200' : 'bg-white'}`}>
-                      <div className="flex items-start gap-3">
-                        <button
-                          onClick={() => !isCompleted && completeMilestoneMutation.mutate(milestone.id)}
-                          disabled={isCompleted || completeMilestoneMutation.isPending}
-                          className={`mt-0.5 w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
-                            isCompleted ? 'bg-emerald-500 border-emerald-500' : 'border-slate-300 hover:border-int-orange'
-                          }`}
-                        >
-                          {isCompleted && <CheckCircle className="h-4 w-4 text-white" />}
-                        </button>
-                        <div className="flex-1">
-                          <h5 className={`font-medium text-sm ${isCompleted ? 'line-through text-slate-500' : 'text-slate-900'}`}>
-                            {milestone.title}
-                          </h5>
-                          <p className="text-xs text-slate-600 mt-1">{milestone.description}</p>
-                          <div className="flex items-center gap-2 mt-2">
-                            <Badge variant="outline" className="text-xs">
-                              {milestone.estimated_hours}h
-                            </Badge>
-                            <Badge variant="outline" className="text-xs">
-                              {resources.length} resources
-                            </Badge>
-                          </div>
-                          {resources.length > 0 && (
-                            <div className="mt-2 space-y-1">
-                              {resources.map((resource, idx) => (
-                                <div key={idx} className="text-xs text-slate-600 flex items-center gap-1">
-                                  <Circle className="h-2 w-2" />
-                                  <a href={resource.url} target="_blank" rel="noopener noreferrer" className="hover:text-int-orange">
-                                    {resource.title}
-                                  </a>
-                                  <span className="text-slate-400">({resource.type})</span>
-                                </div>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
+        {path.learning_outcomes?.length > 0 && (
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+            <p className="text-xs font-semibold text-blue-900 mb-1">You'll Learn:</p>
+            <ul className="text-xs text-blue-800 space-y-0.5">
+              {path.learning_outcomes.slice(0, 3).map((outcome, i) => (
+                <li key={i}>✓ {outcome}</li>
+              ))}
+            </ul>
           </div>
-        </CardContent>
-      )}
+        )}
+
+        {isEnrolled ? (
+          <Button
+            onClick={() => navigate(createPageUrl(`LearningPath?id=${path.id}`))}
+            className="w-full"
+            variant="outline"
+          >
+            <BookOpen className="h-4 w-4 mr-2" />
+            Continue Learning
+          </Button>
+        ) : (
+          <Button
+            onClick={() => enrollMutation.mutate()}
+            disabled={enrollMutation.isPending}
+            className="w-full"
+          >
+            <CheckCircle className="h-4 w-4 mr-2" />
+            {enrollMutation.isPending ? 'Enrolling...' : 'Enroll Now'}
+          </Button>
+        )}
+      </CardContent>
     </Card>
   );
 }

@@ -22,6 +22,11 @@ import LoadingSpinner from '../components/common/LoadingSpinner';
 import { toast } from 'sonner';
 
 export default function LearningDashboard() {
+  const { user, loading } = useUserData(true);
+
+  if (loading) {
+    return <LoadingSpinner className="min-h-[60vh]" />;
+  }
   const { user } = useUserData(true);
   const [activeTab, setActiveTab] = useState('my-paths');
   const [targetSkill, setTargetSkill] = useState('');

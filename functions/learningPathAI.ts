@@ -1,10 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.4';
 
-/**
- * AI-Powered Learning Path Generator
- * Creates personalized learning journeys based on skill gaps
- */
-
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
@@ -17,139 +12,155 @@ Deno.serve(async (req) => {
     const { action, context } = await req.json();
 
     switch (action) {
-      case 'generate_learning_path': {
-        const { target_skill, current_level, target_level, user_email } = context;
+      case 'suggest_paths': {
+        // Fetch user data
+        const [userProfile, userPoints, completedPaths, allPaths] = await Promise.all([
+          base44.asServiceRole.entities.UserProfile.filter({ user_email: user.email }).then(r => r[0]),
+          base44.asServiceRole.entities.UserPoints.filter({ user_email: user.email }).then(r => r[0]),
+          base44.asServiceRole.entities.LearningPathProgress.filter({ user_email: user.email }),
+          base44.asServiceRole.entities.LearningPath.list()
+        ]);
 
-        // Fetch user profile for context
-        const profiles = await base44.asServiceRole.entities.UserProfile.filter({
-          user_email: user_email || user.email
-        });
-        const profile = profiles[0];
+        const completedPathIds = completedPaths
+          .filter(p => p.status === 'completed')
+          .map(p => p.learning_path_id);
 
-        // Fetch existing skill tracking
-        const skillTracking = await base44.asServiceRole.entities.SkillTracking.filter({
-          user_email: user_email || user.email
-        });
+        const availablePaths = allPaths.filter(p => 
+          p.is_template && !completedPathIds.includes(p.id)
+        );
 
-        const prompt = `You are an AI learning architect creating a personalized skill development path.
+        const prompt = `You are an AI learning advisor for an employee engagement platform.
 
-Employee Profile:
-- Current Skill Level: ${current_level || 'beginner'}
-- Target Skill Level: ${target_level || 'intermediate'}
-- Skill to Develop: ${target_skill}
-- Existing Skills: ${profile?.skill_interests?.join(', ') || 'None specified'}
-- Learning Preferences: ${profile?.preferred_learning_styles?.join(', ') || 'Not specified'}
-- Department: ${profile?.department || 'General'}
+User Profile:
+- Email: ${user.email}
+- Role: ${user.user_type || 'participant'}
+- Department: ${userProfile?.department || 'Not specified'}
+- Skills/Interests: ${userProfile?.skill_interests?.join(', ') || 'None specified'}
+- Learning Goals: ${userProfile?.learning_goals?.join(', ') || 'None'}
+- Expertise Areas: ${userProfile?.expertise_areas?.join(', ') || 'None'}
+- Skill Levels: ${JSON.stringify(userProfile?.skill_levels || [])}
+- Current Tier: ${userPoints?.tier || 'bronze'}
+- Completed Paths: ${completedPaths.length}
 
-Create a structured learning path with:
-1. 4-6 progressive milestones
-2. 3-5 resources per milestone (mix of articles, videos, exercises)
-3. Clear learning outcomes
-4. Realistic time estimates
-5. Prerequisites if needed
+Available Learning Paths (${availablePaths.length}):
+${availablePaths.slice(0, 15).map(p => 
+  `- ${p.title} (${p.difficulty_level}): ${p.target_skill} | ${p.description?.substring(0, 80)}`
+).join('\n')}
 
-Make it practical, actionable, and role-specific.`;
+Analyze the user's profile and recommend 5-7 learning paths that:
+1. Match their skill interests and goals
+2. Address skill gaps based on their role
+3. Are appropriate for their experience level
+4. Help them progress in their career
+5. Build on their existing expertise
 
-        const learningPath = await base44.asServiceRole.integrations.Core.InvokeLLM({
+Prioritize paths that will have the most impact on their growth.`;
+
+        const suggestions = await base44.asServiceRole.integrations.Core.InvokeLLM({
           prompt,
           response_json_schema: {
             type: "object",
             properties: {
-              title: { type: "string" },
-              description: { type: "string" },
-              estimated_duration: { type: "string" },
-              milestones: {
+              recommendations: {
                 type: "array",
                 items: {
                   type: "object",
                   properties: {
-                    id: { type: "string" },
-                    title: { type: "string" },
-                    description: { type: "string" },
-                    order: { type: "number" },
-                    estimated_hours: { type: "number" }
+                    learning_path_title: { type: "string" },
+                    relevance_score: { type: "number" },
+                    why_recommended: { type: "string" },
+                    expected_outcomes: { type: "array", items: { type: "string" } },
+                    career_impact: { type: "string" },
+                    priority: { type: "string", enum: ["high", "medium", "low"] }
                   }
                 }
               },
-              resources: {
-                type: "array",
-                items: {
-                  type: "object",
-                  properties: {
-                    milestone_id: { type: "string" },
-                    title: { type: "string" },
-                    type: { type: "string" },
-                    url: { type: "string" },
-                    estimated_time: { type: "string" },
-                    is_required: { type: "boolean" }
-                  }
+              skill_gap_analysis: {
+                type: "object",
+                properties: {
+                  identified_gaps: { type: "array", items: { type: "string" } },
+                  immediate_needs: { type: "array", items: { type: "string" } },
+                  long_term_goals: { type: "array", items: { type: "string" } }
                 }
-              },
-              prerequisites: { type: "array", items: { type: "string" } },
-              learning_outcomes: { type: "array", items: { type: "string" } }
+              }
             }
           }
         });
 
-        // Create the learning path in database
-        const createdPath = await base44.asServiceRole.entities.LearningPath.create({
-          ...learningPath,
-          target_skill,
-          difficulty_level: target_level || 'intermediate',
-          created_for: user_email || user.email,
-          ai_generated: true,
-          is_template: false
-        });
+        // Match recommendations to actual path IDs
+        const enrichedRecommendations = suggestions.recommendations.map(rec => {
+          const matchingPath = availablePaths.find(p => 
+            p.title.toLowerCase().includes(rec.learning_path_title.toLowerCase()) ||
+            rec.learning_path_title.toLowerCase().includes(p.title.toLowerCase())
+          );
+          return {
+            ...rec,
+            path_id: matchingPath?.id,
+            path: matchingPath
+          };
+        }).filter(r => r.path_id);
 
-        return Response.json({ success: true, learning_path: createdPath });
+        return Response.json({ 
+          success: true, 
+          recommendations: enrichedRecommendations,
+          skill_gap_analysis: suggestions.skill_gap_analysis
+        });
       }
 
-      case 'recommend_resources': {
-        const { skill_gaps, user_email } = context;
+      case 'generate_modules': {
+        const { learning_path_id, path_title, target_skill } = context;
 
-        const profiles = await base44.asServiceRole.entities.UserProfile.filter({
-          user_email: user_email || user.email
-        });
-        const profile = profiles[0];
+        const prompt = `Create a structured learning module curriculum for: "${path_title}"
 
-        const prompt = `You are an AI learning advisor recommending resources for skill development.
+Target Skill: ${target_skill}
 
-Skill Gaps Identified: ${skill_gaps?.join(', ') || 'General development'}
-Current Skills: ${profile?.skill_interests?.join(', ') || 'None'}
-Learning Preferences: ${profile?.preferred_learning_styles?.join(', ') || 'Mixed'}
+Create 5-8 modules that form a complete learning journey:
+- Mix of content types (videos, readings, quizzes, exercises, checkpoints)
+- Progressive difficulty
+- Each module builds on previous ones
+- Include quizzes to test understanding
+- Balance theory and practical application
 
-Recommend 5-8 learning resources:
-- Mix of free and paid options
-- Various formats (articles, videos, courses, hands-on)
-- Prioritize practical, immediately applicable content
-- Include difficulty level for each
+For each module, provide:
+- Module name
+- Description (what learner will learn)
+- Type (video/reading/quiz/exercise/project/checkpoint)
+- Estimated time in minutes
+- Points reward (10-50 based on complexity)
+- Prerequisites (previous module numbers)
+- For quizzes: 3-5 questions with multiple choice answers`;
 
-For each resource:
-- Title
-- Type (article/video/course/workshop/doc)
-- URL (use real platforms: Coursera, Udemy, YouTube, Medium, company docs)
-- Skill addressed
-- Difficulty level
-- Estimated time
-- Why it's recommended`;
-
-        const resources = await base44.asServiceRole.integrations.Core.InvokeLLM({
+        const modules = await base44.asServiceRole.integrations.Core.InvokeLLM({
           prompt,
           response_json_schema: {
             type: "object",
             properties: {
-              resources: {
+              modules: {
                 type: "array",
                 items: {
                   type: "object",
                   properties: {
-                    title: { type: "string" },
-                    type: { type: "string" },
-                    url: { type: "string" },
-                    skill: { type: "string" },
-                    difficulty: { type: "string" },
-                    estimated_time: { type: "string" },
-                    reason: { type: "string" }
+                    module_name: { type: "string" },
+                    description: { type: "string" },
+                    module_type: { 
+                      type: "string",
+                      enum: ["video", "reading", "quiz", "exercise", "project", "checkpoint"]
+                    },
+                    estimated_time_minutes: { type: "number" },
+                    points_reward: { type: "number" },
+                    prerequisites: { type: "array", items: { type: "number" } },
+                    quiz_questions: {
+                      type: "array",
+                      items: {
+                        type: "object",
+                        properties: {
+                          question: { type: "string" },
+                          options: { type: "array", items: { type: "string" } },
+                          correct_answer: { type: "number" },
+                          explanation: { type: "string" }
+                        }
+                      }
+                    }
                   }
                 }
               }
@@ -157,133 +168,60 @@ For each resource:
           }
         });
 
-        return Response.json({ success: true, resources: resources.resources });
+        return Response.json({ success: true, modules: modules.modules });
       }
 
-      case 'suggest_next_steps': {
-        const { learning_path_id, user_email } = context;
+      case 'analyze_progress': {
+        const { learning_path_id } = context;
 
-        // Fetch learning path and progress
-        const paths = await base44.asServiceRole.entities.LearningPath.filter({
-          id: learning_path_id
-        });
-        const path = paths[0];
+        const [pathProgress, moduleCompletions, learningPath] = await Promise.all([
+          base44.asServiceRole.entities.LearningPathProgress.filter({
+            user_email: user.email,
+            learning_path_id
+          }).then(r => r[0]),
+          base44.asServiceRole.entities.ModuleCompletion.filter({
+            user_email: user.email,
+            learning_path_id
+          }),
+          base44.asServiceRole.entities.LearningPath.filter({ id: learning_path_id }).then(r => r[0])
+        ]);
 
-        const progress = await base44.asServiceRole.entities.LearningPathProgress.filter({
-          user_email: user_email || user.email,
-          learning_path_id
-        });
-        const userProgress = progress[0];
+        const prompt = `Analyze learning progress and provide personalized feedback:
 
-        if (!path) {
-          return Response.json({ error: 'Learning path not found' }, { status: 404 });
-        }
+Learning Path: ${learningPath?.title}
+Overall Progress: ${pathProgress?.progress_percentage || 0}%
+Modules Completed: ${moduleCompletions.filter(m => m.status === 'completed').length}
+Total Time Spent: ${pathProgress?.time_spent_hours || 0} hours
+Status: ${pathProgress?.status || 'not_started'}
 
-        const completedMilestones = userProgress?.milestones_completed || [];
-        const totalMilestones = path.milestones?.length || 0;
-        const progressPercent = userProgress?.progress_percentage || 0;
-
-        const prompt = `You are an AI learning coach providing personalized guidance.
-
-Learning Path: ${path.title}
-Target Skill: ${path.target_skill}
-Progress: ${progressPercent}% (${completedMilestones.length}/${totalMilestones} milestones)
-Time Spent: ${userProgress?.time_spent_hours || 0} hours
-
-Current Status:
-${completedMilestones.length === 0 ? '- Just started the learning journey' : ''}
-${completedMilestones.length > 0 && completedMilestones.length < totalMilestones ? '- In progress, making good headway' : ''}
-${completedMilestones.length === totalMilestones ? '- All milestones completed!' : ''}
+Module Performance:
+${moduleCompletions.map(m => 
+  `- ${m.module_id}: ${m.status} ${m.quiz_score ? `(Score: ${m.quiz_score}%)` : ''}`
+).join('\n')}
 
 Provide:
-1. 3-5 specific next steps (immediate actions)
-2. Motivational message (1-2 sentences)
-3. Tips for success (2-3 practical tips)
-4. Recommended pace (hours per week)
-
-Be encouraging, specific, and actionable.`;
-
-        const nextSteps = await base44.asServiceRole.integrations.Core.InvokeLLM({
-          prompt,
-          response_json_schema: {
-            type: "object",
-            properties: {
-              next_steps: { type: "array", items: { type: "string" } },
-              motivation: { type: "string" },
-              tips: { type: "array", items: { type: "string" } },
-              recommended_pace: { type: "string" }
-            }
-          }
-        });
-
-        // Update progress with AI suggestions
-        if (userProgress) {
-          await base44.asServiceRole.entities.LearningPathProgress.update(userProgress.id, {
-            ai_next_steps: nextSteps.next_steps
-          });
-        }
-
-        return Response.json({ success: true, guidance: nextSteps });
-      }
-
-      case 'analyze_skill_gaps': {
-        const { user_email } = context;
-
-        // Fetch user data
-        const profiles = await base44.asServiceRole.entities.UserProfile.filter({
-          user_email: user_email || user.email
-        });
-        const profile = profiles[0];
-
-        const participations = await base44.asServiceRole.entities.Participation.filter({
-          user_email: user_email || user.email
-        });
-
-        const recognitions = await base44.asServiceRole.entities.Recognition.filter({
-          recipient_email: user_email || user.email,
-          status: 'approved'
-        });
-
-        const prompt = `You are an AI career development advisor analyzing skill gaps.
-
-Employee Profile:
-- Current Skills: ${profile?.skill_interests?.join(', ') || 'None specified'}
-- Skill Levels: ${JSON.stringify(profile?.skill_levels || [])}
-- Department: ${profile?.department || 'General'}
-- Events Attended: ${participations.length}
-- Recognitions Received: ${recognitions.length}
-- Recognition Categories: ${[...new Set(recognitions.map(r => r.category))].join(', ')}
-
-Based on their profile and activity:
-1. Identify 3-5 high-impact skill gaps
-2. For each gap, explain why it matters for their role
-3. Prioritize gaps (high/medium/low impact)
-4. Suggest first step to address each gap`;
+1. Progress assessment
+2. Strengths identified
+3. Areas for improvement
+4. Next recommended actions
+5. Motivational message`;
 
         const analysis = await base44.asServiceRole.integrations.Core.InvokeLLM({
           prompt,
           response_json_schema: {
             type: "object",
             properties: {
-              skill_gaps: {
-                type: "array",
-                items: {
-                  type: "object",
-                  properties: {
-                    skill: { type: "string" },
-                    current_level: { type: "string" },
-                    target_level: { type: "string" },
-                    impact: { type: "string", enum: ["high", "medium", "low"] },
-                    reason: { type: "string" },
-                    first_step: { type: "string" }
-                  }
-                }
-              }
+              progress_assessment: { type: "string" },
+              strengths: { type: "array", items: { type: "string" } },
+              improvement_areas: { type: "array", items: { type: "string" } },
+              next_steps: { type: "array", items: { type: "string" } },
+              motivational_message: { type: "string" },
+              estimated_completion_date: { type: "string" }
             }
           }
         });
 
-        return Response.json({ success: true, analysis: analysis.skill_gaps });
+        return Response.json({ success: true, analysis });
       }
 
       default:
@@ -293,7 +231,7 @@ Based on their profile and activity:
   } catch (error) {
     console.error('Learning Path AI Error:', error);
     return Response.json({ 
-      error: error.message || 'Failed to process learning path request' 
+      error: error.message || 'Failed to process learning request' 
     }, { status: 500 });
   }
 });
