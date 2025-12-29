@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useMutation } from '@tanstack/react-query';
+import { AnimatePresence } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { useUserData } from '../components/hooks/useUserData';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
