@@ -10,10 +10,11 @@ import { usePermissions } from '../components/hooks/usePermissions';
 import ErrorBoundary from '../components/common/ErrorBoundary';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { User, Settings, Trophy, Calendar, History, Heart, Target, Bell, Shield, Sparkles, Accessibility } from 'lucide-react';
+import { User, Settings, Trophy, Calendar, History, Heart, Target, Bell, Shield, Sparkles, Accessibility, Sliders } from 'lucide-react';
 
 // Lazy load heavy components
 const ProfileHeader = React.lazy(() => import('../components/profile/ProfileHeader'));
+const GamificationCustomizer = React.lazy(() => import('../components/profile/GamificationCustomizer'));
 const ContributionsShowcase = React.lazy(() => import('../components/profile/ContributionsShowcase'));
 const ProfileBadgesShowcase = React.lazy(() => import('../components/profile/ProfileBadgesShowcase'));
 const SkillsDevelopmentTracker = React.lazy(() => import('../components/profile/SkillsDevelopmentTracker'));
@@ -49,7 +50,7 @@ export default function UserProfilePage() {
         </Suspense>
 
       <Tabs defaultValue="overview" className="w-full">
-        <TabsList className="grid w-full grid-cols-3 lg:grid-cols-7 mb-6 h-auto gap-1 p-1">
+        <TabsList className="grid w-full grid-cols-4 lg:grid-cols-8 mb-6 h-auto gap-1 p-1">
           <TabsTrigger value="overview" className="flex items-center gap-2 py-2.5">
             <User className="h-4 w-4" />
             <span className="hidden sm:inline">Overview</span>
@@ -73,6 +74,10 @@ export default function UserProfilePage() {
           <TabsTrigger value="interests" className="flex items-center gap-2 py-2.5">
             <Heart className="h-4 w-4" />
             <span className="hidden sm:inline">Interests</span>
+          </TabsTrigger>
+          <TabsTrigger value="customize" className="flex items-center gap-2 py-2.5">
+            <Sliders className="h-4 w-4" />
+            <span className="hidden sm:inline">Customize</span>
           </TabsTrigger>
           <TabsTrigger value="settings" className="flex items-center gap-2 py-2.5">
             <Settings className="h-4 w-4" />
@@ -124,6 +129,17 @@ export default function UserProfilePage() {
             <SkillsInterestsManager 
               profile={profile} 
               onUpdate={refetchProfile}
+            />
+          </Suspense>
+        </TabsContent>
+
+        {/* Gamification Customization */}
+        <TabsContent value="customize">
+          <Suspense fallback={<LoadingSpinner size="small" />}>
+            <GamificationCustomizer
+              userEmail={user?.email}
+              profile={profile}
+              userPoints={userPoints}
             />
           </Suspense>
         </TabsContent>
