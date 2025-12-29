@@ -44,6 +44,7 @@ import TeamPerformanceDashboard from './pages/TeamPerformanceDashboard';
 import Teams from './pages/Teams';
 import UserProfile from './pages/UserProfile';
 import SocialGamification from './pages/SocialGamification';
+import LearningPath from './pages/LearningPath';
 import __Layout from './Layout.jsx';
 
 
@@ -94,6 +95,7 @@ export const PAGES = {
     "Teams": Teams,
     "UserProfile": UserProfile,
     "SocialGamification": SocialGamification,
+    "LearningPath": LearningPath,
 }
 
 export const pagesConfig = {
