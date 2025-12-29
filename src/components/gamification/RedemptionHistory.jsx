@@ -8,25 +8,34 @@ import LoadingSpinner from '../common/LoadingSpinner';
 import EmptyState from '../common/EmptyState';
 
 export default function RedemptionHistory({ userEmail }) {
-  const { data: redemptions, isLoading } = useQuery({
+  const { data: redemptions, isLoading, error } = useQuery({
     queryKey: ['redemption-history', userEmail],
     queryFn: async () => {
+      if (!userEmail) return [];
+      
       const redemptions = await base44.entities.RewardRedemption.filter({
         user_email: userEmail
       });
       
+      if (redemptions.length === 0) return [];
+      
       // Get reward details for each redemption
-      const rewardIds = [...new Set(redemptions.map(r => r.reward_id))];
+      const rewardIds = [...new Set(redemptions.map(r => r.reward_id).filter(Boolean))];
+      
+      if (rewardIds.length === 0) return redemptions;
+      
       const rewards = await Promise.all(
-        rewardIds.map(id => base44.entities.Reward.filter({ id }))
+        rewardIds.map(id => 
+          base44.entities.Reward.filter({ id }).catch(() => [])
+        )
       );
       const rewardsMap = Object.fromEntries(
-        rewards.flat().map(r => [r.id, r])
+        rewards.flat().filter(Boolean).map(r => [r.id, r])
       );
       
       return redemptions.map(r => ({
         ...r,
-        reward: rewardsMap[r.reward_id]
+        reward: rewardsMap[r.reward_id] || null
       })).sort((a, b) => new Date(b.created_date) - new Date(a.created_date));
     },
     enabled: !!userEmail
@@ -37,6 +46,22 @@ export default function RedemptionHistory({ userEmail }) {
       <Card>
         <CardContent className="py-12">
           <LoadingSpinner />
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (error) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <History className="h-5 w-5 text-slate-600" />
+            Redemption History
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="py-6 text-center text-slate-500">
+          <p className="text-sm">Unable to load redemption history</p>
         </CardContent>
       </Card>
     );

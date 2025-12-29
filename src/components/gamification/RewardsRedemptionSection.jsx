@@ -17,9 +17,11 @@ export default function RewardsRedemptionSection({ userEmail, userPoints }) {
   const { data: rewards, isLoading } = useQuery({
     queryKey: ['available-rewards'],
     queryFn: async () => {
-      return await base44.entities.Reward.filter({
+      const allRewards = await base44.entities.Reward.filter({
         is_available: true
       });
+      // Filter out rewards with 0 stock (unless unlimited)
+      return allRewards.filter(r => r.stock_quantity === -1 || r.stock_quantity > 0);
     }
   });
 
@@ -27,17 +29,41 @@ export default function RewardsRedemptionSection({ userEmail, userPoints }) {
     mutationFn: async (rewardId) => {
       const reward = rewards.find(r => r.id === rewardId);
       
+      if (!reward) {
+        throw new Error('Reward not found');
+      }
+      
+      // Check sufficient points
+      if ((userPoints || 0) < reward.points_cost) {
+        throw new Error('Insufficient points');
+      }
+      
+      // Check stock availability
+      if (reward.stock_quantity !== -1 && reward.stock_quantity <= 0) {
+        throw new Error('Reward out of stock');
+      }
+      
       // Create redemption
-      return await base44.entities.RewardRedemption.create({
+      const redemption = await base44.entities.RewardRedemption.create({
         reward_id: rewardId,
         user_email: userEmail,
         points_spent: reward.points_cost,
         status: 'pending'
       });
+      
+      // Update stock if limited
+      if (reward.stock_quantity !== -1) {
+        await base44.entities.Reward.update(rewardId, {
+          stock_quantity: reward.stock_quantity - 1
+        });
+      }
+      
+      return redemption;
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['user-points']);
       queryClient.invalidateQueries(['redemption-history']);
+      queryClient.invalidateQueries(['available-rewards']);
       toast.success('Reward redeemed! Pending admin approval.');
       setSelectedReward(null);
     },
@@ -214,25 +240,32 @@ export default function RewardsRedemptionSection({ userEmail, userPoints }) {
 
 function RewardCard({ reward, userPoints, onRedeem, affordable }) {
   const pointsNeeded = affordable ? 0 : reward.points_cost - (userPoints || 0);
+  const isOutOfStock = reward.stock_quantity === 0;
 
   const typeIcons = {
-    physical: Package,
-    digital: CheckCircle,
-    experience: Gift,
-    time_off: Clock,
-    perk: Gift,
-    donation: Gift
+    physical: '📦',
+    digital: '💎',
+    experience: '🎁',
+    time_off: '🏖️',
+    perk: '⭐',
+    donation: '❤️'
   };
 
-  const Icon = typeIcons[reward.reward_type] || Gift;
+  const icon = typeIcons[reward.reward_type] || '🎁';
 
   return (
-    <div className={`rounded-lg border p-4 ${affordable ? 'bg-white border-emerald-200' : 'bg-slate-50 border-slate-200 opacity-75'}`}>
+    <div className={`rounded-lg border p-4 ${
+      isOutOfStock ? 'bg-slate-100 border-slate-300 opacity-60' : 
+      affordable ? 'bg-white border-emerald-200' : 
+      'bg-slate-50 border-slate-200 opacity-75'
+    }`}>
       <div className="flex items-start gap-3 mb-3">
-        <div className={`h-12 w-12 rounded-lg flex items-center justify-center flex-shrink-0 ${
-          affordable ? 'bg-gradient-to-br from-emerald-500 to-teal-500' : 'bg-slate-300'
+        <div className={`h-12 w-12 rounded-lg flex items-center justify-center flex-shrink-0 text-2xl ${
+          isOutOfStock ? 'bg-slate-300' :
+          affordable ? 'bg-gradient-to-br from-emerald-500 to-teal-500' : 
+          'bg-slate-300'
         }`}>
-          <Icon className="h-6 w-6 text-white" />
+          {icon}
         </div>
         <div className="flex-1 min-w-0">
           <h4 className="font-semibold text-slate-900 mb-1">{reward.reward_name}</h4>
@@ -246,7 +279,11 @@ function RewardCard({ reward, userPoints, onRedeem, affordable }) {
           <span className="font-bold text-int-orange">{reward.points_cost}</span>
         </div>
         
-        {affordable ? (
+        {isOutOfStock ? (
+          <Badge variant="outline" className="text-xs text-slate-500">
+            Out of Stock
+          </Badge>
+        ) : affordable ? (
           <Button 
             size="sm"
             onClick={onRedeem}
@@ -263,7 +300,9 @@ function RewardCard({ reward, userPoints, onRedeem, affordable }) {
 
       {reward.stock_quantity > 0 && reward.stock_quantity !== -1 && (
         <div className="mt-2">
-          <Badge variant="outline" className="text-xs">
+          <Badge variant="outline" className={`text-xs ${
+            reward.stock_quantity <= 3 ? 'border-red-300 text-red-700' : ''
+          }`}>
             {reward.stock_quantity} left
           </Badge>
         </div>

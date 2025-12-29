@@ -70,6 +70,7 @@ import TailoredLeaderboardFormats from '../components/gamification/TailoredLeade
 import PersonalizedGamificationTips from '../components/gamification/PersonalizedGamificationTips';
 import RedemptionHistory from '../components/gamification/RedemptionHistory';
 import RewardsRedemptionSection from '../components/gamification/RewardsRedemptionSection';
+import TierStatusDisplay from '../components/gamification/TierStatusDisplay';
 
 const CHART_COLORS = ['#D97230', '#14294D', '#8B5CF6', '#10B981', '#F59E0B', '#EC4899'];
 
@@ -354,6 +355,12 @@ export default function GamificationDashboard() {
             currentTier={currentUserPoints.tier}
             badgesCount={currentUserPoints.badges_earned?.length || 0}
             activeChallengesCount={0}
+          />
+
+          {/* Tier Status Display */}
+          <TierStatusDisplay 
+            currentPoints={currentUserPoints.total_points || 0}
+            currentTier={currentUserPoints.tier || 'bronze'}
           />
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

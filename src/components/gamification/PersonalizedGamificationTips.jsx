@@ -14,9 +14,13 @@ export default function PersonalizedGamificationTips({
   badgesCount,
   activeChallengesCount 
 }) {
-  const { data: tips, isLoading } = useQuery({
+  const { data: tips, isLoading, error } = useQuery({
     queryKey: ['gamification-tips', userEmail, currentPoints, currentTier],
     queryFn: async () => {
+      if (!userEmail) {
+        throw new Error('User email required');
+      }
+      
       const response = await base44.integrations.Core.InvokeLLM({
         prompt: `You are an AI gamification coach providing personalized tips to help an employee earn more points and advance tiers.
 
@@ -71,7 +75,17 @@ Make tips specific, encouraging, and achievable within the next 3-7 days.`,
     );
   }
 
-  if (!tips?.tips) return null;
+  if (error) {
+    return (
+      <Card>
+        <CardContent className="py-6 text-center text-slate-500">
+          <p className="text-sm">Unable to load personalized tips</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (!tips?.tips || tips.tips.length === 0) return null;
 
   const categoryIcons = {
     quick_win: Zap,
