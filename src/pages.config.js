@@ -26,6 +26,7 @@ import OnboardingHub from './pages/OnboardingHub';
 import ParticipantEvent from './pages/ParticipantEvent';
 import ParticipantPortal from './pages/ParticipantPortal';
 import PointStore from './pages/PointStore';
+import ProfileCustomization from './pages/ProfileCustomization';
 import ProjectPlan from './pages/ProjectPlan';
 import PublicProfile from './pages/PublicProfile';
 import Recognition from './pages/Recognition';
@@ -42,7 +43,7 @@ import TeamLeaderDashboard from './pages/TeamLeaderDashboard';
 import TeamPerformanceDashboard from './pages/TeamPerformanceDashboard';
 import Teams from './pages/Teams';
 import UserProfile from './pages/UserProfile';
-import ProfileCustomization from './pages/ProfileCustomization';
+import SocialGamification from './pages/SocialGamification';
 import __Layout from './Layout.jsx';
 
 
@@ -75,6 +76,7 @@ export const PAGES = {
     "ParticipantEvent": ParticipantEvent,
     "ParticipantPortal": ParticipantPortal,
     "PointStore": PointStore,
+    "ProfileCustomization": ProfileCustomization,
     "ProjectPlan": ProjectPlan,
     "PublicProfile": PublicProfile,
     "Recognition": Recognition,
@@ -91,7 +93,7 @@ export const PAGES = {
     "TeamPerformanceDashboard": TeamPerformanceDashboard,
     "Teams": Teams,
     "UserProfile": UserProfile,
-    "ProfileCustomization": ProfileCustomization,
+    "SocialGamification": SocialGamification,
 }
 
 export const pagesConfig = {
