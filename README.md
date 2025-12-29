@@ -16,7 +16,7 @@ Comprehensive documentation is available in the following files:
 - **[CODEBASE_AUDIT.md](./CODEBASE_AUDIT.md)** - Complete technical audit with security findings and quality metrics
 - **[PRD.md](./PRD.md)** - Product Requirements Document with features, requirements, and roadmap
 - **[FEATURE_ROADMAP.md](./FEATURE_ROADMAP.md)** - 18-month roadmap with 15 production-grade features
-- **[RECOMMENDATIONS.md](./RECOMMENDATIONS.md)** - Strategic recommendations with 6 repos, 5 agent prompts, and 1 Copilot prompt
+- **[RECOMMENDATIONS.md](./RECOMMENDATIONS.md)** - Best practices, repository recommendations, and GitHub Copilot prompts
 
 ## 🚀 Quick Start
 
