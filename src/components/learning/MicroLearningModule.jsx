@@ -27,16 +27,35 @@ export default function MicroLearningModule({ module, userEmail, skillGap, onCom
         description: `Completed micro-module: ${module.title}`
       });
 
-      // Check if badge should be awarded (e.g., complete 3 micro-modules)
-      const badgeResponse = await base44.functions.invoke('gamificationAI', {
-        action: 'check_micro_learning_badge',
-        context: {
-          user_email: userEmail,
-          skill: skillGap
-        }
+      // Check existing badges to see if micro-learning badge should be awarded
+      const userBadges = await base44.entities.BadgeAward.filter({ 
+        user_email: userEmail 
       });
+      const microLearningCompletions = userBadges.filter(
+        b => b.reason?.includes('micro-learning') || b.reason?.includes('Quick Win')
+      ).length + 1;
 
-      return badgeResponse.data;
+      // Award badge after 3, 5, 10 completions
+      let badgeEarned = null;
+      if ([3, 5, 10].includes(microLearningCompletions)) {
+        const badges = await base44.entities.Badge.filter({ 
+          badge_name: { $regex: 'Quick' } 
+        });
+        if (badges.length > 0) {
+          await base44.entities.BadgeAward.create({
+            user_email: userEmail,
+            badge_id: badges[0].id,
+            awarded_by: 'system',
+            reason: `Completed ${microLearningCompletions} micro-learning modules`
+          });
+          badgeEarned = { 
+            badge_name: badges[0].badge_name, 
+            badge_description: badges[0].description 
+          };
+        }
+      }
+
+      return { badge_earned: badgeEarned };
     },
     onSuccess: (data) => {
       setCompleted(true);
