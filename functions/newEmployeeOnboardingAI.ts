@@ -394,6 +394,245 @@ Make each message distinct in tone and personality.`;
         return Response.json({ success: true, welcome_messages: messages.welcome_messages });
       }
 
+      case 'task_completion_feedback': {
+        const { task_title, completed_tasks_count, total_tasks, user_interests } = context;
+
+        // Get user's onboarding progress
+        const onboardingRecords = await base44.asServiceRole.entities.UserOnboarding.filter({
+          user_email: user.email
+        });
+        const onboarding = onboardingRecords[0];
+
+        const prompt = `You are an AI onboarding coach providing personalized feedback on task completion.
+
+Employee: ${user.full_name}
+Task Completed: "${task_title}"
+Overall Progress: ${completed_tasks_count}/${total_tasks} tasks completed
+Days Since Start: ${onboarding ? Math.floor((Date.now() - new Date(onboarding.start_date).getTime()) / (1000 * 60 * 60 * 24)) : 0}
+Interests: ${user_interests?.join(', ') || 'Not specified'}
+
+Provide personalized feedback that:
+1. Celebrates the specific accomplishment
+2. Highlights what skills they're developing
+3. Suggests next best task based on their progress
+4. Offers 1 actionable tip for success
+5. Is encouraging and specific (not generic)
+
+Keep it conversational and under 100 words.`;
+
+        const feedback = await base44.asServiceRole.integrations.Core.InvokeLLM({
+          prompt,
+          response_json_schema: {
+            type: "object",
+            properties: {
+              celebration: { type: "string" },
+              skills_developed: { type: "array", items: { type: "string" } },
+              next_task_suggestion: { type: "string" },
+              success_tip: { type: "string" },
+              encouragement: { type: "string" }
+            }
+          }
+        });
+
+        return Response.json({ success: true, feedback });
+      }
+
+      case 'proactive_learning_suggestions': {
+        const { completed_tasks, skill_interests, days_since_start } = context;
+
+        // Get user's learning path progress
+        const learningProgress = await base44.asServiceRole.entities.LearningPathProgress.filter({
+          user_email: user.email
+        });
+
+        // Get available learning paths
+        const learningPaths = await base44.asServiceRole.entities.LearningPath.filter({
+          is_template: true
+        });
+
+        const prompt = `You are an AI learning advisor proactively suggesting resources for a new employee.
+
+Employee Profile:
+- Name: ${user.full_name}
+- Role: ${user.user_type}
+- Days Since Start: ${days_since_start || 0}
+- Completed Tasks: ${completed_tasks?.length || 0}
+- Stated Interests: ${skill_interests?.join(', ') || 'Not specified'}
+- Current Learning Paths: ${learningProgress.length} active
+
+Available Learning Paths: ${learningPaths.slice(0, 5).map(lp => lp.title).join(', ')}
+
+Based on their progress and interests, suggest 3-4 highly relevant learning resources:
+1. One learning path they should start
+2. One micro-learning opportunity (article, video)
+3. One practical exercise or project
+4. One peer connection for mentorship
+
+For each suggestion:
+- Explain WHY it's relevant to their specific situation
+- Estimate time commitment
+- Show expected outcome/benefit
+- Rate urgency (immediate, this week, this month)`;
+
+        const suggestions = await base44.asServiceRole.integrations.Core.InvokeLLM({
+          prompt,
+          response_json_schema: {
+            type: "object",
+            properties: {
+              suggestions: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    type: { type: "string", enum: ["learning_path", "article", "exercise", "mentorship"] },
+                    title: { type: "string" },
+                    relevance_reason: { type: "string" },
+                    time_commitment: { type: "string" },
+                    expected_outcome: { type: "string" },
+                    urgency: { type: "string", enum: ["immediate", "this_week", "this_month"] },
+                    resource_id: { type: "string" }
+                  }
+                }
+              },
+              personalized_message: { type: "string" }
+            }
+          }
+        });
+
+        return Response.json({ success: true, suggestions: suggestions.suggestions, message: suggestions.personalized_message });
+      }
+
+      case 'team_connection_suggestions': {
+        const { skill_interests, personality_traits, completed_tasks } = context;
+
+        // Get all users with profiles
+        const userProfiles = await base44.asServiceRole.entities.UserProfile.filter({
+          status: 'active'
+        });
+
+        // Filter out the current user and get potential matches
+        const potentialConnections = userProfiles
+          .filter(p => p.user_email !== user.email)
+          .slice(0, 20); // Limit to avoid token limits
+
+        const prompt = `You are an AI networking advisor suggesting team connections for a new employee.
+
+New Employee:
+- Name: ${user.full_name}
+- Role: ${user.user_type}
+- Interests: ${skill_interests?.join(', ') || 'Not specified'}
+- Personality: ${personality_traits ? JSON.stringify(personality_traits) : 'Not assessed'}
+- Tasks Completed: ${completed_tasks?.length || 0}
+
+Available Team Members:
+${potentialConnections.slice(0, 10).map(p => 
+  `- ${p.user_email}: ${p.job_title || 'N/A'}, Interests: ${p.skill_interests?.slice(0, 3).join(', ') || 'N/A'}`
+).join('\n')}
+
+Suggest 3-5 team members they should connect with based on:
+1. Shared interests or complementary skills
+2. Potential mentorship opportunities
+3. Similar personality/work style
+4. Cross-functional collaboration potential
+5. Social/cultural fit
+
+For each connection:
+- Explain why they'd be a great match
+- Suggest a conversation starter
+- Identify potential collaboration areas
+- Rate connection priority (high, medium)`;
+
+        const connections = await base44.asServiceRole.integrations.Core.InvokeLLM({
+          prompt,
+          response_json_schema: {
+            type: "object",
+            properties: {
+              connections: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    email: { type: "string" },
+                    name: { type: "string" },
+                    why_connect: { type: "string" },
+                    conversation_starter: { type: "string" },
+                    collaboration_potential: { type: "string" },
+                    priority: { type: "string", enum: ["high", "medium"] },
+                    shared_interests: { type: "array", items: { type: "string" } }
+                  }
+                }
+              },
+              networking_tip: { type: "string" }
+            }
+          }
+        });
+
+        return Response.json({ success: true, connections: connections.connections, tip: connections.networking_tip });
+      }
+
+      case 'skill_progress_analysis': {
+        const { completed_tasks, skill_interests, days_since_start } = context;
+
+        // Get user's skill tracking
+        const skillTracking = await base44.asServiceRole.entities.SkillTracking.filter({
+          user_email: user.email
+        });
+
+        const prompt = `You are an AI career development advisor analyzing skill progress for a new employee.
+
+Employee:
+- Name: ${user.full_name}
+- Days Since Start: ${days_since_start || 0}
+- Target Skills: ${skill_interests?.join(', ') || 'Not specified'}
+- Tasks Completed: ${completed_tasks?.length || 0}
+- Skills Being Tracked: ${skillTracking.map(st => `${st.skill_name} (${st.current_level})`).join(', ') || 'None yet'}
+
+Based on their progress, provide:
+1. Skills they're naturally developing through completed tasks
+2. Skills gaps to focus on next
+3. Recommended activities/projects to develop specific skills
+4. Projected timeline to proficiency
+5. Personalized development strategy
+
+Be specific and actionable.`;
+
+        const analysis = await base44.asServiceRole.integrations.Core.InvokeLLM({
+          prompt,
+          response_json_schema: {
+            type: "object",
+            properties: {
+              developing_skills: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    skill: { type: "string" },
+                    current_level: { type: "string" },
+                    evidence: { type: "string" }
+                  }
+                }
+              },
+              skill_gaps: { type: "array", items: { type: "string" } },
+              recommended_activities: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    activity: { type: "string" },
+                    target_skill: { type: "string" },
+                    time_to_complete: { type: "string" }
+                  }
+                }
+              },
+              timeline_to_proficiency: { type: "string" },
+              development_strategy: { type: "string" }
+            }
+          }
+        });
+
+        return Response.json({ success: true, analysis });
+      }
+
       default:
         return Response.json({ error: 'Invalid action' }, { status: 400 });
     }

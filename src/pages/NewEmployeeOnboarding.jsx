@@ -21,6 +21,10 @@ import {
 import OnboardingChatbot from '../components/onboarding/OnboardingChatbot';
 import OnboardingPlanDisplay from '../components/onboarding/OnboardingPlanDisplay';
 import LoadingSpinner from '../components/common/LoadingSpinner';
+import AIFeedbackPanel from '../components/onboarding/AIFeedbackPanel';
+import ProactiveSuggestionsWidget from '../components/onboarding/ProactiveSuggestionsWidget';
+import TeamConnectionsPanel from '../components/onboarding/TeamConnectionsPanel';
+import SkillProgressAnalyzer from '../components/onboarding/SkillProgressAnalyzer';
 import { toast } from 'sonner';
 
 export default function NewEmployeeOnboarding() {
@@ -28,6 +32,8 @@ export default function NewEmployeeOnboarding() {
   const [activeTab, setActiveTab] = useState('welcome');
   const [onboardingData, setOnboardingData] = useState(null);
   const [completedTasks, setCompletedTasks] = useState(new Set());
+  const [showFeedback, setShowFeedback] = useState(false);
+  const [currentFeedback, setCurrentFeedback] = useState(null);
 
   const [onboardingRecord, setOnboardingRecord] = useState(null);
 
@@ -174,13 +180,37 @@ export default function NewEmployeeOnboarding() {
     }
   }, [user]);
 
-  const toggleTask = (taskId) => {
+  // Task completion with AI feedback
+  const feedbackMutation = useMutation({
+    mutationFn: async (taskTitle) => {
+      const response = await base44.functions.invoke('newEmployeeOnboardingAI', {
+        action: 'task_completion_feedback',
+        context: {
+          task_title: taskTitle,
+          completed_tasks_count: completedTasks.size + 1,
+          total_tasks: totalTasks,
+          user_interests: profile?.skill_interests || []
+        }
+      });
+      return response.data;
+    },
+    onSuccess: (data) => {
+      setCurrentFeedback(data.feedback);
+      setShowFeedback(true);
+    }
+  });
+
+  const toggleTask = (taskId, taskTitle) => {
     setCompletedTasks(prev => {
       const newSet = new Set(prev);
       if (newSet.has(taskId)) {
         newSet.delete(taskId);
       } else {
         newSet.add(taskId);
+        // Trigger AI feedback on task completion
+        if (taskTitle) {
+          feedbackMutation.mutate(taskTitle);
+        }
       }
       return newSet;
     });
@@ -225,6 +255,16 @@ export default function NewEmployeeOnboarding() {
           </div>
         )}
       </div>
+
+      {/* AI Feedback Modal */}
+      <AnimatePresence>
+        {showFeedback && (
+          <AIFeedbackPanel 
+            feedback={currentFeedback}
+            onClose={() => setShowFeedback(false)}
+          />
+        )}
+      </AnimatePresence>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Main Content */}
@@ -288,11 +328,38 @@ export default function NewEmployeeOnboarding() {
           </Tabs>
         </div>
 
-        {/* AI Chatbot Sidebar */}
-        <div className="lg:col-span-1">
+        {/* AI Panels Sidebar */}
+        <div className="lg:col-span-1 space-y-6">
+          {/* Proactive Suggestions */}
+          <ProactiveSuggestionsWidget
+            userEmail={user?.email}
+            completedTasks={Array.from(completedTasks)}
+            skillInterests={profile?.skill_interests}
+            daysSinceStart={onboardingRecord ? Math.floor((Date.now() - new Date(onboardingRecord.start_date).getTime()) / (1000 * 60 * 60 * 24)) : 0}
+          />
+
+          {/* Team Connections */}
+          <TeamConnectionsPanel
+            userEmail={user?.email}
+            skillInterests={profile?.skill_interests}
+            personalityTraits={profile?.personality_traits}
+            completedTasks={Array.from(completedTasks)}
+          />
+
+          {/* Skill Progress */}
+          {completedTasks.size > 2 && (
+            <SkillProgressAnalyzer
+              userEmail={user?.email}
+              completedTasks={Array.from(completedTasks)}
+              skillInterests={profile?.skill_interests}
+              daysSinceStart={onboardingRecord ? Math.floor((Date.now() - new Date(onboardingRecord.start_date).getTime()) / (1000 * 60 * 60 * 24)) : 0}
+            />
+          )}
+
+          {/* AI Chatbot */}
           <OnboardingChatbot userName={user?.full_name} />
         </div>
-      </div>
+        </div>
     </div>
   );
 }
@@ -373,7 +440,7 @@ function TasksList({ tasks, completedTasks, toggleTask, upcomingEvents }) {
                 <div key={taskIdx} className={`p-3 rounded-lg border ${isCompleted ? 'bg-emerald-50 border-emerald-200' : 'bg-white'}`}>
                   <div className="flex items-start gap-3">
                     <button
-                      onClick={() => toggleTask(taskId)}
+                      onClick={() => toggleTask(taskId, task.title)}
                       className={`mt-0.5 w-5 h-5 rounded border-2 flex items-center justify-center transition-colors ${
                         isCompleted ? 'bg-emerald-500 border-emerald-500' : 'border-slate-300 hover:border-int-orange'
                       }`}
