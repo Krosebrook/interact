@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useUserData } from '../components/hooks/useUserData';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Shield, Users, Award, TrendingUp, Settings, Zap, BookOpen } from 'lucide-react';
+import { Shield, Users, Award, TrendingUp, Settings, Zap, BookOpen, Sparkles } from 'lucide-react';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import UserProgressOverview from '../components/admin/gamification/UserProgressOverview';
 import ManualAwardsPanel from '../components/admin/gamification/ManualAwardsPanel';
@@ -10,6 +10,7 @@ import GamificationRulesConfig from '../components/admin/gamification/Gamificati
 import EngagementAnalytics from '../components/admin/gamification/EngagementAnalytics';
 import SkillDevelopmentTrends from '../components/admin/gamification/SkillDevelopmentTrends';
 import ContentIntegrationManager from '../components/admin/gamification/ContentIntegrationManager';
+import AIContentGenerator from '../components/admin/gamification/AIContentGenerator';
 
 export default function GamificationAdmin() {
   const { user, loading } = useUserData(true, true); // Require auth and admin
@@ -87,18 +88,18 @@ export default function GamificationAdmin() {
 
       {/* Main Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-6">
+        <TabsList className="grid w-full grid-cols-7">
           <TabsTrigger value="overview" className="gap-2">
             <Users className="h-4 w-4" />
             Overview
           </TabsTrigger>
           <TabsTrigger value="awards" className="gap-2">
             <Award className="h-4 w-4" />
-            Manual Awards
+            Awards
           </TabsTrigger>
           <TabsTrigger value="rules" className="gap-2">
             <Settings className="h-4 w-4" />
-            Rules & Config
+            Rules
           </TabsTrigger>
           <TabsTrigger value="analytics" className="gap-2">
             <TrendingUp className="h-4 w-4" />
@@ -106,11 +107,15 @@ export default function GamificationAdmin() {
           </TabsTrigger>
           <TabsTrigger value="skills" className="gap-2">
             <BookOpen className="h-4 w-4" />
-            Skill Trends
+            Skills
+          </TabsTrigger>
+          <TabsTrigger value="ai-content" className="gap-2">
+            <Sparkles className="h-4 w-4" />
+            AI Content
           </TabsTrigger>
           <TabsTrigger value="integrations" className="gap-2">
             <Zap className="h-4 w-4" />
-            Integrations
+            External
           </TabsTrigger>
         </TabsList>
 
@@ -132,6 +137,10 @@ export default function GamificationAdmin() {
 
         <TabsContent value="skills" className="mt-6">
           <SkillDevelopmentTrends />
+        </TabsContent>
+
+        <TabsContent value="ai-content" className="mt-6">
+          <AIContentGenerator />
         </TabsContent>
 
         <TabsContent value="integrations" className="mt-6">
