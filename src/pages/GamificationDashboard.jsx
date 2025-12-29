@@ -67,6 +67,9 @@ import AchievementTiersSection from '../components/gamification/AchievementTiers
 import SocialFeedSection from '../components/gamification/SocialFeedSection';
 import PersonalizedRecommendationsEngine from '../components/gamification/PersonalizedRecommendationsEngine';
 import TailoredLeaderboardFormats from '../components/gamification/TailoredLeaderboardFormats';
+import PersonalizedGamificationTips from '../components/gamification/PersonalizedGamificationTips';
+import RedemptionHistory from '../components/gamification/RedemptionHistory';
+import RewardsRedemptionSection from '../components/gamification/RewardsRedemptionSection';
 
 const CHART_COLORS = ['#D97230', '#14294D', '#8B5CF6', '#10B981', '#F59E0B', '#EC4899'];
 
@@ -344,6 +347,15 @@ export default function GamificationDashboard() {
 
         {/* Overview Tab */}
         <TabsContent value="overview" className="space-y-6 mt-6">
+          {/* AI Tips */}
+          <PersonalizedGamificationTips
+            userEmail={user?.email}
+            currentPoints={currentUserPoints.total_points}
+            currentTier={currentUserPoints.tier}
+            badgesCount={currentUserPoints.badges_earned?.length || 0}
+            activeChallengesCount={0}
+          />
+
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Your Stats */}
             <Card className="lg:col-span-1 border-2 border-int-orange/20">
@@ -576,8 +588,13 @@ export default function GamificationDashboard() {
         </TabsContent>
 
         {/* Rewards Tab */}
-        <TabsContent value="rewards" className="mt-6">
-          <RewardsSection userPoints={currentUserPoints} />
+        <TabsContent value="rewards" className="mt-6 space-y-6">
+          <RewardsRedemptionSection 
+            userEmail={user?.email}
+            userPoints={currentUserPoints.total_points}
+          />
+          
+          <RedemptionHistory userEmail={user?.email} />
         </TabsContent>
 
         {/* Analytics Tab */}
