@@ -863,7 +863,7 @@ Based on research, the following practices should be adopted:
    - Use Jotai for atomic state management if needed
 
 4. **Testing Strategy**:
-   - Jest + React Testing Library for unit/integration
+   - Vitest + React Testing Library for unit/integration
    - Playwright for E2E testing (better than Cypress for 2024)
    - Visual regression testing with Percy or Chromatic
 
