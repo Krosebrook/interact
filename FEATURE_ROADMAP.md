@@ -1099,11 +1099,33 @@ Q2 2026: [15 Virtual Events]
 - 1 Technical Writer (part-time)
 
 ### Budget Considerations
-- Engineering: $X00K-$X00K (18 months)
-- AI API costs: $X,000/month
-- Infrastructure: $X,000/month
-- Tools & services: $X,000/month
-- **Total estimated budget:** $X00K-$1M (18 months)
+
+**Personnel Costs (18 months):**
+- 2-3 Full-stack Engineers: $300K-$450K (@ $100-150K/year each)
+- 1 Frontend Specialist: $130K-$180K (@ $130-180K/year)
+- 1 Backend/DevOps Engineer: $140K-$200K (@ $140-200K/year)
+- 1 AI/ML Specialist (50% time): $75K-$100K (@ $150-200K/year full-time)
+- 1 QA Engineer: $100K-$150K (@ $100-150K/year)
+- 1 Technical Writer (25% time): $20K-$30K (@ $80-120K/year full-time)
+- **Subtotal Personnel:** $765K-$1,110K
+
+**AI & Infrastructure:**
+- AI API costs: $2,000-$5,000/month × 18 = $36K-$90K
+- Cloud infrastructure: $1,500-$3,000/month × 18 = $27K-$54K
+- Development tools & services: $500-$1,000/month × 18 = $9K-$18K
+- **Subtotal Infrastructure:** $72K-$162K
+
+**Other Costs:**
+- Design resources (contractor): $20K-$40K
+- Testing tools & services: $5K-$10K
+- Security audits & penetration testing: $15K-$30K
+- Contingency (10%): $88K-$135K
+- **Subtotal Other:** $128K-$215K
+
+**Total Estimated Budget:** $965K-$1,487K (18 months)
+- **Conservative estimate:** ~$1.0M
+- **Realistic estimate:** ~$1.2M
+- **Aggressive estimate:** ~$1.5M
 
 ---
 
