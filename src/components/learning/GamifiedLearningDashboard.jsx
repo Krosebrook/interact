@@ -5,11 +5,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { BookOpen, Brain, Trophy, TrendingUp, Target, Sparkles } from 'lucide-react';
+import { BookOpen, Brain, Trophy, TrendingUp, Target, Sparkles, Zap } from 'lucide-react';
 import LoadingSpinner from '../common/LoadingSpinner';
 import AILearningRecommendations from './AILearningRecommendations';
 import LearningPathCard from './LearningPathCard';
 import MyLearningProgress from './MyLearningProgress';
+import SkillGapMicroLearning from './SkillGapMicroLearning';
 
 export default function GamifiedLearningDashboard({ userEmail }) {
   const [activeTab, setActiveTab] = useState('explore');
@@ -103,7 +104,7 @@ export default function GamifiedLearningDashboard({ userEmail }) {
 
       {/* Main Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="explore" className="gap-2">
             <Brain className="h-4 w-4" />
             Explore
@@ -115,6 +116,10 @@ export default function GamifiedLearningDashboard({ userEmail }) {
           <TabsTrigger value="ai-suggestions" className="gap-2">
             <Sparkles className="h-4 w-4" />
             AI Suggestions
+          </TabsTrigger>
+          <TabsTrigger value="quick-wins" className="gap-2">
+            <Zap className="h-4 w-4" />
+            Quick Wins
           </TabsTrigger>
         </TabsList>
 
@@ -161,6 +166,11 @@ export default function GamifiedLearningDashboard({ userEmail }) {
             userEmail={userEmail}
             availablePaths={availablePaths}
           />
+        </TabsContent>
+
+        {/* Quick Wins Tab */}
+        <TabsContent value="quick-wins" className="mt-6">
+          <SkillGapMicroLearning userEmail={userEmail} />
         </TabsContent>
       </Tabs>
     </div>

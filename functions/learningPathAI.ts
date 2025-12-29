@@ -224,6 +224,94 @@ Provide:
         return Response.json({ success: true, analysis });
       }
 
+      case 'analyze_skill_gaps_with_micro': {
+        const [userProfile, participations, userPoints] = await Promise.all([
+          base44.asServiceRole.entities.UserProfile.filter({ user_email: user.email }).then(r => r[0]),
+          base44.asServiceRole.entities.Participation.filter({ user_email: user.email }),
+          base44.asServiceRole.entities.UserPoints.filter({ user_email: user.email }).then(r => r[0])
+        ]);
+
+        const prompt = `Analyze skill gaps and suggest micro-learning opportunities:
+
+User Profile:
+- Skills/Interests: ${userProfile?.skill_interests?.join(', ') || 'None'}
+- Learning Goals: ${userProfile?.learning_goals?.join(', ') || 'None'}
+- Skill Levels: ${JSON.stringify(userProfile?.skill_levels || [])}
+- Department: ${userProfile?.department || 'Unknown'}
+- Events Attended: ${participations?.length || 0}
+- Current Tier: ${userPoints?.tier || 'bronze'}
+
+Identify 3-5 skill gaps that can be addressed with micro-learning (5-10 min modules).
+Focus on practical, immediately applicable skills.`;
+
+        const gaps = await base44.asServiceRole.integrations.Core.InvokeLLM({
+          prompt,
+          response_json_schema: {
+            type: "object",
+            properties: {
+              gaps: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    skill: { type: "string" },
+                    current_level: { type: "string", enum: ["beginner", "intermediate", "advanced"] },
+                    target_level: { type: "string", enum: ["intermediate", "advanced", "expert"] },
+                    impact: { type: "string", enum: ["high", "medium", "low"] },
+                    reason: { type: "string" },
+                    estimated_time: { type: "string" }
+                  }
+                }
+              }
+            }
+          }
+        });
+
+        return Response.json({ success: true, gaps: gaps.gaps });
+      }
+
+      case 'generate_micro_modules': {
+        const { skill_gap } = context;
+
+        const prompt = `Create 3-4 bite-sized micro-learning modules for: ${skill_gap}
+
+Each module must be 5-10 minutes and immediately actionable.
+
+Requirements:
+- Clear, action-oriented titles
+- Mix of videos, exercises, articles
+- 15-25 points reward per module
+- Specific, measurable learning outcomes
+- Beginner to intermediate difficulty`;
+
+        const modules = await base44.asServiceRole.integrations.Core.InvokeLLM({
+          prompt,
+          response_json_schema: {
+            type: "object",
+            properties: {
+              modules: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    id: { type: "string" },
+                    title: { type: "string" },
+                    description: { type: "string" },
+                    type: { type: "string", enum: ["video", "exercise", "article", "interactive"] },
+                    duration: { type: "string" },
+                    points_reward: { type: "number" },
+                    learning_outcome: { type: "string" },
+                    difficulty: { type: "string", enum: ["beginner", "intermediate"] }
+                  }
+                }
+              }
+            }
+          }
+        });
+
+        return Response.json({ success: true, modules: modules.modules });
+      }
+
       default:
         return Response.json({ error: 'Invalid action' }, { status: 400 });
     }
