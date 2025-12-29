@@ -6,7 +6,7 @@ import GamificationCustomizer from '../components/profile/GamificationCustomizer
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
-import { createPageUrl } from './utils';
+import { createPageUrl } from '../utils';
 import { Link } from 'react-router-dom';
 
 export default function ProfileCustomization() {
