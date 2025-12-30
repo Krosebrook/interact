@@ -36,6 +36,22 @@ This directory contains context-engineered prompts for GitHub Copilot agents to 
 
 ## How to Use
 
+### Using the Feature-to-PR Template
+
+The **[FEATURE_TO_PR_TEMPLATE.md](../FEATURE_TO_PR_TEMPLATE.md)** is a comprehensive workflow template for GitHub Copilot agents. Use it when:
+- Starting any new feature or enhancement
+- Working on bug fixes that need structured approach
+- Coordinating complex changes across multiple files
+- Ensuring consistent PR quality and documentation
+
+**Quick Start:**
+1. **Review the template** at `.github/FEATURE_TO_PR_TEMPLATE.md`
+2. **Fill in the Mission Statement** (Feature, Outcome, Scope Level)
+3. **Follow Step 0: Context Scan** to understand existing patterns
+4. **Create a plan in Step 1** before coding
+5. **Execute Steps 2-5** methodically
+6. **Use the PR description template** when ready to submit
+
 ### Using GitHub Copilot Agent Mode
 
 1. **Open the prompt file** you want to use
@@ -66,6 +82,7 @@ These prompts follow the **SSSS** principle:
 
 ## Related Documentation
 
+- **[FEATURE_TO_PR_TEMPLATE.md](../FEATURE_TO_PR_TEMPLATE.md)** - Comprehensive workflow template for feature PRs
 - **[RECOMMENDATIONS.md](../../RECOMMENDATIONS.md)** - Full context and best practices
 - **[FEATURE_ROADMAP.md](../../FEATURE_ROADMAP.md)** - 18-month feature roadmap
 - **[CODEBASE_AUDIT.md](../../CODEBASE_AUDIT.md)** - Technical audit findings
@@ -89,5 +106,5 @@ Refer to the main [RECOMMENDATIONS.md](../../RECOMMENDATIONS.md) document for:
 
 ---
 
-**Last Updated:** December 29, 2024  
+**Last Updated:** December 30, 2024  
 **Maintained by:** Krosebrook Development Team
