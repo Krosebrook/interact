@@ -100,6 +100,11 @@ interact/
 
 ## 🤝 Contributing
 
+**For GitHub Copilot Agents and Developers:**
+- Use the **[Feature-to-PR Template](./.github/FEATURE_TO_PR_TEMPLATE.md)** for structured feature development
+- Follow **[Copilot Instructions](./.github/copilot-instructions.md)** for coding standards and patterns
+- Review agent prompts in **[.github/prompts](./.github/prompts/)** for specialized tasks
+
 Please refer to the [PRD.md](./PRD.md) for:
 - Technical architecture details
 - Development standards
@@ -131,5 +136,5 @@ Copyright © 2024 Krosebrook. All rights reserved.
 
 ---
 
-**Last Updated:** December 29, 2024  
+**Last Updated:** December 30, 2024  
 **Maintained by:** Krosebrook
