@@ -1,0 +1,176 @@
+================================================================================
+INTERACT EMPLOYEE ENGAGEMENT PLATFORM - DOCUMENTATION INDEX
+================================================================================
+
+This index provides a curated overview of the project's documentation structure.
+The complete, machine-readable documentation is available in llms-full.txt.
+
+Last Updated: 2026-01-08
+Platform: Base44 + React + TypeScript
+Target: Remote-first employee engagement (50-200 employees)
+
+================================================================================
+GOVERNANCE & POLICIES
+================================================================================
+
+DOC_POLICY.md
+  → Documentation governance, versioning, approval workflows
+  → Single source of truth for documentation standards
+  → Human review requirements and provenance tracking
+
+SECURITY.md
+  → Application security architecture and practices
+  → Data privacy, RBAC implementation, compliance (GDPR, SOC 2)
+  → Authentication, encryption, audit logging
+
+ENTITY_ACCESS_RULES.md
+  → Role-based access control (RBAC) for all database entities
+  → Permission rules for admin, facilitator, participant roles
+  → Security rules for sensitive data (HR, PII, salary info)
+
+================================================================================
+ARCHITECTURE & TECHNICAL SPECIFICATIONS
+================================================================================
+
+ARCHITECTURE.md
+  → High-level system architecture overview
+  → Frontend: React + Tailwind CSS + TypeScript
+  → Backend: Base44 BaaS with Deno functions
+
+FRAMEWORK.md
+  → Core technologies, libraries, design patterns
+  → Component architecture and state management
+  → Code organization and best practices
+
+API_REFERENCE.md
+  → Complete API endpoint reference
+  → Entity operations, authentication, integrations
+  → Request/response formats and examples
+
+DATABASE_SCHEMA_TECHNICAL_SPEC.md
+  → Comprehensive entity relationship documentation
+  → Field definitions, data types, constraints
+  → Permissions and access patterns
+
+COMPONENT_LIBRARY.md
+  → Reusable UI component documentation
+  → Props, usage examples, accessibility guidelines
+
+================================================================================
+FEATURES & FUNCTIONALITY
+================================================================================
+
+PRD_MASTER.md
+  → Master Product Requirements Document
+  → Feature specifications and user stories
+  → Success metrics and acceptance criteria
+
+FEATURE_SPECS.md
+  → Detailed specifications for major features
+  → Recognition system, gamification, learning paths
+  → Pulse surveys, milestone celebrations, team challenges
+
+ONBOARDING_SPEC.md
+  → 30-day employee onboarding system
+  → Role-based onboarding flows (admin, facilitator, participant)
+  → AI-powered buddy matching and milestone tracking
+
+GAMIFICATION_ADMIN_GUIDE.md
+  → Administrator guide for gamification system
+  → Points, badges, challenges, leaderboards
+  → AI-driven rule optimization and content generation
+
+================================================================================
+AI & INTELLIGENT FEATURES
+================================================================================
+
+AI_FEATURES_DOCUMENTATION.md
+  → Comprehensive overview of all AI capabilities
+  → Event planning, skill gap analysis, buddy matching
+  → Content generation, personalization engines
+
+AI_CONTENT_GENERATOR_API.md
+  → API for AI-powered learning content generation
+  → Learning paths, quiz questions, video scripts
+  → Integration patterns and usage examples
+
+AGENTS_DOCUMENTATION_AUTHORITY.md
+  → Documentation Authority AI agent architecture
+  → Automated documentation building and validation
+  → Provenance tracking and governance enforcement
+
+================================================================================
+DEVELOPMENT & OPERATIONS
+================================================================================
+
+CHANGELOG.md / CHANGELOG_SEMANTIC.md
+  → Semantic versioning and release history
+  → Breaking changes, new features, bug fixes
+  → Migration guides for major updates
+
+GITHUB_SETUP_INSTRUCTIONS.md
+  → Manual setup for GitHub integration and CI/CD
+  → Instructions for this file system and workflows
+  → Required for implementing Documentation Authority
+
+DEPLOYMENT_GUIDE.md
+  → Production deployment procedures
+  → Environment configuration, secrets management
+  → Monitoring and troubleshooting
+
+PRODUCTION_READINESS_CHECKLIST.md
+  → Pre-launch validation checklist
+  → Security, performance, accessibility audits
+  → Integration testing and rollback procedures
+
+================================================================================
+AUDIT REPORTS & COMPLIANCE
+================================================================================
+
+MASTER_AUDIT_REPORT.md
+  → Comprehensive audit findings across all systems
+  → Security, accessibility, performance reviews
+  → Recommended improvements and action items
+
+WCAG_AUDIT.md
+  → Web Content Accessibility Guidelines compliance
+  → WCAG 2.1 AA standard adherence
+  → Accessibility features and testing procedures
+
+SECURITY.md (Security Audit Section)
+  → Penetration testing results
+  → Vulnerability assessments and mitigations
+  → Third-party security reviews
+
+================================================================================
+USER GUIDES & TRAINING
+================================================================================
+
+QUICK_START_GUIDE.md
+  → Getting started for new administrators
+  → Initial setup, user invitations, basic configuration
+  → First event creation and recognition posting
+
+USER_FLOWS.md
+  → Common user journey documentation
+  → Step-by-step workflows for key features
+  → Role-specific interaction patterns
+
+INTEGRATION_GUIDE.md
+  → Third-party integration setup (Slack, Teams, Calendar)
+  → OAuth configuration and webhook handling
+  → Troubleshooting common integration issues
+
+================================================================================
+USAGE NOTES
+================================================================================
+
+1. This index is maintained manually by the development team
+2. The complete documentation is auto-generated in llms-full.txt
+3. For the most current information, always refer to individual .md files
+4. CI/CD validation ensures documentation completeness and accuracy
+5. All documentation follows the governance rules in DOC_POLICY.md
+
+================================================================================
+END OF INDEX
+================================================================================
