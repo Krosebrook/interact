@@ -30,6 +30,7 @@ import {
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
 import { LEVEL_THRESHOLDS } from '../lib/constants';
+import { compressImage, formatFileSize } from '@/lib/imageUtils';
 
 // File upload constraints
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
@@ -95,15 +96,27 @@ export default function ProfileHeader({ user, profile, userPoints, onUpdate }) {
 
     // Validate file size
     if (file.size > MAX_FILE_SIZE) {
-      const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
-      toast.error(`File size (${sizeMB}MB) exceeds the 5MB limit. Please choose a smaller file.`);
+      toast.error(`File size (${formatFileSize(file.size)}) exceeds the 5MB limit. Please choose a smaller file.`);
       e.target.value = ''; // Reset input
       return;
     }
 
     setUploadingAvatar(true);
     try {
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      // Compress image before upload for better performance
+      const originalSize = file.size;
+      const compressedFile = await compressImage(file, {
+        maxWidth: 800,
+        maxHeight: 800,
+        quality: 0.85
+      });
+      
+      // Show compression info if size was reduced significantly
+      if (originalSize > compressedFile.size * 1.2) {
+        toast.info(`Image optimized: ${formatFileSize(originalSize)} → ${formatFileSize(compressedFile.size)}`);
+      }
+
+      const { file_url } = await base44.integrations.Core.UploadFile({ file: compressedFile });
       setEditForm(prev => ({ ...prev, avatar_url: file_url }));
       toast.success('Profile photo uploaded successfully');
     } catch (error) {
