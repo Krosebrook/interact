@@ -21,6 +21,9 @@ Deno.serve(async (req) => {
       case 'custom_query':
         return await handleCustomQuery(base44, query);
       
+      case 'trend_analysis':
+        return await longTermTrendAnalysis(base44);
+      
       default:
         return Response.json({ error: 'Unknown action' }, { status: 400 });
     }
@@ -210,4 +213,79 @@ Provide helpful, actionable advice.`
   });
 
   return Response.json({ content: response });
+}
+
+async function longTermTrendAnalysis(base44) {
+  const oneYearAgo = new Date();
+  oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+
+  const [analyticsEvents, users, onboarding] = await Promise.all([
+    base44.asServiceRole.entities.AnalyticsEvent.filter({
+      created_date: { $gte: oneYearAgo.toISOString() }
+    }),
+    base44.asServiceRole.entities.User.list(),
+    base44.asServiceRole.entities.UserOnboarding.list()
+  ]);
+
+  // Group by quarter
+  const quarterlyData = {};
+  analyticsEvents.forEach(event => {
+    const date = new Date(event.created_date);
+    const quarter = `Q${Math.floor(date.getMonth() / 3) + 1} ${date.getFullYear()}`;
+    if (!quarterlyData[quarter]) {
+      quarterlyData[quarter] = { events: 0, users: new Set() };
+    }
+    quarterlyData[quarter].events += 1;
+    quarterlyData[quarter].users.add(event.user_email);
+  });
+
+  const response = await base44.asServiceRole.integrations.Core.InvokeLLM({
+    prompt: `Analyze long-term trends (quarterly/annual):
+
+User Adoption:
+- Total Users: ${users.length}
+- Onboarding Completion: ${onboarding.filter(o => o.status === 'completed').length}
+
+Quarterly Engagement:
+${Object.entries(quarterlyData).map(([q, data]) => `${q}: ${data.events} events, ${data.users.size} active users`).join('\n')}
+
+Provide:
+1. User adoption trends
+2. Engagement pattern changes
+3. Growth recommendations
+4. Feature adoption insights
+5. Retention metrics`,
+    response_json_schema: {
+      type: 'object',
+      properties: {
+        analysis: { type: 'string' },
+        quarterly_trends: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              quarter: { type: 'string' },
+              insight: { type: 'string' }
+            }
+          }
+        },
+        recommendations: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              title: { type: 'string' },
+              description: { type: 'string' },
+              priority: { type: 'string' }
+            }
+          }
+        }
+      }
+    }
+  });
+
+  return Response.json({
+    report_type: 'trend_analysis',
+    ...response
+  });
 }

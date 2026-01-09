@@ -41,6 +41,12 @@ export default function AIAdminAssistant() {
       action: { action: 'system_health_check' }
     },
     {
+      id: 'trend_analysis',
+      label: 'Long-Term Trend Analysis',
+      icon: Download,
+      action: { action: 'trend_analysis' }
+    },
+    {
       id: 'create_role',
       label: 'Create Role from Description',
       icon: Shield,
@@ -58,7 +64,7 @@ export default function AIAdminAssistant() {
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Quick Actions */}
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {quickActions.map(action => {
             const Icon = action.icon;
             return (
