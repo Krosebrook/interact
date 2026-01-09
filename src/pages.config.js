@@ -39,6 +39,7 @@ import RoleSetup from './pages/RoleSetup';
 import Settings from './pages/Settings';
 import SkillsDashboard from './pages/SkillsDashboard';
 import SocialGamification from './pages/SocialGamification';
+import SocialHub from './pages/SocialHub';
 import Surveys from './pages/Surveys';
 import TeamCompetition from './pages/TeamCompetition';
 import TeamDashboard from './pages/TeamDashboard';
@@ -46,7 +47,6 @@ import TeamLeaderDashboard from './pages/TeamLeaderDashboard';
 import TeamPerformanceDashboard from './pages/TeamPerformanceDashboard';
 import Teams from './pages/Teams';
 import UserProfile from './pages/UserProfile';
-import SocialHub from './pages/SocialHub';
 import __Layout from './Layout.jsx';
 
 
@@ -92,6 +92,7 @@ export const PAGES = {
     "Settings": Settings,
     "SkillsDashboard": SkillsDashboard,
     "SocialGamification": SocialGamification,
+    "SocialHub": SocialHub,
     "Surveys": Surveys,
     "TeamCompetition": TeamCompetition,
     "TeamDashboard": TeamDashboard,
@@ -99,7 +100,6 @@ export const PAGES = {
     "TeamPerformanceDashboard": TeamPerformanceDashboard,
     "Teams": Teams,
     "UserProfile": UserProfile,
-    "SocialHub": SocialHub,
 }
 
 export const pagesConfig = {

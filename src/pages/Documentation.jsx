@@ -75,6 +75,8 @@ import {
   Search
 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
+import DocsChangeDetector from '../components/docs/DocsChangeDetector';
+import DocSummarizer from '../components/docs/DocSummarizer';
 
 // Documentation content - embedded for reliable rendering
 const DOCS = {
@@ -1026,6 +1028,14 @@ export default function Documentation() {
           />
         </div>
       </div>
+
+      {/* AI Tools */}
+      {user?.role === 'admin' && (
+        <div className="grid md:grid-cols-2 gap-6">
+          <DocsChangeDetector />
+          <DocSummarizer />
+        </div>
+      )}
 
       {/* Documentation Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
