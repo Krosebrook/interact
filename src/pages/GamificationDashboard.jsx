@@ -68,6 +68,8 @@ import SocialFeedSection from '../components/gamification/SocialFeedSection';
 import PersonalizedRecommendationsEngine from '../components/gamification/PersonalizedRecommendationsEngine';
 import TailoredLeaderboardFormats from '../components/gamification/TailoredLeaderboardFormats';
 import PersonalizedGamificationTips from '../components/gamification/PersonalizedGamificationTips';
+import SeasonalEventsManager from '../components/gamification/SeasonalEventsManager';
+import TeamTournamentBracket from '../components/gamification/TeamTournamentBracket';
 import RedemptionHistory from '../components/gamification/RedemptionHistory';
 import RewardsRedemptionSection from '../components/gamification/RewardsRedemptionSection';
 import TierStatusDisplay from '../components/gamification/TierStatusDisplay';

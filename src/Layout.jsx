@@ -120,9 +120,11 @@ export default function Layout({ children, currentPageName }) {
         { name: 'Milestones', icon: Cake, page: 'Milestones' },
         { name: 'Analytics', icon: BarChart3, page: 'Analytics' },
         { name: 'Audit Log', icon: Shield, page: 'AuditLog' },
-        { name: 'Integrations', icon: Plug, page: 'Integrations' },
+        { name: 'Integrations', icon: Plug, page: 'IntegrationsHub' },
+        { name: 'Real-Time Analytics', icon: BarChart3, page: 'RealTimeAnalytics' },
         { name: 'Project Plan', icon: LayoutDashboard, page: 'ProjectPlan' },
         { name: 'Documentation', icon: LayoutDashboard, page: 'Documentation' },
+        { name: 'Onboarding Hub', icon: User, page: 'OnboardingDashboard' },
         { name: 'Settings', icon: SettingsIcon, page: 'Settings' },
       ];
     }
