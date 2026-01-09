@@ -40,6 +40,7 @@ export default function ProfileHeader({ user, profile, userPoints, onUpdate }) {
   const queryClient = useQueryClient();
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState(null);
   const [editForm, setEditForm] = useState({
     display_name: profile?.display_name || user?.full_name || '',
     bio: profile?.bio || '',
@@ -101,6 +102,10 @@ export default function ProfileHeader({ user, profile, userPoints, onUpdate }) {
       return;
     }
 
+    // Create preview URL for immediate feedback
+    const objectUrl = URL.createObjectURL(file);
+    setPreviewUrl(objectUrl);
+
     setUploadingAvatar(true);
     try {
       // Compress image before upload for better performance
@@ -118,10 +123,22 @@ export default function ProfileHeader({ user, profile, userPoints, onUpdate }) {
 
       const { file_url } = await base44.integrations.Core.UploadFile({ file: compressedFile });
       setEditForm(prev => ({ ...prev, avatar_url: file_url }));
+      setPreviewUrl(null); // Clear preview after successful upload
+      URL.revokeObjectURL(objectUrl); // Clean up memory
       toast.success('Profile photo uploaded successfully');
     } catch (error) {
       console.error('Upload error:', error);
-      toast.error('Failed to upload photo. Please try again.');
+      setPreviewUrl(null); // Clear preview on error
+      URL.revokeObjectURL(objectUrl); // Clean up memory
+      
+      // Better error messages based on error type
+      if (error.message?.includes('Failed to compress')) {
+        toast.error('Image file is corrupted or invalid. Please try a different image.');
+      } else if (error.message?.includes('network') || error.message?.includes('timeout')) {
+        toast.error('Network error. Please check your connection and try again.');
+      } else {
+        toast.error('Failed to upload photo. Please try again.');
+      }
     } finally {
       setUploadingAvatar(false);
       e.target.value = ''; // Reset input for re-upload
@@ -271,12 +288,19 @@ export default function ProfileHeader({ user, profile, userPoints, onUpdate }) {
             {/* Avatar Upload */}
             <div className="flex items-center gap-4">
               <div className="relative">
-                {editForm.avatar_url ? (
-                  <img 
-                    src={editForm.avatar_url} 
-                    alt="Avatar"
-                    className="w-20 h-20 rounded-full object-cover border-2 border-slate-200"
-                  />
+                {(previewUrl || editForm.avatar_url) ? (
+                  <div className="relative">
+                    <img 
+                      src={previewUrl || editForm.avatar_url} 
+                      alt="Avatar"
+                      className="w-20 h-20 rounded-full object-cover border-2 border-slate-200"
+                    />
+                    {previewUrl && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-full">
+                        <Loader2 className="h-6 w-6 text-white animate-spin" />
+                      </div>
+                    )}
+                  </div>
                 ) : (
                   <div className="w-20 h-20 rounded-full bg-slate-100 flex items-center justify-center">
                     <User className="h-10 w-10 text-slate-500" />
