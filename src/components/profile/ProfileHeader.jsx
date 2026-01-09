@@ -31,9 +31,14 @@ import { motion } from 'framer-motion';
 import { toast } from 'sonner';
 import { LEVEL_THRESHOLDS } from '../lib/constants';
 
+// File upload constraints
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+
 export default function ProfileHeader({ user, profile, userPoints, onUpdate }) {
   const queryClient = useQueryClient();
   const [showEditDialog, setShowEditDialog] = useState(false);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [editForm, setEditForm] = useState({
     display_name: profile?.display_name || user?.full_name || '',
     bio: profile?.bio || '',
@@ -81,12 +86,32 @@ export default function ProfileHeader({ user, profile, userPoints, onUpdate }) {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    // Validate file type
+    if (!ALLOWED_FILE_TYPES.includes(file.type)) {
+      toast.error('Invalid file type. Please upload JPEG, PNG, or WebP images only.');
+      e.target.value = ''; // Reset input
+      return;
+    }
+
+    // Validate file size
+    if (file.size > MAX_FILE_SIZE) {
+      const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
+      toast.error(`File size (${sizeMB}MB) exceeds the 5MB limit. Please choose a smaller file.`);
+      e.target.value = ''; // Reset input
+      return;
+    }
+
+    setUploadingAvatar(true);
     try {
       const { file_url } = await base44.integrations.Core.UploadFile({ file });
       setEditForm(prev => ({ ...prev, avatar_url: file_url }));
-      toast.success('Photo uploaded');
-    } catch {
-      toast.error('Failed to upload photo');
+      toast.success('Profile photo uploaded successfully');
+    } catch (error) {
+      console.error('Upload error:', error);
+      toast.error('Failed to upload photo. Please try again.');
+    } finally {
+      setUploadingAvatar(false);
+      e.target.value = ''; // Reset input for re-upload
     }
   };
 
@@ -244,19 +269,30 @@ export default function ProfileHeader({ user, profile, userPoints, onUpdate }) {
                     <User className="h-10 w-10 text-slate-500" />
                   </div>
                 )}
-                <label className="absolute bottom-0 right-0 w-7 h-7 bg-int-orange text-white rounded-full flex items-center justify-center cursor-pointer hover:bg-[#C46322] transition-colors shadow-lg">
-                  <Camera className="h-4 w-4" />
+                <label className={`absolute bottom-0 right-0 w-7 h-7 ${uploadingAvatar ? 'bg-slate-400' : 'bg-int-orange hover:bg-[#C46322]'} text-white rounded-full flex items-center justify-center cursor-pointer transition-colors shadow-lg ${uploadingAvatar ? 'cursor-wait' : ''}`}>
+                  {uploadingAvatar ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Camera className="h-4 w-4" />
+                  )}
                   <input 
                     type="file" 
-                    accept="image/*" 
+                    accept="image/jpeg,image/jpg,image/png,image/webp" 
                     className="hidden" 
                     onChange={handleAvatarUpload}
+                    disabled={uploadingAvatar}
                   />
                 </label>
               </div>
               <div className="flex-1">
                 <p className="text-sm font-medium text-slate-700">Profile Photo</p>
-                <p className="text-xs text-slate-600">Upload a photo (max 10MB)</p>
+                <p className="text-xs text-slate-600">JPEG, PNG, or WebP (max 5MB)</p>
+                {uploadingAvatar && (
+                  <p className="text-xs text-blue-600 mt-1 flex items-center gap-1">
+                    <Loader2 className="h-3 w-3 animate-spin" />
+                    Uploading...
+                  </p>
+                )}
               </div>
             </div>
 
