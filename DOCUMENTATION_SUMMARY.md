@@ -38,7 +38,7 @@ This document provides a quick reference to the comprehensive documentation ecos
 6. **Awesome React** - Curated resource and library discovery
 
 **5 GitHub Agent Prompts:**
-1. **Security Vulnerability Remediation** - Fix 8 npm vulnerabilities
+1. **Security Vulnerability Remediation** - Originally for 8 npm vulnerabilities (now fixed), currently for 3 React Router XSS issues
 2. **Testing Infrastructure Setup** - Implement Vitest + RTL, achieve 70% coverage
 3. **TypeScript Migration Strategy** - Plan and execute gradual TS migration
 4. **Performance Optimization** - Code splitting, lazy loading, bundle optimization
