@@ -29,7 +29,7 @@ import {
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
-import { LEVEL_THRESHOLDS } from '../lib/constants';
+import { LEVEL_THRESHOLDS } from '@/lib/constants';
 import { compressImage, formatFileSize } from '@/lib/imageUtils';
 
 // File upload constraints
@@ -123,13 +123,9 @@ export default function ProfileHeader({ user, profile, userPoints, onUpdate }) {
 
       const { file_url } = await base44.integrations.Core.UploadFile({ file: compressedFile });
       setEditForm(prev => ({ ...prev, avatar_url: file_url }));
-      setPreviewUrl(null); // Clear preview after successful upload
-      URL.revokeObjectURL(objectUrl); // Clean up memory
       toast.success('Profile photo uploaded successfully');
     } catch (error) {
       console.error('Upload error:', error);
-      setPreviewUrl(null); // Clear preview on error
-      URL.revokeObjectURL(objectUrl); // Clean up memory
       
       // Better error messages based on error type
       if (error.message?.includes('Failed to compress')) {
@@ -140,6 +136,9 @@ export default function ProfileHeader({ user, profile, userPoints, onUpdate }) {
         toast.error('Failed to upload photo. Please try again.');
       }
     } finally {
+      // Clean up preview and memory
+      setPreviewUrl(null);
+      URL.revokeObjectURL(objectUrl);
       setUploadingAvatar(false);
       e.target.value = ''; // Reset input for re-upload
     }

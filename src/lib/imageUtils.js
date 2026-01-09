@@ -34,7 +34,7 @@ export async function compressImage(file, options = {}) {
           
           if (width > height) {
             width = maxWidth;
-            height = width / aspectRatio;
+            height = maxWidth / aspectRatio;
           } else {
             height = maxHeight;
             width = height * aspectRatio;
@@ -126,7 +126,7 @@ export async function getImageDimensions(file) {
  * @returns {string} - Formatted size (e.g., "2.5 MB")
  */
 export function formatFileSize(bytes) {
-  if (bytes === 0) return '0 Bytes';
+  if (!bytes || bytes === 0) return '0 Bytes';
   
   const k = 1024;
   const sizes = ['Bytes', 'KB', 'MB', 'GB'];
