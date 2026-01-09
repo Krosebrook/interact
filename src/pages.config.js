@@ -47,6 +47,8 @@ import TeamLeaderDashboard from './pages/TeamLeaderDashboard';
 import TeamPerformanceDashboard from './pages/TeamPerformanceDashboard';
 import Teams from './pages/Teams';
 import UserProfile from './pages/UserProfile';
+import RoleManagement from './pages/RoleManagement';
+import UserRoleAssignment from './pages/UserRoleAssignment';
 import __Layout from './Layout.jsx';
 
 
@@ -100,6 +102,8 @@ export const PAGES = {
     "TeamPerformanceDashboard": TeamPerformanceDashboard,
     "Teams": Teams,
     "UserProfile": UserProfile,
+    "RoleManagement": RoleManagement,
+    "UserRoleAssignment": UserRoleAssignment,
 }
 
 export const pagesConfig = {
