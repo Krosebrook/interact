@@ -25,15 +25,15 @@ Deno.serve(async (req) => {
     }
 
     const record = onboarding[0];
-    const completedSteps = events.filter(e => 
-      new Date(e.created_date) > new Date(record.start_date)
-    ).length;
+    const completedSteps = events?.filter(e => 
+      e.created_date && new Date(e.created_date) > new Date(record.start_date)
+    ).length || 0;
 
     // Get user's feature usage to understand their needs
     const featureEvents = await base44.entities.AnalyticsEvent.filter({
       user_email,
       event_type: 'feature_use'
-    });
+    }).catch(() => []);
 
     const featureUsage = {};
     featureEvents.forEach(e => {

@@ -23,14 +23,14 @@ export default function AchievementSystem({ userEmail }) {
   });
 
   const earnedBadgeIds = new Set(badges?.map(b => b.badge_id) || []);
-  const achievements = allBadges?.map(badge => ({
+  const achievements = (allBadges || []).map(badge => ({
     ...badge,
     earned: earnedBadgeIds.has(badge.id),
     earnedDate: badges?.find(b => b.badge_id === badge.id)?.awarded_date
-  })) || [];
+  }));
 
   const completedPaths = learningProgress?.filter(p => p.status === 'completed').length || 0;
-  const totalPaths = learningProgress?.length || 0;
+  const totalPaths = (learningProgress?.length || 0) || 1; // Prevent division by zero
 
   return (
     <Card>
@@ -57,7 +57,7 @@ export default function AchievementSystem({ userEmail }) {
 
         {/* Badge Grid */}
         <div className="grid grid-cols-3 gap-4">
-          {achievements.map((achievement) => {
+          {achievements.length > 0 ? achievements.map((achievement) => {
             const Icon = achievement.earned ? Award : Lock;
             return (
               <div
@@ -91,7 +91,7 @@ export default function AchievementSystem({ userEmail }) {
                 </div>
               </div>
             );
-          })}
+          }) : <p className="text-sm text-slate-500 col-span-3 text-center py-8">No badges earned yet. Complete learning paths to unlock achievements!</p>}
         </div>
 
         {/* Stats */}

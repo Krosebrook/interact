@@ -16,13 +16,15 @@ export default function AIAdminAssistant() {
 
   const assistantMutation = useMutation({
     mutationFn: async (action) => {
-      return await base44.functions.invoke('aiAdminAssistant', action);
+      const result = await base44.functions.invoke('aiAdminAssistant', action);
+      return result.data || result;
     },
     onSuccess: (data) => {
       setResponse(data);
       toast.success('Analysis complete');
+      setQuery(''); // Clear query after success
     },
-    onError: (error) => toast.error(error.message)
+    onError: (error) => toast.error(error.message || 'Failed to process request')
   });
 
   const quickActions = [

@@ -65,16 +65,16 @@ async function checkBurnoutRisk(base44) {
     }
   }
 
-  // Send notifications to managers
-  for (const user of atRisk) {
-    await base44.asServiceRole.entities.Notification.create({
+  // Send notifications to at-risk users
+  await Promise.all(atRisk.map(user =>
+    base44.asServiceRole.entities.Notification.create({
       user_email: user.email,
       type: 'system',
       title: 'Engagement Check-in',
       message: `We noticed you've been less active lately. Is everything okay? Your team is here to support you.`,
       priority: 'high'
-    });
-  }
+    })
+  ));
 
   return Response.json({ at_risk_count: atRisk.length, users: atRisk });
 }
@@ -97,16 +97,19 @@ async function onboardingIntervention(base44) {
         days_stuck: Math.floor(daysSinceStart),
         tasks_completed: record.tasks_completed || 0
       });
-
-      await base44.asServiceRole.entities.Notification.create({
-        user_email: record.user_email,
-        type: 'system',
-        title: 'Need help getting started?',
-        message: 'Our team is here to help you complete your onboarding. Would you like a quick walkthrough?',
-        priority: 'normal'
-      });
     }
   }
+
+  // Send all notifications in parallel
+  await Promise.all(needsHelp.map(user =>
+    base44.asServiceRole.entities.Notification.create({
+      user_email: user.email,
+      type: 'system',
+      title: 'Need help getting started?',
+      message: 'Our team is here to help you complete your onboarding. Would you like a quick walkthrough?',
+      priority: 'normal'
+    })
+  ));
 
   return Response.json({ intervention_count: needsHelp.length, users: needsHelp });
 }

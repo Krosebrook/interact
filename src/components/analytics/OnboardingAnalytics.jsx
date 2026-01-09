@@ -80,13 +80,16 @@ export default function OnboardingAnalytics() {
     };
   }, [onboardingRecords, onboardingEvents]);
 
-  if (!analytics) return null;
+  if (!analytics || analytics.total === 0) return null;
 
   const pieData = [
     { name: 'Completed', value: analytics.completed, color: '#10b981' },
     { name: 'In Progress', value: analytics.inProgress, color: '#f59e0b' },
     { name: 'Not Started', value: analytics.notStarted, color: '#94a3b8' }
   ];
+
+  // Filter out empty pie slices
+  const validPieData = pieData.filter(d => d.value > 0);
 
   return (
     <div className="space-y-6">
@@ -149,7 +152,7 @@ export default function OnboardingAnalytics() {
             <ResponsiveContainer width="100%" height={250}>
               <PieChart>
                 <Pie
-                  data={pieData}
+                  data={validPieData}
                   cx="50%"
                   cy="50%"
                   labelLine={false}
@@ -158,7 +161,7 @@ export default function OnboardingAnalytics() {
                   fill="#8884d8"
                   dataKey="value"
                 >
-                  {pieData.map((entry, index) => (
+                  {validPieData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
@@ -173,7 +176,7 @@ export default function OnboardingAnalytics() {
             <CardTitle>Completion Rate by Role</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            {analytics.roleCompletion.map(({ role, completionRate, total }) => (
+            {analytics.roleCompletion.length > 0 ? analytics.roleCompletion.map(({ role, completionRate, total }) => (
               <div key={role}>
                 <div className="flex justify-between text-sm mb-2">
                   <span className="font-medium capitalize">{role}</span>
@@ -181,7 +184,7 @@ export default function OnboardingAnalytics() {
                 </div>
                 <Progress value={parseFloat(completionRate)} className="h-2" />
               </div>
-            ))}
+            )) : <p className="text-sm text-slate-500">No role data available</p>}
           </CardContent>
         </Card>
       </div>
