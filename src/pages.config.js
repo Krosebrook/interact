@@ -19,6 +19,7 @@ import GamificationRulesAdmin from './pages/GamificationRulesAdmin';
 import GamificationSettings from './pages/GamificationSettings';
 import Home from './pages/Home';
 import Integrations from './pages/Integrations';
+import IntegrationsHub from './pages/IntegrationsHub';
 import Leaderboards from './pages/Leaderboards';
 import LearningDashboard from './pages/LearningDashboard';
 import LearningPath from './pages/LearningPath';
@@ -32,6 +33,7 @@ import PointStore from './pages/PointStore';
 import ProfileCustomization from './pages/ProfileCustomization';
 import ProjectPlan from './pages/ProjectPlan';
 import PublicProfile from './pages/PublicProfile';
+import RealTimeAnalytics from './pages/RealTimeAnalytics';
 import Recognition from './pages/Recognition';
 import RewardsAdmin from './pages/RewardsAdmin';
 import RewardsStore from './pages/RewardsStore';
@@ -50,8 +52,6 @@ import TeamPerformanceDashboard from './pages/TeamPerformanceDashboard';
 import Teams from './pages/Teams';
 import UserProfile from './pages/UserProfile';
 import UserRoleAssignment from './pages/UserRoleAssignment';
-import RealTimeAnalytics from './pages/RealTimeAnalytics';
-import IntegrationsHub from './pages/IntegrationsHub';
 import __Layout from './Layout.jsx';
 
 
@@ -77,6 +77,7 @@ export const PAGES = {
     "GamificationSettings": GamificationSettings,
     "Home": Home,
     "Integrations": Integrations,
+    "IntegrationsHub": IntegrationsHub,
     "Leaderboards": Leaderboards,
     "LearningDashboard": LearningDashboard,
     "LearningPath": LearningPath,
@@ -90,6 +91,7 @@ export const PAGES = {
     "ProfileCustomization": ProfileCustomization,
     "ProjectPlan": ProjectPlan,
     "PublicProfile": PublicProfile,
+    "RealTimeAnalytics": RealTimeAnalytics,
     "Recognition": Recognition,
     "RewardsAdmin": RewardsAdmin,
     "RewardsStore": RewardsStore,
@@ -108,8 +110,6 @@ export const PAGES = {
     "Teams": Teams,
     "UserProfile": UserProfile,
     "UserRoleAssignment": UserRoleAssignment,
-    "RealTimeAnalytics": RealTimeAnalytics,
-    "IntegrationsHub": IntegrationsHub,
 }
 
 export const pagesConfig = {

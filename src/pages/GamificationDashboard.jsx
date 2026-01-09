@@ -70,6 +70,8 @@ import TailoredLeaderboardFormats from '../components/gamification/TailoredLeade
 import PersonalizedGamificationTips from '../components/gamification/PersonalizedGamificationTips';
 import SeasonalEventsManager from '../components/gamification/SeasonalEventsManager';
 import TeamTournamentBracket from '../components/gamification/TeamTournamentBracket';
+import AchievementSystem from '../components/gamification/AchievementSystem';
+import BuddySystemManager from '../components/social/BuddySystemManager';
 import RedemptionHistory from '../components/gamification/RedemptionHistory';
 import RewardsRedemptionSection from '../components/gamification/RewardsRedemptionSection';
 import TierStatusDisplay from '../components/gamification/TierStatusDisplay';
