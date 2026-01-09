@@ -13,6 +13,7 @@ import EventWizard from './pages/EventWizard';
 import FacilitatorDashboard from './pages/FacilitatorDashboard';
 import FacilitatorView from './pages/FacilitatorView';
 import Gamification from './pages/Gamification';
+import GamificationAdmin from './pages/GamificationAdmin';
 import GamificationDashboard from './pages/GamificationDashboard';
 import GamificationRulesAdmin from './pages/GamificationRulesAdmin';
 import GamificationSettings from './pages/GamificationSettings';
@@ -45,7 +46,7 @@ import TeamLeaderDashboard from './pages/TeamLeaderDashboard';
 import TeamPerformanceDashboard from './pages/TeamPerformanceDashboard';
 import Teams from './pages/Teams';
 import UserProfile from './pages/UserProfile';
-import GamificationAdmin from './pages/GamificationAdmin';
+import SocialHub from './pages/SocialHub';
 import __Layout from './Layout.jsx';
 
 
@@ -65,6 +66,7 @@ export const PAGES = {
     "FacilitatorDashboard": FacilitatorDashboard,
     "FacilitatorView": FacilitatorView,
     "Gamification": Gamification,
+    "GamificationAdmin": GamificationAdmin,
     "GamificationDashboard": GamificationDashboard,
     "GamificationRulesAdmin": GamificationRulesAdmin,
     "GamificationSettings": GamificationSettings,
@@ -97,7 +99,7 @@ export const PAGES = {
     "TeamPerformanceDashboard": TeamPerformanceDashboard,
     "Teams": Teams,
     "UserProfile": UserProfile,
-    "GamificationAdmin": GamificationAdmin,
+    "SocialHub": SocialHub,
 }
 
 export const pagesConfig = {

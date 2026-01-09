@@ -11,6 +11,7 @@ import EngagementAnalytics from '../components/admin/gamification/EngagementAnal
 import SkillDevelopmentTrends from '../components/admin/gamification/SkillDevelopmentTrends';
 import ContentIntegrationManager from '../components/admin/gamification/ContentIntegrationManager';
 import AIContentGenerator from '../components/admin/gamification/AIContentGenerator';
+import AIRuleOptimizer from '../components/admin/gamification/AIRuleOptimizer';
 import { useGamificationStats } from '../components/admin/gamification/QuickStatsLoader';
 
 export default function GamificationAdmin() {
@@ -90,7 +91,7 @@ export default function GamificationAdmin() {
 
       {/* Main Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 lg:grid-cols-7">
+        <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 lg:grid-cols-8">
           <TabsTrigger value="overview" className="gap-2">
             <Users className="h-4 w-4" />
             Overview
@@ -102,6 +103,10 @@ export default function GamificationAdmin() {
           <TabsTrigger value="rules" className="gap-2">
             <Settings className="h-4 w-4" />
             Rules
+          </TabsTrigger>
+          <TabsTrigger value="ai-optimizer" className="gap-2">
+            <Sparkles className="h-4 w-4" />
+            AI Rules
           </TabsTrigger>
           <TabsTrigger value="analytics" className="gap-2">
             <TrendingUp className="h-4 w-4" />
@@ -131,6 +136,10 @@ export default function GamificationAdmin() {
 
         <TabsContent value="rules" className="mt-6">
           <GamificationRulesConfig />
+        </TabsContent>
+
+        <TabsContent value="ai-optimizer" className="mt-6">
+          <AIRuleOptimizer />
         </TabsContent>
 
         <TabsContent value="analytics" className="mt-6">
