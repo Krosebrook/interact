@@ -24,6 +24,7 @@ import LearningDashboard from './pages/LearningDashboard';
 import LearningPath from './pages/LearningPath';
 import Milestones from './pages/Milestones';
 import NewEmployeeOnboarding from './pages/NewEmployeeOnboarding';
+import OnboardingDashboard from './pages/OnboardingDashboard';
 import OnboardingHub from './pages/OnboardingHub';
 import ParticipantEvent from './pages/ParticipantEvent';
 import ParticipantPortal from './pages/ParticipantPortal';
@@ -34,6 +35,7 @@ import PublicProfile from './pages/PublicProfile';
 import Recognition from './pages/Recognition';
 import RewardsAdmin from './pages/RewardsAdmin';
 import RewardsStore from './pages/RewardsStore';
+import RoleManagement from './pages/RoleManagement';
 import RoleSelection from './pages/RoleSelection';
 import RoleSetup from './pages/RoleSetup';
 import Settings from './pages/Settings';
@@ -47,9 +49,8 @@ import TeamLeaderDashboard from './pages/TeamLeaderDashboard';
 import TeamPerformanceDashboard from './pages/TeamPerformanceDashboard';
 import Teams from './pages/Teams';
 import UserProfile from './pages/UserProfile';
-import RoleManagement from './pages/RoleManagement';
 import UserRoleAssignment from './pages/UserRoleAssignment';
-import OnboardingDashboard from './pages/OnboardingDashboard';
+import RealTimeAnalytics from './pages/RealTimeAnalytics';
 import __Layout from './Layout.jsx';
 
 
@@ -80,6 +81,7 @@ export const PAGES = {
     "LearningPath": LearningPath,
     "Milestones": Milestones,
     "NewEmployeeOnboarding": NewEmployeeOnboarding,
+    "OnboardingDashboard": OnboardingDashboard,
     "OnboardingHub": OnboardingHub,
     "ParticipantEvent": ParticipantEvent,
     "ParticipantPortal": ParticipantPortal,
@@ -90,6 +92,7 @@ export const PAGES = {
     "Recognition": Recognition,
     "RewardsAdmin": RewardsAdmin,
     "RewardsStore": RewardsStore,
+    "RoleManagement": RoleManagement,
     "RoleSelection": RoleSelection,
     "RoleSetup": RoleSetup,
     "Settings": Settings,
@@ -103,9 +106,8 @@ export const PAGES = {
     "TeamPerformanceDashboard": TeamPerformanceDashboard,
     "Teams": Teams,
     "UserProfile": UserProfile,
-    "RoleManagement": RoleManagement,
     "UserRoleAssignment": UserRoleAssignment,
-    "OnboardingDashboard": OnboardingDashboard,
+    "RealTimeAnalytics": RealTimeAnalytics,
 }
 
 export const pagesConfig = {
