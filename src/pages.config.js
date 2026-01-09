@@ -49,6 +49,7 @@ import Teams from './pages/Teams';
 import UserProfile from './pages/UserProfile';
 import RoleManagement from './pages/RoleManagement';
 import UserRoleAssignment from './pages/UserRoleAssignment';
+import OnboardingDashboard from './pages/OnboardingDashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -104,6 +105,7 @@ export const PAGES = {
     "UserProfile": UserProfile,
     "RoleManagement": RoleManagement,
     "UserRoleAssignment": UserRoleAssignment,
+    "OnboardingDashboard": OnboardingDashboard,
 }
 
 export const pagesConfig = {
