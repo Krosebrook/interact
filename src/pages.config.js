@@ -51,6 +51,7 @@ import Teams from './pages/Teams';
 import UserProfile from './pages/UserProfile';
 import UserRoleAssignment from './pages/UserRoleAssignment';
 import RealTimeAnalytics from './pages/RealTimeAnalytics';
+import IntegrationsHub from './pages/IntegrationsHub';
 import __Layout from './Layout.jsx';
 
 
@@ -108,6 +109,7 @@ export const PAGES = {
     "UserProfile": UserProfile,
     "UserRoleAssignment": UserRoleAssignment,
     "RealTimeAnalytics": RealTimeAnalytics,
+    "IntegrationsHub": IntegrationsHub,
 }
 
 export const pagesConfig = {
