@@ -16,6 +16,7 @@ import QuickActionCard from '../components/common/QuickActionCard';
 import EventCalendarCard from '../components/events/EventCalendarCard';
 import AISuggestionsWidget from '../components/ai/AISuggestionsWidget';
 import ActivityGenerator from '../components/ai/ActivityGenerator';
+import PredictiveHealthDashboard from '../components/admin/PredictiveHealthDashboard';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import EmptyState from '../components/common/EmptyState';
 import { useEventActions } from '../components/events/useEventActions';
