@@ -1,4 +1,5 @@
 import AIEventPlanner from './pages/AIEventPlanner';
+import AIPersonalization from './pages/AIPersonalization';
 import Activities from './pages/Activities';
 import AdvancedGamificationAnalytics from './pages/AdvancedGamificationAnalytics';
 import Analytics from './pages/Analytics';
@@ -52,12 +53,13 @@ import TeamPerformanceDashboard from './pages/TeamPerformanceDashboard';
 import Teams from './pages/Teams';
 import UserProfile from './pages/UserProfile';
 import UserRoleAssignment from './pages/UserRoleAssignment';
-import AIPersonalization from './pages/AIPersonalization';
+import KnowledgeHub from './pages/KnowledgeHub';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
     "AIEventPlanner": AIEventPlanner,
+    "AIPersonalization": AIPersonalization,
     "Activities": Activities,
     "AdvancedGamificationAnalytics": AdvancedGamificationAnalytics,
     "Analytics": Analytics,
@@ -111,7 +113,7 @@ export const PAGES = {
     "Teams": Teams,
     "UserProfile": UserProfile,
     "UserRoleAssignment": UserRoleAssignment,
-    "AIPersonalization": AIPersonalization,
+    "KnowledgeHub": KnowledgeHub,
 }
 
 export const pagesConfig = {
