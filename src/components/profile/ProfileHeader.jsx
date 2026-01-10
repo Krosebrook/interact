@@ -29,8 +29,8 @@ import {
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
-import { LEVEL_THRESHOLDS } from '@/lib/constants';
-import { compressImage, formatFileSize } from '@/lib/imageUtils';
+import { LEVEL_THRESHOLDS } from '@/components/lib/constants';
+import { compressImage, formatFileSize } from '@/components/lib/imageUtils';
 
 // File upload constraints
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
