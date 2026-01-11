@@ -38,7 +38,8 @@ This directory contains context-engineered prompts for GitHub Copilot agents to 
 **File:** `agent-cognitive-loop.md`  
 **Purpose:** Structured reasoning framework for autonomous agents  
 **Timeline:** Continuous (meta-framework)  
-**Scope:** 6-phase cognitive loop for task analysis, decision-making, and execution
+**Scope:** 6-phase cognitive loop for task analysis, decision-making, and execution  
+**Example:** See `COGNITIVE_LOOP_EXAMPLE.md` for a detailed walkthrough
 
 ## How to Use
 
