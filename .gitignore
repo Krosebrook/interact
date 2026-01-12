@@ -27,4 +27,8 @@ dist-ssr
 *.sln
 *.sw?
 
+# Test coverage
+coverage
+*.lcov
+
 .env
