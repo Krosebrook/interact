@@ -92,7 +92,7 @@ export default function UserTypeManager() {
   const unassignedCount = users.filter(u => !u.user_type && u.role !== 'admin').length;
 
   return (
-    <Card className="border-0 shadow-lg">
+    <Card className="border-0 shadow-lg" data-b44-sync="true" data-feature="admin" data-component="usertypemanager">
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>

@@ -30,7 +30,7 @@ export default function PreEventAssistant({ eventId }) {
 
   if (isLoading) {
     return (
-      <Card className="p-6 border-0 shadow-lg">
+      <Card className="p-6 border-0 shadow-lg" data-b44-sync="true" data-feature="facilitator" data-component="preeventassistant">
         <div className="flex items-center gap-3 text-indigo-600">
           <Loader2 className="h-5 w-5 animate-spin" />
           <span>AI is preparing your facilitation guide...</span>

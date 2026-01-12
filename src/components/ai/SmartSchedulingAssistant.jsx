@@ -158,7 +158,7 @@ Provide:
   };
 
   return (
-    <div className="space-y-6">
+    <div data-b44-sync="true" data-feature="ai" data-component="smartschedulingassistant" className="space-y-6">
       {/* Control Panel */}
       <Card className="border-2 border-int-orange/20">
         <CardHeader className="bg-gradient-to-r from-int-orange/10 to-transparent">

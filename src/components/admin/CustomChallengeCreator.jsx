@@ -57,7 +57,7 @@ export default function CustomChallengeCreator() {
   });
 
   return (
-    <Card>
+    <Card data-b44-sync="true" data-feature="admin" data-component="customchallengecreator">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Target className="h-5 w-5 text-purple-600" />

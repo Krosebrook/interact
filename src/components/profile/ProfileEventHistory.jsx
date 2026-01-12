@@ -96,7 +96,7 @@ export default function ProfileEventHistory({ userEmail }) {
   const getActivity = (activityId) => activities.find(a => a.id === activityId);
 
   return (
-    <Card className="border-0 shadow-lg">
+    <Card className="border-0 shadow-lg" data-b44-sync="true" data-feature="profile" data-component="profileeventhistory">
       <CardHeader>
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <CardTitle className="flex items-center gap-2">

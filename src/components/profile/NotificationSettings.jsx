@@ -49,7 +49,7 @@ export default function NotificationSettings({ profile, onSave }) {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-b44-sync="true" data-feature="profile" data-component="notificationsettings">
       {/* Notification Channels */}
       <Card>
         <CardHeader>

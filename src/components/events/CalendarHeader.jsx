@@ -19,7 +19,7 @@ export default function CalendarHeader({
       title="Event Calendar" 
       description="Schedule and manage your team activities"
     >
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-2" data-b44-sync="true" data-feature="events" data-component="calendarheader">
         <Button
           variant="outline"
           onClick={onBulkSchedule}

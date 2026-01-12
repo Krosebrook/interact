@@ -92,7 +92,7 @@ export default function GoogleCalendarActions({ eventId, onImportComplete }) {
   };
 
   return (
-    <div className="flex gap-2">
+    <div className="flex gap-2" data-b44-sync="true" data-feature="events" data-component="googlecalendaractions">
       {eventId && (
         <Button
           variant="outline"

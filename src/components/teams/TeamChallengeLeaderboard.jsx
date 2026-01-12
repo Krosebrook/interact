@@ -45,7 +45,7 @@ export default function TeamChallengeLeaderboard({ challengeId }) {
   }).sort((a, b) => b.totalPoints - a.totalPoints);
 
   return (
-    <Card className="border-purple-200">
+    <Card className="border-purple-200" data-b44-sync="true" data-feature="teams" data-component="teamchallengeleaderboard">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Trophy className="h-5 w-5 text-amber-600" />

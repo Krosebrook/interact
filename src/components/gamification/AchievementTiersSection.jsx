@@ -74,7 +74,7 @@ export default function AchievementTiersSection({ userEmail, userPoints }) {
   };
 
   return (
-    <div className="space-y-6">
+    <div data-b44-sync="true" data-feature="gamification" data-component="achievementtierssection" className="space-y-6">
       {/* Current Tier Card */}
       <Card className="overflow-hidden border-2 border-amber-300 bg-gradient-to-br from-amber-50 to-yellow-50">
         <div className="h-2 bg-gradient-to-r from-amber-400 via-yellow-500 to-orange-500" />

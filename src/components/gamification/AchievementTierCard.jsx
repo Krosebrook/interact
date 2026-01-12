@@ -31,7 +31,7 @@ export default function AchievementTierCard({
 
   if (compact) {
     return (
-      <div className={`flex items-center gap-3 p-3 rounded-xl ${isCurrentTier ? style.bg : 'bg-slate-50'} ${style.border} border ${!isUnlocked && 'opacity-50'}`}>
+      <div data-b44-sync="true" data-feature="gamification" data-component="achievementtiercard" className={`flex items-center gap-3 p-3 rounded-xl ${isCurrentTier ? style.bg : 'bg-slate-50'} ${style.border} border ${!isUnlocked && 'opacity-50'}`}>
         <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${style.color} flex items-center justify-center text-white shadow-md`}>
           <span className="text-lg">{tier.tier_icon}</span>
         </div>

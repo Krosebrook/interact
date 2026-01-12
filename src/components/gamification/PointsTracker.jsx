@@ -18,7 +18,7 @@ export default function PointsTracker({ userEmail, compact = false }) {
 
   if (isLoading) {
     return (
-      <Card className="p-4 animate-pulse">
+      <Card data-b44-sync="true" data-feature="gamification" data-component="pointstracker" className="p-4 animate-pulse">
         <div className="h-20 bg-slate-200 rounded"></div>
       </Card>
     );

@@ -164,7 +164,7 @@ export default function ProfilePreferencesEditor({ profile, onSave, onCancel }) 
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-b44-sync="true" data-feature="profile" data-component="profilepreferenceseditor">
       {/* Basic Info */}
       <Card className="p-6">
         <h3 className="font-bold text-lg mb-4">Basic Information</h3>

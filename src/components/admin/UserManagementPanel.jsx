@@ -48,7 +48,7 @@ export default function UserManagementPanel({ currentUser }) {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-b44-sync="true" data-feature="admin" data-component="usermanagementpanel">
       {/* Pending Invitations */}
       <Card>
         <CardHeader>

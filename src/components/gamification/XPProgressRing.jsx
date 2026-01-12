@@ -37,7 +37,7 @@ export default function XPProgressRing({
   const tierConfig = getLevelTier(level);
 
   return (
-    <div className="relative inline-flex flex-col items-center">
+    <div data-b44-sync="true" data-feature="gamification" data-component="xpprogressring" className="relative inline-flex flex-col items-center">
       {/* Ring Container */}
       <div 
         className={`relative shadow-lg ${tierConfig.glow}`}

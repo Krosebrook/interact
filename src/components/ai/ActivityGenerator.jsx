@@ -177,7 +177,7 @@ Make it practical for remote teams and achievable within the time limit.`;
   };
 
   return (
-    <Dialog open={open} onOpenChange={handleClose}>
+    <Dialog data-b44-sync="true" data-feature="ai" data-component="activitygenerator" open={open} onOpenChange={handleClose}>
       <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-2xl">

@@ -69,7 +69,7 @@ export default function AIGamificationEngine({ team, selectedUser }) {
   });
 
   return (
-    <Card>
+    <Card data-b44-sync="true" data-feature="gamification" data-component="aigamificationengine">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Sparkles className="h-5 w-5 text-purple-600" />

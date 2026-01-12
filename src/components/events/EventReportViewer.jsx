@@ -49,7 +49,7 @@ export default function EventReportViewer({ eventId, eventTitle }) {
         {loading ? 'Generating...' : 'View Report'}
       </button>
 
-      <Dialog open={open} onOpenChange={setOpen}>
+      <Dialog open={open} onOpenChange={setOpen} data-b44-sync="true" data-feature="events" data-component="eventreportviewer">
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <div className="flex items-center justify-between">

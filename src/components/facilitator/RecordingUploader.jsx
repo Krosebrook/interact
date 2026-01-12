@@ -98,7 +98,7 @@ export default function RecordingUploader({ eventId, eventTitle, userEmail }) {
   };
 
   return (
-    <Card className="border-0 shadow-lg">
+    <Card className="border-0 shadow-lg" data-b44-sync="true" data-feature="facilitator" data-component="recordinguploader">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Video className="h-5 w-5 text-int-orange" />

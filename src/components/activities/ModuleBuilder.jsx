@@ -230,7 +230,7 @@ Return the module IDs in the optimal order with reasoning.`,
   const totalDuration = selectedModules.reduce((sum, m) => sum + (m.duration_minutes || 0), 0);
 
   return (
-    <Dialog open={open} onOpenChange={handleClose}>
+    <Dialog data-b44-sync="true" data-feature="activities" data-component="modulebuilder" open={open} onOpenChange={handleClose}>
       <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-2xl">Build Custom Activity from Modules</DialogTitle>

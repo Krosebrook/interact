@@ -96,7 +96,7 @@ export default function TeamVsTeamLeaderboard({ userTeamId }) {
   const topTeam = teamStats[0];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-b44-sync="true" data-feature="teams" data-component="teamvsteamleaderboard">
       {/* Header */}
       <Card className="overflow-hidden border-2 border-int-navy/20">
         <div className="bg-gradient-to-r from-int-navy via-blue-800 to-int-navy p-6 text-white">

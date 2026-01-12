@@ -169,6 +169,9 @@ Provide analysis as JSON:
 
     return (
       <Card key={item.id} className={`transition-all ${
+        data-b44-sync="true"
+        data-feature="recognition"
+        data-component="moderationqueue"
         item.status === 'flagged' ? 'border-red-200 bg-red-50/50' : ''
       }`}>
         <CardContent className="p-4">

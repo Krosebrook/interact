@@ -65,7 +65,7 @@ export default function TieredAchievementSystem({ userEmail }) {
   const CurrentTierIcon = TIER_CONFIG[currentTier].icon;
 
   return (
-    <div className="space-y-6">
+    <div data-b44-sync="true" data-feature="gamification" data-component="tieredachievementsystem" className="space-y-6">
       {/* Current Tier Display */}
       <Card className={`bg-gradient-to-br ${TIER_CONFIG[currentTier].color} border-0`}>
         <CardContent className="pt-6">

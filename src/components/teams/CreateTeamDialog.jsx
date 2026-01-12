@@ -37,7 +37,7 @@ export default function CreateTeamDialog({
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={onOpenChange} data-b44-sync="true" data-feature="teams" data-component="createteamdialog">
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Create New Team</DialogTitle>

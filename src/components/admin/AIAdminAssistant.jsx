@@ -55,7 +55,7 @@ export default function AIAdminAssistant() {
   ];
 
   return (
-    <Card>
+    <Card data-b44-sync="true" data-feature="admin" data-component="aiadminassistant">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Sparkles className="h-5 w-5 text-purple-600" />

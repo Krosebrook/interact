@@ -45,7 +45,7 @@ export default function GoalsCustomizer({ userEmail, currentGoals = {}, userPoin
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-b44-sync="true" data-feature="profile" data-component="goalscustomizer">
       {/* Current Progress */}
       <Card className="bg-gradient-to-br from-emerald-50 to-teal-50 border-emerald-200">
         <CardContent className="py-6">

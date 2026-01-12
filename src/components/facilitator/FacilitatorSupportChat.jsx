@@ -63,6 +63,9 @@ Provide practical, actionable advice for facilitators. Be concise, supportive, a
 
   return (
     <motion.div
+      data-b44-sync="true"
+      data-feature="facilitator"
+      data-component="facilitatorsupportchat"
       initial={{ x: 400, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       exit={{ x: 400, opacity: 0 }}

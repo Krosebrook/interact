@@ -97,7 +97,7 @@ export default function SocialImpactLayer({ userEmail }) {
   const availablePoints = userPoints?.[0]?.total_points || 0;
 
   return (
-    <div className="space-y-6">
+    <div data-b44-sync="true" data-feature="gamification" data-component="socialimpactlayer" className="space-y-6">
       {/* My Impact Summary */}
       <Card className="bg-gradient-to-br from-pink-50 to-rose-50 border-pink-200">
         <CardContent className="pt-6">

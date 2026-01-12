@@ -94,7 +94,7 @@ For each recommendation, explain why it's a good fit.`,
   });
 
   return (
-    <Card className="border-0 shadow-lg">
+    <Card data-b44-sync="true" data-feature="ai" data-component="personalizedrecommendations" className="border-0 shadow-lg">
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle className="flex items-center gap-2">
           <Sparkles className="h-5 w-5 text-int-orange" />

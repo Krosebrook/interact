@@ -74,7 +74,7 @@ export default function ProfileEventsDashboard({ userEmail }) {
     const isEventToday = isToday(eventDate);
 
     return (
-      <div className="p-4 bg-white border rounded-xl hover:shadow-md transition-shadow">
+      <div className="p-4 bg-white border rounded-xl hover:shadow-md transition-shadow" data-b44-sync="true" data-feature="profile" data-component="profileeventsdashboard">
         <div className="flex items-start justify-between gap-3">
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-1">

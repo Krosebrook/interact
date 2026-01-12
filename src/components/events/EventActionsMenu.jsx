@@ -84,7 +84,7 @@ export default function EventActionsMenu({
               Send Teams Recap
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
-              <div className="flex items-center">
+              <div className="flex items-center" data-b44-sync="true" data-feature="events" data-component="eventactionsmenu">
                 <FileText className="h-4 w-4 mr-2" />
                 <EventReportViewer eventId={event.id} eventTitle={event.title} />
               </div>

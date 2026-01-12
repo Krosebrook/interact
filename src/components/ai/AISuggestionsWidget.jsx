@@ -82,7 +82,7 @@ export default function AISuggestionsWidget({ onScheduleActivity, onGenerateCust
   // Conditional rendering after all hooks
   if (isLoading) {
     return (
-      <div className="glass-panel-solid">
+      <div data-b44-sync="true" data-feature="ai" data-component="aisuggestionswidget" className="glass-panel-solid">
         <div className="flex items-center gap-3 mb-4">
           <div className="p-2 rounded-lg bg-gradient-to-br from-purple-500/20 to-indigo-500/20">
             <Sparkles className="h-5 w-5 text-purple-600" />

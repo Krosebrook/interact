@@ -77,7 +77,7 @@ export default function EventMediaGallery({ eventId, canUpload = false }) {
   const videos = media.filter(m => m.media_type === 'video');
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-b44-sync="true" data-feature="events" data-component="eventmediagallery">
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-lg font-bold text-slate-900">Event Gallery</h3>
