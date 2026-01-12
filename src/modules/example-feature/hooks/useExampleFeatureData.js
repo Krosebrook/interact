@@ -49,14 +49,22 @@ export function useExampleFeatureData(options = {}) {
  * const { data: item } = useExampleFeatureItem('item-123');
  */
 export function useExampleFeatureItem(itemId, options = {}) {
+  const {
+    staleTime = 5 * 60 * 1000, // 5 minutes
+    enabled = !!itemId,
+    ...restOptions
+  } = options;
+
   return useQuery({
     queryKey: ['example-feature-item', itemId],
     queryFn: async () => {
       if (!itemId) throw new Error('Item ID is required');
       return await exampleFeatureService.fetchItemById(itemId);
     },
-    enabled: !!itemId,
-    staleTime: 5 * 60 * 1000,
-    ...options
+    enabled,
+    staleTime,
+    retry: 2,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+    ...restOptions
   });
 }

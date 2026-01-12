@@ -27,11 +27,21 @@ class ExampleFeatureService {
    */
   async fetchData() {
     try {
-      // Example: Using Base44 entities
-      // Uncomment and modify based on actual entity structure
+      // Example: Using Base44 entities (common patterns in this codebase)
+      // Replace 'ExampleFeature' with your actual entity name
+      // 
+      // Fetching all items:
       // const data = await base44.entities.ExampleFeature.filter({});
+      // 
+      // Filtering by status:
+      // const data = await base44.entities.Event.filter({ status: 'active' });
+      // 
+      // Getting a single item:
+      // const item = await base44.entities.User.get(id);
+      // 
+      // See other services in src/components/hooks/ for more examples
       
-      // Mock data for demonstration
+      // Mock data for demonstration - replace with actual Base44 calls
       const mockData = {
         status: 'Active',
         lastUpdated: new Date().toISOString(),

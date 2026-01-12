@@ -151,6 +151,12 @@ export function sortFeatureItems(items = [], field = 'createdAt', direction = 'd
     if (field.includes('Date') || field.includes('At')) {
       const aDate = new Date(aVal).getTime();
       const bDate = new Date(bVal).getTime();
+      
+      // Validate dates before comparison
+      if (isNaN(aDate) && isNaN(bDate)) return 0;
+      if (isNaN(aDate)) return direction === 'asc' ? -1 : 1;
+      if (isNaN(bDate)) return direction === 'asc' ? 1 : -1;
+      
       return direction === 'asc' ? aDate - bDate : bDate - aDate;
     }
 
