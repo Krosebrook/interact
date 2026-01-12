@@ -241,7 +241,6 @@ export default function Dashboard() {
           open={showGenerator}
           onOpenChange={setShowGenerator}
           onActivityCreated={handleActivityCreated} />
-
       </div>
     </ErrorBoundary>
   );

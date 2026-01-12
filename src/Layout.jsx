@@ -33,6 +33,7 @@ import OnboardingProgress from './components/onboarding/OnboardingProgress';
 import OnboardingTrigger from './components/onboarding/OnboardingTrigger';
 import KeyboardShortcuts from './components/core/KeyboardShortcuts';
 import { useSessionTimeout } from './components/hooks/useSessionTimeout';
+import HelpButton from './components/onboarding/HelpButton';
 
 const HEADER_IMAGE = 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/691e3ae3bd4916f2e05ae35e/1b2b117bd_ChatGPTImageNov25202503_31_49PM.png';
 
@@ -233,12 +234,15 @@ export default function Layout({ children, currentPageName }) {
         {/* Global Keyboard Shortcuts */}
         <KeyboardShortcuts />
 
-      {/* Main Content */}
-      <main id="main-content" className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Contextual Help Button */}
+        <HelpButton pageContext={currentPageName} />
+
+        {/* Main Content */}
+        <main id="main-content" className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <ErrorBoundary>
           {children}
         </ErrorBoundary>
-      </main>
+        </main>
 
       {/* Footer with scenic image */}
       <footer 
