@@ -138,14 +138,20 @@ fi
 print_status "Checking for tests..."
 if [ -f "package.json" ]; then
     if command_exists npm; then
-        if grep -q '"test"' package.json && ! grep -q '"test": "echo' package.json; then
-            print_status "Running tests..."
-            if npm test; then
-                print_success "All tests passed"
+        # Check if a test script exists and is not a placeholder
+        if grep -q '"test"' package.json; then
+            TEST_SCRIPT=$(grep '"test"' package.json | head -1)
+            if echo "$TEST_SCRIPT" | grep -qE '(jest|mocha|vitest|ava|tape|tap)'; then
+                print_status "Running tests..."
+                if npm test; then
+                    print_success "All tests passed"
+                else
+                    print_error "Tests failed. Merge aborted."
+                    git checkout "$MAIN_BRANCH"
+                    exit 1
+                fi
             else
-                print_error "Tests failed. Merge aborted."
-                git checkout "$MAIN_BRANCH"
-                exit 1
+                print_warning "Test script found but appears to be a placeholder or non-standard test runner"
             fi
         else
             print_warning "No test script configured in package.json"

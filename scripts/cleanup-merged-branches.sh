@@ -77,7 +77,10 @@ echo "$MERGED_BRANCHES"
 echo ""
 
 # Count branches
-BRANCH_COUNT=$(echo "$MERGED_BRANCHES" | wc -l)
+BRANCH_COUNT=0
+if [ -n "$MERGED_BRANCHES" ]; then
+    BRANCH_COUNT=$(echo "$MERGED_BRANCHES" | grep -v '^[[:space:]]*$' | wc -l)
+fi
 print_status "Found $BRANCH_COUNT merged branch(es)"
 echo ""
 
@@ -128,7 +131,10 @@ echo "$REMOTE_MERGED"
 echo ""
 
 # Count remote branches
-REMOTE_COUNT=$(echo "$REMOTE_MERGED" | wc -l)
+REMOTE_COUNT=0
+if [ -n "$REMOTE_MERGED" ]; then
+    REMOTE_COUNT=$(echo "$REMOTE_MERGED" | grep -v '^[[:space:]]*$' | wc -l)
+fi
 print_status "Found $REMOTE_COUNT merged remote branch(es)"
 echo ""
 
