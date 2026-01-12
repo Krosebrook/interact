@@ -23,7 +23,7 @@ export default function SocialFeedSection({ userEmail, limit = 10 }) {
   };
 
   if (isLoading) {
-    return <LoadingSpinner message="Loading social feed..." />;
+    return <LoadingSpinner data-b44-sync="true" data-feature="gamification" data-component="socialfeedsection" message="Loading social feed..." />;
   }
 
   return (

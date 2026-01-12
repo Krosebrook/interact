@@ -105,7 +105,7 @@ export default function ReminderPreferences({ eventId, seriesId, userEmail, even
   };
 
   return (
-    <Card className="p-4">
+    <Card className="p-4" data-b44-sync="true" data-feature="events" data-component="reminderpreferences">
       <div className="flex items-center gap-2 mb-4">
         <Bell className="h-5 w-5 text-int-orange" />
         <h3 className="font-semibold">Reminder Preferences</h3>

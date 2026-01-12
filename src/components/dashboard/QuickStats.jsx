@@ -12,7 +12,7 @@ export default function QuickStats({ stats, icon: Icon, color = 'indigo' }) {
   };
 
   return (
-    <Card>
+    <Card data-b44-sync="true" data-feature="dashboard" data-component="quickstats">
       <CardHeader className="flex flex-row items-center justify-between pb-2">
         <CardTitle className="text-sm font-medium">{stats.title}</CardTitle>
         {Icon && <Icon className={`h-4 w-4 ${colorClasses[color]}`} />}

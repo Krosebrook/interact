@@ -33,7 +33,7 @@ export default function AchievementSystem({ userEmail }) {
   const totalPaths = (learningProgress?.length || 0) || 1; // Prevent division by zero
 
   return (
-    <Card>
+    <Card data-b44-sync="true" data-feature="gamification" data-component="achievementsystem">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Trophy className="h-5 w-5 text-amber-600" />

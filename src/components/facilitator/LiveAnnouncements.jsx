@@ -74,7 +74,7 @@ export default function LiveAnnouncements({ eventId }) {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4" data-b44-sync="true" data-feature="facilitator" data-component="liveannouncements">
       <Card className="p-6">
         <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
           <Megaphone className="h-5 w-5" />

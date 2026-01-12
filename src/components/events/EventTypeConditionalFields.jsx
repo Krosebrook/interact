@@ -129,6 +129,9 @@ export default function EventTypeConditionalFields({
   return (
     <AnimatePresence mode="wait">
       <motion.div
+        data-b44-sync="true"
+        data-feature="events"
+        data-component="eventtypeconditionalfields"
         key={eventType}
         initial={{ opacity: 0, height: 0 }}
         animate={{ opacity: 1, height: 'auto' }}

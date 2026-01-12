@@ -24,7 +24,7 @@ export default function Leaderboard({ currentUserEmail, onViewProfile }) {
   const categoryConfig = LEADERBOARD_CATEGORIES[category];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-b44-sync="true" data-feature="leaderboard" data-component="leaderboard">
       {/* My Rank Card */}
       <MyRankCard 
         myRank={myRank}

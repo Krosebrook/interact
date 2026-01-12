@@ -1,0 +1,226 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Interact Platform - Base44 Data Models",
+  "version": "1.0.0",
+  "description": "Data model definitions for the Interact employee engagement platform",
+  "lastUpdated": "2026-01-12T05:19:59.002Z",
+  "entities": {
+    "Activity": {
+      "description": "Team activities and events",
+      "fields": ["id", "name", "type", "description", "duration", "created_at"]
+    },
+    "ActivityPreference": {
+      "description": "User activity preferences and favorites",
+      "fields": ["id", "user_email", "activity_id", "preference_score"]
+    },
+    "ActivityModule": {
+      "description": "Modular activity components",
+      "fields": ["id", "name", "category", "content"]
+    },
+    "ActivityFavorite": {
+      "description": "User favorited activities",
+      "fields": ["id", "user_email", "activity_id", "created_at"]
+    },
+    "Event": {
+      "description": "Scheduled team events",
+      "fields": ["id", "activity_id", "title", "start_time", "end_time", "status", "facilitator_email"]
+    },
+    "Participation": {
+      "description": "Event participation records",
+      "fields": ["id", "event_id", "participant_email", "status", "points_earned"]
+    },
+    "UserPoints": {
+      "description": "User gamification points",
+      "fields": ["id", "user_email", "total_points", "level", "streak_days"]
+    },
+    "Badge": {
+      "description": "Achievement badges",
+      "fields": ["id", "name", "description", "icon", "points_required"]
+    },
+    "BadgeAward": {
+      "description": "User badge awards",
+      "fields": ["id", "user_email", "badge_id", "awarded_at"]
+    },
+    "AIInsight": {
+      "description": "AI-generated insights for facilitators",
+      "fields": ["id", "type", "title", "content", "priority", "status"]
+    },
+    "AIRecommendation": {
+      "description": "Personalized AI recommendations",
+      "fields": ["id", "user_email", "recommendation_type", "content", "confidence"]
+    },
+    "AIGamificationSuggestion": {
+      "description": "AI-powered gamification suggestions",
+      "fields": ["id", "user_email", "suggestion_type", "details"]
+    },
+    "Team": {
+      "description": "Organization teams",
+      "fields": ["id", "name", "description", "created_at"]
+    },
+    "TeamMembership": {
+      "description": "Team membership records",
+      "fields": ["id", "team_id", "user_email", "role"]
+    },
+    "UserProfile": {
+      "description": "User profile information",
+      "fields": ["id", "email", "display_name", "avatar_url", "bio"]
+    },
+    "UserOnboarding": {
+      "description": "User onboarding progress",
+      "fields": ["id", "user_email", "status", "completed_steps", "progress"]
+    },
+    "Survey": {
+      "description": "Pulse surveys and feedback",
+      "fields": ["id", "title", "questions", "status", "created_at"]
+    },
+    "Recognition": {
+      "description": "Peer recognition and kudos",
+      "fields": ["id", "from_email", "to_email", "message", "points_awarded"]
+    },
+    "Notification": {
+      "description": "User notifications",
+      "fields": ["id", "user_email", "type", "message", "read", "created_at"]
+    },
+    "Channel": {
+      "description": "Team communication channels",
+      "fields": ["id", "name", "description", "type"]
+    },
+    "ChannelMessage": {
+      "description": "Channel messages",
+      "fields": ["id", "channel_id", "author_email", "content", "created_at"]
+    },
+    "StoreItem": {
+      "description": "Point store items and rewards",
+      "fields": ["id", "name", "description", "points_cost", "is_available"]
+    },
+    "UserInventory": {
+      "description": "User purchased items",
+      "fields": ["id", "user_email", "store_item_id", "purchased_at"]
+    },
+    "BuddyMatch": {
+      "description": "AI-powered buddy matching",
+      "fields": ["id", "user_email", "buddy_email", "match_score", "status"]
+    },
+    "AnalyticsEvent": {
+      "description": "Platform analytics events",
+      "fields": ["id", "event_type", "user_email", "metadata", "timestamp"]
+    },
+    "Announcement": {
+      "description": "Platform announcements",
+      "fields": ["id", "title", "content", "priority", "created_at"]
+    },
+    "AuditLog": {
+      "description": "System audit logs",
+      "fields": ["id", "action", "user_email", "details", "timestamp"]
+    },
+    "KnowledgeBase": {
+      "description": "Learning resources and knowledge base",
+      "fields": ["id", "title", "content", "category", "tags"]
+    },
+    "LearningPathProgress": {
+      "description": "User learning path progress",
+      "fields": ["id", "user_email", "path_id", "progress", "completed"]
+    },
+    "SkillTracking": {
+      "description": "User skill development tracking",
+      "fields": ["id", "user_email", "skill_name", "level", "last_practiced"]
+    },
+    "PersonalChallenge": {
+      "description": "Personal gamification challenges",
+      "fields": ["id", "user_email", "challenge_type", "target", "progress", "status"]
+    },
+    "AchievementTier": {
+      "description": "Achievement tier definitions",
+      "fields": ["id", "name", "level", "points_required", "benefits"]
+    },
+    "EventMessage": {
+      "description": "Event-specific messages",
+      "fields": ["id", "event_id", "author_email", "message", "created_at"]
+    },
+    "BulkEventSchedule": {
+      "description": "Bulk event scheduling records",
+      "fields": ["id", "created_by", "schedule_data", "status"]
+    },
+    "CharitableDonation": {
+      "description": "Charitable point donations",
+      "fields": ["id", "user_email", "charity_name", "points_donated", "created_at"]
+    },
+    "CharitableImpact": {
+      "description": "Charitable impact tracking",
+      "fields": ["id", "charity_name", "total_points", "impact_description"]
+    },
+    "UserAvatar": {
+      "description": "User avatar customization",
+      "fields": ["id", "user_email", "avatar_data", "updated_at"]
+    },
+    "ModuleCompletion": {
+      "description": "Learning module completion records",
+      "fields": ["id", "user_email", "module_id", "completed_at", "score"]
+    },
+    "TeamsConfig": {
+      "description": "Microsoft Teams integration configuration",
+      "fields": ["id", "team_id", "config_data", "enabled"]
+    }
+  },
+  "apiRoutes": {
+    "generatePersonalizedRecommendations": {
+      "description": "AI-powered personalized activity recommendations",
+      "method": "POST",
+      "entities": ["UserPoints", "Badge", "Reward", "Participation", "Event", "Activity"]
+    },
+    "aiContentGenerator": {
+      "description": "AI content generation for learning paths and quizzes",
+      "method": "POST",
+      "entities": ["KnowledgeBase", "LearningPathProgress"]
+    },
+    "generateAIInsights": {
+      "description": "Generate AI insights for facilitators",
+      "method": "POST",
+      "entities": ["Event", "Participation", "Activity", "AIInsight"]
+    },
+    "awardPoints": {
+      "description": "Award points to users for activities",
+      "method": "POST",
+      "entities": ["UserPoints", "AnalyticsEvent"]
+    },
+    "detectMilestones": {
+      "description": "Detect and award achievement milestones",
+      "method": "POST",
+      "entities": ["UserPoints", "Badge", "BadgeAward"]
+    },
+    "buddyMatchingAI": {
+      "description": "AI-powered buddy matching algorithm",
+      "method": "POST",
+      "entities": ["UserProfile", "BuddyMatch"]
+    },
+    "aggregateAnalytics": {
+      "description": "Aggregate platform analytics data",
+      "method": "POST",
+      "entities": ["AnalyticsEvent", "Event", "Participation"]
+    },
+    "aiGamificationRuleOptimizer": {
+      "description": "AI-optimized gamification rules",
+      "method": "POST",
+      "entities": ["UserPoints", "Badge", "PersonalChallenge"]
+    }
+  },
+  "modules": {
+    "example-feature": {
+      "description": "Example feature module demonstrating Base44 sync patterns",
+      "version": "1.0.0",
+      "components": [
+        {
+          "name": "ExampleFeatureCard",
+          "path": "src/modules/example-feature/components/ExampleFeatureCard.jsx",
+          "props": ["title", "description", "status", "children"],
+          "base44Sync": true
+        },
+        {
+          "name": "ExampleFeatureWidget",
+          "path": "src/modules/example-feature/components/ExampleFeatureWidget.jsx",
+          "base44Sync": true
+        }
+      ]
+    }
+  }
+}

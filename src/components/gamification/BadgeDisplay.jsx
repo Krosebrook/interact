@@ -32,7 +32,7 @@ export default function BadgeDisplay({ userEmail }) {
   };
 
   return (
-    <div className="space-y-6">
+    <div data-b44-sync="true" data-feature="gamification" data-component="badgedisplay" className="space-y-6">
       {/* Earned Badges */}
       {earnedBadges.length > 0 && (
         <div>

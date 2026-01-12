@@ -243,7 +243,7 @@ Provide:
   });
 
   return (
-    <div className="space-y-6">
+    <div data-b44-sync="true" data-feature="ai" data-component="eventhistoryanalyzer" className="space-y-6">
       {/* Header */}
       <Card className="border-2 border-emerald-200">
         <CardHeader className="bg-gradient-to-r from-emerald-50 to-teal-50">

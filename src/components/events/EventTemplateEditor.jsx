@@ -180,7 +180,7 @@ export default function EventTemplateEditor({ open, onOpenChange, template, onSa
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={onOpenChange} data-b44-sync="true" data-feature="events" data-component="eventtemplateeditor">
       <DialogContent className="max-w-3xl max-h-[90vh] overflow-hidden flex flex-col">
         <DialogHeader>
           <DialogTitle>{isEditing ? 'Edit Template' : 'Create Event Template'}</DialogTitle>

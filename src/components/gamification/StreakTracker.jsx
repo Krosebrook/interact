@@ -16,7 +16,7 @@ export default function StreakTracker({ streakDays = 0, eventsThisMonth = 0 }) {
   const nextMilestone = streakDays < 3 ? 3 : streakDays < 7 ? 7 : streakDays < 30 ? 30 : null;
 
   return (
-    <Card className="border-2 overflow-hidden">
+    <Card data-b44-sync="true" data-feature="gamification" data-component="streaktracker" className="border-2 overflow-hidden">
       <CardHeader className={`${status.bg} pb-3`}>
         <CardTitle className="flex items-center gap-2 text-lg">
           <Flame className={`h-5 w-5 ${status.color}`} />

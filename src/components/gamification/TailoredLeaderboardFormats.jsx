@@ -113,7 +113,7 @@ export default function TailoredLeaderboardFormats({ userPoints = [], currentUse
   const colors = colorClasses[segmentConfig.color];
 
   return (
-    <Card>
+    <Card data-b44-sync="true" data-feature="gamification" data-component="tailoredleaderboardformats">
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">

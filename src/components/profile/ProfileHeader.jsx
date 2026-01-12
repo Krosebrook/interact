@@ -147,6 +147,9 @@ export default function ProfileHeader({ user, profile, userPoints, onUpdate }) {
   return (
     <>
       <motion.div
+        data-b44-sync="true"
+        data-feature="profile"
+        data-component="profileheader"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
       >

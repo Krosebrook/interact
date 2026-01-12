@@ -190,7 +190,7 @@ export default function BulkEventScheduler({
   const validEvents = events.filter(e => e.activity_id && e.scheduled_date);
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={onOpenChange} data-b44-sync="true" data-feature="events" data-component="bulkeventscheduler">
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">

@@ -119,7 +119,7 @@ export default function SkillsInterestsSection({ profile, userEmail }) {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4" data-b44-sync="true" data-feature="profile" data-component="skillsinterestssection">
       {/* Current Skills */}
       <Card>
         <CardHeader>

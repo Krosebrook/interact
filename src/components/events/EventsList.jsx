@@ -30,7 +30,7 @@ export default function EventsList({
   // Loading skeleton
   if (isLoading) {
     return (
-      <div>
+      <div data-b44-sync="true" data-feature="events" data-component="eventslist">
         {title && <h2 className="text-2xl font-bold text-slate-900 mb-4">{title}</h2>}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[1, 2, 3].map(i => (

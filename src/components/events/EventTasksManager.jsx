@@ -69,7 +69,7 @@ export default function EventTasksManager({ tasks, onChange, availableUsers, aiS
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4" data-b44-sync="true" data-feature="events" data-component="eventtasksmanager">
       {/* AI Suggestions */}
       {aiSuggestions && aiSuggestions.length > 0 && (
         <Card className="p-4 bg-gradient-to-r from-purple-50 to-pink-50 border-purple-200">

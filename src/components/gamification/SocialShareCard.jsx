@@ -95,7 +95,7 @@ export function SocialShareDialog({
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog data-b44-sync="true" data-feature="gamification" data-component="socialsharecard" open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">

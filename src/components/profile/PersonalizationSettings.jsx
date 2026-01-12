@@ -72,7 +72,7 @@ export default function PersonalizationSettings({ profile, onSave }) {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-b44-sync="true" data-feature="profile" data-component="personalizationsettings">
       {/* AI Recommendations */}
       <Card>
         <CardHeader>

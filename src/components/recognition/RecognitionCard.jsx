@@ -38,9 +38,13 @@ export default function RecognitionCard({
   };
 
   return (
-    <Card className={`relative overflow-hidden transition-all hover:shadow-lg ${
-      recognition.is_featured ? 'ring-2 ring-amber-400 bg-gradient-to-br from-amber-50 to-white' : ''
-    }`}>
+    <Card 
+      data-b44-sync="true"
+      data-feature="recognition"
+      data-component="recognitioncard"
+      className={`relative overflow-hidden transition-all hover:shadow-lg ${
+        recognition.is_featured ? 'ring-2 ring-amber-400 bg-gradient-to-br from-amber-50 to-white' : ''
+      }`}>
       {/* Featured banner */}
       {recognition.is_featured && (
         <div className="absolute top-0 left-0 right-0 bg-gradient-to-r from-amber-400 to-yellow-400 text-white text-xs font-bold py-1 px-3 flex items-center gap-1">

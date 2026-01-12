@@ -139,7 +139,7 @@ export default function PersonalChallengesSection({ userEmail }) {
   const otherChallenges = activeChallenges.filter(c => !['daily', 'weekly'].includes(c.challenge_type));
 
   if (isLoading) {
-    return <LoadingSpinner message="Loading challenges..." />;
+    return <LoadingSpinner data-b44-sync="true" data-feature="gamification" data-component="personalchallengessection" message="Loading challenges..." />;
   }
 
   return (

@@ -62,7 +62,7 @@ export default function WidgetLayoutCustomizer({ currentLayout, onSave, isSaving
     .filter(Boolean);
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6" data-b44-sync="true" data-feature="profile" data-component="widgetlayoutcustomizer">
       {/* Available Widgets */}
       <Card>
         <CardHeader>

@@ -239,7 +239,7 @@ export default function GamificationAnalyticsDashboard() {
   const TrendIndicator = ({ value, suffix = '' }) => {
     if (value > 0) {
       return (
-        <span className="flex items-center text-emerald-600 text-sm font-medium">
+        <span data-b44-sync="true" data-feature="gamification" data-component="gamificationanalyticsdashboard" className="flex items-center text-emerald-600 text-sm font-medium">
           <ArrowUp className="h-3 w-3 mr-1" />+{value}{suffix}
         </span>
       );

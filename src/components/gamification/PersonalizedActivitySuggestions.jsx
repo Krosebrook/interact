@@ -106,7 +106,7 @@ Consider their engagement level, preferences, and what would challenge/motivate 
   if (!userPoints[0]) return null;
 
   return (
-    <Card className="border-2 border-int-orange/30 bg-gradient-to-br from-orange-50 to-slate-50">
+    <Card data-b44-sync="true" data-feature="gamification" data-component="personalizedactivitysuggestions" className="border-2 border-int-orange/30 bg-gradient-to-br from-orange-50 to-slate-50">
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">

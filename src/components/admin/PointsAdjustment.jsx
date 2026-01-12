@@ -61,7 +61,7 @@ export default function PointsAdjustment({ userEmail, currentPoints = 0, onSucce
   const projectedBalance = currentPoints + (type === 'penalty' ? -Math.abs(parseInt(amount) || 0) : Math.abs(parseInt(amount) || 0));
 
   return (
-    <Card>
+    <Card data-b44-sync="true" data-feature="admin" data-component="pointsadjustment">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-lg">
           <TrendingUp className="h-5 w-5 text-purple-600" />

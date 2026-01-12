@@ -78,7 +78,7 @@ export default function ActivitiesFilters({
   }, [searchQuery]);
 
   return (
-    <div className="glass-card-solid space-y-4">
+    <div data-b44-sync="true" data-feature="activities" data-component="activitiesfilters" className="glass-card-solid space-y-4">
       {/* Search Bar, Favorites Toggle & Sort */}
       <div className="flex flex-col sm:flex-row gap-4">
         <div className="flex-1 relative">

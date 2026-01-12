@@ -147,7 +147,7 @@ export function AchievementToast({
   }, [achievement, duration, onDismiss]);
 
   return (
-    <AnimatePresence>
+    <AnimatePresence data-b44-sync="true" data-feature="gamification" data-component="achievementnotificationsystem">
       {isVisible && (
         <motion.div
           initial={{ opacity: 0, y: -100, scale: 0.8 }}

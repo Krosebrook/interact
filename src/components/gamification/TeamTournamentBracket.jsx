@@ -29,7 +29,7 @@ export default function TeamTournamentBracket() {
   ) || [];
 
   return (
-    <Card className="border-purple-300 bg-gradient-to-br from-purple-50 to-indigo-50">
+    <Card data-b44-sync="true" data-feature="gamification" data-component="teamtournamentbracket" className="border-purple-300 bg-gradient-to-br from-purple-50 to-indigo-50">
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">

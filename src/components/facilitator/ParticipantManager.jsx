@@ -107,7 +107,7 @@ export default function ParticipantManager({ eventId }) {
   };
 
   return (
-    <Card className="border-0 shadow-lg">
+    <Card className="border-0 shadow-lg" data-b44-sync="true" data-feature="facilitator" data-component="participantmanager">
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">

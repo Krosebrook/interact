@@ -74,7 +74,7 @@ export default function RewardsRedemptionSection({ userEmail, userPoints }) {
 
   if (isLoading) {
     return (
-      <Card>
+      <Card data-b44-sync="true" data-feature="gamification" data-component="rewardsredemptionsection">
         <CardContent className="py-12">
           <LoadingSpinner />
         </CardContent>

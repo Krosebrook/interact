@@ -31,7 +31,7 @@ export default function PredictiveHealthDashboard() {
   };
 
   return (
-    <Card>
+    <Card data-b44-sync="true" data-feature="admin" data-component="predictivehealthdashboard">
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">

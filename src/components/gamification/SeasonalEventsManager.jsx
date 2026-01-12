@@ -43,7 +43,7 @@ export default function SeasonalEventsManager({ userEmail }) {
   const daysLeft = Math.ceil((new Date(activeEvent.end_date) - new Date()) / (1000 * 60 * 60 * 24));
 
   return (
-    <Card className="border-amber-300 bg-gradient-to-br from-amber-50 to-orange-50">
+    <Card data-b44-sync="true" data-feature="gamification" data-component="seasonaleventsmanager" className="border-amber-300 bg-gradient-to-br from-amber-50 to-orange-50">
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">

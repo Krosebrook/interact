@@ -42,7 +42,7 @@ const ActionButton = ({ icon: Icon, label, description, href, onClick, gradient,
   );
 
   if (href) {
-    return <Link to={href}>{content}</Link>;
+    return <Link data-b44-sync="true" data-feature="dashboard" data-component="quickactionspanel" to={href}>{content}</Link>;
   }
   return content;
 };

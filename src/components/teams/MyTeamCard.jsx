@@ -15,7 +15,7 @@ export default function MyTeamCard({
   const isLeader = team.team_leader_email === user?.email;
 
   return (
-    <Card className="border-2 border-int-orange bg-gradient-to-br from-orange-50 to-slate-50">
+    <Card className="border-2 border-int-orange bg-gradient-to-br from-orange-50 to-slate-50" data-b44-sync="true" data-feature="teams" data-component="myteamcard">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <span className="text-3xl">{team.team_avatar}</span>

@@ -88,7 +88,7 @@ export default function ProfileBadgesShowcase({ userEmail }) {
   }, [badges, userPoints]);
 
   return (
-    <Card className="border-0 shadow-lg">
+    <Card className="border-0 shadow-lg" data-b44-sync="true" data-feature="profile" data-component="profilebadgesshowcase">
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           <span className="flex items-center gap-2">

@@ -46,7 +46,7 @@ export default function SurveyManagement() {
   });
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-b44-sync="true" data-feature="admin" data-component="surveymanagement">
       <div className="flex justify-between items-center">
         <div>
           <h2 className="text-2xl font-bold text-int-navy">Survey Management</h2>

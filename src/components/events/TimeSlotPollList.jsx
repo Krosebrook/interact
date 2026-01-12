@@ -75,7 +75,7 @@ export default function TimeSlotPollList({ userEmail, userName, isAdmin, onEvent
 
   if (isLoading) {
     return (
-      <Card className="p-8 flex items-center justify-center">
+      <Card className="p-8 flex items-center justify-center" data-b44-sync="true" data-feature="events" data-component="timeslotpolllist">
         <Loader2 className="h-6 w-6 animate-spin text-purple-600" />
       </Card>
     );

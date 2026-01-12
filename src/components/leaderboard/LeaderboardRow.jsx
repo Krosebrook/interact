@@ -8,7 +8,7 @@ import { Trophy, Medal, Award, TrendingUp, Flame } from 'lucide-react';
 function RankBadge({ rank }) {
   if (rank === 1) {
     return (
-      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-yellow-400 to-amber-500 flex items-center justify-center shadow-lg">
+      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-yellow-400 to-amber-500 flex items-center justify-center shadow-lg" data-b44-sync="true" data-feature="leaderboard" data-component="leaderboardrow">
         <Trophy className="h-5 w-5 text-white" />
       </div>
     );

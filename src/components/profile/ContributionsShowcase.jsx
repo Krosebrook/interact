@@ -114,7 +114,7 @@ export default function ContributionsShowcase({ userEmail }) {
   ], [stats, recognitionsSent, recognitionsReceived, media]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-b44-sync="true" data-feature="profile" data-component="contributionsshowcase">
       {/* Stats Overview Card */}
       <Card className="border-0 shadow-lg overflow-hidden">
         <CardHeader className="bg-gradient-to-r from-int-navy to-purple-700 text-white">
