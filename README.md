@@ -12,15 +12,46 @@ Interact is an enterprise-grade employee engagement platform that transforms wor
 
 Comprehensive documentation is available in the following files:
 
+### Core Documentation
 - **[DOCUMENTATION_SUMMARY.md](./DOCUMENTATION_SUMMARY.md)** - Quick reference and overview of all documentation
-- **[CODEBASE_AUDIT.md](./CODEBASE_AUDIT.md)** - Complete technical audit with security findings and quality metrics
+- **[README.md](./README.md)** - This file - Project overview and quick start
+
+### Strategic Planning
 - **[PRD.md](./PRD.md)** - Product Requirements Document with features, requirements, and roadmap
 - **[FEATURE_ROADMAP.md](./FEATURE_ROADMAP.md)** - 18-month roadmap with 15 production-grade features
 - **[RECOMMENDATIONS.md](./RECOMMENDATIONS.md)** - Best practices, repository recommendations, and GitHub Copilot prompts
+
+### Technical Documentation
+- **[CODEBASE_AUDIT.md](./CODEBASE_AUDIT.md)** - Complete technical audit with security findings and quality metrics
+- **[TESTING.md](./TESTING.md)** - Testing strategy, guidelines, and best practices
+- **[API_INTEGRATION_GUIDE.md](./API_INTEGRATION_GUIDE.md)** - Practical guide for Base44 SDK integration
+- **[CONTRIBUTING.md](./CONTRIBUTING.md)** - How to contribute to the project
 - **[CHANGELOG.md](./CHANGELOG.md)** - Version history and release notes
-- **[docs/security/](./docs/security/)** - Security documentation and compliance frameworks
+
+### Operations & Deployment
+- **[DEPLOYMENT_CHECKLIST.md](./DEPLOYMENT_CHECKLIST.md)** - Pre-deployment verification and go-live checklist
 - **[docs/SAFE_BRANCH_MERGING.md](./docs/SAFE_BRANCH_MERGING.md)** - Safe branch merging guide and best practices
 - **[docs/PRE_MERGE_CHECKLIST.md](./docs/PRE_MERGE_CHECKLIST.md)** - Pre-merge checklist template
+
+### Security & Compliance
+- **[docs/security/](./docs/security/)** - Security documentation and compliance frameworks
+  - SECURITY.md - Security architecture
+  - INCIDENT_RESPONSE.md - Incident response procedures
+  - VULNERABILITY_DISCLOSURE.md - Disclosure policy
+  - GDPR_CHECKLIST.md - GDPR compliance tracking
+  - DATA_MAPPING.md - Data flow documentation
+  - SECURITY_HEADERS.md - Security header configuration
+  - PRIVACY_POLICY_TEMPLATE.md - Privacy policy template
+
+### Technical Architecture
+- **[components/docs/](./components/docs/)** - 60+ technical documentation files
+  - ARCHITECTURE.md - Complete system architecture
+  - DATABASE_SCHEMA_TECHNICAL_SPEC.md - Database design
+  - API_REFERENCE.md - API documentation
+  - DEPLOYMENT_GUIDE.md - Deployment instructions
+  - And 55+ more technical docs
+
+### Base44 Integration
 - **[.github/base44-updates.md](./.github/base44-updates.md)** - Base44 visual canvas integration guide and module architecture
 - **[.github/agents.md](./.github/agents.md)** - AI agent context log and historical development decisions
 
