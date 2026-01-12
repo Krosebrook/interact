@@ -81,20 +81,12 @@ export default function Layout({ children, currentPageName }) {
     base44.auth.logout();
   };
 
-  // Minimal layout pages (no sidebar/header)
-  if (currentPageName === 'ParticipantEvent' || currentPageName === 'RoleSelection') {
-    return (
-      <div className="min-h-screen bg-slate-50">
-        {children}
-      </div>
-    );
-  }
-
   const isAdmin = user?.role === 'admin';
   const isFacilitator = user?.user_type === 'facilitator';
   const isParticipant = user?.user_type === 'participant';
 
   // Navigation based on role hierarchy: Admin > Facilitator > Participant
+  // This must be called unconditionally before any early returns
   const navigation = useMemo(() => {
     if (isAdmin) {
       return [
@@ -159,6 +151,15 @@ export default function Layout({ children, currentPageName }) {
       { name: 'My Profile', icon: User, page: 'UserProfile' },
     ];
     }, [isAdmin, isFacilitator, isParticipant]);
+
+  // Minimal layout pages (no sidebar/header) - after all hooks
+  if (currentPageName === 'ParticipantEvent' || currentPageName === 'RoleSelection') {
+    return (
+      <div className="min-h-screen bg-slate-50">
+        {children}
+      </div>
+    );
+  }
 
   return (
     <OnboardingProvider>
