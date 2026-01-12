@@ -21,6 +21,9 @@ import LoadingSpinner from '../components/common/LoadingSpinner';
 import EmptyState from '../components/common/EmptyState';
 import { useEventActions } from '../components/events/useEventActions';
 import OnboardingWidget from '../components/dashboard/OnboardingWidget';
+import PersonalizedDashboard from '../components/dashboard/PersonalizedDashboard';
+import { TooltipManager } from '../components/onboarding/ContextualTooltip';
+import InteractiveTutorial from '../components/onboarding/InteractiveTutorial';
 import {
   Calendar,
   Users,
@@ -35,10 +38,21 @@ export default function Dashboard() {
   const navigate = useNavigate();
   
   // CRITICAL: All hooks must be called unconditionally to prevent order drift
-  const { user, loading: userLoading, isAdmin, isRedirecting } = useUserData(true, true, false, false);
+  const { user, loading: userLoading, isAdmin, isRedirecting, profile, userPoints } = useUserData(true, true, false, false);
   const { events, activities, participations, isLoading } = useEventData({ limit: 100 });
   const [showGenerator, setShowGenerator] = useState(false);
+  const [showTutorial, setShowTutorial] = useState(false);
   const eventActions = useEventActions();
+
+  // Show tutorial for first-time users
+  React.useEffect(() => {
+    if (user && !isLoading) {
+      const hasSeenTutorial = localStorage.getItem(`tutorial-seen-${user.email}`);
+      if (!hasSeenTutorial && !profile?.onboarding_completed) {
+        setShowTutorial(true);
+      }
+    }
+  }, [user, profile, isLoading]);
 
   // Calculate stats using centralized utility
   const upcomingEvents = filterUpcomingEvents(events);
@@ -57,11 +71,47 @@ export default function Dashboard() {
     handleScheduleActivity(activity);
   };
 
+  // Contextual tooltips for first-time users
+  const tooltips = [
+    {
+      id: 'browse-activities',
+      targetElement: '[href*="Activities"]',
+      content: 'Start here to explore ready-made activity templates',
+      placement: 'bottom',
+      delay: 2000
+    },
+    {
+      id: 'schedule-event',
+      targetElement: '[href*="Calendar"]',
+      content: 'Schedule your first team event here',
+      placement: 'bottom',
+      delay: 3000
+    }
+  ];
+
   return (
     <ErrorBoundary fallbackMessage="Dashboard failed to load. Please try refreshing.">
       <div className="bg-blue-50 opacity-100 space-y-8 animate-fade-in">
+        {/* Contextual Tooltips */}
+        <TooltipManager tooltips={tooltips} />
+
+        {/* Interactive Tutorial */}
+        <InteractiveTutorial
+          open={showTutorial}
+          onClose={() => {
+            setShowTutorial(false);
+            if (user) {
+              localStorage.setItem(`tutorial-seen-${user.email}`, 'true');
+            }
+          }}
+          userRole={user?.role === 'admin' ? 'admin' : user?.user_type || 'participant'}
+        />
+
         {/* Onboarding Widget */}
         <OnboardingWidget variant="banner" />
+
+        {/* Personalized Dashboard Section */}
+        <PersonalizedDashboard user={user} userProfile={profile} userPoints={userPoints} />
 
         {/* Welcome Header - Glass Panel */}
         <div className="glass-panel-solid relative overflow-hidden">

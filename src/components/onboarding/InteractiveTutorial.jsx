@@ -1,352 +1,362 @@
-/**
- * INTERACTIVE TUTORIAL COMPONENT
- * Step-by-step guided tutorials for key features
- */
-
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
+import React, { useState } from 'react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
-import { 
-  Play, 
-  Pause, 
-  SkipForward, 
-  CheckCircle2,
-  Lightbulb,
-  ChevronRight,
-  Video,
-  MousePointer
-} from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import {
+  Users,
+  Calendar,
+  Award,
+  MessageSquare,
+  Target,
+  Sparkles,
+  CheckCircle2,
+  ChevronRight,
+  ChevronLeft,
+  X
+} from 'lucide-react';
+import confetti from 'canvas-confetti';
 import { toast } from 'sonner';
 
-// Tutorial definitions for key features
-export const TUTORIALS = {
-  'event-creation': {
-    id: 'event-creation',
-    title: 'Creating Your First Event',
-    description: 'Learn how to schedule engaging team activities',
-    duration: '3 min',
-    steps: [
-      {
-        title: 'Navigate to Calendar',
-        description: 'Click on the Calendar icon in the sidebar',
-        target: '[data-tutorial="calendar-nav"]',
-        action: 'Click the Calendar button',
-        tip: 'You can also use the quick "Schedule Event" button on the dashboard'
-      },
-      {
-        title: 'Choose an Activity',
-        description: 'Browse the activity library or use AI suggestions',
-        target: '[data-tutorial="activity-selector"]',
-        action: 'Select an activity you like',
-        tip: 'Filter by type, duration, or energy level to find the perfect match'
-      },
-      {
-        title: 'Set Date & Time',
-        description: 'Pick when your event will happen',
-        target: '[data-tutorial="date-picker"]',
-        action: 'Choose a date and time',
-        tip: 'Consider your team\'s time zones and availability'
-      },
-      {
-        title: 'Invite Participants',
-        description: 'Select who should attend',
-        target: '[data-tutorial="participant-selector"]',
-        action: 'Add team members',
-        tip: 'You can invite entire teams or specific individuals'
-      },
-      {
-        title: 'Configure Notifications',
-        description: 'Set up event reminders',
-        target: '[data-tutorial="notification-settings"]',
-        action: 'Enable reminder options',
-        tip: 'We recommend 24-hour and 1-hour reminders'
-      },
-      {
-        title: 'Publish Event',
-        description: 'Make your event live',
-        target: '[data-tutorial="publish-button"]',
-        action: 'Click Publish',
-        tip: 'Participants will be notified immediately'
+const TUTORIAL_STEPS = {
+  participant: [
+    {
+      id: 'profile',
+      title: 'Complete Your Profile',
+      description: 'Add your photo, bio, and interests to help teammates get to know you',
+      icon: Users,
+      interactive: {
+        type: 'demo',
+        component: 'ProfileSetup'
       }
-    ]
-  },
-  'recognition': {
-    id: 'recognition',
-    title: 'Sending Recognition',
-    description: 'Celebrate your teammates\' achievements',
-    duration: '2 min',
-    steps: [
-      {
-        title: 'Open Recognition Page',
-        description: 'Navigate to the Recognition section',
-        target: '[data-tutorial="recognition-nav"]',
-        action: 'Click Recognition in sidebar',
-        tip: 'Recognition boosts morale and team culture'
-      },
-      {
-        title: 'Click Give Recognition',
-        description: 'Start creating your recognition',
-        target: '[data-tutorial="give-recognition-btn"]',
-        action: 'Click the "Give Recognition" button',
-        tip: 'Be specific about what you\'re recognizing'
-      },
-      {
-        title: 'Select Recipient',
-        description: 'Choose who you want to recognize',
-        target: '[data-tutorial="recipient-selector"]',
-        action: 'Search and select a teammate',
-        tip: 'You can recognize multiple people at once'
-      },
-      {
-        title: 'Choose Category',
-        description: 'Pick what best describes their contribution',
-        target: '[data-tutorial="category-selector"]',
-        action: 'Select a recognition category',
-        tip: 'Categories help track different types of contributions'
-      },
-      {
-        title: 'Write Your Message',
-        description: 'Add a personal note',
-        target: '[data-tutorial="message-input"]',
-        action: 'Write a heartfelt message',
-        tip: 'Specific examples make recognition more meaningful'
-      },
-      {
-        title: 'Set Visibility',
-        description: 'Choose who can see this',
-        target: '[data-tutorial="visibility-toggle"]',
-        action: 'Select public or private',
-        tip: 'Public recognition encourages a culture of appreciation'
+    },
+    {
+      id: 'teams',
+      title: 'Join Your Team',
+      description: 'Find and join your department or project teams',
+      icon: Users,
+      interactive: {
+        type: 'simulation',
+        action: 'join_team'
       }
-    ]
-  },
-  'challenge-participation': {
-    id: 'challenge-participation',
-    title: 'Accepting Challenges',
-    description: 'Set personal goals and track progress',
-    duration: '2 min',
-    steps: [
-      {
-        title: 'View Available Challenges',
-        description: 'See personalized challenges',
-        target: '[data-tutorial="challenges-list"]',
-        action: 'Browse challenges on your dashboard',
-        tip: 'Challenges are tailored to your interests and role'
-      },
-      {
-        title: 'Read Challenge Details',
-        description: 'Understand what\'s required',
-        target: '[data-tutorial="challenge-card"]',
-        action: 'Click on a challenge to see details',
-        tip: 'Check the difficulty and time commitment'
-      },
-      {
-        title: 'Accept Challenge',
-        description: 'Commit to the goal',
-        target: '[data-tutorial="accept-challenge-btn"]',
-        action: 'Click "Accept Challenge"',
-        tip: 'You can accept multiple challenges at once'
-      },
-      {
-        title: 'Track Your Progress',
-        description: 'Monitor how you\'re doing',
-        target: '[data-tutorial="progress-tracker"]',
-        action: 'View your progress',
-        tip: 'Check your profile to see all active challenges'
-      },
-      {
-        title: 'Complete & Claim Rewards',
-        description: 'Earn points and badges',
-        target: '[data-tutorial="claim-reward-btn"]',
-        action: 'Claim your reward when complete',
-        tip: 'Rewards are added to your profile automatically'
+    },
+    {
+      id: 'events',
+      title: 'Explore Events',
+      description: 'Browse upcoming activities and RSVP to your first event',
+      icon: Calendar,
+      interactive: {
+        type: 'demo',
+        component: 'EventBrowser'
       }
-    ]
-  }
+    },
+    {
+      id: 'recognition',
+      title: 'Give Recognition',
+      description: 'Appreciate a colleague with a public shoutout',
+      icon: MessageSquare,
+      interactive: {
+        type: 'simulation',
+        action: 'give_recognition'
+      }
+    },
+    {
+      id: 'gamification',
+      title: 'Earn Points & Badges',
+      description: 'Learn how to earn points through activities and unlock achievements',
+      icon: Award,
+      interactive: {
+        type: 'demo',
+        component: 'GamificationIntro'
+      }
+    }
+  ],
+  facilitator: [
+    {
+      id: 'activities',
+      title: 'Browse Activity Library',
+      description: 'Explore 15+ pre-built activity templates for your events',
+      icon: Sparkles,
+      interactive: {
+        type: 'demo',
+        component: 'ActivityLibrary'
+      }
+    },
+    {
+      id: 'schedule',
+      title: 'Schedule Your First Event',
+      description: 'Create and schedule an engaging team activity',
+      icon: Calendar,
+      interactive: {
+        type: 'simulation',
+        action: 'schedule_event'
+      }
+    },
+    {
+      id: 'team',
+      title: 'Set Up Your Team',
+      description: 'Create or join teams to track engagement',
+      icon: Users,
+      interactive: {
+        type: 'demo',
+        component: 'TeamSetup'
+      }
+    },
+    {
+      id: 'analytics',
+      title: 'Track Engagement',
+      description: 'View analytics to measure team participation',
+      icon: Target,
+      interactive: {
+        type: 'demo',
+        component: 'AnalyticsOverview'
+      }
+    }
+  ]
 };
 
-export default function InteractiveTutorial({ tutorialId, onComplete, onSkip }) {
-  const [currentStepIndex, setCurrentStepIndex] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
+export default function InteractiveTutorial({ open, onClose, userRole = 'participant' }) {
+  const [currentStep, setCurrentStep] = useState(0);
   const [completedSteps, setCompletedSteps] = useState([]);
-
-  const tutorial = TUTORIALS[tutorialId];
-  if (!tutorial) return null;
-
-  const currentStep = tutorial.steps[currentStepIndex];
-  const progress = ((currentStepIndex + 1) / tutorial.steps.length) * 100;
-  const isLastStep = currentStepIndex === tutorial.steps.length - 1;
+  
+  const steps = TUTORIAL_STEPS[userRole] || TUTORIAL_STEPS.participant;
+  const step = steps[currentStep];
+  const progress = ((currentStep + 1) / steps.length) * 100;
 
   const handleNext = () => {
-    if (!completedSteps.includes(currentStepIndex)) {
-      setCompletedSteps([...completedSteps, currentStepIndex]);
+    if (!completedSteps.includes(step.id)) {
+      setCompletedSteps([...completedSteps, step.id]);
     }
-
-    if (isLastStep) {
-      toast.success('Tutorial complete! 🎉');
-      onComplete?.(tutorial.id);
+    
+    if (currentStep === steps.length - 1) {
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 }
+      });
+      toast.success('Tutorial completed! 🎉');
+      setTimeout(onClose, 2000);
     } else {
-      setCurrentStepIndex(currentStepIndex + 1);
+      setCurrentStep(currentStep + 1);
     }
   };
 
   const handlePrevious = () => {
-    if (currentStepIndex > 0) {
-      setCurrentStepIndex(currentStepIndex - 1);
+    if (currentStep > 0) {
+      setCurrentStep(currentStep - 1);
     }
   };
 
   const handleSkip = () => {
-    toast.info('Tutorial skipped');
-    onSkip?.(tutorial.id);
+    if (confirm('Are you sure you want to skip the tutorial?')) {
+      onClose();
+    }
   };
 
-  // Auto-play mode
-  useEffect(() => {
-    if (!isPlaying) return;
-
-    const timer = setTimeout(() => {
-      handleNext();
-    }, 8000); // 8 seconds per step
-
-    return () => clearTimeout(timer);
-  }, [isPlaying, currentStepIndex]);
+  const Icon = step.icon;
 
   return (
-    <Card className="border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-cyan-50 shadow-xl">
-      <CardContent className="p-6">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
-              <Video className="h-5 w-5 text-white" />
+    <Dialog open={open} onOpenChange={onClose}>
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <div className="flex items-center justify-between mb-4">
+            <DialogTitle className="text-2xl">Getting Started Tutorial</DialogTitle>
+            <div className="flex items-center gap-2">
+              <Badge variant="outline">
+                Step {currentStep + 1} of {steps.length}
+              </Badge>
+              <Button variant="ghost" size="icon" onClick={handleSkip}>
+                <X className="h-4 w-4" />
+              </Button>
             </div>
-            <div>
-              <h3 className="font-bold text-slate-900">{tutorial.title}</h3>
-              <p className="text-sm text-slate-600">{tutorial.description}</p>
-            </div>
           </div>
-          <Badge variant="outline">
-            {tutorial.duration}
-          </Badge>
-        </div>
+          <Progress value={progress} className="h-2" />
+        </DialogHeader>
 
-        {/* Progress */}
-        <div className="mb-6">
-          <div className="flex items-center justify-between text-sm mb-2">
-            <span className="text-slate-600">
-              Step {currentStepIndex + 1} of {tutorial.steps.length}
-            </span>
-            <span className="text-slate-600">{Math.round(progress)}%</span>
-          </div>
-          <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
-            <motion.div
-              className="h-full bg-gradient-to-r from-blue-500 to-cyan-500"
-              initial={{ width: 0 }}
-              animate={{ width: `${progress}%` }}
-              transition={{ duration: 0.3 }}
-            />
-          </div>
-        </div>
-
-        {/* Current Step */}
         <AnimatePresence mode="wait">
           <motion.div
-            key={currentStepIndex}
+            key={currentStep}
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
-            className="mb-6"
+            className="py-6"
           >
-            <div className="bg-white rounded-xl p-6 border border-blue-100">
-              <div className="flex items-start gap-3 mb-4">
-                <div className="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center text-sm font-bold flex-shrink-0">
-                  {currentStepIndex + 1}
-                </div>
-                <div className="flex-1">
-                  <h4 className="font-bold text-lg text-slate-900 mb-1">
-                    {currentStep.title}
-                  </h4>
-                  <p className="text-slate-600 mb-3">
-                    {currentStep.description}
+            {/* Step Header */}
+            <div className="flex items-start gap-4 mb-6">
+              <div className="p-4 rounded-xl bg-gradient-to-br from-int-orange to-int-gold">
+                <Icon className="h-8 w-8 text-white" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-2xl font-bold text-slate-900 mb-2">{step.title}</h3>
+                <p className="text-slate-600">{step.description}</p>
+              </div>
+            </div>
+
+            {/* Interactive Content */}
+            <div className="bg-slate-50 rounded-xl p-6 mb-6 min-h-[300px] flex items-center justify-center">
+              {step.interactive.type === 'demo' && (
+                <DemoComponent component={step.interactive.component} />
+              )}
+              {step.interactive.type === 'simulation' && (
+                <SimulationComponent action={step.interactive.action} />
+              )}
+            </div>
+
+            {/* Tips */}
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <div className="flex gap-3">
+                <Sparkles className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                <div>
+                  <h4 className="font-semibold text-slate-900 mb-1">Pro Tip</h4>
+                  <p className="text-sm text-slate-600">
+                    {getTipForStep(step.id, userRole)}
                   </p>
-
-                  {/* Action */}
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-3">
-                    <div className="flex items-center gap-2 text-blue-700">
-                      <MousePointer className="h-4 w-4" />
-                      <span className="text-sm font-medium">{currentStep.action}</span>
-                    </div>
-                  </div>
-
-                  {/* Tip */}
-                  <div className="flex items-start gap-2 text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-lg p-3">
-                    <Lightbulb className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                    <span>{currentStep.tip}</span>
-                  </div>
                 </div>
               </div>
             </div>
           </motion.div>
         </AnimatePresence>
 
-        {/* Controls */}
-        <div className="flex items-center justify-between">
-          <div className="flex gap-2">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setIsPlaying(!isPlaying)}
-            >
-              {isPlaying ? (
-                <><Pause className="h-4 w-4 mr-1" /> Pause</>
-              ) : (
-                <><Play className="h-4 w-4 mr-1" /> Auto-play</>
-              )}
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleSkip}
-              className="text-slate-500"
-            >
-              <SkipForward className="h-4 w-4 mr-1" />
-              Skip Tutorial
-            </Button>
-          </div>
+        {/* Navigation */}
+        <div className="flex items-center justify-between pt-6 border-t">
+          <Button
+            variant="ghost"
+            onClick={handlePrevious}
+            disabled={currentStep === 0}
+          >
+            <ChevronLeft className="h-4 w-4 mr-2" />
+            Previous
+          </Button>
 
-          <div className="flex gap-2">
-            {currentStepIndex > 0 && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handlePrevious}
-              >
-                Previous
-              </Button>
+          <Button
+            onClick={handleNext}
+            className="bg-int-orange hover:bg-int-orange/90"
+          >
+            {currentStep === steps.length - 1 ? (
+              <>
+                <CheckCircle2 className="h-4 w-4 mr-2" />
+                Complete Tutorial
+              </>
+            ) : (
+              <>
+                Next Step
+                <ChevronRight className="h-4 w-4 ml-2" />
+              </>
             )}
-            <Button
-              onClick={handleNext}
-              size="sm"
-              className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white"
-            >
-              {isLastStep ? (
-                <>
-                  <CheckCircle2 className="h-4 w-4 mr-1" />
-                  Complete
-                </>
-              ) : (
-                <>
-                  Next
-                  <ChevronRight className="h-4 w-4 ml-1" />
-                </>
-              )}
-            </Button>
+          </Button>
+        </div>
+
+        {/* Step Progress Indicators */}
+        <div className="flex justify-center gap-2 pt-4">
+          {steps.map((s, idx) => (
+            <div
+              key={s.id}
+              className={`h-2 rounded-full transition-all ${
+                idx <= currentStep ? 'w-8 bg-int-orange' : 'w-2 bg-slate-300'
+              }`}
+            />
+          ))}
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function DemoComponent({ component }) {
+  const demos = {
+    ProfileSetup: (
+      <div className="text-center space-y-4">
+        <div className="w-24 h-24 rounded-full bg-gradient-to-br from-int-orange to-int-gold mx-auto flex items-center justify-center text-white text-3xl font-bold">
+          JD
+        </div>
+        <div className="space-y-2">
+          <div className="h-8 bg-white rounded w-2/3 mx-auto" />
+          <div className="h-16 bg-white rounded w-full" />
+        </div>
+        <p className="text-sm text-slate-500">Example: Complete profile view</p>
+      </div>
+    ),
+    ActivityLibrary: (
+      <div className="grid grid-cols-3 gap-3">
+        {['Icebreaker', 'Creative', 'Wellness'].map((type, idx) => (
+          <div key={idx} className="bg-white rounded-lg p-4 text-center border-2 border-slate-200">
+            <div className="text-2xl mb-2">🎯</div>
+            <p className="font-medium text-sm">{type}</p>
+          </div>
+        ))}
+      </div>
+    ),
+    GamificationIntro: (
+      <div className="space-y-4">
+        <div className="bg-white rounded-lg p-4 flex items-center gap-4">
+          <Award className="h-12 w-12 text-yellow-500" />
+          <div>
+            <p className="font-bold text-2xl text-int-orange">250</p>
+            <p className="text-sm text-slate-600">Points Earned</p>
           </div>
         </div>
-      </CardContent>
-    </Card>
+        <div className="grid grid-cols-3 gap-2">
+          {['🏆', '⭐', '🎖️'].map((emoji, idx) => (
+            <div key={idx} className="bg-white rounded-lg p-3 text-center">
+              <div className="text-3xl mb-1">{emoji}</div>
+              <p className="text-xs text-slate-600">Badge {idx + 1}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    )
+  };
+
+  return demos[component] || <p>Interactive demo coming soon</p>;
+}
+
+function SimulationComponent({ action }) {
+  const [clicked, setClicked] = useState(false);
+
+  const handleClick = () => {
+    setClicked(true);
+    setTimeout(() => setClicked(false), 2000);
+  };
+
+  return (
+    <div className="text-center space-y-4">
+      <p className="text-slate-600 mb-4">Try clicking the button below to simulate this action</p>
+      <Button
+        onClick={handleClick}
+        className="bg-int-orange hover:bg-int-orange/90"
+        size="lg"
+      >
+        {action === 'join_team' && 'Join Team'}
+        {action === 'give_recognition' && 'Give Recognition'}
+        {action === 'schedule_event' && 'Schedule Event'}
+      </Button>
+      {clicked && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-green-600 font-medium"
+        >
+          <CheckCircle2 className="h-6 w-6 mx-auto mb-2" />
+          Action completed! ✓
+        </motion.div>
+      )}
+    </div>
   );
+}
+
+function getTipForStep(stepId, userRole) {
+  const tips = {
+    profile: 'Adding a profile photo increases team connection by 3x!',
+    teams: 'Join at least 2-3 teams to stay in the loop',
+    events: 'Events with 5+ RSVPs have 90% attendance rates',
+    recognition: 'Public recognition boosts morale and team culture',
+    gamification: 'Top contributors earn exclusive rewards and badges',
+    activities: 'Mix different activity types to keep engagement high',
+    schedule: 'Schedule recurring events to build consistent engagement',
+    team: 'Invite team members to maximize participation',
+    analytics: 'Check analytics weekly to spot trends early'
+  };
+
+  return tips[stepId] || 'Keep exploring to discover more features!';
 }
