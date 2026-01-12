@@ -22,11 +22,14 @@ export function OnboardingProvider({ children }) {
   const [startTime, setStartTime] = useState(null);
 
   // Determine user role for onboarding - memoized to prevent recalculation
+  // Admin takes precedence, then facilitator, then participant
   const onboardingRole = useMemo(() => {
-    return isAdmin || isFacilitator ? 'admin' : 'participant';
+    if (isAdmin) return 'admin';
+    if (isFacilitator) return 'facilitator';
+    return 'participant';
   }, [isAdmin, isFacilitator]);
   
-  const steps = useMemo(() => getOnboardingSteps(onboardingRole), [onboardingRole]);
+  const steps = useMemo(() => getOnboardingSteps(user?.role, user?.user_type), [user?.role, user?.user_type]);
 
   // Fetch onboarding state
   const { data: onboardingState, isLoading } = useQuery({
@@ -81,19 +84,21 @@ export function OnboardingProvider({ children }) {
   useEffect(() => {
     // Don't auto-start if user is null (logged out)
     if (!isLoading && user?.email && !isOnboardingActive && steps.length > 0) {
-      const hasSeenOnboarding = localStorage.getItem(`onboarding-seen-${user.email}`);
+      const hasSeenOnboarding = sessionStorage.getItem(`onboarding-seen-${user.email}`);
       
-      // Resume incomplete onboarding on login
-      if (onboardingState && !onboardingState.onboarding_completed && !onboardingState.dismissed) {
+      // Resume incomplete onboarding on login (but only once per session)
+      if (onboardingState && !onboardingState.onboarding_completed && !onboardingState.dismissed && !hasSeenOnboarding) {
         const lastStepIndex = steps.findIndex(s => s.id === onboardingState.current_step);
         if (lastStepIndex >= 0) {
           setCurrentStepIndex(lastStepIndex);
           setIsOnboardingActive(true);
           setStartTime(Date.now());
+          sessionStorage.setItem(`onboarding-seen-${user.email}`, 'true');
         }
       }
-      // Start fresh for new users
+      // Start fresh for new users (once per session)
       else if (!onboardingState && !hasSeenOnboarding) {
+        sessionStorage.setItem(`onboarding-seen-${user.email}`, 'true');
         startOnboarding();
       }
     }

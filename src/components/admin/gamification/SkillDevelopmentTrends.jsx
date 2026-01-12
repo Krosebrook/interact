@@ -28,10 +28,7 @@ export default function SkillDevelopmentTrends() {
     queryFn: () => base44.entities.UserProfile.list()
   });
 
-  if (loadingProgress || loadingModules || loadingPaths || loadingProfiles) {
-    return <LoadingSpinner />;
-  }
-
+  // Calculate analytics - must be called before any early returns
   const analytics = useMemo(() => {
     // Total learners
     const uniqueLearners = new Set(learningProgress?.map(p => p.user_email) || []).size;
@@ -106,6 +103,11 @@ export default function SkillDevelopmentTrends() {
       topInterests
     };
   }, [learningProgress, moduleCompletions, learningPaths, userProfiles]);
+
+  // Check loading state after all hooks are called
+  if (loadingProgress || loadingModules || loadingPaths || loadingProfiles) {
+    return <LoadingSpinner />;
+  }
 
   const COLORS = ['#3b82f6', '#8b5cf6', '#f59e0b', '#10b981', '#ec4899', '#06b6d4', '#f97316', '#84cc16'];
 

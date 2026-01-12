@@ -11,6 +11,7 @@ import Documentation from './pages/Documentation';
 import EmployeeDirectory from './pages/EmployeeDirectory';
 import EventTemplates from './pages/EventTemplates';
 import EventWizard from './pages/EventWizard';
+import ExampleModulePage from './pages/ExampleModulePage';
 import FacilitatorDashboard from './pages/FacilitatorDashboard';
 import FacilitatorView from './pages/FacilitatorView';
 import Gamification from './pages/Gamification';
@@ -47,6 +48,8 @@ import SkillsDashboard from './pages/SkillsDashboard';
 import SocialGamification from './pages/SocialGamification';
 import SocialHub from './pages/SocialHub';
 import Surveys from './pages/Surveys';
+import TeamAutomation from './pages/TeamAutomation';
+import TeamAutomations from './pages/TeamAutomations';
 import TeamCompetition from './pages/TeamCompetition';
 import TeamDashboard from './pages/TeamDashboard';
 import TeamLeaderDashboard from './pages/TeamLeaderDashboard';
@@ -71,6 +74,7 @@ export const PAGES = {
     "EmployeeDirectory": EmployeeDirectory,
     "EventTemplates": EventTemplates,
     "EventWizard": EventWizard,
+    "ExampleModulePage": ExampleModulePage,
     "FacilitatorDashboard": FacilitatorDashboard,
     "FacilitatorView": FacilitatorView,
     "Gamification": Gamification,
@@ -107,6 +111,8 @@ export const PAGES = {
     "SocialGamification": SocialGamification,
     "SocialHub": SocialHub,
     "Surveys": Surveys,
+    "TeamAutomation": TeamAutomation,
+    "TeamAutomations": TeamAutomations,
     "TeamCompetition": TeamCompetition,
     "TeamDashboard": TeamDashboard,
     "TeamLeaderDashboard": TeamLeaderDashboard,
