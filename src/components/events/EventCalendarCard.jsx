@@ -86,6 +86,9 @@ export default function EventCalendarCard({
 
   return (
     <motion.div
+      data-b44-sync="true"
+      data-feature="events"
+      data-component="eventcalendarcard"
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ y: -4 }}

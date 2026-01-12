@@ -146,7 +146,7 @@ export default function GamificationConfigPanel() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-12">
+      <div className="flex items-center justify-center py-12" data-b44-sync="true" data-feature="admin" data-component="gamificationconfigpanel">
         <RefreshCw className="h-6 w-6 animate-spin text-int-orange" />
       </div>
     );

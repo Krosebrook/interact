@@ -91,7 +91,7 @@ export default function EventRecordingPlayer({ eventId, eventTitle, isHost, user
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4" data-b44-sync="true" data-feature="events" data-component="eventrecordingplayer">
       <div className="flex items-center justify-between">
         <h3 className="font-semibold flex items-center gap-2">
           <Video className="h-5 w-5 text-int-orange" />

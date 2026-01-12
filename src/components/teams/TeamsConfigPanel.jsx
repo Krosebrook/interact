@@ -152,7 +152,7 @@ export default function TeamsConfigPanel() {
 
   if (isLoading) {
     return (
-      <Card className="p-6">
+      <Card className="p-6" data-b44-sync="true" data-feature="teams" data-component="teamsconfigpanel">
         <div className="flex items-center justify-center">
           <Loader2 className="h-8 w-8 animate-spin text-indigo-600" />
         </div>

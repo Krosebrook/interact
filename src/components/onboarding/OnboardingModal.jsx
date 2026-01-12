@@ -5,6 +5,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useOnboarding } from './OnboardingProvider';
+import DynamicOnboardingAdjuster from './DynamicOnboardingAdjuster';
 import { useStepValidation } from './useStepValidation';
 import { usePermissions } from '../hooks/usePermissions';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';

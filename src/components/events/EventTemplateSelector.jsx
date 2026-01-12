@@ -72,7 +72,7 @@ export default function EventTemplateSelector({ open, onOpenChange, onSelectTemp
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={onOpenChange} data-b44-sync="true" data-feature="events" data-component="eventtemplateselector">
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
         <DialogHeader>
           <DialogTitle>Choose Event Template</DialogTitle>

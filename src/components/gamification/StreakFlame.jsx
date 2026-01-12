@@ -79,7 +79,7 @@ export default function StreakFlame({
 
   if (compact) {
     return (
-      <div className={`flex items-center gap-2 px-3 py-2 rounded-lg ${tier.bg} ${tier.border} border`}>
+      <div data-b44-sync="true" data-feature="gamification" data-component="streakflame" className={`flex items-center gap-2 px-3 py-2 rounded-lg ${tier.bg} ${tier.border} border`}>
         <motion.span 
           className="text-xl"
           animate={currentStreak >= 7 ? { scale: [1, 1.2, 1] } : {}}

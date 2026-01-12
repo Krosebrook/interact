@@ -40,7 +40,7 @@ export default function CompletedEventsList({ events, activities, participations
   if (completedEvents.length === 0) return null;
 
   return (
-    <div className="space-y-4">
+    <div data-b44-sync="true" data-feature="dashboard" data-component="completedeventslist" className="space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="font-semibold text-lg text-slate-900 flex items-center gap-2">
           <CheckCircle2 className="h-5 w-5 text-green-600" />

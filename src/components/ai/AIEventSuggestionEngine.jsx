@@ -194,7 +194,7 @@ For each suggestion, provide:
       const event = await base44.entities.Event.create({
         activity_id: activityId,
         title: eventData.title,
-        scheduled_date: new Date(eventData.scheduled_date).toISOString(),
+        scheduled_date: eventData.scheduled_date ? new Date(eventData.scheduled_date).toISOString() : new Date(addDays(new Date(), 7)).toISOString(),
         duration_minutes: parseInt(eventData.duration) || 30,
         status: 'scheduled',
         max_participants: parseInt(eventData.max_participants) || 20,
@@ -244,7 +244,7 @@ For each suggestion, provide:
   };
 
   return (
-    <div className="space-y-6">
+    <div data-b44-sync="true" data-feature="ai" data-component="aieventsuggestionengine" className="space-y-6">
       {/* Header */}
       <Card className="glass-panel-solid border-2 border-purple-200 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 via-transparent to-int-orange/5 pointer-events-none" />

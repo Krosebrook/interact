@@ -229,7 +229,7 @@ Make themes creative, specific to the team context, and actionable. Avoid generi
   };
 
   return (
-    <Dialog open={open} onOpenChange={handleClose}>
+    <Dialog data-b44-sync="true" data-feature="ai" data-component="aieventthemegenerator" open={open} onOpenChange={handleClose}>
       <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-2xl">

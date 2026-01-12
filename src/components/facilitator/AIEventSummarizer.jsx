@@ -173,7 +173,7 @@ ${summary.engagement_stats?.highlights?.map(h => `• ${h}`).join('\n')}
   };
 
   return (
-    <Card className="border-0 shadow-lg">
+    <Card className="border-0 shadow-lg" data-b44-sync="true" data-feature="facilitator" data-component="aieventsummarizer">
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">

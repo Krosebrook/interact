@@ -78,7 +78,7 @@ export default function SkillsDevelopmentTracker({ userEmail, profile }) {
   }, [participations]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-b44-sync="true" data-feature="profile" data-component="skillsdevelopmenttracker">
       {/* Skills Progress Overview */}
       <Card className="border-0 shadow-lg overflow-hidden">
         <CardHeader className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white">

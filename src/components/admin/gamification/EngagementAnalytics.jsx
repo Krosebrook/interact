@@ -34,11 +34,7 @@ export default function EngagementAnalytics() {
     queryFn: () => base44.entities.PersonalChallenge.list()
   });
 
-  if (loadingPoints || loadingParticipations || loadingBadges || loadingRecognitions || loadingChallenges) {
-    return <LoadingSpinner />;
-  }
-
-  // Calculate metrics
+  // Calculate metrics - must be called before any early returns
   const metrics = useMemo(() => {
     const totalUsers = userPoints?.length || 0;
     const totalPoints = userPoints?.reduce((sum, p) => sum + (p.total_points || 0), 0) || 0;
@@ -105,6 +101,11 @@ export default function EngagementAnalytics() {
       pointsTimeline
     };
   }, [userPoints, badgeAwards, challenges]);
+
+  // Check loading state after all hooks are called
+  if (loadingPoints || loadingParticipations || loadingBadges || loadingRecognitions || loadingChallenges) {
+    return <LoadingSpinner />;
+  }
 
   const COLORS = ['#f59e0b', '#94a3b8', '#eab308', '#a855f7'];
 

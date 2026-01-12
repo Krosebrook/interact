@@ -18,7 +18,7 @@ export default function TimeSlotSuggestions({ onSelectTime }) {
 
   if (isLoading) {
     return (
-      <Card className="p-4 bg-gradient-to-br from-purple-50 to-indigo-50">
+      <Card className="p-4 bg-gradient-to-br from-purple-50 to-indigo-50" data-b44-sync="true" data-feature="events" data-component="timeslotsuggestions">
         <div className="flex items-center gap-2 text-indigo-600">
           <Loader2 className="h-4 w-4 animate-spin" />
           <span className="text-sm">Analyzing optimal times...</span>

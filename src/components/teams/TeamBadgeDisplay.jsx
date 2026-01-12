@@ -25,7 +25,7 @@ export default function TeamBadgeDisplay({ teamId, teamData }) {
   };
 
   return (
-    <Card className="border-2 border-int-orange">
+    <Card className="border-2 border-int-orange" data-b44-sync="true" data-feature="teams" data-component="teambadgedisplay">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Trophy className="h-5 w-5 text-int-orange" />

@@ -52,7 +52,7 @@ export default function AnimatedPointsCounter({
   const pointChange = points - previousPoints;
 
   return (
-    <div className={`relative ${style.container}`}>
+    <div data-b44-sync="true" data-feature="gamification" data-component="animatedpointscounter" className={`relative ${style.container}`}>
       {/* Main counter */}
       <div className="flex items-center gap-3">
         <motion.div

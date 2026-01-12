@@ -102,7 +102,7 @@ Make tips specific, encouraging, and achievable within the next 3-7 days.`,
   };
 
   return (
-    <Card className="border-2 border-purple-200 bg-gradient-to-br from-purple-50/30 to-pink-50/30">
+    <Card data-b44-sync="true" data-feature="gamification" data-component="personalizedgamificationtips" className="border-2 border-purple-200 bg-gradient-to-br from-purple-50/30 to-pink-50/30">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center">

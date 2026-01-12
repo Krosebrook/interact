@@ -41,7 +41,7 @@ export default function TimeSlotVoter({ poll, userEmail, onVote, onSchedule, isA
   }, poll.time_slots[0])?.id;
 
   return (
-    <Card className="overflow-hidden">
+    <Card className="overflow-hidden" data-b44-sync="true" data-feature="events" data-component="timeslotvoter">
       <CardHeader className="bg-gradient-to-r from-purple-50 to-indigo-50">
         <div className="flex items-start justify-between">
           <div>

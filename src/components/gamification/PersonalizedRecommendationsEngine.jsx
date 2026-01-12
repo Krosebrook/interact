@@ -167,7 +167,7 @@ export default function PersonalizedRecommendationsEngine({ userEmail, userPoint
   };
 
   return (
-    <div className="space-y-6">
+    <div data-b44-sync="true" data-feature="gamification" data-component="personalizedrecommendationsengine" className="space-y-6">
       {/* Performance Summary */}
       <Card className="bg-gradient-to-r from-int-orange/10 to-amber-50">
         <CardContent className="p-4">

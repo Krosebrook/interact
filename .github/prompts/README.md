@@ -34,6 +34,13 @@ This directory contains context-engineered prompts for GitHub Copilot agents to 
 **Timeline:** Q2 2025 (Weeks 9-13)  
 **Scope:** OpenAI/Claude/Gemini integration + personalization
 
+### 6. Cognitive Prompt Loop
+**File:** `agent-cognitive-loop.md`  
+**Purpose:** Structured reasoning framework for autonomous agents  
+**Timeline:** Continuous (meta-framework)  
+**Scope:** 6-phase cognitive loop for task analysis, decision-making, and execution  
+**Example:** See `COGNITIVE_LOOP_EXAMPLE.md` for a detailed walkthrough
+
 ## How to Use
 
 ### Using the Feature-to-PR Template
@@ -65,6 +72,7 @@ The **[FEATURE_TO_PR_TEMPLATE.md](../FEATURE_TO_PR_TEMPLATE.md)** is a comprehen
 
 ### Tips for Success
 
+- **Use Cognitive Loop** (agent-cognitive-loop.md) - For complex, multi-step tasks requiring structured reasoning
 - **Start with Security & Testing** (agent-security-testing.md) - Foundation work
 - **Verify tests pass** after each agent completes work
 - **Review code changes** carefully before committing
@@ -79,6 +87,28 @@ These prompts follow the **SSSS** principle:
 2. **Specific:** Detailed instructions and success criteria
 3. **Short:** Concise but complete
 4. **Surround:** Rich context from documentation
+
+### The Cognitive Loop Framework
+
+The **Cognitive Prompt Loop** (agent-cognitive-loop.md) is a meta-framework that provides structured reasoning for complex tasks. It uses a 6-phase approach:
+
+1. **ANALYZE** - Understand intent, completion state, missing inputs, and risk level
+2. **DECIDE** - Determine the single highest-leverage next action
+3. **INSTRUCTION** - Generate precise, executable instructions with acceptance criteria
+4. **EXECUTION** - Execute the instruction and produce concrete artifacts
+5. **EVALUATION** - Assess results against criteria (PASS/PARTIAL_PASS/FAIL)
+6. **LOOP CONTROL** - Decide whether to continue iterating or exit
+
+**When to use:**
+- Complex features requiring multiple steps
+- Tasks with unclear scope or high risk
+- Situations requiring iterative refinement
+- When you need structured problem-solving
+
+**When not to use:**
+- Simple, well-defined single-file changes
+- Routine bug fixes with known solutions
+- Quick documentation updates
 
 ## Related Documentation
 

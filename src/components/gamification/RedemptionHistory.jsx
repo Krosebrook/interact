@@ -43,7 +43,7 @@ export default function RedemptionHistory({ userEmail }) {
 
   if (isLoading) {
     return (
-      <Card>
+      <Card data-b44-sync="true" data-feature="gamification" data-component="redemptionhistory">
         <CardContent className="py-12">
           <LoadingSpinner />
         </CardContent>

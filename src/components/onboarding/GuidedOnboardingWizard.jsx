@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { CheckCircle2, Circle, ChevronRight, Sparkles, Trophy } from 'lucide-react';
+import { useAnalytics } from '../hooks/useAnalytics';
 import { toast } from 'sonner';
 import confetti from 'canvas-confetti';
 
@@ -151,6 +152,7 @@ export default function GuidedOnboardingWizard({ user, onComplete }) {
 
   const userRole = user?.role === 'admin' ? 'admin' : user?.user_type || 'participant';
   const steps = ONBOARDING_FLOWS[userRole] || ONBOARDING_FLOWS.participant;
+  const { trackOnboardingStep } = useAnalytics();
 
   const { data: onboardingRecord } = useQuery({
     queryKey: ['user-onboarding', user?.email],
@@ -212,6 +214,9 @@ export default function GuidedOnboardingWizard({ user, onComplete }) {
     onSuccess: () => {
       queryClient.invalidateQueries(['user-onboarding']);
       setCompletedSteps([...completedSteps, steps[currentStep].id]);
+      
+      // Track analytics
+      trackOnboardingStep(steps[currentStep].id, currentStep + 1, steps.length);
       
       if (currentStep === steps.length - 1) {
         confetti({

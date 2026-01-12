@@ -42,7 +42,7 @@ export default function Leaderboard() {
   const getRankIcon = (rank) => {
     switch (rank) {
       case 1:
-        return <Trophy className="h-5 w-5 text-yellow-500" />;
+        return <Trophy data-b44-sync="true" data-feature="gamification" data-component="leaderboard" className="h-5 w-5 text-yellow-500" />;
       case 2:
         return <Medal className="h-5 w-5 text-gray-400" />;
       case 3:

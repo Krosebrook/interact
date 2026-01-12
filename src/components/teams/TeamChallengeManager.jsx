@@ -41,7 +41,7 @@ export default function TeamChallengeManager({ userEmail, userTeamId }) {
   const completedChallenges = challenges?.filter(c => c.status === 'completed') || [];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-b44-sync="true" data-feature="teams" data-component="teamchallengemanager">
       {/* Header */}
       <Card className="bg-gradient-to-br from-amber-50 to-orange-50 border-amber-200">
         <CardHeader>

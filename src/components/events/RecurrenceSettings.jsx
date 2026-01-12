@@ -18,7 +18,7 @@ export default function RecurrenceSettings({ recurrenceData, onChange, disabled 
   };
 
   return (
-    <Card className="p-4 border-2 border-dashed border-indigo-200 bg-indigo-50/50">
+    <Card className="p-4 border-2 border-dashed border-indigo-200 bg-indigo-50/50" data-b44-sync="true" data-feature="events" data-component="recurrencesettings">
       <div className="flex items-center gap-2 mb-4">
         <RepeatIcon className="h-4 w-4 text-indigo-600" />
         <Label className="text-base font-semibold">Recurring Event</Label>

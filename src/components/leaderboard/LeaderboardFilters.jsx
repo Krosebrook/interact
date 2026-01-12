@@ -15,7 +15,7 @@ export default function LeaderboardFilters({
   onToggleFollowing
 }) {
   return (
-    <div className="space-y-4">
+    <div className="space-y-4" data-b44-sync="true" data-feature="leaderboard" data-component="leaderboardfilters">
       {/* Category tabs */}
       <Tabs value={category} onValueChange={onCategoryChange}>
         <TabsList className="grid grid-cols-4 w-full">

@@ -52,6 +52,9 @@ const SentimentBadge = ({ sentiment }) => {
 
 const ActionItemCard = ({ item, index }) => (
   <motion.div
+    data-b44-sync="true"
+    data-feature="facilitator"
+    data-component="aieventsummary"
     initial={{ opacity: 0, x: -20 }}
     animate={{ opacity: 1, x: 0 }}
     transition={{ delay: index * 0.1 }}

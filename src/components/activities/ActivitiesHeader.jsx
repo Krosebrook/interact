@@ -16,7 +16,7 @@ export default function ActivitiesHeader({
   canCreate = true
 }) {
   return (
-    <div className="glass-panel-solid relative overflow-hidden">
+    <div data-b44-sync="true" data-feature="activities" data-component="activitiesheader" className="glass-panel-solid relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-r from-int-navy/5 via-transparent to-int-orange/5 pointer-events-none" />
       <div className="relative flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>

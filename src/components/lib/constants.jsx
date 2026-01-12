@@ -1,3 +1,4 @@
+
 /**
  * CENTRALIZED CONSTANTS
  * All configuration, enums, and static data in one place
@@ -18,19 +19,19 @@ export const POINTS_CONFIG = {
   recognition_received: { points: 10, label: 'Recognition Received' }
 };
 
-export const LEVEL_THRESHOLDS = {
-  pointsPerLevel: 100,
-  titles: {
-    1: 'Newcomer',
-    2: 'Explorer',
-    3: 'Contributor',
-    4: 'Connector',
-    5: 'Champion',
-    10: 'Ambassador',
-    15: 'Legend',
-    20: 'Icon'
-  }
-};
+// Level thresholds for gamification system
+export const LEVEL_THRESHOLDS = [
+  { level: 1, points: 0, title: 'Newcomer' },
+  { level: 2, points: 100, title: 'Explorer' },
+  { level: 3, points: 250, title: 'Contributor' },
+  { level: 4, points: 500, title: 'Enthusiast' },
+  { level: 5, points: 1000, title: 'Champion' },
+  { level: 6, points: 1500, title: 'Expert' },
+  { level: 7, points: 2500, title: 'Master' },
+  { level: 8, points: 4000, title: 'Legend' },
+  { level: 9, points: 6000, title: 'Hero' },
+  { level: 10, points: 10000, title: 'Elite' }
+];
 
 export const BADGE_RARITIES = {
   common: { color: 'slate', label: 'Common', multiplier: 1 },

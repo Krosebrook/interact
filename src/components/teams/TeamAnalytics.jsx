@@ -173,7 +173,7 @@ export default function TeamAnalytics({ teamId }) {
   if (!team) return null;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-b44-sync="true" data-feature="teams" data-component="teamanalytics">
       {/* Quick Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Card className="border-2 border-int-orange">

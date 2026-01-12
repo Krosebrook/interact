@@ -92,7 +92,7 @@ export default function LivePollCreator({ eventId }) {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4" data-b44-sync="true" data-feature="facilitator" data-component="livepollcreator">
       <Card className="p-6">
         <h3 className="font-bold text-lg mb-4">Create Live Poll</h3>
         

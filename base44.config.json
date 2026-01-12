@@ -1,0 +1,110 @@
+{
+  "$schema": "https://app.base44.com/schemas/config/v1",
+  "version": "1.0.0",
+  "project": {
+    "name": "Interact Platform",
+    "description": "Enterprise employee engagement platform with AI-powered gamification",
+    "plan": "Builder",
+    "features": {
+      "2waySync": true,
+      "visualCanvas": true,
+      "componentDiscovery": true
+    }
+  },
+  "sync": {
+    "enabled": true,
+    "mode": "2-way",
+    "generationVersion": "2",
+    "manifestPath": ".github/sync-manifest.json",
+    "components": {
+      "scanPaths": [
+        "src/components/**/*.jsx",
+        "src/modules/**/components/*.jsx",
+        "src/pages/**/*.jsx"
+      ],
+      "excludePaths": [
+        "src/components/ui/**",
+        "**/*.test.jsx",
+        "**/*.stories.jsx"
+      ],
+      "syncAttribute": "data-b44-sync",
+      "requireDefaultExport": true
+    },
+    "functions": {
+      "scanPaths": [
+        "functions/**/*.ts"
+      ],
+      "excludePaths": [
+        "functions/**/*.test.ts"
+      ]
+    }
+  },
+  "canvas": {
+    "layout": "auto",
+    "groupBy": "feature",
+    "defaultContainer": "main",
+    "containers": {
+      "main": {
+        "description": "Main application canvas",
+        "defaultView": "dashboard"
+      },
+      "admin": {
+        "description": "Admin panel canvas",
+        "requiresAuth": true
+      },
+      "facilitator": {
+        "description": "Facilitator tools canvas",
+        "requiresAuth": true
+      }
+    }
+  },
+  "schema": {
+    "path": "src/models/schema.json",
+    "autoSync": true,
+    "validation": {
+      "strict": false,
+      "warnOnMissing": true
+    }
+  },
+  "build": {
+    "framework": "vite",
+    "outDir": "dist",
+    "entryPoint": "src/main.jsx"
+  },
+  "integrations": {
+    "openai": {
+      "enabled": true,
+      "models": ["gpt-4", "gpt-3.5-turbo"]
+    },
+    "anthropic": {
+      "enabled": true,
+      "models": ["claude-3-opus", "claude-3-sonnet"]
+    },
+    "google": {
+      "enabled": true,
+      "services": ["gemini", "calendar", "maps"]
+    },
+    "cloudinary": {
+      "enabled": true,
+      "purpose": "media-storage"
+    }
+  },
+  "entities": {
+    "autoDetect": true,
+    "schemaPath": "src/models/schema.json"
+  },
+  "typescript": {
+    "enabled": false,
+    "migrationPlanned": "Q2-2025",
+    "configPath": "jsconfig.json"
+  },
+  "linting": {
+    "enabled": true,
+    "configPath": "eslint.config.js"
+  },
+  "testing": {
+    "framework": "vitest",
+    "inProgress": true,
+    "targetCoverage": 80
+  }
+}

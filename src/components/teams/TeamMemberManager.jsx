@@ -165,7 +165,7 @@ export default function TeamMemberManager({ teamId, team, currentUserEmail, isLe
   const getMemberUser = (email) => users.find(u => u.email === email);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-b44-sync="true" data-feature="teams" data-component="teammembermanager">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>

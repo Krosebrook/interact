@@ -44,7 +44,7 @@ export default function PersonalizedCoachWidget({ userEmail, compact = false }) 
 
   const getActionIcon = (actionType) => {
     switch (actionType) {
-      case 'earn_points': return <Zap className="h-4 w-4" />;
+      case 'earn_points': return <Zap data-b44-sync="true" data-feature="gamification" data-component="personalizedcoachwidget" className="h-4 w-4" />;
       case 'earn_badge': return <Award className="h-4 w-4" />;
       case 'redeem_reward': return <Gift className="h-4 w-4" />;
       case 'level_up': return <TrendingUp className="h-4 w-4" />;

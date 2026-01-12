@@ -71,7 +71,7 @@ export default function SkillsInterestsManager({ profile, onUpdate }) {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-b44-sync="true" data-feature="profile" data-component="skillsinterestsmanager">
       {/* Skills Section */}
       <Card className="border-0 shadow-lg">
         <CardHeader>

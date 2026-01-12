@@ -27,7 +27,7 @@ export default function GamificationCustomizer({ userEmail, profile, userPoints 
   });
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-b44-sync="true" data-feature="profile" data-component="gamificationcustomizer">
       {/* Header */}
       <Card className="border-2 border-purple-200 bg-gradient-to-br from-purple-50 to-pink-50">
         <CardHeader>

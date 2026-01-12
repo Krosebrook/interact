@@ -42,7 +42,7 @@ export default function FlairCustomizer({ userEmail, currentFlair = {}, userPoin
   const badgeOptions = flairOptions?.filter(f => f.type === 'badge_showcase') || [];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-b44-sync="true" data-feature="profile" data-component="flaircustomizer">
       {/* Preview */}
       <Card className="bg-gradient-to-br from-purple-50 to-pink-50 border-purple-200">
         <CardContent className="py-6">

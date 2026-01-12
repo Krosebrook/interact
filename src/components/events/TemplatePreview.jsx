@@ -28,7 +28,7 @@ export default function TemplatePreview({ template, onCustomize }) {
   const totalAgendaTime = (template.agenda || []).reduce((sum, item) => sum + (item.duration_minutes || 0), 0);
 
   return (
-    <Card className="border-0 shadow-lg">
+    <Card className="border-0 shadow-lg" data-b44-sync="true" data-feature="events" data-component="templatepreview">
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">

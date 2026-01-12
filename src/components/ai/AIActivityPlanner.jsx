@@ -343,7 +343,7 @@ Be creative - don't suggest generic activities. Think outside the box!`;
   };
 
   return (
-    <Dialog open={open} onOpenChange={handleClose}>
+    <Dialog data-b44-sync="true" data-feature="ai" data-component="aiactivityplanner" open={open} onOpenChange={handleClose}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-2xl">

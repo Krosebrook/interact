@@ -30,7 +30,7 @@ export default function AIPersonalizationSuggestions({ userEmail, profile, userP
   if (!suggestions) return null;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-b44-sync="true" data-feature="profile" data-component="aipersonalizationsuggestions">
       {/* Personalized Message */}
       {suggestions.personalized_message && (
         <Card className="bg-gradient-to-br from-purple-600 to-pink-600 text-white border-0">

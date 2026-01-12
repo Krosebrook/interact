@@ -76,7 +76,7 @@ export default function LiveQASection({ eventId, userEmail, userName, isHost }) 
   const pinnedMessages = messages.filter(m => m.is_pinned);
 
   const MessageItem = ({ msg, showActions = true }) => (
-    <div className={`p-3 rounded-lg ${msg.is_pinned ? 'bg-yellow-50 border border-yellow-200' : 'bg-slate-50'} ${msg.message_type === 'announcement' ? 'bg-blue-50 border border-blue-200' : ''}`}>
+    <div className={`p-3 rounded-lg ${msg.is_pinned ? 'bg-yellow-50 border border-yellow-200' : 'bg-slate-50'} ${msg.message_type === 'announcement' ? 'bg-blue-50 border border-blue-200' : ''}`} data-b44-sync="true" data-feature="events" data-component="liveqasection">
       <div className="flex items-start justify-between gap-2">
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-1">

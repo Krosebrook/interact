@@ -89,6 +89,9 @@ export default function FacilitatorAgentChat({ onClose }) {
   if (isMinimized) {
     return (
       <motion.div
+        data-b44-sync="true"
+        data-feature="facilitator"
+        data-component="facilitatoragentchat"
         initial={{ scale: 0.8, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         className="fixed bottom-6 right-6 z-50"
