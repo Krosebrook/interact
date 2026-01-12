@@ -11,6 +11,7 @@ import Documentation from './pages/Documentation';
 import EmployeeDirectory from './pages/EmployeeDirectory';
 import EventTemplates from './pages/EventTemplates';
 import EventWizard from './pages/EventWizard';
+import ExampleModulePage from './pages/ExampleModulePage';
 import FacilitatorDashboard from './pages/FacilitatorDashboard';
 import FacilitatorView from './pages/FacilitatorView';
 import Gamification from './pages/Gamification';
@@ -54,6 +55,7 @@ import TeamPerformanceDashboard from './pages/TeamPerformanceDashboard';
 import Teams from './pages/Teams';
 import UserProfile from './pages/UserProfile';
 import UserRoleAssignment from './pages/UserRoleAssignment';
+import TeamAutomation from './pages/TeamAutomation';
 import __Layout from './Layout.jsx';
 
 
@@ -71,6 +73,7 @@ export const PAGES = {
     "EmployeeDirectory": EmployeeDirectory,
     "EventTemplates": EventTemplates,
     "EventWizard": EventWizard,
+    "ExampleModulePage": ExampleModulePage,
     "FacilitatorDashboard": FacilitatorDashboard,
     "FacilitatorView": FacilitatorView,
     "Gamification": Gamification,
@@ -114,6 +117,7 @@ export const PAGES = {
     "Teams": Teams,
     "UserProfile": UserProfile,
     "UserRoleAssignment": UserRoleAssignment,
+    "TeamAutomation": TeamAutomation,
 }
 
 export const pagesConfig = {
