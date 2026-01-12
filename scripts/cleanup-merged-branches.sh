@@ -70,7 +70,7 @@ if [ -z "$MERGED_BRANCHES" ]; then
 fi
 
 echo "╔════════════════════════════════════════════════════════════╗"
-echo "║           Local Branches Merged into $MAIN_BRANCH                 ║"
+printf "║           Local Branches Merged into %-18s║\n" "$MAIN_BRANCH"
 echo "╚════════════════════════════════════════════════════════════╝"
 echo ""
 echo "$MERGED_BRANCHES"
@@ -121,7 +121,7 @@ fi
 
 echo ""
 echo "╔════════════════════════════════════════════════════════════╗"
-echo "║          Remote Branches Merged into $MAIN_BRANCH                ║"
+printf "║          Remote Branches Merged into %-17s║\n" "$MAIN_BRANCH"
 echo "╚════════════════════════════════════════════════════════════╝"
 echo ""
 echo "$REMOTE_MERGED"

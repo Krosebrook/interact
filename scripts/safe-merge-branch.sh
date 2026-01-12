@@ -101,7 +101,7 @@ print_success "Main branch updated"
 
 # Step 8: Check if branch is already merged
 print_status "Checking if branch is already merged..."
-if git branch --merged | grep -q "$BRANCH_NAME"; then
+if git branch --merged "$MAIN_BRANCH" | grep -q "$BRANCH_NAME"; then
     print_warning "Branch '$BRANCH_NAME' is already merged into main"
     echo ""
     read -p "Do you want to delete the branch? (y/n) " -n 1 -r
