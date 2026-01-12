@@ -53,7 +53,7 @@ export default function SSOLoginButton({ provider = 'azure_ad', organizationId, 
       const orgId = organizationId || getOrganizationFromDomain();
       
       if (!orgId) {
-        throw new Error('Organization ID is required for SSO login');
+        throw new Error('Please provide your organization identifier to sign in');
       }
 
       // Initiate SSO flow via Base44 function

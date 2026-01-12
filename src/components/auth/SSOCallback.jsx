@@ -54,11 +54,10 @@ export default function SSOCallback() {
         setStatus('success');
         setMessage('Sign-in successful! Redirecting...');
         
-        // Store session token
-        if (result.data.session_token) {
-          localStorage.setItem('session_token', result.data.session_token);
-        }
-
+        // Note: Session token is managed securely by Base44 SDK
+        // Token is stored in httpOnly cookie by the backend
+        // For additional client-side operations, use the SDK's session management
+        
         // Wait briefly to show success message
         setTimeout(() => {
           // Redirect to dashboard or intended destination
