@@ -168,12 +168,14 @@ Provide analysis as JSON:
     const flagInfo = item.ai_flag_reason ? FLAG_REASONS[item.ai_flag_reason] : null;
 
     return (
-      <Card key={item.id} className={`transition-all ${
+      <Card 
+        key={item.id}
         data-b44-sync="true"
         data-feature="recognition"
         data-component="moderationqueue"
-        item.status === 'flagged' ? 'border-red-200 bg-red-50/50' : ''
-      }`}>
+        className={`transition-all ${
+          item.status === 'flagged' ? 'border-red-200 bg-red-50/50' : ''
+        }`}>
         <CardContent className="p-4">
           <div className="flex items-start gap-4">
             {/* AI Flag indicator */}
