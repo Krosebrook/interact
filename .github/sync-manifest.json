@@ -1,0 +1,6486 @@
+/tmp/generate_manifest.py:111: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  'generated': datetime.utcnow().isoformat() + 'Z',
+{
+  "version": "1.0.0",
+  "generated": "2026-01-12T05:26:24.447440Z",
+  "project": "Interact Platform",
+  "base44": {
+    "plan": "Builder",
+    "sync": "2-way",
+    "generation": 2
+  },
+  "summary": {
+    "totalComponents": 540,
+    "totalFunctions": 74,
+    "syncedComponents": 156,
+    "zombieComponents": 142,
+    "categories": [
+      "UserNotRegisteredError.jsx",
+      "ai",
+      "dashboard",
+      "admin",
+      "events",
+      "types",
+      "teams",
+      "utils",
+      "services",
+      "moderation",
+      "lib",
+      "notifications",
+      "facilitator",
+      "leaderboard",
+      "recognition",
+      "accessibility",
+      "hooks",
+      "ui",
+      "profile",
+      "milestones",
+      "store",
+      "docs",
+      "core",
+      "social",
+      "learning",
+      "integrations",
+      "common",
+      "settings",
+      "onboarding",
+      "tutorials",
+      "analytics",
+      "gamification",
+      "shared",
+      "teamLeader",
+      "contexts",
+      "participant",
+      "channels",
+      "templates",
+      "surveys",
+      "skills",
+      "interactive",
+      "activities",
+      "pwa"
+    ]
+  },
+  "components": {
+    "byCategory": {
+      "UserNotRegisteredError.jsx": [
+        {
+          "name": "UserNotRegisteredError",
+          "path": "src/components/UserNotRegisteredError.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        }
+      ],
+      "ai": [
+        {
+          "name": "EventHistoryAnalyzer",
+          "path": "src/components/ai/EventHistoryAnalyzer.jsx",
+          "props": [],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "FacilitatorAIAssistant",
+          "path": "src/components/ai/FacilitatorAIAssistant.jsx",
+          "props": [
+            "event",
+            "participants",
+            "activity"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "AISuggestionsWidget",
+          "path": "src/components/ai/AISuggestionsWidget.jsx",
+          "props": [
+            "onScheduleActivity",
+            "onGenerateCustom"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "AIEventThemeGenerator",
+          "path": "src/components/ai/AIEventThemeGenerator.jsx",
+          "props": [
+            "open",
+            "onOpenChange",
+            "onThemeGenerated"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "SmartSchedulingAssistant",
+          "path": "src/components/ai/SmartSchedulingAssistant.jsx",
+          "props": [
+            "onEventCreated",
+            "selectedActivity"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "ThemeCustomizer",
+          "path": "src/components/ai/ThemeCustomizer.jsx",
+          "props": [
+            "theme",
+            "inputs",
+            "onSave",
+            "onBack"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "ActivityGenerator",
+          "path": "src/components/ai/ActivityGenerator.jsx",
+          "props": [
+            "open",
+            "onOpenChange",
+            "onClose",
+            "onActivityCreated"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "AIEventSuggestionEngine",
+          "path": "src/components/ai/AIEventSuggestionEngine.jsx",
+          "props": [
+            "teamId",
+            "onEventCreated"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "AIInsightsPanel",
+          "path": "src/components/ai/AIInsightsPanel.jsx",
+          "props": [
+            "events",
+            "participations",
+            "activities",
+            "userEmail"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "AIActivityPlanner",
+          "path": "src/components/ai/AIActivityPlanner.jsx",
+          "props": [
+            "open",
+            "onOpenChange",
+            "onActivityCreated"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "TeamInsightsPanel",
+          "path": "src/components/ai/TeamInsightsPanel.jsx",
+          "props": [],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "PersonalizedRecommendations",
+          "path": "src/components/ai/PersonalizedRecommendations.jsx",
+          "props": [
+            "userEmail",
+            "userProfile",
+            "participationHistory",
+            "activities",
+            "onScheduleActivity"
+          ],
+          "hasSync": true,
+          "container": "main"
+        }
+      ],
+      "dashboard": [
+        {
+          "name": "OnboardingWidget",
+          "path": "src/components/dashboard/OnboardingWidget.jsx",
+          "props": [
+            "variant"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "QuickActionsPanel",
+          "path": "src/components/dashboard/QuickActionsPanel.jsx",
+          "props": [
+            "onOpenAgentChat",
+            "onOpenActivityGenerator",
+            "onOpenTemplates"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "StatsCard",
+          "path": "src/components/dashboard/StatsCard.jsx",
+          "props": [
+            "title",
+            "value",
+            "subtitle",
+            "icon",
+            "color",
+            "trend"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "ReactiveEventList",
+          "path": "src/components/dashboard/ReactiveEventList.jsx",
+          "props": [
+            "events",
+            "activities",
+            "participations",
+            "title",
+            "emptyMessage",
+            "onEventAction",
+            "maxItems",
+            "showViewAll"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "DashboardCustomizer",
+          "path": "src/components/dashboard/DashboardCustomizer.jsx",
+          "props": [
+            "userEmail",
+            "open",
+            "onOpenChange"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "LiveEventsBanner",
+          "path": "src/components/dashboard/LiveEventsBanner.jsx",
+          "props": [
+            "events",
+            "participations"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "QuickStats",
+          "path": "src/components/dashboard/QuickStats.jsx",
+          "props": [
+            "stats",
+            "icon",
+            "color"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "CompletedEventsList",
+          "path": "src/components/dashboard/CompletedEventsList.jsx",
+          "props": [
+            "events",
+            "activities",
+            "participations"
+          ],
+          "hasSync": true,
+          "container": "main"
+        }
+      ],
+      "admin": [
+        {
+          "name": "RoleManagement",
+          "path": "src/components/admin/RoleManagement.jsx",
+          "props": [],
+          "hasSync": true,
+          "container": "admin"
+        },
+        {
+          "name": "UserManagementPanel",
+          "path": "src/components/admin/UserManagementPanel.jsx",
+          "props": [
+            "currentUser"
+          ],
+          "hasSync": true,
+          "container": "admin"
+        },
+        {
+          "name": "BulkUserImport",
+          "path": "src/components/admin/BulkUserImport.jsx",
+          "props": [
+            "currentUser"
+          ],
+          "hasSync": true,
+          "container": "admin"
+        },
+        {
+          "name": "UserTypeManager",
+          "path": "src/components/admin/UserTypeManager.jsx",
+          "props": [],
+          "hasSync": true,
+          "container": "admin"
+        },
+        {
+          "name": "RoleManagementSetup",
+          "path": "src/components/admin/RoleManagementSetup.jsx",
+          "props": [
+            "onComplete"
+          ],
+          "hasSync": true,
+          "container": "admin"
+        },
+        {
+          "name": "AIAdminAssistant",
+          "path": "src/components/admin/AIAdminAssistant.jsx",
+          "props": [],
+          "hasSync": true,
+          "container": "admin"
+        },
+        {
+          "name": "PointsAdjustment",
+          "path": "src/components/admin/PointsAdjustment.jsx",
+          "props": [
+            "userEmail",
+            "currentPoints",
+            "onSuccess"
+          ],
+          "hasSync": true,
+          "container": "admin"
+        },
+        {
+          "name": "GamificationConfigPanel",
+          "path": "src/components/admin/GamificationConfigPanel.jsx",
+          "props": [],
+          "hasSync": true,
+          "container": "admin"
+        },
+        {
+          "name": "PredictiveHealthDashboard",
+          "path": "src/components/admin/PredictiveHealthDashboard.jsx",
+          "props": [],
+          "hasSync": true,
+          "container": "admin"
+        },
+        {
+          "name": "SurveyManagement",
+          "path": "src/components/admin/SurveyManagement.jsx",
+          "props": [
+            "open",
+            "onOpenChange",
+            "survey",
+            "onSuccess"
+          ],
+          "hasSync": true,
+          "container": "admin"
+        },
+        {
+          "name": "CustomChallengeCreator",
+          "path": "src/components/admin/CustomChallengeCreator.jsx",
+          "props": [],
+          "hasSync": true,
+          "container": "admin"
+        },
+        {
+          "name": "GamificationRulesConfig",
+          "path": "src/components/admin/gamification/GamificationRulesConfig.jsx",
+          "props": [
+            "rule",
+            "badges",
+            "onSuccess"
+          ],
+          "hasSync": false,
+          "container": "admin"
+        },
+        {
+          "name": "AIContentGenerator",
+          "path": "src/components/admin/gamification/AIContentGenerator.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "admin"
+        },
+        {
+          "name": "QuickStatsLoader",
+          "path": "src/components/admin/gamification/QuickStatsLoader.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "admin"
+        },
+        {
+          "name": "ContentIntegrationManager",
+          "path": "src/components/admin/gamification/ContentIntegrationManager.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "admin"
+        },
+        {
+          "name": "SkillDevelopmentTrends",
+          "path": "src/components/admin/gamification/SkillDevelopmentTrends.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "admin"
+        },
+        {
+          "name": "EngagementAnalytics",
+          "path": "src/components/admin/gamification/EngagementAnalytics.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "admin"
+        },
+        {
+          "name": "AIRuleOptimizer",
+          "path": "src/components/admin/gamification/AIRuleOptimizer.jsx",
+          "props": [
+            "suggestion",
+            "onViewDetails",
+            "showActions",
+            "showImplement"
+          ],
+          "hasSync": false,
+          "container": "admin"
+        },
+        {
+          "name": "ManualAwardsPanel",
+          "path": "src/components/admin/gamification/ManualAwardsPanel.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "admin"
+        },
+        {
+          "name": "UserProgressOverview",
+          "path": "src/components/admin/gamification/UserProgressOverview.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "admin"
+        }
+      ],
+      "events": [
+        {
+          "name": "LiveQASection",
+          "path": "src/components/events/LiveQASection.jsx",
+          "props": [
+            "eventId",
+            "userEmail",
+            "userName",
+            "isHost"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "EventActionsMenu",
+          "path": "src/components/events/EventActionsMenu.jsx",
+          "props": [
+            "event",
+            "onCopyLink",
+            "onDownloadCalendar",
+            "onSendReminder",
+            "onSendRecap",
+            "onCancel",
+            "onDelete"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "CalendarHeader",
+          "path": "src/components/events/CalendarHeader.jsx",
+          "props": [
+            "onScheduleEvent",
+            "onCreatePoll",
+            "onCreateSeries",
+            "onBulkSchedule"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "GoogleCalendarActions",
+          "path": "src/components/events/GoogleCalendarActions.tsx.jsx",
+          "props": [
+            "eventId",
+            "onImportComplete"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "EventMediaGallery",
+          "path": "src/components/events/EventMediaGallery.jsx",
+          "props": [
+            "eventId",
+            "canUpload"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "TimeSlotPollCreator",
+          "path": "src/components/events/TimeSlotPollCreator.jsx",
+          "props": [
+            "onSubmit",
+            "activities",
+            "isSubmitting"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "BookmarkButton",
+          "path": "src/components/events/BookmarkButton.jsx",
+          "props": [
+            "eventId",
+            "userEmail",
+            "variant",
+            "size",
+            "showLabel"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "useEventAttendance",
+          "path": "src/components/events/useEventAttendance.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "TemplatePreview",
+          "path": "src/components/events/TemplatePreview.jsx",
+          "props": [
+            "template",
+            "onCustomize"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "RegistrationFormBuilder",
+          "path": "src/components/events/RegistrationFormBuilder.jsx",
+          "props": [
+            "open",
+            "onOpenChange",
+            "eventId",
+            "seriesId",
+            "onFormCreated"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "EventTypeConditionalFields",
+          "path": "src/components/events/EventTypeConditionalFields.jsx",
+          "props": [
+            "eventType",
+            "typeSpecificFields"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "TimeSlotVoter",
+          "path": "src/components/events/TimeSlotVoter.jsx",
+          "props": [
+            "poll",
+            "userEmail",
+            "onVote",
+            "onSchedule",
+            "isAdmin",
+            "isVoting"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "TimeSlotSuggestions",
+          "path": "src/components/events/TimeSlotSuggestions.jsx",
+          "props": [
+            "onSelectTime"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "EventRecordingPlayer",
+          "path": "src/components/events/EventRecordingPlayer.jsx",
+          "props": [
+            "eventId",
+            "eventTitle",
+            "isHost",
+            "userEmail"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "EventRescheduleDialog",
+          "path": "src/components/events/EventRescheduleDialog.jsx",
+          "props": [
+            "open",
+            "onOpenChange",
+            "event",
+            "onRescheduleComplete"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "BulkEventScheduler",
+          "path": "src/components/events/BulkEventScheduler.jsx",
+          "props": [
+            "open",
+            "onOpenChange",
+            "activities",
+            "teams",
+            "onScheduleComplete"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "EventSeriesCreator",
+          "path": "src/components/events/EventSeriesCreator.jsx",
+          "props": [
+            "open",
+            "onOpenChange",
+            "onSeriesCreated"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "EventCalendarCard",
+          "path": "src/components/events/EventCalendarCard.jsx",
+          "props": [
+            "event",
+            "activity",
+            "participantCount",
+            "onView",
+            "onCopyLink",
+            "onDownloadCalendar",
+            "onSendReminder",
+            "onSendRecap",
+            "onCancel",
+            "onDelete"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "RichTextEventEditor",
+          "path": "src/components/events/RichTextEventEditor.jsx",
+          "props": [
+            "value",
+            "onChange",
+            "label",
+            "placeholder"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "BookmarkedEventsList",
+          "path": "src/components/events/BookmarkedEventsList.jsx",
+          "props": [
+            "userEmail"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "GoogleCalendarActions",
+          "path": "src/components/events/GoogleCalendarActions.jsx",
+          "props": [
+            "eventId",
+            "onImportComplete"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "EventsList",
+          "path": "src/components/events/EventsList.jsx",
+          "props": [
+            "title",
+            "events",
+            "activities",
+            "participations",
+            "isLoading",
+            "maxItems",
+            "userEmail",
+            "eventActions",
+            "onReschedule",
+            "emptyTitle"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "TimeSlotPollList",
+          "path": "src/components/events/TimeSlotPollList.jsx",
+          "props": [
+            "userEmail",
+            "userName",
+            "isAdmin",
+            "onEventCreated"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "EventTemplateSelector",
+          "path": "src/components/events/EventTemplateSelector.jsx",
+          "props": [
+            "open",
+            "onOpenChange",
+            "onSelectTemplate"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "EventTemplateEditor",
+          "path": "src/components/events/EventTemplateEditor.jsx",
+          "props": [
+            "open",
+            "onOpenChange",
+            "template",
+            "onSaved"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "useEventActions",
+          "path": "src/components/events/useEventActions.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "ReminderPreferences",
+          "path": "src/components/events/ReminderPreferences.jsx",
+          "props": [
+            "eventId",
+            "seriesId",
+            "userEmail",
+            "eventDate"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "RecurrenceSettings",
+          "path": "src/components/events/RecurrenceSettings.jsx",
+          "props": [
+            "recurrenceData",
+            "onChange",
+            "disabled"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "CustomRegistrationForm",
+          "path": "src/components/events/CustomRegistrationForm.jsx",
+          "props": [
+            "form",
+            "eventId",
+            "seriesId",
+            "userEmail",
+            "userName",
+            "onSubmitSuccess"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "EventTasksManager",
+          "path": "src/components/events/EventTasksManager.jsx",
+          "props": [
+            "tasks",
+            "onChange",
+            "availableUsers",
+            "aiSuggestions"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "FacilitatorEventCard",
+          "path": "src/components/events/FacilitatorEventCard.jsx",
+          "props": [
+            "event",
+            "activity",
+            "participationStats",
+            "onSendReminder",
+            "onDownloadCalendar",
+            "isLoading"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "EventReportViewer",
+          "path": "src/components/events/EventReportViewer.jsx",
+          "props": [
+            "eventId",
+            "eventTitle"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "CreatePollDialog",
+          "path": "src/components/events/CreatePollDialog.jsx",
+          "props": [
+            "open",
+            "onOpenChange",
+            "activities",
+            "onSubmit",
+            "isSubmitting"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "ScheduleEventDialog",
+          "path": "src/components/events/ScheduleEventDialog.jsx",
+          "props": [
+            "open",
+            "onOpenChange",
+            "activities",
+            "formData",
+            "setFormData",
+            "recurrenceSettings",
+            "setRecurrenceSettings",
+            "onSubmit",
+            "isSubmitting"
+          ],
+          "hasSync": true,
+          "container": "main"
+        }
+      ],
+      "types": [
+        {
+          "name": "entities.ts",
+          "path": "src/components/types/entities.ts.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        }
+      ],
+      "teams": [
+        {
+          "name": "TeamChallengeLeaderboard",
+          "path": "src/components/teams/TeamChallengeLeaderboard.jsx",
+          "props": [
+            "challengeId"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "TeamsConfigPanel",
+          "path": "src/components/teams/TeamsConfigPanel.jsx",
+          "props": [],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "TeamBadgeDisplay",
+          "path": "src/components/teams/TeamBadgeDisplay.jsx",
+          "props": [
+            "teamId",
+            "teamData"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "TeamMemberManager",
+          "path": "src/components/teams/TeamMemberManager.jsx",
+          "props": [
+            "teamId",
+            "team",
+            "currentUserEmail",
+            "isLeader"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "MyTeamCard",
+          "path": "src/components/teams/MyTeamCard.jsx",
+          "props": [
+            "team",
+            "user",
+            "onNavigateToDashboard",
+            "onManageMembers",
+            "onViewAnalytics",
+            "onLeaveTeam",
+            "isLeaving"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "CreateTeamChallengeDialog",
+          "path": "src/components/teams/CreateTeamChallengeDialog.jsx",
+          "props": [
+            "open",
+            "onOpenChange",
+            "onSuccess"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "TeamChallengeCard",
+          "path": "src/components/teams/TeamChallengeCard.jsx",
+          "props": [
+            "challenge",
+            "userTeamId",
+            "onJoin",
+            "onViewDetails"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "TeamChallengeManager",
+          "path": "src/components/teams/TeamChallengeManager.jsx",
+          "props": [
+            "userEmail",
+            "userTeamId"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "TeamCard",
+          "path": "src/components/teams/TeamCard.jsx",
+          "props": [
+            "team",
+            "index",
+            "isMyTeam",
+            "isLeader",
+            "currentUserEmail",
+            "onJoin",
+            "onViewDashboard",
+            "isJoining"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "TeamVsTeamLeaderboard",
+          "path": "src/components/teams/TeamVsTeamLeaderboard.jsx",
+          "props": [
+            "userTeamId"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "TeamAnalytics",
+          "path": "src/components/teams/TeamAnalytics.jsx",
+          "props": [
+            "teamId"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "CreateTeamDialog",
+          "path": "src/components/teams/CreateTeamDialog.jsx",
+          "props": [
+            "open",
+            "onOpenChange",
+            "onSubmit",
+            "isSubmitting"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "useTeamActions",
+          "path": "src/components/teams/useTeamActions.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        }
+      ],
+      "utils": [
+        {
+          "name": "hapticFeedback",
+          "path": "src/components/utils/hapticFeedback.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "constants",
+          "path": "src/components/utils/constants.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "soundEffects",
+          "path": "src/components/utils/soundEffects.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "validators",
+          "path": "src/components/utils/validators.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "eventFilters",
+          "path": "src/components/utils/eventFilters.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "accessibilityHelpers",
+          "path": "src/components/utils/accessibilityHelpers.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "eventUtils",
+          "path": "src/components/utils/eventUtils.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "formatters",
+          "path": "src/components/utils/formatters.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "fileValidation",
+          "path": "src/components/utils/fileValidation.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        }
+      ],
+      "services": [
+        {
+          "name": "eventService.ts",
+          "path": "src/components/services/eventService.ts.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "errorService.ts",
+          "path": "src/components/services/errorService.ts.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        }
+      ],
+      "moderation": [
+        {
+          "name": "ModerationQueue",
+          "path": "src/components/moderation/ModerationQueue.jsx",
+          "props": [
+            "currentUser"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "ModerationItem",
+          "path": "src/components/moderation/ModerationItem.jsx",
+          "props": [
+            "item",
+            "isSelected",
+            "moderationNote",
+            "onNoteChange",
+            "onSelectItem",
+            "onApprove",
+            "onReject",
+            "onAnalyze",
+            "isAnalyzing",
+            "isModerating"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "useModerationActions",
+          "path": "src/components/moderation/hooks/useModerationActions.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        }
+      ],
+      "lib": [
+        {
+          "name": "apiClient",
+          "path": "src/components/lib/apiClient.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "dataTransformers",
+          "path": "src/components/lib/dataTransformers.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "api",
+          "path": "src/components/lib/api.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "cacheConfig",
+          "path": "src/components/lib/cacheConfig.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "performance",
+          "path": "src/components/lib/performance.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "config",
+          "path": "src/components/lib/config.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "imageUtils",
+          "path": "src/components/lib/imageUtils.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "utils",
+          "path": "src/components/lib/utils.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "constants",
+          "path": "src/components/lib/constants.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "index",
+          "path": "src/components/lib/index.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "validation",
+          "path": "src/components/lib/validation.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "queryKeys",
+          "path": "src/components/lib/queryKeys.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "optimisticMutations",
+          "path": "src/components/lib/optimisticMutations.jsx",
+          "props": [
+            "mutationFn",
+            "queryKey",
+            "updateFn",
+            "successMessage",
+            "errorMessage",
+            "onSuccess",
+            "onError",
+            ""
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "authManager",
+          "path": "src/components/lib/authManager.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "errors",
+          "path": "src/components/lib/errors.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "cacheManager",
+          "path": "src/components/lib/cacheManager.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "REFACTOR_PLAN.md",
+          "path": "src/components/lib/architecture/REFACTOR_PLAN.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "DESIGN_SYSTEM.md",
+          "path": "src/components/lib/architecture/DESIGN_SYSTEM.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "USER_FLOWS.md",
+          "path": "src/components/lib/architecture/USER_FLOWS.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "REFACTOR_COMPLETE.md",
+          "path": "src/components/lib/architecture/REFACTOR_COMPLETE.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "DELIVERABLES.md",
+          "path": "src/components/lib/architecture/DELIVERABLES.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "README.md",
+          "path": "src/components/lib/architecture/README.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "memoization",
+          "path": "src/components/lib/performance/memoization.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "useMemoizedValue",
+          "path": "src/components/lib/performance/useMemoizedValue.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "testUtils",
+          "path": "src/components/lib/testing/testUtils.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "rbac",
+          "path": "src/components/lib/security/rbac.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "index",
+          "path": "src/components/lib/constants/index.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "companyConfig",
+          "path": "src/components/lib/constants/companyConfig.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "errorMessages",
+          "path": "src/components/lib/constants/errorMessages.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "usePageView",
+          "path": "src/components/lib/analytics/usePageView.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "index",
+          "path": "src/components/lib/analytics/index.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "eventTracking",
+          "path": "src/components/lib/analytics/eventTracking.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "inputValidation",
+          "path": "src/components/lib/validation/inputValidation.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "permissions",
+          "path": "src/components/lib/rbac/permissions.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "index",
+          "path": "src/components/lib/rbac/index.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "roles",
+          "path": "src/components/lib/rbac/roles.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "useRBAC",
+          "path": "src/components/lib/rbac/useRBAC.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "PermissionGate",
+          "path": "src/components/lib/rbac/PermissionGate.jsx",
+          "props": [
+            "children",
+            "permission",
+            "permissions",
+            "requireAll",
+            "fallback"
+          ],
+          "hasSync": false,
+          "container": "main"
+        }
+      ],
+      "notifications": [
+        {
+          "name": "NotificationBell",
+          "path": "src/components/notifications/NotificationBell.jsx",
+          "props": [
+            "userEmail"
+          ],
+          "hasSync": false,
+          "container": "main"
+        }
+      ],
+      "facilitator": [
+        {
+          "name": "LiveAnnouncements",
+          "path": "src/components/facilitator/LiveAnnouncements.jsx",
+          "props": [
+            "eventId"
+          ],
+          "hasSync": true,
+          "container": "facilitator"
+        },
+        {
+          "name": "CommunicationHub",
+          "path": "src/components/facilitator/CommunicationHub.jsx",
+          "props": [
+            "eventId",
+            "eventTitle"
+          ],
+          "hasSync": true,
+          "container": "facilitator"
+        },
+        {
+          "name": "AIContentGenerator",
+          "path": "src/components/facilitator/AIContentGenerator.jsx",
+          "props": [
+            "eventId",
+            "eventTitle",
+            "activityType"
+          ],
+          "hasSync": true,
+          "container": "facilitator"
+        },
+        {
+          "name": "AIQAModerator",
+          "path": "src/components/facilitator/AIQAModerator.jsx",
+          "props": [
+            "eventId",
+            "eventTitle"
+          ],
+          "hasSync": true,
+          "container": "facilitator"
+        },
+        {
+          "name": "ParticipantManager",
+          "path": "src/components/facilitator/ParticipantManager.jsx",
+          "props": [
+            "eventId"
+          ],
+          "hasSync": true,
+          "container": "facilitator"
+        },
+        {
+          "name": "ParticipantProfilesView",
+          "path": "src/components/facilitator/ParticipantProfilesView.jsx",
+          "props": [
+            "eventId"
+          ],
+          "hasSync": true,
+          "container": "facilitator"
+        },
+        {
+          "name": "PostEventRecap",
+          "path": "src/components/facilitator/PostEventRecap.jsx",
+          "props": [
+            "eventId"
+          ],
+          "hasSync": true,
+          "container": "facilitator"
+        },
+        {
+          "name": "FacilitatorSupportChat",
+          "path": "src/components/facilitator/FacilitatorSupportChat.jsx",
+          "props": [
+            "onClose"
+          ],
+          "hasSync": true,
+          "container": "facilitator"
+        },
+        {
+          "name": "RecordingUploader",
+          "path": "src/components/facilitator/RecordingUploader.jsx",
+          "props": [
+            "eventId",
+            "eventTitle",
+            "userEmail"
+          ],
+          "hasSync": true,
+          "container": "facilitator"
+        },
+        {
+          "name": "TemplateAnalytics",
+          "path": "src/components/facilitator/TemplateAnalytics.jsx",
+          "props": [],
+          "hasSync": true,
+          "container": "facilitator"
+        },
+        {
+          "name": "FacilitatorAgentChat",
+          "path": "src/components/facilitator/FacilitatorAgentChat.jsx",
+          "props": [
+            "onClose"
+          ],
+          "hasSync": true,
+          "container": "facilitator"
+        },
+        {
+          "name": "LivePollCreator",
+          "path": "src/components/facilitator/LivePollCreator.jsx",
+          "props": [
+            "eventId"
+          ],
+          "hasSync": true,
+          "container": "facilitator"
+        },
+        {
+          "name": "RealTimeTips",
+          "path": "src/components/facilitator/RealTimeTips.jsx",
+          "props": [
+            "eventId"
+          ],
+          "hasSync": true,
+          "container": "facilitator"
+        },
+        {
+          "name": "PreEventAssistant",
+          "path": "src/components/facilitator/PreEventAssistant.jsx",
+          "props": [
+            "eventId"
+          ],
+          "hasSync": true,
+          "container": "facilitator"
+        },
+        {
+          "name": "AIBreakoutSuggester",
+          "path": "src/components/facilitator/AIBreakoutSuggester.jsx",
+          "props": [
+            "eventId",
+            "eventTitle"
+          ],
+          "hasSync": true,
+          "container": "facilitator"
+        },
+        {
+          "name": "QAModerator",
+          "path": "src/components/facilitator/QAModerator.jsx",
+          "props": [
+            "eventId",
+            "userName",
+            "userEmail"
+          ],
+          "hasSync": true,
+          "container": "facilitator"
+        },
+        {
+          "name": "AIEventSummarizer",
+          "path": "src/components/facilitator/AIEventSummarizer.jsx",
+          "props": [
+            "eventId",
+            "eventTitle"
+          ],
+          "hasSync": true,
+          "container": "facilitator"
+        },
+        {
+          "name": "SessionTimer",
+          "path": "src/components/facilitator/SessionTimer.jsx",
+          "props": [],
+          "hasSync": true,
+          "container": "facilitator"
+        },
+        {
+          "name": "LiveCoachingWidget",
+          "path": "src/components/facilitator/LiveCoachingWidget.jsx",
+          "props": [
+            "eventId"
+          ],
+          "hasSync": true,
+          "container": "facilitator"
+        },
+        {
+          "name": "AIEventSummary",
+          "path": "src/components/facilitator/AIEventSummary.jsx",
+          "props": [
+            "event",
+            "onClose"
+          ],
+          "hasSync": true,
+          "container": "facilitator"
+        }
+      ],
+      "leaderboard": [
+        {
+          "name": "LeaderboardRow",
+          "path": "src/components/leaderboard/LeaderboardRow.jsx",
+          "props": [
+            "rank"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "LeaderboardFilters",
+          "path": "src/components/leaderboard/LeaderboardFilters.jsx",
+          "props": [
+            "category",
+            "period",
+            "onCategoryChange",
+            "onPeriodChange",
+            "showFollowingOnly",
+            "onToggleFollowing"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "MyRankCard",
+          "path": "src/components/leaderboard/MyRankCard.jsx",
+          "props": [
+            "myRank",
+            "nearby",
+            "totalParticipants",
+            "categoryLabel",
+            "userEmail"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "Leaderboard",
+          "path": "src/components/leaderboard/Leaderboard.jsx",
+          "props": [
+            "currentUserEmail",
+            "onViewProfile"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "useLeaderboard",
+          "path": "src/components/leaderboard/hooks/useLeaderboard.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        }
+      ],
+      "recognition": [
+        {
+          "name": "ModerationQueue",
+          "path": "src/components/recognition/ModerationQueue.jsx",
+          "props": [
+            "currentUser"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "RecognitionForm",
+          "path": "src/components/recognition/RecognitionForm.jsx",
+          "props": [
+            "currentUser",
+            "onSuccess"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "RecognitionCard",
+          "path": "src/components/recognition/RecognitionCard.jsx",
+          "props": [
+            "recognition",
+            "currentUserEmail",
+            "onReact",
+            "onFeature",
+            "isAdmin",
+            "compact"
+          ],
+          "hasSync": true,
+          "container": "main"
+        }
+      ],
+      "accessibility": [
+        {
+          "name": "AccessibilityProvider",
+          "path": "src/components/accessibility/AccessibilityProvider.jsx",
+          "props": [
+            "children"
+          ],
+          "hasSync": false,
+          "container": "main"
+        }
+      ],
+      "hooks": [
+        {
+          "name": "useTeamsNotification",
+          "path": "src/components/hooks/useTeamsNotification.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "useServiceLayer.ts",
+          "path": "src/components/hooks/useServiceLayer.ts.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "useActivities",
+          "path": "src/components/hooks/useActivities.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "useRecognitionData",
+          "path": "src/components/hooks/useRecognitionData.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "useSessionTimeout",
+          "path": "src/components/hooks/useSessionTimeout.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "useAnalytics",
+          "path": "src/components/hooks/useAnalytics.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "usePermissions",
+          "path": "src/components/hooks/usePermissions.jsx",
+          "props": [
+            "requires",
+            "requiresAny",
+            "requiresAll",
+            "fallback",
+            "children"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "useEventScheduling",
+          "path": "src/components/hooks/useEventScheduling.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "useCustomPermissions",
+          "path": "src/components/hooks/useCustomPermissions.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "index",
+          "path": "src/components/hooks/index.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "useNotifications",
+          "path": "src/components/hooks/useNotifications.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "useChannelData",
+          "path": "src/components/hooks/useChannelData.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "useRolePermissions",
+          "path": "src/components/hooks/useRolePermissions.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "useStoreData",
+          "path": "src/components/hooks/useStoreData.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "useUserData",
+          "path": "src/components/hooks/useUserData.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "useEventData",
+          "path": "src/components/hooks/useEventData.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "useUserProfile",
+          "path": "src/components/hooks/useUserProfile.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "useRBACGuard",
+          "path": "src/components/hooks/useRBACGuard.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "useTeamData",
+          "path": "src/components/hooks/useTeamData.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "useFormState",
+          "path": "src/components/hooks/useFormState.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "useAuth",
+          "path": "src/components/hooks/useAuth.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "useLeaderboard",
+          "path": "src/components/hooks/useLeaderboard.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "useTeamLeaderData",
+          "path": "src/components/hooks/useTeamLeaderData.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "useOnboarding",
+          "path": "src/components/hooks/useOnboarding.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "useGamificationData",
+          "path": "src/components/hooks/useGamificationData.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "useGamificationTrigger",
+          "path": "src/components/hooks/useGamificationTrigger.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "useEntities",
+          "path": "src/components/hooks/useEntities.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        }
+      ],
+      "ui": [
+        {
+          "name": "drawer",
+          "path": "src/components/ui/drawer.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "toast",
+          "path": "src/components/ui/toast.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "badge",
+          "path": "src/components/ui/badge.jsx",
+          "props": [
+            "className",
+            "variant",
+            "...props"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "table",
+          "path": "src/components/ui/table.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "chart",
+          "path": "src/components/ui/chart.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "toggle",
+          "path": "src/components/ui/toggle.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "tabs",
+          "path": "src/components/ui/tabs.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "calendar",
+          "path": "src/components/ui/calendar.jsx",
+          "props": [
+            "className",
+            "classNames",
+            "showOutsideDays",
+            "...props"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "card",
+          "path": "src/components/ui/card.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "skeleton",
+          "path": "src/components/ui/skeleton.jsx",
+          "props": [
+            "className",
+            "...props"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "LoadingSpinner",
+          "path": "src/components/ui/LoadingSpinner.jsx",
+          "props": [
+            "size",
+            "color"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "aspect-ratio",
+          "path": "src/components/ui/aspect-ratio.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "sidebar",
+          "path": "src/components/ui/sidebar.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "popover",
+          "path": "src/components/ui/popover.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "toaster",
+          "path": "src/components/ui/toaster.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "switch",
+          "path": "src/components/ui/switch.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "menubar",
+          "path": "src/components/ui/menubar.jsx",
+          "props": [
+            "...props"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "PageHeader",
+          "path": "src/components/ui/PageHeader.jsx",
+          "props": [
+            "title",
+            "description",
+            "children"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "tooltip",
+          "path": "src/components/ui/tooltip.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "resizable",
+          "path": "src/components/ui/resizable.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "breadcrumb",
+          "path": "src/components/ui/breadcrumb.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "dropdown-menu",
+          "path": "src/components/ui/dropdown-menu.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "checkbox",
+          "path": "src/components/ui/checkbox.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "input-otp",
+          "path": "src/components/ui/input-otp.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "hover-card",
+          "path": "src/components/ui/hover-card.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "pagination",
+          "path": "src/components/ui/pagination.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "label",
+          "path": "src/components/ui/label.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "use-toast",
+          "path": "src/components/ui/use-toast.jsx",
+          "props": [
+            "...props"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "navigation-menu",
+          "path": "src/components/ui/navigation-menu.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "context-menu",
+          "path": "src/components/ui/context-menu.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "slider",
+          "path": "src/components/ui/slider.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "alert",
+          "path": "src/components/ui/alert.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "command",
+          "path": "src/components/ui/command.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "sonner",
+          "path": "src/components/ui/sonner.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "progress",
+          "path": "src/components/ui/progress.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "sheet",
+          "path": "src/components/ui/sheet.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "carousel",
+          "path": "src/components/ui/carousel.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "EmptyState",
+          "path": "src/components/ui/EmptyState.jsx",
+          "props": [
+            "icon",
+            "title",
+            "description",
+            "actionLabel",
+            "onAction",
+            "actionIcon"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "dialog",
+          "path": "src/components/ui/dialog.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "avatar",
+          "path": "src/components/ui/avatar.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "collapsible",
+          "path": "src/components/ui/collapsible.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "select",
+          "path": "src/components/ui/select.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "SkeletonGrid",
+          "path": "src/components/ui/SkeletonGrid.jsx",
+          "props": [
+            "count",
+            "height",
+            "cols"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "radio-group",
+          "path": "src/components/ui/radio-group.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "input",
+          "path": "src/components/ui/input.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "alert-dialog",
+          "path": "src/components/ui/alert-dialog.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "separator",
+          "path": "src/components/ui/separator.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "toggle-group",
+          "path": "src/components/ui/toggle-group.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "button",
+          "path": "src/components/ui/button.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "scroll-area",
+          "path": "src/components/ui/scroll-area.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "accordion",
+          "path": "src/components/ui/accordion.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "textarea",
+          "path": "src/components/ui/textarea.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "form",
+          "path": "src/components/ui/form.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        }
+      ],
+      "profile": [
+        {
+          "name": "NotificationSettings",
+          "path": "src/components/profile/NotificationSettings.jsx",
+          "props": [
+            "profile",
+            "onSave"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "WidgetLayoutCustomizer",
+          "path": "src/components/profile/WidgetLayoutCustomizer.jsx",
+          "props": [
+            "currentLayout",
+            "onSave",
+            "isSaving"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "useProfileCompletion",
+          "path": "src/components/profile/useProfileCompletion.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "ActivityHistoryTimeline",
+          "path": "src/components/profile/ActivityHistoryTimeline.jsx",
+          "props": [
+            "userEmail"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "ProfilePreferencesEditor",
+          "path": "src/components/profile/ProfilePreferencesEditor.jsx",
+          "props": [
+            "profile",
+            "onSave",
+            "onCancel"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "PublicProfileCard",
+          "path": "src/components/profile/PublicProfileCard.jsx",
+          "props": [
+            "profile",
+            "userPoints",
+            "isOwnProfile",
+            "isFollowing",
+            "isBlocked",
+            "onFollow",
+            "onUnfollow",
+            "onBlock",
+            "isLoading"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "NotificationCustomizer",
+          "path": "src/components/profile/NotificationCustomizer.jsx",
+          "props": [
+            "preferences"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "AccessibilitySettings",
+          "path": "src/components/profile/AccessibilitySettings.jsx",
+          "props": [
+            "profile",
+            "onSave"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "ProfileHeader",
+          "path": "src/components/profile/ProfileHeader.jsx",
+          "props": [
+            "user",
+            "profile",
+            "userPoints",
+            "onUpdate"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "GoalsCustomizer",
+          "path": "src/components/profile/GoalsCustomizer.jsx",
+          "props": [
+            "userEmail",
+            "currentGoals"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "FlairCustomizer",
+          "path": "src/components/profile/FlairCustomizer.jsx",
+          "props": [
+            "userEmail",
+            "currentFlair"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "ContributionsShowcase",
+          "path": "src/components/profile/ContributionsShowcase.jsx",
+          "props": [
+            "userEmail"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "SkillsInterestsSection",
+          "path": "src/components/profile/SkillsInterestsSection.jsx",
+          "props": [
+            "profile",
+            "userEmail"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "UserProfileCard",
+          "path": "src/components/profile/UserProfileCard.jsx",
+          "props": [
+            "profile",
+            "userPoints",
+            "compact"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "ProfileEventHistory",
+          "path": "src/components/profile/ProfileEventHistory.jsx",
+          "props": [
+            "userEmail"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "PersonalizationSettings",
+          "path": "src/components/profile/PersonalizationSettings.jsx",
+          "props": [
+            "profile",
+            "onSave"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "ProfilePrivacyBadge",
+          "path": "src/components/profile/ProfilePrivacyBadge.jsx",
+          "props": [
+            "visibility",
+            "size"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "PrivacySettings",
+          "path": "src/components/profile/PrivacySettings.jsx",
+          "props": [
+            "profile",
+            "onSave"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "SkillsDevelopmentTracker",
+          "path": "src/components/profile/SkillsDevelopmentTracker.jsx",
+          "props": [
+            "userEmail",
+            "profile"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "ProfileBadgesShowcase",
+          "path": "src/components/profile/ProfileBadgesShowcase.jsx",
+          "props": [
+            "userEmail"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "GamificationCustomizer",
+          "path": "src/components/profile/GamificationCustomizer.jsx",
+          "props": [
+            "userEmail",
+            "profile",
+            "userPoints"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "AIPersonalizationSuggestions",
+          "path": "src/components/profile/AIPersonalizationSuggestions.jsx",
+          "props": [
+            "userEmail",
+            "profile",
+            "userPoints",
+            "onApplySuggestion"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "ProfileEventsDashboard",
+          "path": "src/components/profile/ProfileEventsDashboard.jsx",
+          "props": [
+            "userEmail"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "SkillsInterestsManager",
+          "path": "src/components/profile/SkillsInterestsManager.jsx",
+          "props": [
+            "profile",
+            "onUpdate"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "useSocialActions",
+          "path": "src/components/profile/hooks/useSocialActions.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        }
+      ],
+      "milestones": [
+        {
+          "name": "MilestoneCard",
+          "path": "src/components/milestones/MilestoneCard.jsx",
+          "props": [
+            "milestone",
+            "currentUserEmail",
+            "compact"
+          ],
+          "hasSync": false,
+          "container": "main"
+        }
+      ],
+      "store": [
+        {
+          "name": "StoreItemCard",
+          "path": "src/components/store/StoreItemCard.jsx",
+          "props": [
+            "item",
+            "userPoints",
+            "owned",
+            "onViewDetails",
+            "onQuickBuy"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "StoreItemDetail",
+          "path": "src/components/store/StoreItemDetail.jsx",
+          "props": [
+            "item",
+            "open",
+            "onClose",
+            "userPoints",
+            "owned",
+            "onPurchasePoints",
+            "onPurchaseStripe",
+            "isPurchasing"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "InventorySelector",
+          "path": "src/components/store/InventorySelector.jsx",
+          "props": [
+            "activeSlot",
+            "onSlotChange",
+            "selectedItems",
+            "getSlotItems",
+            "onSelectItem"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "AvatarPreview",
+          "path": "src/components/store/AvatarPreview.jsx",
+          "props": [
+            "userName",
+            "selectedItems",
+            "getEquippedItem",
+            "hasChanges",
+            "onReset",
+            "onSave",
+            "isSaving"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "AvatarCustomizer",
+          "path": "src/components/store/AvatarCustomizer.jsx",
+          "props": [
+            "userEmail",
+            "userName"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "useAvatarCustomization",
+          "path": "src/components/store/hooks/useAvatarCustomization.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "useStoreActions",
+          "path": "src/components/store/hooks/useStoreActions.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        }
+      ],
+      "docs": [
+        {
+          "name": "ONBOARDING_SYSTEM_AUDIT.md",
+          "path": "src/components/docs/ONBOARDING_SYSTEM_AUDIT.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "DEPLOYMENT_OPERATIONS.md",
+          "path": "src/components/docs/DEPLOYMENT_OPERATIONS.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "API_REFERENCE",
+          "path": "src/components/docs/API_REFERENCE.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "CHANGELOG_SEMANTIC.md",
+          "path": "src/components/docs/CHANGELOG_SEMANTIC.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "SYSTEM_AUDIT_2026.md",
+          "path": "src/components/docs/SYSTEM_AUDIT_2026.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "GAMIFICATION_ADMIN_GUIDE.md",
+          "path": "src/components/docs/GAMIFICATION_ADMIN_GUIDE.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "ARCHITECTURE.md",
+          "path": "src/components/docs/ARCHITECTURE.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "SECURITY.md",
+          "path": "src/components/docs/SECURITY.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "ONBOARDING_IMPLEMENTATION.md",
+          "path": "src/components/docs/ONBOARDING_IMPLEMENTATION.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "ENTITY_ACCESS_RULES.md",
+          "path": "src/components/docs/ENTITY_ACCESS_RULES.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "COMPLETION_CHECKLIST.md",
+          "path": "src/components/docs/COMPLETION_CHECKLIST.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "PULSE_SURVEYS_AUDIT.md",
+          "path": "src/components/docs/PULSE_SURVEYS_AUDIT.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "TUTORIAL_AUDIT.md",
+          "path": "src/components/docs/TUTORIAL_AUDIT.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "COMPONENT_LIBRARY.md",
+          "path": "src/components/docs/COMPONENT_LIBRARY.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "ONBOARDING_COMPREHENSIVE_REVIEW.md",
+          "path": "src/components/docs/ONBOARDING_COMPREHENSIVE_REVIEW.md.jsx",
+          "props": [
+            "step"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "AI_CONTENT_GENERATOR_API.md",
+          "path": "src/components/docs/AI_CONTENT_GENERATOR_API.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "FEATURE_SPEC_POINT_STORE.md",
+          "path": "src/components/docs/FEATURE_SPEC_POINT_STORE.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "ENTITY_SECURITY_AUDIT.md",
+          "path": "src/components/docs/ENTITY_SECURITY_AUDIT.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "INTEGRATION_STATUS.md",
+          "path": "src/components/docs/INTEGRATION_STATUS.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "README",
+          "path": "src/components/docs/README.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "AI_FEATURES_DOCUMENTATION.md",
+          "path": "src/components/docs/AI_FEATURES_DOCUMENTATION.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "DATABASE_SCHEMA_TECHNICAL_SPEC.md",
+          "path": "src/components/docs/DATABASE_SCHEMA_TECHNICAL_SPEC.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "DocSummarizer",
+          "path": "src/components/docs/DocSummarizer.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "API_REFERENCE.md",
+          "path": "src/components/docs/API_REFERENCE.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "FEATURE_SPECS.md",
+          "path": "src/components/docs/FEATURE_SPECS.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "DEBUG_REPORT.md",
+          "path": "src/components/docs/DEBUG_REPORT.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "BUILD_SCRIPTS_README.md",
+          "path": "src/components/docs/BUILD_SCRIPTS_README.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "ARCHITECTURE",
+          "path": "src/components/docs/ARCHITECTURE.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "FRAMEWORK.md",
+          "path": "src/components/docs/FRAMEWORK.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "COMPLETE_SYSTEM_ARCHITECTURE.md",
+          "path": "src/components/docs/COMPLETE_SYSTEM_ARCHITECTURE.md.jsx",
+          "props": [
+            "data"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "PRD_MASTER.md",
+          "path": "src/components/docs/PRD_MASTER.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "ENTITY_ACCESS_RULES_DEMO_SCENARIOS.md",
+          "path": "src/components/docs/ENTITY_ACCESS_RULES_DEMO_SCENARIOS.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "AUDIT_FINDINGS.md",
+          "path": "src/components/docs/AUDIT_FINDINGS.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "USER_FLOWS.md",
+          "path": "src/components/docs/USER_FLOWS.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "ARCHITECTURE_v2.md",
+          "path": "src/components/docs/ARCHITECTURE_v2.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "FEATURE_SPECS",
+          "path": "src/components/docs/FEATURE_SPECS.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "FEATURE_SPEC_OVERVIEW.md",
+          "path": "src/components/docs/FEATURE_SPEC_OVERVIEW.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "DEPLOYMENT_GUIDE.md",
+          "path": "src/components/docs/DEPLOYMENT_GUIDE.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "INTEGRATION_GUIDE.md",
+          "path": "src/components/docs/INTEGRATION_GUIDE.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "Analytics",
+          "path": "src/components/docs/ANALYTICS_GAMIFICATION_AUDIT.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "MASTER_AUDIT_REPORT.md",
+          "path": "src/components/docs/MASTER_AUDIT_REPORT.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "ENTITY_ACCESS_RULES_SETUP.md",
+          "path": "src/components/docs/ENTITY_ACCESS_RULES_SETUP.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "FEATURE_SPEC_PULSE_SURVEYS.md",
+          "path": "src/components/docs/FEATURE_SPEC_PULSE_SURVEYS.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "PRODUCTION_READINESS_CHECKLIST.md",
+          "path": "src/components/docs/PRODUCTION_READINESS_CHECKLIST.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "GITHUB_SETUP_INSTRUCTIONS.md",
+          "path": "src/components/docs/GITHUB_SETUP_INSTRUCTIONS.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "DOC_POLICY.md",
+          "path": "src/components/docs/DOC_POLICY.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "CALENDAR_SYSTEM_AUDIT.md",
+          "path": "src/components/docs/CALENDAR_SYSTEM_AUDIT.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "RecognitionPage",
+          "path": "src/components/docs/RECOGNITION_SYSTEM_AUDIT.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "DocsChangeDetector",
+          "path": "src/components/docs/DocsChangeDetector.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "ENTITY_DEEP_DIVE_AUDIT.md",
+          "path": "src/components/docs/ENTITY_DEEP_DIVE_AUDIT.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "GITHUB_INTEGRATION_FILES.md",
+          "path": "src/components/docs/GITHUB_INTEGRATION_FILES.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "ONBOARDING_SPEC.md",
+          "path": "src/components/docs/ONBOARDING_SPEC.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "ENTITY_RELATIONSHIPS_DIAGRAM.md",
+          "path": "src/components/docs/ENTITY_RELATIONSHIPS_DIAGRAM.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "QUICK_START_GUIDE.md",
+          "path": "src/components/docs/QUICK_START_GUIDE.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "DOCUMENTATION_AUTHORITY_IMPLEMENTATION_STATUS.md",
+          "path": "src/components/docs/DOCUMENTATION_AUTHORITY_IMPLEMENTATION_STATUS.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "AGENTS_DOCUMENTATION_AUTHORITY.md",
+          "path": "src/components/docs/AGENTS_DOCUMENTATION_AUTHORITY.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "EDGE_CASES_AUDIT.md",
+          "path": "src/components/docs/EDGE_CASES_AUDIT.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "PRD_MASTER",
+          "path": "src/components/docs/PRD_MASTER.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "CHANGELOG.md",
+          "path": "src/components/docs/CHANGELOG.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "ENTITY_ACCESS_RULES_REVIEW_CHECKLIST.md",
+          "path": "src/components/docs/ENTITY_ACCESS_RULES_REVIEW_CHECKLIST.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "README.md",
+          "path": "src/components/docs/README.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "DATABASE_EDGE_CASES.md",
+          "path": "src/components/docs/DATABASE_EDGE_CASES.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "WCAG_AUDIT.md",
+          "path": "src/components/docs/WCAG_AUDIT.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "COMPLETION_CHECKLIST",
+          "path": "src/components/docs/COMPLETION_CHECKLIST.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "FEATURE_AUDITS_MASTER_SUMMARY.md",
+          "path": "src/components/docs/FEATURE_AUDITS_MASTER_SUMMARY.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "ROADMAP_2026_Q1_Q2.md",
+          "path": "src/components/docs/ROADMAP_2026_Q1_Q2.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "FEATURE_SPEC_RECOGNITION.md",
+          "path": "src/components/docs/FEATURE_SPEC_RECOGNITION.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "FINAL_AUDIT_SUMMARY.md",
+          "path": "src/components/docs/FINAL_AUDIT_SUMMARY.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "INTEGRATION_SECURITY_AUDIT.md",
+          "path": "src/components/docs/INTEGRATION_SECURITY_AUDIT.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "EDGE_CASES_GAMIFICATION.md",
+          "path": "src/components/docs/EDGE_CASES_GAMIFICATION.md.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        }
+      ],
+      "core": [
+        {
+          "name": "KeyboardShortcuts",
+          "path": "src/components/core/KeyboardShortcuts.jsx",
+          "props": [
+            "onNewEvent",
+            "onSearch"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "index",
+          "path": "src/components/core/index.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "RoleGuard",
+          "path": "src/components/core/guards/RoleGuard.jsx",
+          "props": [
+            "children",
+            "permission",
+            "permissions",
+            "requireAll",
+            "fallbackPage",
+            "showError"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "AuthGuard",
+          "path": "src/components/core/guards/AuthGuard.jsx",
+          "props": [
+            "children",
+            "redirectTo"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "QueryProvider",
+          "path": "src/components/core/providers/QueryProvider.jsx",
+          "props": [
+            "children"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "AppProviders",
+          "path": "src/components/core/providers/AppProviders.jsx",
+          "props": [
+            "children"
+          ],
+          "hasSync": false,
+          "container": "main"
+        }
+      ],
+      "social": [
+        {
+          "name": "EnhancedRecognitionForm",
+          "path": "src/components/social/EnhancedRecognitionForm.jsx",
+          "props": [
+            "currentUser",
+            "onSuccess"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "BuddyMatchingSystem",
+          "path": "src/components/social/BuddyMatchingSystem.jsx",
+          "props": [
+            "userEmail"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "RecognitionFeed",
+          "path": "src/components/social/RecognitionFeed.jsx",
+          "props": [
+            "userEmail"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "BuddyMatchingDashboard",
+          "path": "src/components/social/BuddyMatchingDashboard.jsx",
+          "props": [
+            "userEmail"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "BuddySystemManager",
+          "path": "src/components/social/BuddySystemManager.jsx",
+          "props": [
+            "userEmail"
+          ],
+          "hasSync": false,
+          "container": "main"
+        }
+      ],
+      "learning": [
+        {
+          "name": "SkillGapMicroLearning",
+          "path": "src/components/learning/SkillGapMicroLearning.jsx",
+          "props": [
+            "userEmail"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "LearningPathCard",
+          "path": "src/components/learning/LearningPathCard.jsx",
+          "props": [
+            "path",
+            "userEmail",
+            "isEnrolled",
+            "progress"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "AILearningRecommendations",
+          "path": "src/components/learning/AILearningRecommendations.jsx",
+          "props": [
+            "userEmail",
+            "availablePaths"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "ModuleViewer",
+          "path": "src/components/learning/ModuleViewer.jsx",
+          "props": [
+            "module",
+            "userEmail",
+            "onComplete"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "GamifiedLearningDashboard",
+          "path": "src/components/learning/GamifiedLearningDashboard.jsx",
+          "props": [
+            "userEmail"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "MicroLearningModule",
+          "path": "src/components/learning/MicroLearningModule.jsx",
+          "props": [
+            "module",
+            "userEmail",
+            "skillGap",
+            "onComplete"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "MyLearningProgress",
+          "path": "src/components/learning/MyLearningProgress.jsx",
+          "props": [
+            "userEmail",
+            "progress",
+            "allPaths"
+          ],
+          "hasSync": false,
+          "container": "main"
+        }
+      ],
+      "integrations": [
+        {
+          "name": "GoogleCalendarConnect",
+          "path": "src/components/integrations/GoogleCalendarConnect.jsx",
+          "props": [
+            "onConnectionChange"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "GoogleCalendarConnect",
+          "path": "src/components/integrations/GoogleCalendarConnect.tsx.jsx",
+          "props": [
+            "onConnectionChange"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "NotificationService",
+          "path": "src/components/integrations/NotificationService.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "IntegrationCard",
+          "path": "src/components/integrations/IntegrationCard.jsx",
+          "props": [
+            "integration",
+            "onToggle",
+            "onConfigure",
+            "onTest"
+          ],
+          "hasSync": false,
+          "container": "main"
+        }
+      ],
+      "common": [
+        {
+          "name": "LoadingSpinner",
+          "path": "src/components/common/LoadingSpinner.jsx",
+          "props": [
+            "className",
+            "size",
+            "type",
+            "message"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "MicroInteractions",
+          "path": "src/components/common/MicroInteractions.jsx",
+          "props": [
+            "children",
+            "content",
+            "position"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "DataLoader",
+          "path": "src/components/common/DataLoader.jsx",
+          "props": [
+            "isLoading",
+            "error",
+            "data",
+            "children",
+            "// Loading options\n  loadingMessage",
+            "loadingSize",
+            "loadingClassName",
+            "// Empty state options\n  emptyIcon",
+            "emptyTitle",
+            "emptyDescription"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "ProtectedRoute",
+          "path": "src/components/common/ProtectedRoute.jsx",
+          "props": [
+            "children",
+            "requireAdmin",
+            "requireFacilitator",
+            "requireParticipant"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "UndoToast",
+          "path": "src/components/common/UndoToast.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "PageHeader",
+          "path": "src/components/common/PageHeader.jsx",
+          "props": [
+            "icon",
+            "title",
+            "subtitle",
+            "description",
+            "actions",
+            "badge",
+            "breadcrumbs",
+            "stats",
+            "variant",
+            "className"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "FilterChip",
+          "path": "src/components/common/FilterChip.jsx",
+          "props": [
+            "children",
+            "isActive",
+            "onClick",
+            "onRemove",
+            "variant",
+            "icon",
+            "size",
+            "showCheck",
+            "disabled",
+            "className"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "QueryErrorHandler",
+          "path": "src/components/common/QueryErrorHandler.jsx",
+          "props": [
+            "error",
+            "onRetry",
+            "title",
+            "compact"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "ToastFeedback",
+          "path": "src/components/common/ToastFeedback.jsx",
+          "props": [
+            "type"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "StatsGrid",
+          "path": "src/components/common/StatsGrid.jsx",
+          "props": [
+            "title",
+            "value",
+            "subtitle",
+            "trend",
+            "icon",
+            "color",
+            "delay"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "index",
+          "path": "src/components/common/index.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "ContentTypeIndicator",
+          "path": "src/components/common/ContentTypeIndicator.jsx",
+          "props": [
+            "type",
+            "size",
+            "showLabel",
+            "variant",
+            "className"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "AnimatedCard",
+          "path": "src/components/common/AnimatedCard.jsx",
+          "props": [
+            "children",
+            "className",
+            "delay",
+            "onClick",
+            "hoverable",
+            "glowColor"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "EmptyState",
+          "path": "src/components/common/EmptyState.jsx",
+          "props": [
+            "icon",
+            "title",
+            "description",
+            "actionLabel",
+            "onAction",
+            "secondaryActionLabel",
+            "onSecondaryAction",
+            "className",
+            "type",
+            "tips"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "GradientSpinner",
+          "path": "src/components/common/GradientSpinner.jsx",
+          "props": [
+            "size",
+            "type",
+            "className"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "AnimatedButton",
+          "path": "src/components/common/AnimatedButton.jsx",
+          "props": [
+            "children",
+            "onClick",
+            "variant",
+            "size",
+            "className",
+            "loading",
+            "success",
+            "disabled",
+            "icon",
+            "...props"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "SkeletonGrid",
+          "path": "src/components/common/SkeletonGrid.jsx",
+          "props": [
+            "count",
+            "height",
+            "columns"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "ErrorBoundary",
+          "path": "src/components/common/ErrorBoundary.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "ResponsiveCard",
+          "path": "src/components/common/ResponsiveCard.jsx",
+          "props": [
+            "children",
+            "onClick",
+            "contentType",
+            "className",
+            "hoverEffect",
+            "padding",
+            "animate"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "QueryErrorDisplay",
+          "path": "src/components/common/QueryErrorDisplay.jsx",
+          "props": [
+            "error",
+            "onRetry",
+            "title",
+            "compact"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "QuickActionCard",
+          "path": "src/components/common/QuickActionCard.jsx",
+          "props": [
+            "title",
+            "subtitle",
+            "icon",
+            "page",
+            "onClick",
+            "color"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "SuccessAnimation",
+          "path": "src/components/common/SuccessAnimation.jsx",
+          "props": [
+            "show",
+            "size"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "SoundButton",
+          "path": "src/components/common/SoundButton.jsx",
+          "props": [
+            "children",
+            "onClick",
+            "soundType",
+            "...props"
+          ],
+          "hasSync": false,
+          "container": "main"
+        }
+      ],
+      "settings": [
+        {
+          "name": "PointsConfigPanel",
+          "path": "src/components/settings/PointsConfigPanel.jsx",
+          "props": [
+            "config"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "RewardInventoryManager",
+          "path": "src/components/settings/RewardInventoryManager.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "UserGamificationPreferences",
+          "path": "src/components/settings/UserGamificationPreferences.jsx",
+          "props": [
+            "userEmail"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "BadgeCriteriaManager",
+          "path": "src/components/settings/BadgeCriteriaManager.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "TeamStructureManager",
+          "path": "src/components/settings/TeamStructureManager.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "AISettingsPanel",
+          "path": "src/components/settings/AISettingsPanel.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        }
+      ],
+      "onboarding": [
+        {
+          "name": "FacilitatorOnboardingSteps",
+          "path": "src/components/onboarding/FacilitatorOnboardingSteps.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "AIConnectionSuggestions",
+          "path": "src/components/onboarding/AIConnectionSuggestions.jsx",
+          "props": [
+            "user"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "OnboardingTrigger",
+          "path": "src/components/onboarding/OnboardingTrigger.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "OnboardingChatbot",
+          "path": "src/components/onboarding/OnboardingChatbot.jsx",
+          "props": [
+            "userName"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "AdminOnboardingSteps",
+          "path": "src/components/onboarding/AdminOnboardingSteps.jsx",
+          "props": [
+            "icon",
+            "title",
+            "description"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "OnboardingProvider",
+          "path": "src/components/onboarding/OnboardingProvider.jsx",
+          "props": [
+            "children"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "InteractiveTutorial",
+          "path": "src/components/onboarding/InteractiveTutorial.jsx",
+          "props": [
+            "tutorialId",
+            "onComplete",
+            "onSkip"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "OnboardingChecklist",
+          "path": "src/components/onboarding/OnboardingChecklist.jsx",
+          "props": [
+            "compact"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "index",
+          "path": "src/components/onboarding/index.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "ParticipantOnboardingSteps",
+          "path": "src/components/onboarding/ParticipantOnboardingSteps.jsx",
+          "props": [
+            "icon",
+            "title",
+            "description"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "onboardingConfig",
+          "path": "src/components/onboarding/onboardingConfig.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "ProactiveSuggestionsWidget",
+          "path": "src/components/onboarding/ProactiveSuggestionsWidget.jsx",
+          "props": [
+            "userEmail",
+            "completedTasks",
+            "skillInterests",
+            "daysSinceStart"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "OnboardingPlanDisplay",
+          "path": "src/components/onboarding/OnboardingPlanDisplay.jsx",
+          "props": [
+            "plan"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "OnboardingSpotlight",
+          "path": "src/components/onboarding/OnboardingSpotlight.jsx",
+          "props": [
+            "targetSelector",
+            "title",
+            "description",
+            "placement",
+            "isVisible",
+            "onNext",
+            "onDismiss"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "AIFeedbackPanel",
+          "path": "src/components/onboarding/AIFeedbackPanel.jsx",
+          "props": [
+            "feedback",
+            "onClose"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "WelcomeWizard",
+          "path": "src/components/onboarding/WelcomeWizard.jsx",
+          "props": [
+            "isOpen",
+            "onComplete"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "OnboardingTooltip",
+          "path": "src/components/onboarding/OnboardingTooltip.jsx",
+          "props": [
+            "isVisible",
+            "title",
+            "description",
+            "placement",
+            "target",
+            "onNext",
+            "onSkip",
+            "onDismiss",
+            "showProgress",
+            "currentStep"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "SkillProgressAnalyzer",
+          "path": "src/components/onboarding/SkillProgressAnalyzer.jsx",
+          "props": [
+            "userEmail",
+            "completedTasks",
+            "skillInterests",
+            "daysSinceStart"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "TeamConnectionsPanel",
+          "path": "src/components/onboarding/TeamConnectionsPanel.jsx",
+          "props": [
+            "userEmail",
+            "skillInterests",
+            "personalityTraits",
+            "completedTasks"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "OnboardingQuestSystem",
+          "path": "src/components/onboarding/OnboardingQuestSystem.jsx",
+          "props": [
+            "userEmail",
+            "userRole"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "PersonalizedTaskList",
+          "path": "src/components/onboarding/PersonalizedTaskList.jsx",
+          "props": [
+            "user"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "GamificationSimulation",
+          "path": "src/components/onboarding/GamificationSimulation.jsx",
+          "props": [
+            "show",
+            "badgeName",
+            "onComplete"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "OnboardingProgress",
+          "path": "src/components/onboarding/OnboardingProgress.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "useStepValidation",
+          "path": "src/components/onboarding/useStepValidation.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "OnboardingModal",
+          "path": "src/components/onboarding/OnboardingModal.jsx",
+          "props": [
+            "step"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "DynamicOnboardingAdjuster",
+          "path": "src/components/onboarding/DynamicOnboardingAdjuster.jsx",
+          "props": [
+            "user",
+            "onboardingRecord"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "FeatureHighlight",
+          "path": "src/components/onboarding/FeatureHighlight.jsx",
+          "props": [
+            "isVisible",
+            "targetSelector",
+            "title",
+            "description",
+            "placement",
+            "onDismiss",
+            "onNext",
+            "highlightColor"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "GuidedOnboardingWizard",
+          "path": "src/components/onboarding/GuidedOnboardingWizard.jsx",
+          "props": [
+            "user",
+            "onComplete"
+          ],
+          "hasSync": false,
+          "container": "main"
+        }
+      ],
+      "tutorials": [
+        {
+          "name": "ContextualHelp",
+          "path": "src/components/tutorials/ContextualHelp.jsx",
+          "props": [
+            "title",
+            "description",
+            "learnMoreUrl",
+            "variant"
+          ],
+          "hasSync": false,
+          "container": "main"
+        }
+      ],
+      "analytics": [
+        {
+          "name": "FeedbackAnalyzer",
+          "path": "src/components/analytics/FeedbackAnalyzer.jsx",
+          "props": [
+            "events",
+            "participations"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "OnboardingAnalytics",
+          "path": "src/components/analytics/OnboardingAnalytics.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "AttendanceMetrics",
+          "path": "src/components/analytics/AttendanceMetrics.jsx",
+          "props": [
+            "events",
+            "participations"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "SkillDevelopmentCorrelation",
+          "path": "src/components/analytics/SkillDevelopmentCorrelation.jsx",
+          "props": [
+            "participations",
+            "userProfiles",
+            "events",
+            "activities"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "useAnalyticsData",
+          "path": "src/components/analytics/useAnalyticsData.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "ActivityTypeAnalytics",
+          "path": "src/components/analytics/ActivityTypeAnalytics.jsx",
+          "props": [
+            "activities",
+            "events",
+            "participations"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "CohortAnalysis",
+          "path": "src/components/analytics/CohortAnalysis.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "AnalyticsHeader",
+          "path": "src/components/analytics/AnalyticsHeader.jsx",
+          "props": [
+            "metrics"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "EngagementOverTime",
+          "path": "src/components/analytics/EngagementOverTime.jsx",
+          "props": [
+            "events",
+            "participations",
+            "userProfiles"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "FacilitatorMetrics",
+          "path": "src/components/analytics/FacilitatorMetrics.jsx",
+          "props": [
+            "events",
+            "participations"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "EngagementAnalytics",
+          "path": "src/components/analytics/EngagementAnalytics.jsx",
+          "props": [
+            "events",
+            "participations",
+            "activities"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "AIFeatureAnalytics",
+          "path": "src/components/analytics/AIFeatureAnalytics.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "FeatureUsageDashboard",
+          "path": "src/components/analytics/FeatureUsageDashboard.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "AnalyticsOverview",
+          "path": "src/components/analytics/AnalyticsOverview.jsx",
+          "props": [
+            "typeDistribution",
+            "monthlyData",
+            "activityParticipation",
+            "recentFeedback"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "LeaderboardDynamicsAnalysis",
+          "path": "src/components/analytics/gamification/LeaderboardDynamicsAnalysis.jsx",
+          "props": [
+            "userPoints",
+            "leaderboardSnapshots"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "BadgeDistributionAnalysis",
+          "path": "src/components/analytics/gamification/BadgeDistributionAnalysis.jsx",
+          "props": [
+            "badges",
+            "badgeAwards",
+            "userPoints"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "ABTestingFramework",
+          "path": "src/components/analytics/gamification/ABTestingFramework.jsx",
+          "props": [
+            "onSubmit",
+            "isLoading"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "AIInsightsGenerator",
+          "path": "src/components/analytics/gamification/AIInsightsGenerator.jsx",
+          "props": [
+            "engagementData"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "EngagementTrendsChart",
+          "path": "src/components/analytics/gamification/EngagementTrendsChart.jsx",
+          "props": [
+            "userPoints",
+            "participations",
+            "challenges",
+            "timeRange"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "ChallengePerformanceMetrics",
+          "path": "src/components/analytics/gamification/ChallengePerformanceMetrics.jsx",
+          "props": [
+            "personalChallenges",
+            "teamChallenges",
+            "userPoints"
+          ],
+          "hasSync": false,
+          "container": "main"
+        }
+      ],
+      "gamification": [
+        {
+          "name": "SocialImpactLayer",
+          "path": "src/components/gamification/SocialImpactLayer.jsx",
+          "props": [
+            "userEmail"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "GamificationAnalyticsDashboard",
+          "path": "src/components/gamification/GamificationAnalyticsDashboard.jsx",
+          "props": [],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "BadgeDisplay",
+          "path": "src/components/gamification/BadgeDisplay.jsx",
+          "props": [
+            "userEmail"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "BadgeShowcase",
+          "path": "src/components/gamification/BadgeShowcase.jsx",
+          "props": [
+            "userEmail",
+            "earnedBadgeIds"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "LeaderboardRow",
+          "path": "src/components/gamification/LeaderboardRow.jsx",
+          "props": [
+            "rank",
+            "name",
+            "email",
+            "avatarUrl",
+            "points",
+            "level",
+            "badges",
+            "streak",
+            "rankChange",
+            "isCurrentUser"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "TierStatusDisplay",
+          "path": "src/components/gamification/TierStatusDisplay.jsx",
+          "props": [
+            "currentPoints",
+            "currentTier"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "PersonalChallengeCard",
+          "path": "src/components/gamification/PersonalChallengeCard.jsx",
+          "props": [
+            "challenge",
+            "onShare",
+            "onComplete"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "EnhancedLeaderboard",
+          "path": "src/components/gamification/EnhancedLeaderboard.jsx",
+          "props": [
+            "timeframe"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "TeamTournamentBracket",
+          "path": "src/components/gamification/TeamTournamentBracket.jsx",
+          "props": [],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "RedemptionHistory",
+          "path": "src/components/gamification/RedemptionHistory.jsx",
+          "props": [
+            "userEmail"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "AnimatedPointsCounter",
+          "path": "src/components/gamification/AnimatedPointsCounter.jsx",
+          "props": [
+            "points",
+            "previousPoints",
+            "label",
+            "size",
+            "showChange",
+            "onAnimationComplete"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "PersonalizedCoachWidget",
+          "path": "src/components/gamification/PersonalizedCoachWidget.jsx",
+          "props": [
+            "userEmail",
+            "compact"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "AchievementCelebration",
+          "path": "src/components/gamification/AchievementCelebration.jsx",
+          "props": [
+            "show",
+            "onClose",
+            "achievement"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "RewardCard",
+          "path": "src/components/gamification/RewardCard.jsx",
+          "props": [
+            "reward",
+            "userPoints",
+            "onRedeem",
+            "isRedeemed",
+            "isLoading"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "Leaderboard",
+          "path": "src/components/gamification/Leaderboard.jsx",
+          "props": [],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "SocialFeedSection",
+          "path": "src/components/gamification/SocialFeedSection.jsx",
+          "props": [
+            "userEmail",
+            "limit"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "PersonalizedGamificationTips",
+          "path": "src/components/gamification/PersonalizedGamificationTips.jsx",
+          "props": [
+            "userEmail",
+            "currentPoints",
+            "currentTier",
+            "badgesCount",
+            "activeChallengesCount"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "TieredAchievementSystem",
+          "path": "src/components/gamification/TieredAchievementSystem.jsx",
+          "props": [
+            "userEmail"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "SocialShareCard",
+          "path": "src/components/gamification/SocialShareCard.jsx",
+          "props": [
+            "open",
+            "onOpenChange",
+            "shareType",
+            "shareData",
+            "onShare"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "AchievementNotificationSystem",
+          "path": "src/components/gamification/AchievementNotificationSystem.jsx",
+          "props": [
+            "achievement",
+            "onDismiss",
+            "duration"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "ChallengeCard",
+          "path": "src/components/gamification/ChallengeCard.jsx",
+          "props": [
+            "challenge",
+            "userProgress",
+            "isJoined",
+            "participantCount",
+            "onJoin",
+            "onViewDetails"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "AchievementTiersSection",
+          "path": "src/components/gamification/AchievementTiersSection.jsx",
+          "props": [
+            "userEmail",
+            "userPoints"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "PersonalizedActivitySuggestions",
+          "path": "src/components/gamification/PersonalizedActivitySuggestions.jsx",
+          "props": [
+            "userEmail",
+            "onScheduleActivity"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "PersonalChallengesSection",
+          "path": "src/components/gamification/PersonalChallengesSection.jsx",
+          "props": [
+            "userEmail"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "PointsTracker",
+          "path": "src/components/gamification/PointsTracker.jsx",
+          "props": [
+            "userEmail",
+            "compact"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "RewardsRedemptionSection",
+          "path": "src/components/gamification/RewardsRedemptionSection.jsx",
+          "props": [
+            "userEmail",
+            "userPoints"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "XPProgressRing",
+          "path": "src/components/gamification/XPProgressRing.jsx",
+          "props": [
+            "level",
+            "currentXP",
+            "xpToNextLevel",
+            "size",
+            "showLabel"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "BadgeAdminPanel",
+          "path": "src/components/gamification/BadgeAdminPanel.jsx",
+          "props": [],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "BadgeCard",
+          "path": "src/components/gamification/BadgeCard.jsx",
+          "props": [
+            "badge",
+            "isEarned",
+            "progress",
+            "earnedDate",
+            "onClick",
+            "onShare",
+            "showProgress",
+            "size"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "AIGamificationEngine",
+          "path": "src/components/gamification/AIGamificationEngine.jsx",
+          "props": [
+            "team",
+            "selectedUser"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "AdvancedLeaderboard",
+          "path": "src/components/gamification/AdvancedLeaderboard.jsx",
+          "props": [
+            "currentUserEmail"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "PersonalizedRecommendationsEngine",
+          "path": "src/components/gamification/PersonalizedRecommendationsEngine.jsx",
+          "props": [
+            "userEmail",
+            "userPoints"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "AchievementTierCard",
+          "path": "src/components/gamification/AchievementTierCard.jsx",
+          "props": [
+            "tier",
+            "currentPoints",
+            "isCurrentTier",
+            "isUnlocked",
+            "nextTier",
+            "compact"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "SeasonalEventsManager",
+          "path": "src/components/gamification/SeasonalEventsManager.jsx",
+          "props": [
+            "userEmail"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "StreakFlame",
+          "path": "src/components/gamification/StreakFlame.jsx",
+          "props": [
+            "currentStreak",
+            "longestStreak",
+            "lastActivityDate",
+            "compact"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "AchievementSystem",
+          "path": "src/components/gamification/AchievementSystem.jsx",
+          "props": [
+            "userEmail"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "TailoredLeaderboardFormats",
+          "path": "src/components/gamification/TailoredLeaderboardFormats.jsx",
+          "props": [
+            "userPoints",
+            "currentUserEmail"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "StreakTracker",
+          "path": "src/components/gamification/StreakTracker.jsx",
+          "props": [
+            "streakDays",
+            "eventsThisMonth"
+          ],
+          "hasSync": true,
+          "container": "main"
+        }
+      ],
+      "shared": [
+        {
+          "name": "index",
+          "path": "src/components/shared/index.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "formatting",
+          "path": "src/components/shared/utils/formatting.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "validation",
+          "path": "src/components/shared/utils/validation.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "useMediaQuery",
+          "path": "src/components/shared/hooks/useMediaQuery.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "useIntersectionObserver",
+          "path": "src/components/shared/hooks/useIntersectionObserver.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "useDebounce",
+          "path": "src/components/shared/hooks/useDebounce.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "index",
+          "path": "src/components/shared/hooks/index.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "useLocalStorage",
+          "path": "src/components/shared/hooks/useLocalStorage.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "useAsyncAction",
+          "path": "src/components/shared/hooks/useAsyncAction.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "index",
+          "path": "src/components/shared/ui/index.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "LoadingState",
+          "path": "src/components/shared/ui/LoadingState.jsx",
+          "props": [
+            "message"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "EmptyState",
+          "path": "src/components/shared/ui/EmptyState.jsx",
+          "props": [
+            "icon",
+            "title",
+            "description",
+            "actionLabel",
+            "onAction",
+            "variant"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "index",
+          "path": "src/components/shared/constants/index.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        }
+      ],
+      "teamLeader": [
+        {
+          "name": "TeamAnalyticsDashboard",
+          "path": "src/components/teamLeader/TeamAnalyticsDashboard.jsx",
+          "props": [
+            "team",
+            "members"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "TeamCoachingModule",
+          "path": "src/components/teamLeader/TeamCoachingModule.jsx",
+          "props": [
+            "team"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "TeamLeaderAIAssistant",
+          "path": "src/components/teamLeader/TeamLeaderAIAssistant.jsx",
+          "props": [
+            "team"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "TeamChallengeManager",
+          "path": "src/components/teamLeader/TeamChallengeManager.jsx",
+          "props": [
+            "team",
+            "challenges"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "TeamApprovalQueue",
+          "path": "src/components/teamLeader/TeamApprovalQueue.jsx",
+          "props": [
+            "team",
+            "pendingRecognitions",
+            "teamMembers"
+          ],
+          "hasSync": false,
+          "container": "main"
+        }
+      ],
+      "contexts": [
+        {
+          "name": "UserContext",
+          "path": "src/components/contexts/UserContext.jsx",
+          "props": [
+            "children"
+          ],
+          "hasSync": false,
+          "container": "main"
+        }
+      ],
+      "participant": [
+        {
+          "name": "UserStatsCards",
+          "path": "src/components/participant/UserStatsCards.jsx",
+          "props": [
+            "stats"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "ParticipantEventCard",
+          "path": "src/components/participant/ParticipantEventCard.jsx",
+          "props": [
+            "event",
+            "activity",
+            "participation",
+            "isPast",
+            "onRSVP",
+            "onProvideFeedback"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "FeedbackForm",
+          "path": "src/components/participant/FeedbackForm.jsx",
+          "props": [
+            "event",
+            "participation",
+            "onClose",
+            "onSubmit"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "PersonalizedRecommendations",
+          "path": "src/components/participant/PersonalizedRecommendations.jsx",
+          "props": [
+            "participations",
+            "allEvents",
+            "activities"
+          ],
+          "hasSync": false,
+          "container": "main"
+        }
+      ],
+      "channels": [
+        {
+          "name": "ChannelList",
+          "path": "src/components/channels/ChannelList.jsx",
+          "props": [
+            "channels",
+            "selectedChannel",
+            "onSelectChannel",
+            "onCreateChannel",
+            "searchQuery",
+            "onSearchChange",
+            "userEmail"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "ChannelChat",
+          "path": "src/components/channels/ChannelChat.jsx",
+          "props": [
+            "channel",
+            "user",
+            "onOpenSettings"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "CreateChannelDialog",
+          "path": "src/components/channels/CreateChannelDialog.jsx",
+          "props": [
+            "open",
+            "onOpenChange",
+            "user"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "ChannelSettings",
+          "path": "src/components/channels/ChannelSettings.jsx",
+          "props": [
+            "open",
+            "onOpenChange",
+            "channel",
+            "user",
+            "onChannelDeleted"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "ChannelDiscussion",
+          "path": "src/components/channels/ChannelDiscussion.jsx",
+          "props": [
+            "channelId",
+            "userEmail"
+          ],
+          "hasSync": false,
+          "container": "main"
+        }
+      ],
+      "templates": [
+        {
+          "name": "TemplateData",
+          "path": "src/components/templates/TemplateData.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        }
+      ],
+      "surveys": [
+        {
+          "name": "SurveyResults",
+          "path": "src/components/surveys/SurveyResults.jsx",
+          "props": [
+            "survey"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "SurveyForm",
+          "path": "src/components/surveys/SurveyForm.jsx",
+          "props": [
+            "survey",
+            "userEmail",
+            "onComplete"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "SurveyCard",
+          "path": "src/components/surveys/SurveyCard.jsx",
+          "props": [
+            "survey",
+            "onTakeSurvey",
+            "isCompleted"
+          ],
+          "hasSync": false,
+          "container": "main"
+        }
+      ],
+      "skills": [
+        {
+          "name": "SkillProgressCard",
+          "path": "src/components/skills/SkillProgressCard.jsx",
+          "props": [
+            "skill",
+            "onViewResources",
+            "onFindMentor",
+            "compact"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "SkillTagger",
+          "path": "src/components/skills/SkillTagger.jsx",
+          "props": [
+            "skills",
+            "onChange",
+            "showCategories"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "AISkillAnalyzer",
+          "path": "src/components/skills/AISkillAnalyzer.jsx",
+          "props": [
+            "participations",
+            "events",
+            "activities",
+            "userProfiles",
+            "teams",
+            "scope",
+            "scopeId"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "UserSkillDashboard",
+          "path": "src/components/skills/UserSkillDashboard.jsx",
+          "props": [
+            "userEmail",
+            "userName"
+          ],
+          "hasSync": false,
+          "container": "main"
+        }
+      ],
+      "interactive": [
+        {
+          "name": "MultiplayerGame",
+          "path": "src/components/interactive/MultiplayerGame.jsx",
+          "props": [
+            "participantName",
+            "onComplete"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "CollaborativeWhiteboard",
+          "path": "src/components/interactive/CollaborativeWhiteboard.jsx",
+          "props": [
+            "participantName",
+            "onSave"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "BreakoutRooms",
+          "path": "src/components/interactive/BreakoutRooms.jsx",
+          "props": [
+            "participantName",
+            "participantEmail",
+            "allParticipants",
+            "onSubmit"
+          ],
+          "hasSync": false,
+          "container": "main"
+        }
+      ],
+      "activities": [
+        {
+          "name": "ActivitiesFilters",
+          "path": "src/components/activities/ActivitiesFilters.jsx",
+          "props": [
+            "searchQuery",
+            "onSearchChange",
+            "selectedType",
+            "onTypeChange",
+            "selectedDuration",
+            "onDurationChange",
+            "selectedSkill",
+            "onSkillChange",
+            "selectedSkillLevel",
+            "onSkillLevelChange"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "AIActivitySuggester",
+          "path": "src/components/activities/AIActivitySuggester.jsx",
+          "props": [
+            "open",
+            "onOpenChange",
+            "onSelect"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "ActivityDetailDialog",
+          "path": "src/components/activities/ActivityDetailDialog.jsx",
+          "props": [
+            "activity",
+            "onClose",
+            "onSchedule",
+            "onDuplicate"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "ActivityCard",
+          "path": "src/components/activities/ActivityCard.jsx",
+          "props": [
+            "activity",
+            "onSchedule",
+            "onDuplicate",
+            "onView",
+            "isFavorite",
+            "userEmail",
+            "canEdit",
+            "canDelete"
+          ],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "ActivitiesHeader",
+          "path": "src/components/activities/ActivitiesHeader.jsx",
+          "props": [
+            "activityCount",
+            "onOpenPlanner",
+            "onOpenSuggester",
+            "onOpenModuleBuilder",
+            "onOpenGenerator",
+            "canCreate"
+          ],
+          "hasSync": true,
+          "container": "main"
+        },
+        {
+          "name": "useActivityFilters",
+          "path": "src/components/activities/useActivityFilters.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "ModuleBuilder",
+          "path": "src/components/activities/ModuleBuilder.jsx",
+          "props": [
+            "open",
+            "onOpenChange",
+            "onActivityCreated"
+          ],
+          "hasSync": true,
+          "container": "main"
+        }
+      ],
+      "pwa": [
+        {
+          "name": "PWAInstallPrompt",
+          "path": "src/components/pwa/PWAInstallPrompt.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        },
+        {
+          "name": "ServiceWorkerInit",
+          "path": "src/components/pwa/ServiceWorkerInit.jsx",
+          "props": [],
+          "hasSync": false,
+          "container": "main"
+        }
+      ]
+    }
+  },
+  "functions": [
+    {
+      "name": "purchaseWithPoints",
+      "path": "functions/purchaseWithPoints.ts",
+      "description": "REFACTORED STORE PURCHASE SYSTEM",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "aiKnowledgeSearch",
+      "path": "functions/aiKnowledgeSearch.ts",
+      "description": "",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "generateLiveCoaching",
+      "path": "functions/generateLiveCoaching.ts",
+      "description": "",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "aiBuddyMatcher",
+      "path": "functions/aiBuddyMatcher.ts",
+      "description": "",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "aiPredictiveHealthAnalysis",
+      "path": "functions/aiPredictiveHealthAnalysis.ts",
+      "description": "",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "awardPoints",
+      "path": "functions/awardPoints.ts",
+      "description": "REFACTORED POINTS AWARDING SYSTEM",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "rebuildDocsKnowledgeBase",
+      "path": "functions/rebuildDocsKnowledgeBase.ts",
+      "description": "",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "recordPointsTransaction",
+      "path": "functions/recordPointsTransaction.ts",
+      "description": "RECORD POINTS TRANSACTION",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "aiContentCurator",
+      "path": "functions/aiContentCurator.ts",
+      "description": "",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "newEmployeeOnboardingAI",
+      "path": "functions/newEmployeeOnboardingAI.ts",
+      "description": "",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "zapierIntegration",
+      "path": "functions/zapierIntegration.ts",
+      "description": "",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "learningPathAI",
+      "path": "functions/learningPathAI.ts",
+      "description": "",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "exportUserData",
+      "path": "functions/exportUserData.ts",
+      "description": "EXPORT USER DATA",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "generateRecommendations",
+      "path": "functions/generateRecommendations.ts",
+      "description": "",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "syncToGoogleCalendar",
+      "path": "functions/syncToGoogleCalendar.ts",
+      "description": "Syncs an event to Google Calendar",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "aiGamificationRuleOptimizer",
+      "path": "functions/aiGamificationRuleOptimizer.ts",
+      "description": "",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "summarizeEvent",
+      "path": "functions/summarizeEvent.ts",
+      "description": "",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "inviteUser",
+      "path": "functions/inviteUser.ts",
+      "description": "INVITE USER - Admin/Owner only",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "cloudflareIntegration",
+      "path": "functions/cloudflareIntegration.ts",
+      "description": "",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "buddyMatchingAI",
+      "path": "functions/buddyMatchingAI.ts",
+      "description": "",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "aiWorkflowAutomation",
+      "path": "functions/aiWorkflowAutomation.ts",
+      "description": "",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "aggregateAnalytics",
+      "path": "functions/aggregateAnalytics.ts",
+      "description": "Daily aggregation job to summarize analytics events",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "generateFacilitatorGuide",
+      "path": "functions/generateFacilitatorGuide.ts",
+      "description": "",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "notionIntegration",
+      "path": "functions/notionIntegration.ts",
+      "description": "",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "perplexityIntegration",
+      "path": "functions/perplexityIntegration.ts",
+      "description": "",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "processReminders",
+      "path": "functions/processReminders.ts",
+      "description": "",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "hubspotIntegration",
+      "path": "functions/hubspotIntegration.ts",
+      "description": "",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "cloudinaryIntegration",
+      "path": "functions/cloudinaryIntegration.ts",
+      "description": "",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "googleMapsIntegration",
+      "path": "functions/googleMapsIntegration.ts",
+      "description": "",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "aiTeamStructureOptimizer",
+      "path": "functions/aiTeamStructureOptimizer.ts",
+      "description": "",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "openaiIntegration",
+      "path": "functions/openaiIntegration.ts",
+      "description": "",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "aiKnowledgeIndexer",
+      "path": "functions/aiKnowledgeIndexer.ts",
+      "description": "",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "generateAIInsights",
+      "path": "functions/generateAIInsights.ts",
+      "description": "",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "gamificationEmails",
+      "path": "functions/gamificationEmails.ts",
+      "description": "Gamification Email Notifications",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "aiPersonalizedChallenges",
+      "path": "functions/aiPersonalizedChallenges.ts",
+      "description": "",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "checkEventReminders",
+      "path": "functions/checkEventReminders.ts",
+      "description": "",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "sendTeamsNotificationV2",
+      "path": "functions/sendTeamsNotificationV2.ts",
+      "description": "SEND TEAMS NOTIFICATION (V2 - Refactored)",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "sendTeamsNotification",
+      "path": "functions/sendTeamsNotification.ts",
+      "description": "",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "aiAdminAssistant",
+      "path": "functions/aiAdminAssistant.ts",
+      "description": "",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "generatePersonalizedRecommendations",
+      "path": "functions/generatePersonalizedRecommendations.ts",
+      "description": "Personalized Gamification Recommendations Engine",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "gamificationPersonalizationAI",
+      "path": "functions/gamificationPersonalizationAI.ts",
+      "description": "",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "adjustOnboardingDynamically",
+      "path": "functions/adjustOnboardingDynamically.ts",
+      "description": "",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "sendOneHourReminder",
+      "path": "functions/sendOneHourReminder.ts",
+      "description": "",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "teamsNotifications",
+      "path": "functions/teamsNotifications.ts",
+      "description": "Microsoft Teams Notifications Integration",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "manageUserRole",
+      "path": "functions/manageUserRole.ts",
+      "description": "MANAGE USER ROLE - Owner only",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "exportAnalyticsReport",
+      "path": "functions/exportAnalyticsReport.ts",
+      "description": "EXPORT ANALYTICS REPORT",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "aiMentorMatcher",
+      "path": "functions/aiMentorMatcher.ts",
+      "description": "",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "teamCoachingAI",
+      "path": "functions/teamCoachingAI.ts",
+      "description": "",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "aiOnboardingPlanGenerator",
+      "path": "functions/aiOnboardingPlanGenerator.ts",
+      "description": "",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "teamLeaderAIAssistant",
+      "path": "functions/teamLeaderAIAssistant.ts",
+      "description": "",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "claudeIntegration",
+      "path": "functions/claudeIntegration.ts",
+      "description": "",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "exportEventReport",
+      "path": "functions/exportEventReport.ts",
+      "description": "",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "updateAttendanceStreak",
+      "path": "functions/updateAttendanceStreak.ts",
+      "description": "",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "elevenlabsIntegration",
+      "path": "functions/elevenlabsIntegration.ts",
+      "description": "",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "vercelIntegration",
+      "path": "functions/vercelIntegration.ts",
+      "description": "",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "googleCalendarSync",
+      "path": "functions/googleCalendarSync.ts",
+      "description": "Google Calendar Integration",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "detectMilestones",
+      "path": "functions/detectMilestones.ts",
+      "description": "MILESTONE DETECTION FUNCTION",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "gamificationAI",
+      "path": "functions/gamificationAI.ts",
+      "description": "AI-Powered Gamification Intelligence Engine",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "generateCalendarFile",
+      "path": "functions/generateCalendarFile.ts",
+      "description": "",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "processGamificationRules",
+      "path": "functions/processGamificationRules.ts",
+      "description": "GAMIFICATION RULE PROCESSOR",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "aggregateSurveyResults",
+      "path": "functions/aggregateSurveyResults.ts",
+      "description": "AGGREGATE SURVEY RESULTS FUNCTION",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "aiCareerPathRecommendations",
+      "path": "functions/aiCareerPathRecommendations.ts",
+      "description": "",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "createNotification",
+      "path": "functions/createNotification.ts",
+      "description": "",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "analyzeOptimalTimes",
+      "path": "functions/analyzeOptimalTimes.ts",
+      "description": "",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "slackNotifications",
+      "path": "functions/slackNotifications.ts",
+      "description": "Slack Notifications Integration",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "checkOnboardingReminders",
+      "path": "functions/checkOnboardingReminders.ts",
+      "description": "Automated Onboarding Milestone Reminders",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "createStoreCheckout",
+      "path": "functions/createStoreCheckout.ts",
+      "description": "",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "storeWebhook",
+      "path": "functions/storeWebhook.ts",
+      "description": "",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "importFromGoogleCalendar",
+      "path": "functions/importFromGoogleCalendar.ts",
+      "description": "Imports events from Google Calendar",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "redeemReward",
+      "path": "functions/redeemReward.ts",
+      "description": "Reward Redemption Function",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "aiContentGenerator",
+      "path": "functions/aiContentGenerator.ts",
+      "description": "AI Content Generator for Learning Platforms",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "geminiIntegration",
+      "path": "functions/geminiIntegration.ts",
+      "description": "",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "aiContentRecommendations",
+      "path": "functions/aiContentRecommendations.ts",
+      "description": "",
+      "isAPI": true,
+      "type": "api-endpoint"
+    },
+    {
+      "name": "aiContentGapAnalysis",
+      "path": "functions/aiContentGapAnalysis.ts",
+      "description": "",
+      "isAPI": true,
+      "type": "api-endpoint"
+    }
+  ],
+  "zombieCode": {
+    "description": "Components that work but lack Base44 sync attributes",
+    "count": 142,
+    "items": [
+      {
+        "name": "ThemeCustomizer",
+        "path": "src/components/ai/ThemeCustomizer.jsx",
+        "category": "ai"
+      },
+      {
+        "name": "OnboardingWidget",
+        "path": "src/components/dashboard/OnboardingWidget.jsx",
+        "category": "dashboard"
+      },
+      {
+        "name": "StatsCard",
+        "path": "src/components/dashboard/StatsCard.jsx",
+        "category": "dashboard"
+      },
+      {
+        "name": "ReactiveEventList",
+        "path": "src/components/dashboard/ReactiveEventList.jsx",
+        "category": "dashboard"
+      },
+      {
+        "name": "LiveEventsBanner",
+        "path": "src/components/dashboard/LiveEventsBanner.jsx",
+        "category": "dashboard"
+      },
+      {
+        "name": "BookmarkButton",
+        "path": "src/components/events/BookmarkButton.jsx",
+        "category": "events"
+      },
+      {
+        "name": "ModerationQueue",
+        "path": "src/components/moderation/ModerationQueue.jsx",
+        "category": "moderation"
+      },
+      {
+        "name": "ModerationItem",
+        "path": "src/components/moderation/ModerationItem.jsx",
+        "category": "moderation"
+      },
+      {
+        "name": "NotificationBell",
+        "path": "src/components/notifications/NotificationBell.jsx",
+        "category": "notifications"
+      },
+      {
+        "name": "LoadingSpinner",
+        "path": "src/components/ui/LoadingSpinner.jsx",
+        "category": "ui"
+      },
+      {
+        "name": "PageHeader",
+        "path": "src/components/ui/PageHeader.jsx",
+        "category": "ui"
+      },
+      {
+        "name": "EmptyState",
+        "path": "src/components/ui/EmptyState.jsx",
+        "category": "ui"
+      },
+      {
+        "name": "SkeletonGrid",
+        "path": "src/components/ui/SkeletonGrid.jsx",
+        "category": "ui"
+      },
+      {
+        "name": "ProfilePrivacyBadge",
+        "path": "src/components/profile/ProfilePrivacyBadge.jsx",
+        "category": "profile"
+      },
+      {
+        "name": "MilestoneCard",
+        "path": "src/components/milestones/MilestoneCard.jsx",
+        "category": "milestones"
+      },
+      {
+        "name": "StoreItemCard",
+        "path": "src/components/store/StoreItemCard.jsx",
+        "category": "store"
+      },
+      {
+        "name": "StoreItemDetail",
+        "path": "src/components/store/StoreItemDetail.jsx",
+        "category": "store"
+      },
+      {
+        "name": "InventorySelector",
+        "path": "src/components/store/InventorySelector.jsx",
+        "category": "store"
+      },
+      {
+        "name": "AvatarPreview",
+        "path": "src/components/store/AvatarPreview.jsx",
+        "category": "store"
+      },
+      {
+        "name": "AvatarCustomizer",
+        "path": "src/components/store/AvatarCustomizer.jsx",
+        "category": "store"
+      },
+      {
+        "name": "DocSummarizer",
+        "path": "src/components/docs/DocSummarizer.jsx",
+        "category": "docs"
+      },
+      {
+        "name": "Analytics",
+        "path": "src/components/docs/ANALYTICS_GAMIFICATION_AUDIT.md.jsx",
+        "category": "docs"
+      },
+      {
+        "name": "RecognitionPage",
+        "path": "src/components/docs/RECOGNITION_SYSTEM_AUDIT.md.jsx",
+        "category": "docs"
+      },
+      {
+        "name": "DocsChangeDetector",
+        "path": "src/components/docs/DocsChangeDetector.jsx",
+        "category": "docs"
+      },
+      {
+        "name": "KeyboardShortcuts",
+        "path": "src/components/core/KeyboardShortcuts.jsx",
+        "category": "core"
+      },
+      {
+        "name": "EnhancedRecognitionForm",
+        "path": "src/components/social/EnhancedRecognitionForm.jsx",
+        "category": "social"
+      },
+      {
+        "name": "BuddyMatchingSystem",
+        "path": "src/components/social/BuddyMatchingSystem.jsx",
+        "category": "social"
+      },
+      {
+        "name": "RecognitionFeed",
+        "path": "src/components/social/RecognitionFeed.jsx",
+        "category": "social"
+      },
+      {
+        "name": "BuddyMatchingDashboard",
+        "path": "src/components/social/BuddyMatchingDashboard.jsx",
+        "category": "social"
+      },
+      {
+        "name": "BuddySystemManager",
+        "path": "src/components/social/BuddySystemManager.jsx",
+        "category": "social"
+      },
+      {
+        "name": "SkillGapMicroLearning",
+        "path": "src/components/learning/SkillGapMicroLearning.jsx",
+        "category": "learning"
+      },
+      {
+        "name": "LearningPathCard",
+        "path": "src/components/learning/LearningPathCard.jsx",
+        "category": "learning"
+      },
+      {
+        "name": "AILearningRecommendations",
+        "path": "src/components/learning/AILearningRecommendations.jsx",
+        "category": "learning"
+      },
+      {
+        "name": "ModuleViewer",
+        "path": "src/components/learning/ModuleViewer.jsx",
+        "category": "learning"
+      },
+      {
+        "name": "GamifiedLearningDashboard",
+        "path": "src/components/learning/GamifiedLearningDashboard.jsx",
+        "category": "learning"
+      },
+      {
+        "name": "MicroLearningModule",
+        "path": "src/components/learning/MicroLearningModule.jsx",
+        "category": "learning"
+      },
+      {
+        "name": "MyLearningProgress",
+        "path": "src/components/learning/MyLearningProgress.jsx",
+        "category": "learning"
+      },
+      {
+        "name": "GoogleCalendarConnect",
+        "path": "src/components/integrations/GoogleCalendarConnect.jsx",
+        "category": "integrations"
+      },
+      {
+        "name": "GoogleCalendarConnect",
+        "path": "src/components/integrations/GoogleCalendarConnect.tsx.jsx",
+        "category": "integrations"
+      },
+      {
+        "name": "IntegrationCard",
+        "path": "src/components/integrations/IntegrationCard.jsx",
+        "category": "integrations"
+      },
+      {
+        "name": "LoadingSpinner",
+        "path": "src/components/common/LoadingSpinner.jsx",
+        "category": "common"
+      },
+      {
+        "name": "DataLoader",
+        "path": "src/components/common/DataLoader.jsx",
+        "category": "common"
+      },
+      {
+        "name": "ProtectedRoute",
+        "path": "src/components/common/ProtectedRoute.jsx",
+        "category": "common"
+      },
+      {
+        "name": "PageHeader",
+        "path": "src/components/common/PageHeader.jsx",
+        "category": "common"
+      },
+      {
+        "name": "FilterChip",
+        "path": "src/components/common/FilterChip.jsx",
+        "category": "common"
+      },
+      {
+        "name": "QueryErrorHandler",
+        "path": "src/components/common/QueryErrorHandler.jsx",
+        "category": "common"
+      },
+      {
+        "name": "StatsGrid",
+        "path": "src/components/common/StatsGrid.jsx",
+        "category": "common"
+      },
+      {
+        "name": "ContentTypeIndicator",
+        "path": "src/components/common/ContentTypeIndicator.jsx",
+        "category": "common"
+      },
+      {
+        "name": "AnimatedCard",
+        "path": "src/components/common/AnimatedCard.jsx",
+        "category": "common"
+      },
+      {
+        "name": "EmptyState",
+        "path": "src/components/common/EmptyState.jsx",
+        "category": "common"
+      },
+      {
+        "name": "GradientSpinner",
+        "path": "src/components/common/GradientSpinner.jsx",
+        "category": "common"
+      },
+      {
+        "name": "AnimatedButton",
+        "path": "src/components/common/AnimatedButton.jsx",
+        "category": "common"
+      },
+      {
+        "name": "SkeletonGrid",
+        "path": "src/components/common/SkeletonGrid.jsx",
+        "category": "common"
+      },
+      {
+        "name": "ResponsiveCard",
+        "path": "src/components/common/ResponsiveCard.jsx",
+        "category": "common"
+      },
+      {
+        "name": "QueryErrorDisplay",
+        "path": "src/components/common/QueryErrorDisplay.jsx",
+        "category": "common"
+      },
+      {
+        "name": "QuickActionCard",
+        "path": "src/components/common/QuickActionCard.jsx",
+        "category": "common"
+      },
+      {
+        "name": "SoundButton",
+        "path": "src/components/common/SoundButton.jsx",
+        "category": "common"
+      },
+      {
+        "name": "PointsConfigPanel",
+        "path": "src/components/settings/PointsConfigPanel.jsx",
+        "category": "settings"
+      },
+      {
+        "name": "RewardInventoryManager",
+        "path": "src/components/settings/RewardInventoryManager.jsx",
+        "category": "settings"
+      },
+      {
+        "name": "UserGamificationPreferences",
+        "path": "src/components/settings/UserGamificationPreferences.jsx",
+        "category": "settings"
+      },
+      {
+        "name": "BadgeCriteriaManager",
+        "path": "src/components/settings/BadgeCriteriaManager.jsx",
+        "category": "settings"
+      },
+      {
+        "name": "TeamStructureManager",
+        "path": "src/components/settings/TeamStructureManager.jsx",
+        "category": "settings"
+      },
+      {
+        "name": "AISettingsPanel",
+        "path": "src/components/settings/AISettingsPanel.jsx",
+        "category": "settings"
+      },
+      {
+        "name": "AIConnectionSuggestions",
+        "path": "src/components/onboarding/AIConnectionSuggestions.jsx",
+        "category": "onboarding"
+      },
+      {
+        "name": "OnboardingTrigger",
+        "path": "src/components/onboarding/OnboardingTrigger.jsx",
+        "category": "onboarding"
+      },
+      {
+        "name": "OnboardingChatbot",
+        "path": "src/components/onboarding/OnboardingChatbot.jsx",
+        "category": "onboarding"
+      },
+      {
+        "name": "InteractiveTutorial",
+        "path": "src/components/onboarding/InteractiveTutorial.jsx",
+        "category": "onboarding"
+      },
+      {
+        "name": "OnboardingChecklist",
+        "path": "src/components/onboarding/OnboardingChecklist.jsx",
+        "category": "onboarding"
+      },
+      {
+        "name": "ProactiveSuggestionsWidget",
+        "path": "src/components/onboarding/ProactiveSuggestionsWidget.jsx",
+        "category": "onboarding"
+      },
+      {
+        "name": "OnboardingPlanDisplay",
+        "path": "src/components/onboarding/OnboardingPlanDisplay.jsx",
+        "category": "onboarding"
+      },
+      {
+        "name": "AIFeedbackPanel",
+        "path": "src/components/onboarding/AIFeedbackPanel.jsx",
+        "category": "onboarding"
+      },
+      {
+        "name": "WelcomeWizard",
+        "path": "src/components/onboarding/WelcomeWizard.jsx",
+        "category": "onboarding"
+      },
+      {
+        "name": "OnboardingTooltip",
+        "path": "src/components/onboarding/OnboardingTooltip.jsx",
+        "category": "onboarding"
+      },
+      {
+        "name": "SkillProgressAnalyzer",
+        "path": "src/components/onboarding/SkillProgressAnalyzer.jsx",
+        "category": "onboarding"
+      },
+      {
+        "name": "TeamConnectionsPanel",
+        "path": "src/components/onboarding/TeamConnectionsPanel.jsx",
+        "category": "onboarding"
+      },
+      {
+        "name": "OnboardingQuestSystem",
+        "path": "src/components/onboarding/OnboardingQuestSystem.jsx",
+        "category": "onboarding"
+      },
+      {
+        "name": "PersonalizedTaskList",
+        "path": "src/components/onboarding/PersonalizedTaskList.jsx",
+        "category": "onboarding"
+      },
+      {
+        "name": "OnboardingProgress",
+        "path": "src/components/onboarding/OnboardingProgress.jsx",
+        "category": "onboarding"
+      },
+      {
+        "name": "OnboardingModal",
+        "path": "src/components/onboarding/OnboardingModal.jsx",
+        "category": "onboarding"
+      },
+      {
+        "name": "DynamicOnboardingAdjuster",
+        "path": "src/components/onboarding/DynamicOnboardingAdjuster.jsx",
+        "category": "onboarding"
+      },
+      {
+        "name": "FeatureHighlight",
+        "path": "src/components/onboarding/FeatureHighlight.jsx",
+        "category": "onboarding"
+      },
+      {
+        "name": "GuidedOnboardingWizard",
+        "path": "src/components/onboarding/GuidedOnboardingWizard.jsx",
+        "category": "onboarding"
+      },
+      {
+        "name": "FeedbackAnalyzer",
+        "path": "src/components/analytics/FeedbackAnalyzer.jsx",
+        "category": "analytics"
+      },
+      {
+        "name": "OnboardingAnalytics",
+        "path": "src/components/analytics/OnboardingAnalytics.jsx",
+        "category": "analytics"
+      },
+      {
+        "name": "AttendanceMetrics",
+        "path": "src/components/analytics/AttendanceMetrics.jsx",
+        "category": "analytics"
+      },
+      {
+        "name": "SkillDevelopmentCorrelation",
+        "path": "src/components/analytics/SkillDevelopmentCorrelation.jsx",
+        "category": "analytics"
+      },
+      {
+        "name": "ActivityTypeAnalytics",
+        "path": "src/components/analytics/ActivityTypeAnalytics.jsx",
+        "category": "analytics"
+      },
+      {
+        "name": "CohortAnalysis",
+        "path": "src/components/analytics/CohortAnalysis.jsx",
+        "category": "analytics"
+      },
+      {
+        "name": "AnalyticsHeader",
+        "path": "src/components/analytics/AnalyticsHeader.jsx",
+        "category": "analytics"
+      },
+      {
+        "name": "EngagementOverTime",
+        "path": "src/components/analytics/EngagementOverTime.jsx",
+        "category": "analytics"
+      },
+      {
+        "name": "FacilitatorMetrics",
+        "path": "src/components/analytics/FacilitatorMetrics.jsx",
+        "category": "analytics"
+      },
+      {
+        "name": "EngagementAnalytics",
+        "path": "src/components/analytics/EngagementAnalytics.jsx",
+        "category": "analytics"
+      },
+      {
+        "name": "AIFeatureAnalytics",
+        "path": "src/components/analytics/AIFeatureAnalytics.jsx",
+        "category": "analytics"
+      },
+      {
+        "name": "FeatureUsageDashboard",
+        "path": "src/components/analytics/FeatureUsageDashboard.jsx",
+        "category": "analytics"
+      },
+      {
+        "name": "AnalyticsOverview",
+        "path": "src/components/analytics/AnalyticsOverview.jsx",
+        "category": "analytics"
+      },
+      {
+        "name": "LeaderboardRow",
+        "path": "src/components/gamification/LeaderboardRow.jsx",
+        "category": "gamification"
+      },
+      {
+        "name": "PersonalChallengeCard",
+        "path": "src/components/gamification/PersonalChallengeCard.jsx",
+        "category": "gamification"
+      },
+      {
+        "name": "RewardCard",
+        "path": "src/components/gamification/RewardCard.jsx",
+        "category": "gamification"
+      },
+      {
+        "name": "ChallengeCard",
+        "path": "src/components/gamification/ChallengeCard.jsx",
+        "category": "gamification"
+      },
+      {
+        "name": "BadgeCard",
+        "path": "src/components/gamification/BadgeCard.jsx",
+        "category": "gamification"
+      },
+      {
+        "name": "TeamAnalyticsDashboard",
+        "path": "src/components/teamLeader/TeamAnalyticsDashboard.jsx",
+        "category": "teamLeader"
+      },
+      {
+        "name": "TeamCoachingModule",
+        "path": "src/components/teamLeader/TeamCoachingModule.jsx",
+        "category": "teamLeader"
+      },
+      {
+        "name": "TeamLeaderAIAssistant",
+        "path": "src/components/teamLeader/TeamLeaderAIAssistant.jsx",
+        "category": "teamLeader"
+      },
+      {
+        "name": "TeamChallengeManager",
+        "path": "src/components/teamLeader/TeamChallengeManager.jsx",
+        "category": "teamLeader"
+      },
+      {
+        "name": "TeamApprovalQueue",
+        "path": "src/components/teamLeader/TeamApprovalQueue.jsx",
+        "category": "teamLeader"
+      },
+      {
+        "name": "UserStatsCards",
+        "path": "src/components/participant/UserStatsCards.jsx",
+        "category": "participant"
+      },
+      {
+        "name": "ParticipantEventCard",
+        "path": "src/components/participant/ParticipantEventCard.jsx",
+        "category": "participant"
+      },
+      {
+        "name": "FeedbackForm",
+        "path": "src/components/participant/FeedbackForm.jsx",
+        "category": "participant"
+      },
+      {
+        "name": "PersonalizedRecommendations",
+        "path": "src/components/participant/PersonalizedRecommendations.jsx",
+        "category": "participant"
+      },
+      {
+        "name": "ChannelList",
+        "path": "src/components/channels/ChannelList.jsx",
+        "category": "channels"
+      },
+      {
+        "name": "ChannelChat",
+        "path": "src/components/channels/ChannelChat.jsx",
+        "category": "channels"
+      },
+      {
+        "name": "CreateChannelDialog",
+        "path": "src/components/channels/CreateChannelDialog.jsx",
+        "category": "channels"
+      },
+      {
+        "name": "ChannelSettings",
+        "path": "src/components/channels/ChannelSettings.jsx",
+        "category": "channels"
+      },
+      {
+        "name": "ChannelDiscussion",
+        "path": "src/components/channels/ChannelDiscussion.jsx",
+        "category": "channels"
+      },
+      {
+        "name": "SurveyResults",
+        "path": "src/components/surveys/SurveyResults.jsx",
+        "category": "surveys"
+      },
+      {
+        "name": "SurveyForm",
+        "path": "src/components/surveys/SurveyForm.jsx",
+        "category": "surveys"
+      },
+      {
+        "name": "SurveyCard",
+        "path": "src/components/surveys/SurveyCard.jsx",
+        "category": "surveys"
+      },
+      {
+        "name": "SkillProgressCard",
+        "path": "src/components/skills/SkillProgressCard.jsx",
+        "category": "skills"
+      },
+      {
+        "name": "SkillTagger",
+        "path": "src/components/skills/SkillTagger.jsx",
+        "category": "skills"
+      },
+      {
+        "name": "AISkillAnalyzer",
+        "path": "src/components/skills/AISkillAnalyzer.jsx",
+        "category": "skills"
+      },
+      {
+        "name": "UserSkillDashboard",
+        "path": "src/components/skills/UserSkillDashboard.jsx",
+        "category": "skills"
+      },
+      {
+        "name": "MultiplayerGame",
+        "path": "src/components/interactive/MultiplayerGame.jsx",
+        "category": "interactive"
+      },
+      {
+        "name": "CollaborativeWhiteboard",
+        "path": "src/components/interactive/CollaborativeWhiteboard.jsx",
+        "category": "interactive"
+      },
+      {
+        "name": "BreakoutRooms",
+        "path": "src/components/interactive/BreakoutRooms.jsx",
+        "category": "interactive"
+      },
+      {
+        "name": "ActivityCard",
+        "path": "src/components/activities/ActivityCard.jsx",
+        "category": "activities"
+      },
+      {
+        "name": "PWAInstallPrompt",
+        "path": "src/components/pwa/PWAInstallPrompt.jsx",
+        "category": "pwa"
+      },
+      {
+        "name": "ServiceWorkerInit",
+        "path": "src/components/pwa/ServiceWorkerInit.jsx",
+        "category": "pwa"
+      },
+      {
+        "name": "GamificationRulesConfig",
+        "path": "src/components/admin/gamification/GamificationRulesConfig.jsx",
+        "category": "admin"
+      },
+      {
+        "name": "AIContentGenerator",
+        "path": "src/components/admin/gamification/AIContentGenerator.jsx",
+        "category": "admin"
+      },
+      {
+        "name": "ContentIntegrationManager",
+        "path": "src/components/admin/gamification/ContentIntegrationManager.jsx",
+        "category": "admin"
+      },
+      {
+        "name": "SkillDevelopmentTrends",
+        "path": "src/components/admin/gamification/SkillDevelopmentTrends.jsx",
+        "category": "admin"
+      },
+      {
+        "name": "EngagementAnalytics",
+        "path": "src/components/admin/gamification/EngagementAnalytics.jsx",
+        "category": "admin"
+      },
+      {
+        "name": "AIRuleOptimizer",
+        "path": "src/components/admin/gamification/AIRuleOptimizer.jsx",
+        "category": "admin"
+      },
+      {
+        "name": "ManualAwardsPanel",
+        "path": "src/components/admin/gamification/ManualAwardsPanel.jsx",
+        "category": "admin"
+      },
+      {
+        "name": "UserProgressOverview",
+        "path": "src/components/admin/gamification/UserProgressOverview.jsx",
+        "category": "admin"
+      },
+      {
+        "name": "LeaderboardDynamicsAnalysis",
+        "path": "src/components/analytics/gamification/LeaderboardDynamicsAnalysis.jsx",
+        "category": "analytics"
+      },
+      {
+        "name": "BadgeDistributionAnalysis",
+        "path": "src/components/analytics/gamification/BadgeDistributionAnalysis.jsx",
+        "category": "analytics"
+      },
+      {
+        "name": "ABTestingFramework",
+        "path": "src/components/analytics/gamification/ABTestingFramework.jsx",
+        "category": "analytics"
+      },
+      {
+        "name": "AIInsightsGenerator",
+        "path": "src/components/analytics/gamification/AIInsightsGenerator.jsx",
+        "category": "analytics"
+      },
+      {
+        "name": "EngagementTrendsChart",
+        "path": "src/components/analytics/gamification/EngagementTrendsChart.jsx",
+        "category": "analytics"
+      },
+      {
+        "name": "ChallengePerformanceMetrics",
+        "path": "src/components/analytics/gamification/ChallengePerformanceMetrics.jsx",
+        "category": "analytics"
+      },
+      {
+        "name": "EmptyState",
+        "path": "src/components/shared/ui/EmptyState.jsx",
+        "category": "shared"
+      }
+    ]
+  },
+  "canvas": {
+    "containers": {
+      "main": [
+        "UserNotRegisteredError",
+        "EventHistoryAnalyzer",
+        "FacilitatorAIAssistant",
+        "AISuggestionsWidget",
+        "AIEventThemeGenerator",
+        "SmartSchedulingAssistant",
+        "ThemeCustomizer",
+        "ActivityGenerator",
+        "AIEventSuggestionEngine",
+        "AIInsightsPanel",
+        "AIActivityPlanner",
+        "TeamInsightsPanel",
+        "PersonalizedRecommendations",
+        "OnboardingWidget",
+        "QuickActionsPanel",
+        "StatsCard",
+        "ReactiveEventList",
+        "DashboardCustomizer",
+        "LiveEventsBanner",
+        "QuickStats",
+        "CompletedEventsList",
+        "LiveQASection",
+        "EventActionsMenu",
+        "CalendarHeader",
+        "GoogleCalendarActions",
+        "EventMediaGallery",
+        "TimeSlotPollCreator",
+        "BookmarkButton",
+        "useEventAttendance",
+        "TemplatePreview",
+        "RegistrationFormBuilder",
+        "EventTypeConditionalFields",
+        "TimeSlotVoter",
+        "TimeSlotSuggestions",
+        "EventRecordingPlayer",
+        "EventRescheduleDialog",
+        "BulkEventScheduler",
+        "EventSeriesCreator",
+        "EventCalendarCard",
+        "RichTextEventEditor",
+        "BookmarkedEventsList",
+        "GoogleCalendarActions",
+        "EventsList",
+        "TimeSlotPollList",
+        "EventTemplateSelector",
+        "EventTemplateEditor",
+        "useEventActions",
+        "ReminderPreferences",
+        "RecurrenceSettings",
+        "CustomRegistrationForm"
+      ],
+      "admin": [
+        "RoleManagement",
+        "UserManagementPanel",
+        "BulkUserImport",
+        "UserTypeManager",
+        "RoleManagementSetup",
+        "AIAdminAssistant",
+        "PointsAdjustment",
+        "GamificationConfigPanel",
+        "PredictiveHealthDashboard",
+        "SurveyManagement",
+        "CustomChallengeCreator",
+        "GamificationRulesConfig",
+        "AIContentGenerator",
+        "QuickStatsLoader",
+        "ContentIntegrationManager",
+        "SkillDevelopmentTrends",
+        "EngagementAnalytics",
+        "AIRuleOptimizer",
+        "ManualAwardsPanel",
+        "UserProgressOverview"
+      ],
+      "facilitator": [
+        "LiveAnnouncements",
+        "CommunicationHub",
+        "AIContentGenerator",
+        "AIQAModerator",
+        "ParticipantManager",
+        "ParticipantProfilesView",
+        "PostEventRecap",
+        "FacilitatorSupportChat",
+        "RecordingUploader",
+        "TemplateAnalytics",
+        "FacilitatorAgentChat",
+        "LivePollCreator",
+        "RealTimeTips",
+        "PreEventAssistant",
+        "AIBreakoutSuggester",
+        "QAModerator",
+        "AIEventSummarizer",
+        "SessionTimer",
+        "LiveCoachingWidget",
+        "AIEventSummary"
+      ]
+    }
+  }
+}
