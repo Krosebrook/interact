@@ -19,6 +19,8 @@ Comprehensive documentation is available in the following files:
 - **[RECOMMENDATIONS.md](./RECOMMENDATIONS.md)** - Best practices, repository recommendations, and GitHub Copilot prompts
 - **[CHANGELOG.md](./CHANGELOG.md)** - Version history and release notes
 - **[docs/security/](./docs/security/)** - Security documentation and compliance frameworks
+- **[.github/base44-updates.md](./.github/base44-updates.md)** - Base44 visual canvas integration guide and module architecture
+- **[.github/agents.md](./.github/agents.md)** - AI agent context log and historical development decisions
 
 ## 🚀 Quick Start
 
@@ -57,6 +59,12 @@ interact/
 ├── src/
 │   ├── pages/           # 47 application pages
 │   ├── components/      # 42 component categories
+│   ├── modules/         # NEW: Modular feature architecture (Base44-compatible)
+│   │   └── [feature-name]/
+│   │       ├── components/   # Feature-specific components
+│   │       ├── hooks/        # Feature-specific hooks
+│   │       ├── services/     # Business logic & API integration
+│   │       └── utils/        # Helper functions
 │   ├── hooks/           # Custom React hooks
 │   ├── lib/             # Utilities and libraries
 │   ├── api/             # API client configuration
@@ -65,6 +73,19 @@ interact/
 ├── public/              # Public static files
 └── docs/                # Documentation (audit, PRD, roadmap)
 ```
+
+### Module Architecture
+
+**New Feature Pattern (Q1 2026+):** All new features should use the modular architecture in `src/modules/[feature-name]/`. This pattern provides:
+
+- ✅ **Base44 Visual Canvas Compatibility** - Components with `data-b44-sync` attributes
+- ✅ **API Versioning** - Service layer with version management
+- ✅ **Clear Feature Boundaries** - Self-contained modules
+- ✅ **Backward Compatible** - Coexists with existing component structure
+
+**Example:** See `src/modules/example-feature/` for a complete reference implementation.
+
+**Documentation:** Comprehensive guide available in [`.github/base44-updates.md`](./.github/base44-updates.md)
 
 ## ✅ Recent Updates & Action Items
 
