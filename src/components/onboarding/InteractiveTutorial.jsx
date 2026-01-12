@@ -19,6 +19,85 @@ import {
 import confetti from 'canvas-confetti';
 import { toast } from 'sonner';
 
+// Export tutorial catalog for OnboardingHub
+export const TUTORIALS = {
+  profile: {
+    id: 'profile',
+    title: 'Setting Up Your Profile',
+    description: 'Learn how to customize your profile and connect with teammates',
+    duration: '3 min',
+    steps: [
+      {
+        id: 'profile-1',
+        title: 'Add Your Photo',
+        description: 'Upload a profile picture to help teammates recognize you',
+        icon: Users,
+        target: '[data-tutorial="profile-photo"]'
+      },
+      {
+        id: 'profile-2',
+        title: 'Complete Your Bio',
+        description: 'Share your interests, skills, and what you do',
+        icon: MessageSquare,
+        target: '[data-tutorial="profile-bio"]'
+      },
+      {
+        id: 'profile-3',
+        title: 'Set Preferences',
+        description: 'Customize your notification and privacy settings',
+        icon: Target,
+        target: '[data-tutorial="profile-preferences"]'
+      }
+    ]
+  },
+  gamification: {
+    id: 'gamification',
+    title: 'Understanding Points & Badges',
+    description: 'Learn how to earn rewards and level up',
+    duration: '4 min',
+    steps: [
+      {
+        id: 'gamification-1',
+        title: 'Earning Points',
+        description: 'Discover how you earn points through activities',
+        icon: Sparkles
+      },
+      {
+        id: 'gamification-2',
+        title: 'Unlocking Badges',
+        description: 'Learn about achievement badges and milestones',
+        icon: Award
+      },
+      {
+        id: 'gamification-3',
+        title: 'Redeeming Rewards',
+        description: 'Use your points in the rewards store',
+        icon: Target
+      }
+    ]
+  },
+  teams: {
+    id: 'teams',
+    title: 'Joining & Managing Teams',
+    description: 'Collaborate effectively with team features',
+    duration: '5 min',
+    steps: [
+      {
+        id: 'teams-1',
+        title: 'Finding Teams',
+        description: 'Browse and join teams relevant to you',
+        icon: Users
+      },
+      {
+        id: 'teams-2',
+        title: 'Team Channels',
+        description: 'Communicate in team-specific channels',
+        icon: MessageSquare
+      }
+    ]
+  }
+};
+
 const TUTORIAL_STEPS = {
   participant: [
     {
