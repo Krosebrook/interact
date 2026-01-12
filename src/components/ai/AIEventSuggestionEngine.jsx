@@ -194,7 +194,7 @@ For each suggestion, provide:
       const event = await base44.entities.Event.create({
         activity_id: activityId,
         title: eventData.title,
-        scheduled_date: new Date(eventData.scheduled_date).toISOString(),
+        scheduled_date: eventData.scheduled_date ? new Date(eventData.scheduled_date).toISOString() : new Date(addDays(new Date(), 7)).toISOString(),
         duration_minutes: parseInt(eventData.duration) || 30,
         status: 'scheduled',
         max_participants: parseInt(eventData.max_participants) || 20,
