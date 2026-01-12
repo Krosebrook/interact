@@ -19,6 +19,8 @@ Comprehensive documentation is available in the following files:
 - **[RECOMMENDATIONS.md](./RECOMMENDATIONS.md)** - Best practices, repository recommendations, and GitHub Copilot prompts
 - **[CHANGELOG.md](./CHANGELOG.md)** - Version history and release notes
 - **[docs/security/](./docs/security/)** - Security documentation and compliance frameworks
+- **[docs/SAFE_BRANCH_MERGING.md](./docs/SAFE_BRANCH_MERGING.md)** - Safe branch merging guide and best practices
+- **[docs/PRE_MERGE_CHECKLIST.md](./docs/PRE_MERGE_CHECKLIST.md)** - Pre-merge checklist template
 - **[.github/base44-updates.md](./.github/base44-updates.md)** - Base44 visual canvas integration guide and module architecture
 - **[.github/agents.md](./.github/agents.md)** - AI agent context log and historical development decisions
 
@@ -51,6 +53,15 @@ npm run preview
 - `npm run preview` - Preview production build locally
 - `npm run lint` - Run ESLint
 - `npm run lint:fix` - Fix ESLint issues automatically
+
+### Git & Branch Management
+
+- `./scripts/safe-merge-branch.sh <branch-name>` - Safely merge a branch into main with automated checks
+- `./scripts/cleanup-merged-branches.sh` - Clean up branches that have been merged into main
+
+**Documentation:**
+- **[docs/SAFE_BRANCH_MERGING.md](./docs/SAFE_BRANCH_MERGING.md)** - Complete guide for safe branch merging
+- **[docs/PRE_MERGE_CHECKLIST.md](./docs/PRE_MERGE_CHECKLIST.md)** - Checklist template before merging
 
 ## 🏗️ Project Structure
 
