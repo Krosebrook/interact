@@ -56,6 +56,7 @@ import Teams from './pages/Teams';
 import UserProfile from './pages/UserProfile';
 import UserRoleAssignment from './pages/UserRoleAssignment';
 import TeamAutomation from './pages/TeamAutomation';
+import TeamAutomations from './pages/TeamAutomations';
 import __Layout from './Layout.jsx';
 
 
@@ -118,6 +119,7 @@ export const PAGES = {
     "UserProfile": UserProfile,
     "UserRoleAssignment": UserRoleAssignment,
     "TeamAutomation": TeamAutomation,
+    "TeamAutomations": TeamAutomations,
 }
 
 export const pagesConfig = {
