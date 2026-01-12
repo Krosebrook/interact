@@ -112,8 +112,7 @@ export default function EnhancedLeaderboard({ timeframe = 'all_time' }) {
     const user = users.find(u => u.email === userPoint.user_email);
 
     return (
-      <div
-        key={userPoint.id}
+      <div data-b44-sync="true" data-feature="gamification" data-component="enhancedleaderboard"         key={userPoint.id}
         className={`flex items-center gap-4 p-4 rounded-xl transition-all hover:bg-slate-50 ${
           rank <= 3 ? 'bg-gradient-to-r from-slate-50 to-white' : ''
         }`}

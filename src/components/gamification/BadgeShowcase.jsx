@@ -101,8 +101,7 @@ export default function BadgeShowcase({ userEmail, earnedBadgeIds = [] }) {
     const progress = isEarned ? 100 : getProgress(badge);
 
     return (
-      <div
-        key={badge.id}
+      <div data-b44-sync="true" data-feature="gamification" data-component="badgeshowcase"         key={badge.id}
         onClick={() => setSelectedBadge({ ...badge, isEarned, progress })}
         className={`relative cursor-pointer p-4 rounded-xl border-2 transition-all hover:scale-105 ${
           isEarned 

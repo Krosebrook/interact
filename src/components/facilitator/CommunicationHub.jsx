@@ -155,7 +155,7 @@ export default function CommunicationHub({ eventId, eventTitle }) {
   const confirmedParticipants = participations.filter(p => p.rsvp_status === 'yes');
 
   return (
-    <Card className="border-0 shadow-lg">
+    <Card className="border-0 shadow-lg" data-b44-sync="true" data-feature="facilitator" data-component="communicationhub">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Mail className="h-5 w-5 text-blue-600" />

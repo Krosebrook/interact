@@ -56,7 +56,7 @@ export default function SessionTimer() {
   };
 
   return (
-    <Card className="p-6">
+    <Card className="p-6" data-b44-sync="true" data-feature="facilitator" data-component="sessiontimer">
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-bold text-lg flex items-center gap-2">
           <Clock className="h-5 w-5" />

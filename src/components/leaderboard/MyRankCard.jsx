@@ -13,7 +13,7 @@ export default function MyRankCard({ myRank, nearby, totalParticipants, category
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   if (!myRank) {
     return (
-      <Card className="bg-gradient-to-r from-slate-100 to-slate-50 border-slate-200">
+      <Card className="bg-gradient-to-r from-slate-100 to-slate-50 border-slate-200" data-b44-sync="true" data-feature="leaderboard" data-component="myrankcard">
         <CardContent className="p-6 text-center">
           <Trophy className="h-12 w-12 mx-auto mb-3 text-slate-400" />
           <h3 className="font-semibold text-slate-700 mb-1">Start Earning!</h3>

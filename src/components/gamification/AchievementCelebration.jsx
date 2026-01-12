@@ -36,7 +36,7 @@ export default function AchievementCelebration({
   }, [show, onClose]);
 
   return (
-    <AnimatePresence>
+    <AnimatePresence data-b44-sync="true" data-feature="gamification" data-component="achievementcelebration">
       {show && (
         <motion.div
           initial={{ opacity: 0 }}

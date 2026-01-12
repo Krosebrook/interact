@@ -28,7 +28,7 @@ export default function FacilitatorEventCard({
   const isLive = event.status === 'in_progress';
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4" data-b44-sync="true" data-feature="events" data-component="facilitatoreventcard">
       <Card className="p-4 border-0 shadow-md hover:shadow-lg transition-all">
         <div className="flex items-start justify-between mb-3">
           <div className="flex-1">

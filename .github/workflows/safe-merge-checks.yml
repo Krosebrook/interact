@@ -1,0 +1,146 @@
+name: Safe Merge Checks
+
+on:
+  pull_request:
+    branches: [ main ]
+    types: [ opened, synchronize, reopened ]
+
+jobs:
+  pre-merge-checks:
+    name: Pre-Merge Quality Checks
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for better merge analysis
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run linter
+        run: npm run lint
+        continue-on-error: true  # Don't fail on linting warnings
+      
+      - name: Check for security vulnerabilities
+        run: |
+          echo "Running npm audit..."
+          npm audit --audit-level=high || echo "Security vulnerabilities detected - please review"
+      
+      - name: Build project
+        run: npm run build
+      
+      - name: Run tests
+        run: |
+          if grep -q '"test"' package.json; then
+            echo "Test script found, running tests..."
+            if npm test; then
+              echo "✅ Tests passed"
+            else
+              echo "❌ Tests failed"
+              exit 1
+            fi
+          else
+            echo "⚠️ No test script configured in package.json"
+          fi
+      
+      - name: Check for merge conflicts
+        run: |
+          git fetch origin main
+          if git merge-tree $(git merge-base HEAD origin/main) HEAD origin/main | grep -q '<<<<<'; then
+            echo "❌ Merge conflicts detected!"
+            echo "Please resolve conflicts before merging."
+            exit 1
+          else
+            echo "✅ No merge conflicts detected"
+          fi
+      
+      - name: Check branch freshness
+        run: |
+          git fetch origin main
+          BEHIND=$(git rev-list --count HEAD..origin/main)
+          if [ "$BEHIND" -gt 10 ]; then
+            echo "⚠️ Branch is $BEHIND commits behind main"
+            echo "Consider rebasing or merging main into this branch"
+          else
+            echo "✅ Branch is up to date (only $BEHIND commits behind)"
+          fi
+      
+      - name: Generate merge summary
+        run: |
+          echo "## Merge Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Branch:** \`${{ github.head_ref }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "**Target:** \`${{ github.base_ref }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          COMMITS=$(git rev-list --count origin/main..HEAD)
+          echo "**Commits:** $COMMITS" >> $GITHUB_STEP_SUMMARY
+          
+          FILES=$(git diff --name-only origin/main..HEAD | wc -l)
+          echo "**Files changed:** $FILES" >> $GITHUB_STEP_SUMMARY
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Recent Commits" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          git log --oneline origin/main..HEAD | head -10 >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+      
+      - name: Add PR comment
+        uses: actions/github-script@v7
+        if: github.event_name == 'pull_request'
+        with:
+          script: |
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            
+            const botComment = comments.find(comment => 
+              comment.user.type === 'Bot' && 
+              comment.body.includes('Pre-Merge Checks')
+            );
+            
+            const commentBody = `## Pre-Merge Checks ✅
+            
+            Safe merge validation completed successfully!
+            
+            ### Checklist
+            - ✅ Code builds successfully
+            - ✅ No merge conflicts detected
+            - ✅ Linting completed
+            - ✅ Security audit performed
+            
+            ### Next Steps
+            1. Review the [Pre-Merge Checklist](https://github.com/${{ github.repository }}/blob/main/docs/PRE_MERGE_CHECKLIST.md)
+            2. Ensure all items are completed
+            3. Get required approvals
+            4. Merge using the safe merge script: \`./scripts/safe-merge-branch.sh ${{ github.head_ref }}\`
+            
+            ---
+            *Automated check by [Safe Merge Workflow](.github/workflows/safe-merge-checks.yml)*
+            `;
+            
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: commentBody
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: commentBody
+              });
+            }

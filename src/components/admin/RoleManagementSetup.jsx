@@ -165,7 +165,7 @@ export default function RoleManagementSetup({ onComplete }) {
   };
 
   return (
-    <div className="max-w-4xl mx-auto py-8 px-4">
+    <div className="max-w-4xl mx-auto py-8 px-4" data-b44-sync="true" data-feature="admin" data-component="rolemanagementsetup">
       {/* Progress Steps */}
       <div className="mb-8">
         <div className="flex items-center justify-between relative">

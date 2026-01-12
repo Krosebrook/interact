@@ -40,11 +40,7 @@ export default function UserProgressOverview() {
     queryFn: () => base44.entities.LearningPathProgress.list()
   });
 
-  if (loadingPoints || loadingUsers || loadingBadges || loadingLearning) {
-    return <LoadingSpinner />;
-  }
-
-  // Combine data with safe null checks
+  // Combine data with safe null checks - must be called before any early returns
   const userData = React.useMemo(() => {
     if (!allUsers) return [];
     
@@ -67,6 +63,11 @@ export default function UserProgressOverview() {
       };
     });
   }, [allUsers, allUserPoints, badgeAwards, learningProgress]);
+
+  // Check loading state after all hooks are called
+  if (loadingPoints || loadingUsers || loadingBadges || loadingLearning) {
+    return <LoadingSpinner />;
+  }
 
   // Filter and sort
   let filteredData = userData.filter(user => {

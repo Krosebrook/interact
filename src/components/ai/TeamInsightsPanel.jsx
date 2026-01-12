@@ -223,7 +223,7 @@ Provide:
   });
 
   return (
-    <div className="space-y-6">
+    <div data-b44-sync="true" data-feature="ai" data-component="teaminsightspanel" className="space-y-6">
       {/* Header */}
       <Card className="border-2 border-int-navy/20">
         <CardHeader className="bg-gradient-to-r from-int-navy to-blue-800 text-white">

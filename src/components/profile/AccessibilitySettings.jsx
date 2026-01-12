@@ -46,7 +46,7 @@ export default function AccessibilitySettings({ profile, onSave }) {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-b44-sync="true" data-feature="profile" data-component="accessibilitysettings">
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">

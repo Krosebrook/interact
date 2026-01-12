@@ -26,7 +26,7 @@ export default function PublicProfileCard({
 
   if (isPrivate) {
     return (
-      <Card className="glass-card-solid">
+      <Card className="glass-card-solid" data-b44-sync="true" data-feature="profile" data-component="publicprofilecard">
         <CardContent className="p-8 text-center">
           <Lock className="h-16 w-16 mx-auto mb-4 text-slate-300" />
           <h3 className="text-lg font-semibold text-slate-700 mb-2">Private Profile</h3>

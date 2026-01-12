@@ -66,7 +66,7 @@ export default function TierStatusDisplay({ currentPoints = 0, currentTier = 'br
   const pointsToNextTier = nextTier ? nextTier.minPoints - currentPoints : 0;
 
   return (
-    <Card className={`border-2 ${tierConfig.borderColor} ${tierConfig.bgColor}`}>
+    <Card data-b44-sync="true" data-feature="gamification" data-component="tierstatusdisplay" className={`border-2 ${tierConfig.borderColor} ${tierConfig.bgColor}`}>
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           <div className="flex items-center gap-2">

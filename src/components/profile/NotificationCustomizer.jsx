@@ -91,7 +91,7 @@ export default function NotificationCustomizer({ preferences = {}, onSave, isSav
   );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-b44-sync="true" data-feature="profile" data-component="notificationcustomizer">
       {/* Summary */}
       <Card className="bg-gradient-to-br from-blue-50 to-purple-50 border-blue-200">
         <CardContent className="py-4">

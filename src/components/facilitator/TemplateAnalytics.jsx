@@ -182,7 +182,7 @@ export default function TemplateAnalytics() {
   const topTemplate = sortedBySuccess[0];
 
   return (
-    <Card className="border-0 shadow-lg">
+    <Card className="border-0 shadow-lg" data-b44-sync="true" data-feature="facilitator" data-component="templateanalytics">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <LayoutTemplate className="h-5 w-5 text-int-orange" />

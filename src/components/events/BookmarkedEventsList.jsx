@@ -35,7 +35,7 @@ export default function BookmarkedEventsList({ userEmail }) {
   }
 
   return (
-    <Card>
+    <Card data-b44-sync="true" data-feature="events" data-component="bookmarkedeventslist">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-lg">
           <Bookmark className="h-5 w-5 text-yellow-500 fill-yellow-500" />

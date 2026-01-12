@@ -15,7 +15,7 @@ const modules = {
 
 export default function RichTextEventEditor({ value, onChange, label, placeholder }) {
   return (
-    <div className="space-y-2">
+    <div className="space-y-2" data-b44-sync="true" data-feature="events" data-component="richtexteventeditor">
       {label && <Label>{label}</Label>}
       <div className="bg-white rounded-lg border">
         <ReactQuill

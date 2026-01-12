@@ -94,7 +94,7 @@ export default function ActivityHistoryTimeline({ userEmail }) {
 
   if (isLoading) {
     return (
-      <Card className="border-0 shadow-lg">
+      <Card className="border-0 shadow-lg" data-b44-sync="true" data-feature="profile" data-component="activityhistorytimeline">
         <CardContent className="py-12 text-center">
           <div className="animate-pulse space-y-4">
             <div className="h-4 bg-slate-200 rounded w-3/4 mx-auto" />

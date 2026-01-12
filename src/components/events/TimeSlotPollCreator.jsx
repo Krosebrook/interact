@@ -56,7 +56,7 @@ export default function TimeSlotPollCreator({ onSubmit, activities = [], isSubmi
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="flex items-center gap-2 p-3 bg-purple-50 rounded-lg border border-purple-200">
+      <div className="flex items-center gap-2 p-3 bg-purple-50 rounded-lg border border-purple-200" data-b44-sync="true" data-feature="events" data-component="timeslotpollcreator">
         <Vote className="h-5 w-5 text-purple-600" />
         <div>
           <p className="font-medium text-purple-900">Time Slot Voting</p>

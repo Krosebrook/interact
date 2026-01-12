@@ -101,7 +101,7 @@ export default function QAModerator({ eventId, userName, userEmail }) {
   const unansweredCount = questions.filter(q => !q.is_answered).length;
 
   return (
-    <Card className="border-0 shadow-lg h-full flex flex-col">
+    <Card className="border-0 shadow-lg h-full flex flex-col" data-b44-sync="true" data-feature="facilitator" data-component="qamoderator">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">

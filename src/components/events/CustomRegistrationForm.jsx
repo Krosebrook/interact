@@ -134,7 +134,7 @@ export default function CustomRegistrationForm({
       case 'multiselect':
         const selectedValues = value ? value.split(',') : [];
         return (
-          <div className="space-y-2">
+          <div className="space-y-2" data-b44-sync="true" data-feature="events" data-component="customregistrationform">
             {field.options?.map(option => (
               <div key={option} className="flex items-center gap-2">
                 <Checkbox

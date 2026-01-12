@@ -16,10 +16,12 @@ import QuickActionCard from '../components/common/QuickActionCard';
 import EventCalendarCard from '../components/events/EventCalendarCard';
 import AISuggestionsWidget from '../components/ai/AISuggestionsWidget';
 import ActivityGenerator from '../components/ai/ActivityGenerator';
+import PredictiveHealthDashboard from '../components/admin/PredictiveHealthDashboard';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import EmptyState from '../components/common/EmptyState';
 import { useEventActions } from '../components/events/useEventActions';
 import OnboardingWidget from '../components/dashboard/OnboardingWidget';
+import PersonalizedDashboard from '../components/dashboard/PersonalizedDashboard';
 import {
   Calendar,
   Users,
@@ -34,9 +36,10 @@ export default function Dashboard() {
   const navigate = useNavigate();
   
   // CRITICAL: All hooks must be called unconditionally to prevent order drift
-  const { user, loading: userLoading, isAdmin, isRedirecting } = useUserData(true, true, false, false);
+  const { user, loading: userLoading, isAdmin, isRedirecting, profile, userPoints } = useUserData(true, true, false, false);
   const { events, activities, participations, isLoading } = useEventData({ limit: 100 });
   const [showGenerator, setShowGenerator] = useState(false);
+  const [showTutorial, setShowTutorial] = useState(false);
   const eventActions = useEventActions();
 
   // Calculate stats using centralized utility
@@ -59,8 +62,12 @@ export default function Dashboard() {
   return (
     <ErrorBoundary fallbackMessage="Dashboard failed to load. Please try refreshing.">
       <div className="bg-blue-50 opacity-100 space-y-8 animate-fade-in">
+
         {/* Onboarding Widget */}
         <OnboardingWidget variant="banner" />
+
+        {/* Personalized Dashboard Section */}
+        <PersonalizedDashboard user={user} userProfile={profile} userPoints={userPoints} />
 
         {/* Welcome Header - Glass Panel */}
         <div className="glass-panel-solid relative overflow-hidden">
@@ -190,7 +197,6 @@ export default function Dashboard() {
           open={showGenerator}
           onOpenChange={setShowGenerator}
           onActivityCreated={handleActivityCreated} />
-
       </div>
     </ErrorBoundary>
   );

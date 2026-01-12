@@ -63,6 +63,9 @@ export default function TeamChallengeCard({
 
   return (
     <motion.div
+      data-b44-sync="true"
+      data-feature="teams"
+      data-component="teamchallengecard"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ y: -4 }}

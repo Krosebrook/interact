@@ -80,7 +80,7 @@ export default function DashboardCustomizer({ userEmail, open, onOpenChange }) {
   ];
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog data-b44-sync="true" data-feature="dashboard" data-component="dashboardcustomizer" open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">

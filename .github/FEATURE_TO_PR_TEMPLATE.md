@@ -7,18 +7,18 @@
 
 ## 🎯 Mission Statement
 
-**Feature:** `[REQUIRED: Specific feature name]`  
+**Feature:** `[REQUIRED:  Specific feature name]`  
 **Outcome:** `[REQUIRED: 1-2 sentences describing user-visible impact]`  
 **Scope Level:** `[SELECT ONE: 🔵 Small | 🟢 Medium | 🔴 Large]`
 
-> ⚠️ **STOP**: If any `[REQUIRED]` field above contains placeholders, **ASK** for clarification before proceeding.
+> ⚠️ **STOP**:  If any `[REQUIRED]` field above contains placeholders, **ASK** for clarification before proceeding.
 
 ---
 
 ## 🧭 Core Principles
 
 ### 1. **Context-First Execution**
-- Always begin with **Step 0: Context Scan**
+- Always begin with **Step 0:  Context Scan**
 - Use existing repo patterns (don't invent new ones)
 - Respect `.github/copilot-instructions.md` and related docs
 
@@ -46,7 +46,7 @@
 ### 🔵 Small Changes (Bug fixes, config updates, minor improvements)
 - [ ] **Tests**: Added or updated for changed behavior
 - [ ] **Docs**: Updated if user-visible behavior changes
-- [ ] **Build**: `npm run build`, `npm run lint` all pass
+- [ ] **Build**:  `npm run build`, `npm run lint`, `npm test` all pass
 - [ ] **Verification**: Manual testing documented in PR
 
 ### 🟢 Medium Features (New components, API endpoints, UI flows)
@@ -76,7 +76,7 @@ All 🟢 requirements plus:
 
 Run these checks and document findings:
 
-#### 0.1 — Repository Configuration
+#### 0. 1 — Repository Configuration
 ```bash
 # Build/test/lint commands
 Check: package.json, Makefile, .github/workflows/*

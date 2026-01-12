@@ -34,7 +34,7 @@ export default function ActivityDetailDialog({
   };
 
   return (
-    <Dialog open={!!activity} onOpenChange={() => onClose()}>
+    <Dialog data-b44-sync="true" data-feature="activities" data-component="activitydetaildialog" open={!!activity} onOpenChange={() => onClose()}>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
           <DialogTitle className="text-2xl">{activity.title}</DialogTitle>

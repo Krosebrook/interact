@@ -33,7 +33,7 @@ export default function RealTimeTips({ eventId }) {
   };
 
   return (
-    <Card className="p-6 border-0 shadow-lg sticky top-4">
+    <Card className="p-6 border-0 shadow-lg sticky top-4" data-b44-sync="true" data-feature="facilitator" data-component="realtimetips">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <Zap className="h-5 w-5 text-yellow-600" />

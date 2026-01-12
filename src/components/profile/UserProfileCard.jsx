@@ -21,7 +21,7 @@ export default function UserProfileCard({ profile, userPoints, compact = false }
 
   if (compact) {
     return (
-      <Card className="p-4 border-0 shadow-md">
+      <Card className="p-4 border-0 shadow-md" data-b44-sync="true" data-feature="profile" data-component="userprofilecard">
         <div className="flex items-center gap-4">
           <div className="relative">
             {profile?.avatar_url ? (

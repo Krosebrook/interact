@@ -163,7 +163,7 @@ Return as JSON: { "suggestions": ["message1", "message2", "message3"] }`,
   const isValid = recipientEmail && recipientName && message.length >= 10 && category;
 
   return (
-    <Card className="glass-card-solid">
+    <Card className="glass-card-solid" data-b44-sync="true" data-feature="recognition" data-component="recognitionform">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Send className="h-5 w-5 text-int-orange" />

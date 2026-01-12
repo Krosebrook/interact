@@ -166,7 +166,7 @@ Create ${roomCount} breakout rooms with:
   ];
 
   return (
-    <Card className="border-0 shadow-lg">
+    <Card className="border-0 shadow-lg" data-b44-sync="true" data-feature="facilitator" data-component="aibreakoutsuggester">
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">
