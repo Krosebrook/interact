@@ -32,5 +32,4 @@ coverage
 *.lcov
 .nyc_output
 
-
 .env
