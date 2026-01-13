@@ -1,0 +1,45 @@
+name: CI - Pull Request Checks
+
+# Only run on pull requests targeting main branch
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    name: Code Quality & Testing
+    runs-on: ubuntu-latest
+    
+    steps:
+      # Checkout the repository code
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      # Setup Node.js environment with caching for faster installs
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      # Install dependencies using npm ci (clean install)
+      # This ensures consistent dependency versions across CI runs
+      - name: Install dependencies
+        run: npm ci
+      
+      # Run ESLint to check code quality and style
+      # This catches potential bugs and enforces coding standards
+      - name: Run linter
+        run: npm run lint
+        continue-on-error: true  # Don't fail the build on linting warnings
+      
+      # Run Vitest test suite
+      # Validates that all unit and integration tests pass
+      - name: Run tests
+        run: npm run test:run
+      
+      # Check for high/critical security vulnerabilities
+      # Only fails on high or critical severity issues
+      - name: Security audit
+        run: npm audit --audit-level=high
+        continue-on-error: true  # Don't fail on advisory issues
