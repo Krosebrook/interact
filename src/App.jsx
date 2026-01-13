@@ -9,6 +9,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
+import ErrorBoundary from '@/components/common/ErrorBoundary';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
@@ -73,7 +74,11 @@ function App() {
       <QueryClientProvider client={queryClientInstance}>
         <Router>
           <NavigationTracker />
-          <AuthenticatedApp />
+          {/* Wrap AuthenticatedApp with ErrorBoundary for global error handling */}
+          {/* This provides graceful error recovery without affecting routing or auth logic */}
+          <ErrorBoundary fallbackMessage="An unexpected error occurred. Please refresh the page or contact support.">
+            <AuthenticatedApp />
+          </ErrorBoundary>
         </Router>
         <Toaster />
         <VisualEditAgent />
