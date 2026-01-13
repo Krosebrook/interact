@@ -33,6 +33,7 @@ export default function SeasonalEventsManager({ userEmail }) {
   });
 
   const activeEvent = events?.find(e => {
+    if (!e.start_date || !e.end_date) return false;
     const now = new Date();
     return new Date(e.start_date) <= now && new Date(e.end_date) >= now;
   });
@@ -40,7 +41,7 @@ export default function SeasonalEventsManager({ userEmail }) {
   if (!activeEvent) return null;
 
   const isParticipating = activeEvent.participants?.includes(userEmail);
-  const daysLeft = Math.ceil((new Date(activeEvent.end_date) - new Date()) / (1000 * 60 * 60 * 24));
+  const daysLeft = activeEvent.end_date ? Math.ceil((new Date(activeEvent.end_date) - new Date()) / (1000 * 60 * 60 * 24)) : 0;
 
   return (
     <Card data-b44-sync="true" data-feature="gamification" data-component="seasonaleventsmanager" className="border-amber-300 bg-gradient-to-br from-amber-50 to-orange-50">

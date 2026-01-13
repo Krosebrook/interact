@@ -629,9 +629,13 @@ export const ONBOARDING_STEPS = {
 };
 
 // Helper to get steps for a role
-export const getOnboardingSteps = (role) => {
+export const getOnboardingSteps = (role, userType) => {
+  // Admin role takes precedence
   if (role === 'admin') return ONBOARDING_STEPS.admin;
-  if (role === 'facilitator') return ONBOARDING_STEPS.facilitator;
+  // Then check user_type
+  if (userType === 'facilitator') return ONBOARDING_STEPS.facilitator;
+  if (userType === 'participant') return ONBOARDING_STEPS.participant;
+  // Default to participant for non-specified users
   return ONBOARDING_STEPS.participant;
 };
 
