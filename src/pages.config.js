@@ -57,6 +57,8 @@ import TeamPerformanceDashboard from './pages/TeamPerformanceDashboard';
 import Teams from './pages/Teams';
 import UserProfile from './pages/UserProfile';
 import UserRoleAssignment from './pages/UserRoleAssignment';
+import GamificationAnalytics from './pages/GamificationAnalytics';
+import ContentModerationAdmin from './pages/ContentModerationAdmin';
 import __Layout from './Layout.jsx';
 
 
@@ -120,6 +122,8 @@ export const PAGES = {
     "Teams": Teams,
     "UserProfile": UserProfile,
     "UserRoleAssignment": UserRoleAssignment,
+    "GamificationAnalytics": GamificationAnalytics,
+    "ContentModerationAdmin": ContentModerationAdmin,
 }
 
 export const pagesConfig = {
