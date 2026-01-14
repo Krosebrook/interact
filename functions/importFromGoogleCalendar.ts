@@ -52,81 +52,86 @@ Deno.serve(async (req) => {
     }
 
     const data = await response.json();
-    const importedEvents = [];
-    const skippedEvents = [];
+     const importedEvents = [];
+     const skippedEvents = [];
 
-    // Check which events already exist in our system
-    const existingEvents = await base44.entities.Event.list();
-    const existingCalendarIds = new Set(
-      existingEvents
-        .filter(e => e.google_calendar_id)
-        .map(e => e.google_calendar_id)
-    );
+     // Check which events already exist in our system (user-scoped access)
+     const existingEvents = await base44.entities.Event.filter({ 
+       facilitator_email: user.email 
+     });
+     const existingCalendarIds = new Set(
+       existingEvents
+         .filter(e => e.google_calendar_id)
+         .map(e => e.google_calendar_id)
+     );
 
-    for (const calEvent of data.items || []) {
-      // Skip if already imported
-      if (existingCalendarIds.has(calEvent.id)) {
-        skippedEvents.push({
-          title: calEvent.summary,
-          reason: 'Already imported',
-        });
-        continue;
-      }
+     for (const calEvent of data.items || []) {
+       // Skip if already imported
+       if (existingCalendarIds.has(calEvent.id)) {
+         skippedEvents.push({
+           title: calEvent.summary,
+           reason: 'Already imported',
+         });
+         continue;
+       }
 
-      // Skip all-day events and events without start time
-      if (!calEvent.start?.dateTime) {
-        skippedEvents.push({
-          title: calEvent.summary,
-          reason: 'All-day event or no time specified',
-        });
-        continue;
-      }
+       // Skip all-day events and events without start time
+       if (!calEvent.start?.dateTime) {
+         skippedEvents.push({
+           title: calEvent.summary,
+           reason: 'All-day event or no time specified',
+         });
+         continue;
+       }
 
-      // Create a generic activity for imported events (only admins and facilitators can import)
-      if (user.role !== 'admin' && user.user_type !== 'facilitator') {
-        return Response.json({ 
-          error: 'Forbidden - only admins and facilitators can import events' 
-        }, { status: 403 });
-      }
+       // Create a generic activity for imported events (user-scoped, only if user is facilitator)
+       // SECURITY: Only facilitators and admins can create activities
+       if (user.role !== 'admin' && user.user_type !== 'facilitator') {
+         skippedEvents.push({
+           title: calEvent.summary,
+           reason: 'User lacks permission to create activities',
+         });
+         continue;
+       }
 
-      const activity = await base44.entities.Activity.create({
-        title: calEvent.summary || 'Imported Event',
-        description: calEvent.description || 'Imported from Google Calendar',
-        instructions: calEvent.description || 'Event details from your calendar',
-        type: 'other',
-        duration: '15-30min',
-        is_template: false,
-      });
+       const activity = await base44.entities.Activity.create({
+         title: calEvent.summary || 'Imported Event',
+         description: calEvent.description || 'Imported from Google Calendar',
+         instructions: calEvent.description || 'Event details from your calendar',
+         type: 'other',
+         duration: '15-30min',
+         is_template: false,
+       });
 
-      // Calculate duration
-      const startTime = new Date(calEvent.start.dateTime);
-      const endTime = new Date(calEvent.end?.dateTime || startTime);
-      const durationMinutes = Math.round((endTime - startTime) / 60000);
+       // Calculate duration
+       const startTime = new Date(calEvent.start.dateTime);
+       const endTime = new Date(calEvent.end?.dateTime || startTime);
+       const durationMinutes = Math.round((endTime - startTime) / 60000);
 
-      // Create event in our system using user-scoped access
-      const newEvent = await base44.entities.Event.create({
-        activity_id: activity.id,
-        title: calEvent.summary || 'Imported Event',
-        event_type: 'other',
-        scheduled_date: calEvent.start.dateTime,
-        duration_minutes: durationMinutes > 0 ? durationMinutes : 60,
-        status: 'scheduled',
-        event_format: calEvent.location ? 'hybrid' : 'online',
-        location: calEvent.location,
-        meeting_link: calEvent.hangoutLink || calEvent.conferenceData?.entryPoints?.[0]?.uri,
-        facilitator_email: user.email,
-        facilitator_name: user.full_name,
-        google_calendar_id: calEvent.id,
-        google_calendar_link: calEvent.htmlLink,
-        custom_instructions: 'Imported from Google Calendar',
-      });
+       // Create event in our system (user-scoped)
+       const newEvent = await base44.entities.Event.create({
+         activity_id: activity.id,
+         title: calEvent.summary || 'Imported Event',
+         event_type: 'other',
+         scheduled_date: calEvent.start.dateTime,
+         duration_minutes: durationMinutes > 0 ? durationMinutes : 60,
+         status: 'scheduled',
+         event_format: calEvent.location ? 'hybrid' : 'online',
+         location: calEvent.location,
+         meeting_link: calEvent.hangoutLink || calEvent.conferenceData?.entryPoints?.[0]?.uri,
+         facilitator_email: user.email,
+         facilitator_name: user.full_name,
+         google_calendar_id: calEvent.id,
+         google_calendar_link: calEvent.htmlLink,
+         custom_instructions: 'Imported from Google Calendar',
+       });
 
-      importedEvents.push({
-        id: newEvent.id,
-        title: newEvent.title,
-        date: newEvent.scheduled_date,
-      });
-    }
+       importedEvents.push({
+         id: newEvent.id,
+         title: newEvent.title,
+         date: newEvent.scheduled_date,
+       });
+     }
 
     return Response.json({
       success: true,
