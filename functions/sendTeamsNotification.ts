@@ -1,5 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.4';
 import { validateTeamsWebhook, sanitizeForExternalNotification, checkRateLimit } from './lib/webhookValidation.js';
+import { buildMagicLink } from './validateAppUrl.js';
 
 Deno.serve(async (req) => {
     try {
@@ -101,7 +102,7 @@ Deno.serve(async (req) => {
 
 function createAnnouncementCard(event, activity, config, rsvpCount = 0) {
     const eventDate = new Date(event.scheduled_date);
-    const magicLink = `${Deno.env.get('APP_URL') || 'https://app.base44.com'}/ParticipantEvent?event=${event.magic_link}`;
+    const magicLink = buildMagicLink(event.magic_link);
 
     const customMessage = config.announcement_template || 
         `🎉 **New Team Activity Scheduled!**\n\nJoin us for an exciting team engagement activity!`;
@@ -211,7 +212,7 @@ function createReminderCard(event, activity, rsvpCount, config) {
     const hoursUntil = Math.round((eventDate - now) / (1000 * 60 * 60));
     const minutesUntil = Math.round((eventDate - now) / (1000 * 60));
     const timeString = hoursUntil >= 1 ? `${hoursUntil} hour${hoursUntil > 1 ? 's' : ''}` : `${minutesUntil} minutes`;
-    const magicLink = `${Deno.env.get('APP_URL') || 'https://app.base44.com'}/ParticipantEvent?event=${event.magic_link}`;
+    const magicLink = buildMagicLink(event.magic_link);
 
     return {
         type: "message",
