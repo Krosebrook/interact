@@ -3,7 +3,7 @@
  * Critical path validation
  */
 
-import { assertEquals, assertExists } from 'jsr:@std/assert';
+import { describe, it, expect } from 'vitest';
 
 // Mock base44 client
 const mockBase44 = {
@@ -43,44 +43,44 @@ describe('Gamification Smoke Tests', () => {
   
   describe('Points System', () => {
     
-    test('Awards points correctly for recognition given', async () => {
+    it('Awards points correctly for recognition given', async () => {
       const result = await awardPointsForAction('user1@test.com', 'recognition_given', 10);
-      assertEquals(result.success, true);
-      assertEquals(result.pointsAwarded, 10);
+      expect(result.success).toBeTruthy();
+      expect(result.pointsAwarded).toBe(10);
     });
 
-    test('Prevents negative points', async () => {
+    it('Prevents negative points', async () => {
       const result = await awardPointsForAction('user1@test.com', 'invalid', -5);
-      assertEquals(result.success, false);
-      assertEquals(result.error, 'Negative points not allowed');
+      expect(result.success).toBeFalsy();
+      expect(result.error).toBe('Negative points not allowed');
     });
 
-    test('Calculates tier correctly', async () => {
+    it('Calculates tier correctly', async () => {
       const tier = calculateTier(5000);
-      assertEquals(tier, 'platinum');
+      expect(tier).toBe('platinum');
     });
 
-    test('Updates streak on daily activity', async () => {
+    it('Updates streak on daily activity', async () => {
       const streak = calculateStreak(
         new Date(Date.now() - 86400000), // Yesterday
         new Date() // Today
       );
-      assertEquals(streak.current, 2);
-      assertEquals(streak.broken, false);
+      expect(streak.current).toBe(2);
+      expect(streak.broken).toBeFalsy();
     });
 
-    test('Breaks streak on missed day', async () => {
+    it('Breaks streak on missed day', async () => {
       const streak = calculateStreak(
         new Date(Date.now() - 172800000), // 2 days ago
         new Date() // Today
       );
-      assertEquals(streak.broken, true);
+      expect(streak.broken).toBeTruthy();
     });
   });
 
   describe('Leaderboard Ranking', () => {
     
-    test('Calculates ranks correctly', async () => {
+    it('Calculates ranks correctly', async () => {
       const snapshots = [
         { user_email: 'alice@test.com', points: 500 },
         { user_email: 'bob@test.com', points: 400 },
@@ -88,12 +88,12 @@ describe('Gamification Smoke Tests', () => {
       ];
 
       const ranked = calculateRanks(snapshots);
-      assertEquals(ranked[0].rank, 1);
-      assertEquals(ranked[1].rank, 2);
-      assertEquals(ranked[2].rank, 3);
+      expect(ranked[0].rank).toBe(1);
+      expect(ranked[1].rank).toBe(2);
+      expect(ranked[2].rank).toBe(3);
     });
 
-    test('Handles ties in ranking', async () => {
+    it('Handles ties in ranking', async () => {
       const snapshots = [
         { user_email: 'alice@test.com', points: 500 },
         { user_email: 'bob@test.com', points: 500 }, // Tie
@@ -101,96 +101,96 @@ describe('Gamification Smoke Tests', () => {
       ];
 
       const ranked = calculateRanks(snapshots);
-      assertEquals(ranked[0].rank, 1);
-      assertEquals(ranked[1].rank, 1); // Same rank for tie
-      assertEquals(ranked[2].rank, 3); // Next rank is 3
+      expect(ranked[0].rank).toBe(1);
+      expect(ranked[1].rank).toBe(1); // Same rank for tie
+      expect(ranked[2].rank).toBe(3); // Next rank is 3
     });
 
-    test('Empty leaderboard returns empty array', async () => {
+    it('Empty leaderboard returns empty array', async () => {
       const ranked = calculateRanks([]);
-      assertEquals(ranked.length, 0);
+      expect(ranked.length).toBe(0);
     });
   });
 
   describe('Badge Unlocking', () => {
     
-    test('Unlocks badge on first event attendance', async () => {
+    it('Unlocks badge on first event attendance', async () => {
       const result = await checkBadgeUnlock('user1@test.com', {
         events_attended: 1,
         badges: []
       });
       
-      assertEquals(result.badgeUnlocked, true);
-      assertEquals(result.badge.id, 'first-event');
+      expect(result.badgeUnlocked).toBeTruthy();
+      expect(result.badge.id).toBe('first-event');
     });
 
-    test('Unlocks team player badge at 10 events', async () => {
+    it('Unlocks team player badge at 10 events', async () => {
       const result = await checkBadgeUnlock('user1@test.com', {
         events_attended: 10,
         badges: ['first-event']
       });
 
-      assertEquals(result.badgeUnlocked, true);
-      assertEquals(result.badge.id, 'team-player');
+      expect(result.badgeUnlocked).toBeTruthy();
+      expect(result.badge.id).toBe('team-player');
     });
 
-    test('Does not re-unlock already earned badge', async () => {
+    it('Does not re-unlock already earned badge', async () => {
       const result = await checkBadgeUnlock('user1@test.com', {
         events_attended: 10,
-        badges: ['team-player'] // Already earned
+        badges: ['first-event', 'team-player'] // Already earned both badges for this level
       });
 
-      assertEquals(result.badgeUnlocked, false);
+      expect(result.badgeUnlocked).toBeFalsy();
     });
 
-    test('Recognizer badge unlocks at 50 recognitions given', async () => {
+    it('Recognizer badge unlocks at 50 recognitions given', async () => {
       const result = await checkBadgeUnlock('user1@test.com', {
         recognitions_given: 50,
         badges: []
       });
 
-      assertEquals(result.badgeUnlocked, true);
-      assertEquals(result.badge.id, 'recognizer');
+      expect(result.badgeUnlocked).toBeTruthy();
+      expect(result.badge.id).toBe('recognizer');
     });
   });
 
   describe('Reward Redemption', () => {
     
-    test('Prevents double redemption', async () => {
+    it('Prevents double redemption', async () => {
       const result = await validateRedemption('user1@test.com', 'item_123', 100);
-      assertEquals(result.allowed, true);
+      expect(result.allowed).toBeTruthy();
       
       // Second attempt should fail
       const result2 = await validateRedemption('user1@test.com', 'item_123', 100);
-      assertEquals(result2.allowed, false);
-      assertEquals(result2.reason, 'Item already redeemed');
+      expect(result2.allowed).toBeFalsy();
+      expect(result2.reason).toBe('Item already redeemed');
     });
 
-    test('Prevents redemption without sufficient points', async () => {
+    it('Prevents redemption without sufficient points', async () => {
       const result = await validateRedemption('user1@test.com', 'expensive_item', 5000);
-      assertEquals(result.allowed, false);
-      assertEquals(result.reason, 'Insufficient points');
+      expect(result.allowed).toBeFalsy();
+      expect(result.reason).toBe('Insufficient points');
     });
 
-    test('Prevents exceeding max per user limit', async () => {
+    it('Prevents exceeding max per user limit', async () => {
       const result = await validateRedemption('user1@test.com', 'limited_item', 100, {
         max_per_user: 1
       });
       
-      assertEquals(result.allowed, false);
-      assertEquals(result.reason, 'Redemption limit exceeded');
+      expect(result.allowed).toBeFalsy();
+      expect(result.reason).toBe('Redemption limit exceeded');
     });
 
-    test('Deducts points on successful redemption', async () => {
+    it('Deducts points on successful redemption', async () => {
       const result = await processRedemption('user1@test.com', 'item_123', 100, 1000);
-      assertEquals(result.pointsAfter, 900);
-      assertEquals(result.status, 'pending');
+      expect(result.pointsAfter).toBe(900);
+      expect(result.status).toBe('pending');
     });
   });
 
   describe('Points Transactions', () => {
     
-    test('Records points transaction audit', async () => {
+    it('Records points transaction audit', async () => {
       const transaction = await recordPointsTransaction({
         user_email: 'user1@test.com',
         action: 'event_attended',
@@ -198,11 +198,11 @@ describe('Gamification Smoke Tests', () => {
         timestamp: new Date()
       });
 
-      assertExists(transaction.id);
-      assertEquals(transaction.action, 'event_attended');
+      expect(transaction.id).toBeDefined();
+      expect(transaction.action).toBe('event_attended');
     });
 
-    test('Prevents duplicate transaction in same second', async () => {
+    it('Prevents duplicate transaction in same second', async () => {
       const now = new Date();
       const result = await validateTransactionUniqueness(
         'user1@test.com',
@@ -211,10 +211,10 @@ describe('Gamification Smoke Tests', () => {
         now
       );
 
-      assertEquals(result.unique, true);
+      expect(result.unique).toBeTruthy();
     });
 
-    test('Calculates cumulative points correctly', async () => {
+    it('Calculates cumulative points correctly', async () => {
       const transactions = [
         { points: 10, action: 'event_attended' },
         { points: 5, action: 'recognition_given' },
@@ -222,55 +222,57 @@ describe('Gamification Smoke Tests', () => {
       ];
 
       const total = calculateCumulativePoints(transactions);
-      assertEquals(total, 13);
+      expect(total).toBe(13);
     });
   });
 
   describe('Gamification Rules', () => {
     
-    test('Applies seasonal multiplier correctly', async () => {
+    it('Applies seasonal multiplier correctly', async () => {
       const basePoints = 10;
       const multiplier = getSeasonalMultiplier('summer_surge'); // 2x
-      assertEquals(basePoints * multiplier, 20);
+      expect(basePoints * multiplier).toBe(20);
     });
 
-    test('Caps maximum points per action', async () => {
+    it('Caps maximum points per action', async () => {
       const points = capPointsPerAction(1000, 500); // Max 500
-      assertEquals(points, 500);
+      expect(points).toBe(500);
     });
 
-    test('Ignores disabled rule', async () => {
+    it('Ignores disabled rule', async () => {
       const shouldApply = shouldApplyRule({
         name: 'attendance_bonus',
         enabled: false
       });
 
-      assertEquals(shouldApply, false);
+      expect(shouldApply).toBeFalsy();
     });
   });
 
   describe('Tier Progression', () => {
     
-    test('Promotes user at tier threshold', async () => {
+    it('Promotes user at tier threshold', async () => {
       const tier = calculateTier(1000); // Silver threshold
-      assertEquals(tier, 'silver');
+      expect(tier).toBe('silver');
     });
 
-    test('Calculates progress to next tier', async () => {
+    it('Calculates progress to next tier', async () => {
       const progress = calculateTierProgress(1500, 'silver');
-      assertExists(progress.nextTier);
-      assertExists(progress.pointsNeeded);
-      assertEquals(progress.percentComplete > 0, true);
+      expect(progress.nextTier).toBeDefined();
+      expect(progress.pointsNeeded).toBeDefined();
+      expect(progress.percentComplete).toBeGreaterThan(0);
     });
 
-    test('Shows benefits of current tier', async () => {
+    it('Shows benefits of current tier', async () => {
       const benefits = getTierBenefits('gold');
-      assertExists(benefits.length > 0);
+      expect(benefits.length).toBeGreaterThan(0);
     });
   });
 });
 
 // Helper functions for tests
+const redeemedItems = new Set();
+
 function calculateTier(points) {
   if (points >= 5000) return 'platinum';
   if (points >= 3000) return 'gold';
@@ -280,10 +282,20 @@ function calculateTier(points) {
 
 function calculateRanks(snapshots) {
   const sorted = [...snapshots].sort((a, b) => b.points - a.points);
-  return sorted.map((item, i) => ({
-    ...item,
-    rank: i + 1
-  }));
+  let currentRank = 1;
+  let previousPoints = null;
+  
+  return sorted.map((item, i) => {
+    if (previousPoints !== null && item.points !== previousPoints) {
+      currentRank = i + 1;
+    }
+    previousPoints = item.points;
+    
+    return {
+      ...item,
+      rank: currentRank
+    };
+  });
 }
 
 function calculateStreak(lastActivityDate, currentDate) {
@@ -319,6 +331,11 @@ async function checkBadgeUnlock(email, userStats) {
 
 async function validateRedemption(email, itemId, points, config = {}) {
   const userPoints = 1000;
+  
+  if (redeemedItems.has(itemId)) {
+    return { allowed: false, reason: 'Item already redeemed' };
+  }
+  
   if (points > userPoints) {
     return { allowed: false, reason: 'Insufficient points' };
   }
@@ -326,7 +343,8 @@ async function validateRedemption(email, itemId, points, config = {}) {
   if (config.max_per_user === 1) {
     return { allowed: false, reason: 'Redemption limit exceeded' };
   }
-
+  
+  redeemedItems.add(itemId);
   return { allowed: true };
 }
 
