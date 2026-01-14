@@ -1,5 +1,3 @@
-import { lazy } from 'react';
-
 import AIEventPlanner from './pages/AIEventPlanner';
 import AIPersonalization from './pages/AIPersonalization';
 import Activities from './pages/Activities';
@@ -8,22 +6,19 @@ import Analytics from './pages/Analytics';
 import AuditLog from './pages/AuditLog';
 import Calendar from './pages/Calendar';
 import Channels from './pages/Channels';
+import ContentModerationAdmin from './pages/ContentModerationAdmin';
 import Dashboard from './pages/Dashboard';
-// Lazy load largest pages to improve initial bundle size and performance
-// These pages are converted to lazy loading as they are large and not needed on initial load
-// Safe refactor: React.lazy() is a standard React feature for code splitting
-const Documentation = lazy(() => import('./pages/Documentation')); // 1154 lines
+import Documentation from './pages/Documentation';
 import EmployeeDirectory from './pages/EmployeeDirectory';
 import EventTemplates from './pages/EventTemplates';
-// Lazy load EventWizard (687 lines) - complex form with many steps
-const EventWizard = lazy(() => import('./pages/EventWizard'));
+import EventWizard from './pages/EventWizard';
 import ExampleModulePage from './pages/ExampleModulePage';
 import FacilitatorDashboard from './pages/FacilitatorDashboard';
 import FacilitatorView from './pages/FacilitatorView';
 import Gamification from './pages/Gamification';
 import GamificationAdmin from './pages/GamificationAdmin';
-// Lazy load GamificationDashboard (761 lines) - heavy dashboard with many charts
-const GamificationDashboard = lazy(() => import('./pages/GamificationDashboard'));
+import GamificationAnalytics from './pages/GamificationAnalytics';
+import GamificationDashboard from './pages/GamificationDashboard';
 import GamificationRulesAdmin from './pages/GamificationRulesAdmin';
 import GamificationSettings from './pages/GamificationSettings';
 import Home from './pages/Home';
@@ -45,8 +40,7 @@ import ProjectPlan from './pages/ProjectPlan';
 import PublicProfile from './pages/PublicProfile';
 import RealTimeAnalytics from './pages/RealTimeAnalytics';
 import Recognition from './pages/Recognition';
-// Lazy load RewardsAdmin (670 lines) - admin panel with complex tables and filters
-const RewardsAdmin = lazy(() => import('./pages/RewardsAdmin'));
+import RewardsAdmin from './pages/RewardsAdmin';
 import RewardsStore from './pages/RewardsStore';
 import RoleManagement from './pages/RoleManagement';
 import RoleSelection from './pages/RoleSelection';
@@ -65,8 +59,6 @@ import TeamPerformanceDashboard from './pages/TeamPerformanceDashboard';
 import Teams from './pages/Teams';
 import UserProfile from './pages/UserProfile';
 import UserRoleAssignment from './pages/UserRoleAssignment';
-import GamificationAnalytics from './pages/GamificationAnalytics';
-import ContentModerationAdmin from './pages/ContentModerationAdmin';
 import __Layout from './Layout.jsx';
 
 
@@ -79,6 +71,7 @@ export const PAGES = {
     "AuditLog": AuditLog,
     "Calendar": Calendar,
     "Channels": Channels,
+    "ContentModerationAdmin": ContentModerationAdmin,
     "Dashboard": Dashboard,
     "Documentation": Documentation,
     "EmployeeDirectory": EmployeeDirectory,
@@ -89,6 +82,7 @@ export const PAGES = {
     "FacilitatorView": FacilitatorView,
     "Gamification": Gamification,
     "GamificationAdmin": GamificationAdmin,
+    "GamificationAnalytics": GamificationAnalytics,
     "GamificationDashboard": GamificationDashboard,
     "GamificationRulesAdmin": GamificationRulesAdmin,
     "GamificationSettings": GamificationSettings,
@@ -130,8 +124,6 @@ export const PAGES = {
     "Teams": Teams,
     "UserProfile": UserProfile,
     "UserRoleAssignment": UserRoleAssignment,
-    "GamificationAnalytics": GamificationAnalytics,
-    "ContentModerationAdmin": ContentModerationAdmin,
 }
 
 export const pagesConfig = {

@@ -67,16 +67,23 @@ export default function Calendar() {
     }
   });
 
-  // Delete event mutation (soft delete)
+  // Delete event mutation with cascade (participations + notifications)
   const deleteEventMutation = useMutation({
-    mutationFn: (event) => base44.entities.Event.update(event.id, { 
-      status: 'cancelled',
-      cancellation_reason: 'Cancelled by organizer',
-      cancelled_at: new Date().toISOString()
-    }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['events'] });
+    mutationFn: async (event) => {
+      return base44.functions.invoke('handleEventCancellation', {
+        event_id: event.id,
+        cancellation_reason: 'Cancelled by organizer'
+      });
     },
+    onSuccess: (response) => {
+      queryClient.invalidateQueries({ queryKey: ['events'] });
+      queryClient.invalidateQueries({ queryKey: ['participations'] });
+      queryClient.invalidateQueries({ queryKey: ['notifications'] });
+      toast.success('Event cancelled and participants notified');
+    },
+    onError: (error) => {
+      toast.error(`Failed to cancel event: ${error.message}`);
+    }
   });
 
   const upcomingEvents = filterUpcomingEvents(events);
