@@ -7,6 +7,39 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.4';
 
 const SLACK_WEBHOOK_URL = Deno.env.get("SLACK_WEBHOOK_URL");
 
+// SSRF Protection: Whitelist allowed domains for Slack webhooks
+const ALLOWED_SLACK_DOMAINS = [
+  'hooks.slack.com'
+];
+
+function validateSlackWebhookUrl(url) {
+  if (!url) throw new Error('Slack webhook URL is required');
+  
+  try {
+    const parsed = new URL(url);
+    const isAllowed = ALLOWED_SLACK_DOMAINS.some(domain => 
+      parsed.hostname === domain || parsed.hostname.endsWith('.' + domain)
+    );
+    
+    if (!isAllowed) {
+      throw new Error(`SSRF: Webhook domain not whitelisted. Only ${ALLOWED_SLACK_DOMAINS.join(', ')} allowed.`);
+    }
+    
+    // Prevent internal URLs
+    if (parsed.hostname === 'localhost' || 
+        parsed.hostname === '127.0.0.1' ||
+        parsed.hostname.startsWith('192.168.') ||
+        parsed.hostname.startsWith('10.') ||
+        parsed.hostname.startsWith('172.')) {
+      throw new Error('SSRF: Internal IP addresses not allowed');
+    }
+    
+    return true;
+  } catch (error) {
+    throw new Error(`Invalid webhook URL: ${error.message}`);
+  }
+}
+
 // Message templates for different notification types
 const TEMPLATES = {
   achievement: (data) => ({
@@ -324,6 +357,14 @@ Deno.serve(async (req) => {
 
     if (!targetWebhook) {
       return Response.json({ error: 'Slack webhook URL not configured' }, { status: 400 });
+    }
+
+    // Validate webhook URL to prevent SSRF attacks
+    try {
+      validateSlackWebhookUrl(targetWebhook);
+    } catch (error) {
+      console.error(`[SLACK SECURITY] SSRF attempt blocked: ${error.message}`);
+      return Response.json({ error: 'Invalid webhook URL configuration' }, { status: 400 });
     }
 
     const templateFn = TEMPLATES[type];
