@@ -63,65 +63,84 @@ export default function EventSeriesCreator({ open, onOpenChange, onSeriesCreated
 
   const createSeriesMutation = useMutation({
     mutationFn: async (data) => {
-      // Create the series
-      const series = await base44.entities.EventSeries.create({
-        ...data,
-        learning_objectives: data.learning_objectives.filter(o => o.trim()),
-        status: 'draft'
-      });
+      try {
+        // Create the series
+        const series = await base44.entities.EventSeries.create({
+          ...data,
+          learning_objectives: data.learning_objectives.filter(o => o.trim()),
+          status: 'draft'
+        });
 
-      // Generate individual events for the series
-      const eventIds = [];
-      const startDate = new Date(data.start_date);
-      
-      for (let i = 0; i < data.total_sessions; i++) {
-        let sessionDate;
-        switch (data.session_frequency) {
-          case 'daily':
-            sessionDate = addDays(startDate, i);
-            break;
-          case 'weekly':
-            sessionDate = addWeeks(startDate, i);
-            break;
-          case 'biweekly':
-            sessionDate = addWeeks(startDate, i * 2);
-            break;
-          case 'monthly':
-            sessionDate = addMonths(startDate, i);
-            break;
-          default:
-            sessionDate = addWeeks(startDate, i);
+        // Generate individual events for the series (with transaction-like rollback)
+        const eventIds = [];
+        const startDate = new Date(data.start_date);
+        const createdEventIds = [];
+        
+        try {
+          for (let i = 0; i < data.total_sessions; i++) {
+            let sessionDate;
+            switch (data.session_frequency) {
+              case 'daily':
+                sessionDate = addDays(startDate, i);
+                break;
+              case 'weekly':
+                sessionDate = addWeeks(startDate, i);
+                break;
+              case 'biweekly':
+                sessionDate = addWeeks(startDate, i * 2);
+                break;
+              case 'monthly':
+                sessionDate = addMonths(startDate, i);
+                break;
+              default:
+                sessionDate = addWeeks(startDate, i);
+            }
+
+            const event = await base44.entities.Event.create({
+              title: `${data.series_name} - Session ${i + 1}`,
+              activity_id: data.activity_id || '',
+              scheduled_date: sessionDate.toISOString(),
+              duration_minutes: data.session_duration_minutes,
+              max_participants: data.max_participants,
+              status: 'scheduled',
+              magic_link: `series-${series.id}-session-${i + 1}-${Date.now()}`,
+              is_recurring: true,
+              recurring_series_id: series.id,
+              recurrence_pattern: {
+                frequency: data.session_frequency,
+                occurrence_number: i + 1,
+                total_occurrences: data.total_sessions
+              },
+              points_awarded: data.points_per_session || 15
+            });
+            eventIds.push(event.id);
+            createdEventIds.push(event.id);
+          }
+        } catch (error) {
+          // Rollback: Delete created events on failure
+          console.error('Event creation failed, rolling back:', error);
+          for (const eventId of createdEventIds) {
+            try {
+              await base44.entities.Event.delete(eventId);
+            } catch (deleteError) {
+              console.error(`Failed to rollback event ${eventId}:`, deleteError);
+            }
+          }
+          throw error;
         }
 
-        const event = await base44.entities.Event.create({
-          title: `${data.series_name} - Session ${i + 1}`,
-          activity_id: data.activity_id || '',
-          scheduled_date: sessionDate.toISOString(),
-          duration_minutes: data.session_duration_minutes,
-          max_participants: data.max_participants,
-          status: 'scheduled',
-          magic_link: `series-${series.id}-session-${i + 1}-${Date.now()}`,
-          is_recurring: true,
-          recurring_series_id: series.id,
-          recurrence_pattern: {
-            frequency: data.session_frequency,
-            occurrence_number: i + 1,
-            total_occurrences: data.total_sessions
-          },
-          points_awarded: data.points_per_session || 15
+        // Update series with event IDs
+        await base44.entities.EventSeries.update(series.id, {
+          event_ids: eventIds,
+          end_date: eventIds.length > 0 ? 
+            addWeeks(startDate, data.total_sessions - 1).toISOString() : 
+            startDate.toISOString()
         });
-        eventIds.push(event.id);
+
+        return series;
+      } catch (error) {
+        throw error;
       }
-
-      // Update series with event IDs
-      await base44.entities.EventSeries.update(series.id, {
-        event_ids: eventIds,
-        end_date: eventIds.length > 0 ? 
-          addWeeks(startDate, data.total_sessions - 1).toISOString() : 
-          startDate.toISOString()
-      });
-
-      return series;
     },
     onSuccess: (series) => {
       queryClient.invalidateQueries(['event-series']);
