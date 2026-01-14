@@ -63,6 +63,7 @@ import UserRoleAssignment from './pages/UserRoleAssignment';
 import TeamLeaderboard from './pages/TeamLeaderboard';
 import TeamAnalyticsDashboard from './pages/TeamAnalyticsDashboard';
 import GamificationRuleBuilder from './pages/GamificationRuleBuilder';
+import ExpandedUserProfile from './pages/ExpandedUserProfile';
 import __Layout from './Layout.jsx';
 
 
@@ -132,6 +133,7 @@ export const PAGES = {
     "TeamLeaderboard": TeamLeaderboard,
     "TeamAnalyticsDashboard": TeamAnalyticsDashboard,
     "GamificationRuleBuilder": GamificationRuleBuilder,
+    "ExpandedUserProfile": ExpandedUserProfile,
 }
 
 export const pagesConfig = {
