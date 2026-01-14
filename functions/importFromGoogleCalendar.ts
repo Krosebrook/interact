@@ -82,8 +82,14 @@ Deno.serve(async (req) => {
         continue;
       }
 
-      // Create a generic activity for imported events
-      const activity = await base44.asServiceRole.entities.Activity.create({
+      // Create a generic activity for imported events (only admins and facilitators can import)
+      if (user.role !== 'admin' && user.user_type !== 'facilitator') {
+        return Response.json({ 
+          error: 'Forbidden - only admins and facilitators can import events' 
+        }, { status: 403 });
+      }
+
+      const activity = await base44.entities.Activity.create({
         title: calEvent.summary || 'Imported Event',
         description: calEvent.description || 'Imported from Google Calendar',
         instructions: calEvent.description || 'Event details from your calendar',
@@ -97,8 +103,8 @@ Deno.serve(async (req) => {
       const endTime = new Date(calEvent.end?.dateTime || startTime);
       const durationMinutes = Math.round((endTime - startTime) / 60000);
 
-      // Create event in our system
-      const newEvent = await base44.asServiceRole.entities.Event.create({
+      // Create event in our system using user-scoped access
+      const newEvent = await base44.entities.Event.create({
         activity_id: activity.id,
         title: calEvent.summary || 'Imported Event',
         event_type: 'other',
