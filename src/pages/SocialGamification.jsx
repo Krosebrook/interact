@@ -1,4 +1,3 @@
-import React from 'react';
 import { useUserData } from '../components/hooks/useUserData';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';

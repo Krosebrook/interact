@@ -1,14 +1,13 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { useUserData } from '@/components/hooks/useUserData';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Badge } from '@/components/ui/badge';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import FlaggedContentCard from '@/components/moderation/FlaggedContentCard';
 import AppealWorkflow from '@/components/moderation/AppealWorkflow';
-import { AlertTriangle, CheckCircle, XCircle, Clock } from 'lucide-react';
+import { AlertTriangle, CheckCircle, Clock } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function ContentModerationAdmin() {

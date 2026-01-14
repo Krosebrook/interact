@@ -3,7 +3,7 @@
  * React Query cache utilities and invalidation strategies
  */
 
-import { queryKeys, invalidationGroups } from './queryKeys';
+import { queryKeys } from './queryKeys';
 
 // ============================================================================
 // CACHE INVALIDATION STRATEGIES

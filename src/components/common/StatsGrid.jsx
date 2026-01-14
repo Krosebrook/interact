@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 
 export function StatCard({ title, value, subtitle, trend, icon: Icon, color = 'orange', delay = 0 }) {

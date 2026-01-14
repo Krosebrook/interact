@@ -3,7 +3,6 @@
  * Visual indicator of profile visibility settings
  */
 
-import React from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Globe, Users, Lock } from 'lucide-react';
 

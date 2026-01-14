@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion } from 'framer-motion';
@@ -8,17 +8,11 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+
+
 import { 
   Calendar, 
   Clock, 
-  Users, 
   Sparkles, 
   CheckCircle2,
   AlertCircle,
@@ -29,7 +23,7 @@ import {
   CloudSun,
   RefreshCw
 } from 'lucide-react';
-import { format, addDays, setHours, setMinutes, isSameDay } from 'date-fns';
+import { format, addDays, isSameDay } from 'date-fns';
 import LoadingSpinner from '../common/LoadingSpinner';
 import { toast } from 'sonner';
 

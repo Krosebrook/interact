@@ -3,7 +3,7 @@
  * View and search all employee profiles with RBAC
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useUserData } from '../components/hooks/useUserData.jsx';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
@@ -26,7 +26,6 @@ import {
   Building,
   MapPin,
   Mail,
-  Briefcase,
   Award,
   TrendingUp,
   Filter,

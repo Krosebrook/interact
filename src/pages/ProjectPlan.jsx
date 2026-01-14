@@ -1,12 +1,10 @@
-import React, { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   CheckCircle2,
   Circle,
@@ -16,19 +14,14 @@ import {
   ChevronDown,
   ChevronRight,
   FileText,
-  Calendar,
-  Users,
   Sparkles,
   Trophy,
   Target,
-  Zap,
   Settings,
-  BarChart3,
-  RefreshCw
+  BarChart3
 } from 'lucide-react';
 import { useUserData } from '../components/hooks/useUserData';
 import LoadingSpinner from '../components/common/LoadingSpinner';
-import { format } from 'date-fns';
 
 const STATUS_CONFIG = {
   planned: { icon: Circle, color: 'bg-slate-100 text-slate-600', label: 'Planned' },

@@ -8,7 +8,7 @@ import ChannelChat from '../components/channels/ChannelChat';
 import CreateChannelDialog from '../components/channels/CreateChannelDialog';
 import ChannelSettings from '../components/channels/ChannelSettings';
 import { Button } from '@/components/ui/button';
-import { Hash, MessageSquare, Menu, X } from 'lucide-react';
+import { MessageSquare, Menu, X } from 'lucide-react';
 
 export default function Channels() {
   const { user, loading } = useUserData(true);

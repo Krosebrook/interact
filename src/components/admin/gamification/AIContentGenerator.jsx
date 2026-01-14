@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -9,7 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { Sparkles, BookOpen, HelpCircle, Video, Loader2, Copy, Check, Download } from 'lucide-react';
+import { Sparkles, BookOpen, HelpCircle, Video, Loader2, Copy, Check } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function AIContentGenerator() {

@@ -1,9 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import ReactMarkdown from 'react-markdown';
 import { 
   Bot, 
@@ -11,9 +9,7 @@ import {
   X, 
   Loader2, 
   Sparkles,
-  MessageSquare,
-  Minimize2,
-  Maximize2
+  Minimize2
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 

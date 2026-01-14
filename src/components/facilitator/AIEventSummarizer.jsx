@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -14,11 +14,9 @@ import {
   Loader2,
   Lightbulb,
   ListChecks,
-  Quote,
-  Clock
+  Quote
 } from 'lucide-react';
 import { toast } from 'sonner';
-import ReactMarkdown from 'react-markdown';
 
 export default function AIEventSummarizer({ eventId, eventTitle }) {
   const [summary, setSummary] = useState(null);

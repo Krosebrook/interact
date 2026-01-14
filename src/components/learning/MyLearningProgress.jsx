@@ -1,6 +1,4 @@
-import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { BookOpen, CheckCircle, Clock, Award } from 'lucide-react';
 import LearningPathCard from './LearningPathCard';

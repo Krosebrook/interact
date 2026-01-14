@@ -3,7 +3,6 @@
  * Centralized React Query configuration
  */
 
-import React from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { CACHE_TIMES, API_CONFIG } from '../../shared/constants';
 

@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Trophy, Award, TrendingUp } from 'lucide-react';
+import { Trophy, Award } from 'lucide-react';
 import Leaderboard from '../components/gamification/Leaderboard';
 import BadgeDisplay from '../components/gamification/BadgeDisplay';
 import PointsTracker from '../components/gamification/PointsTracker';

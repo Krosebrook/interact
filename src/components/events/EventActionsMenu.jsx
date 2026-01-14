@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/dialog';
 import { MoreVertical, Copy, Download, Send, BarChart3, Trash2, FileText, AlertTriangle } from 'lucide-react';
 import EventReportViewer from './EventReportViewer';
-import { confirmDelete, showUndoToast } from '../common/UndoToast';
+import { showUndoToast } from '../common/UndoToast';
 import { toast } from 'sonner';
 
 export default function EventActionsMenu({ 

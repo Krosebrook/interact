@@ -1,4 +1,3 @@
-import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { LEADERBOARD_CATEGORIES, TIME_PERIODS } from './hooks/useLeaderboard';

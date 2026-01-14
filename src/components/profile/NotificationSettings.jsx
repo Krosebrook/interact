@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
-import { Bell, BellOff, Clock, Mail, MessageSquare, Smartphone } from 'lucide-react';
+import { Bell, Clock, Mail, MessageSquare, Smartphone } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function NotificationSettings({ profile, onSave }) {

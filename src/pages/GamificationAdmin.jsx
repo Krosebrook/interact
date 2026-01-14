@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useUserData } from '../components/hooks/useUserData';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Shield, Users, Award, TrendingUp, Settings, Zap, BookOpen, Sparkles } from 'lucide-react';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import UserProgressOverview from '../components/admin/gamification/UserProgressOverview';

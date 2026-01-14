@@ -1,9 +1,8 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { Crown, Star, Lock, ChevronRight, Sparkles, Gift } from 'lucide-react';
+import { Crown, Star, Lock, Sparkles, Gift } from 'lucide-react';
 
 const TIER_STYLES = {
   1: { name: 'Bronze', color: 'from-amber-600 to-amber-800', bg: 'bg-amber-50', border: 'border-amber-300', text: 'text-amber-700' },

@@ -3,17 +3,13 @@
  * Comprehensive user admin controls with invite, role management, and suspension
  */
 
-import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
 import { 
-  UserPlus, 
   Users, 
-  Shield, 
   Ban, 
   CheckCircle,
   Clock,
@@ -21,7 +17,7 @@ import {
   XCircle
 } from 'lucide-react';
 import { toast } from 'sonner';
-import { isOwner, hasPermission, getEffectiveRole } from '../lib/rbac/roles';
+import { hasPermission } from '../lib/rbac/roles';
 
 export default function UserManagementPanel({ currentUser }) {
   const queryClient = useQueryClient();

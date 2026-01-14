@@ -1,4 +1,3 @@
-import React from 'react';
 import { useUserData } from '../components/hooks/useUserData';
 import GamifiedLearningDashboard from '../components/learning/GamifiedLearningDashboard';
 import LoadingSpinner from '../components/common/LoadingSpinner';

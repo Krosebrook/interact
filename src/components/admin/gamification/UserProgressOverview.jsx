@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Search, Award, Zap, Trophy, TrendingUp, Filter } from 'lucide-react';
+import { Search, Award, Zap, Trophy, TrendingUp } from 'lucide-react';
 import LoadingSpinner from '../../common/LoadingSpinner';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '../../../utils';

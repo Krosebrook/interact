@@ -4,7 +4,7 @@
  * Manages user accessibility preferences globally
  */
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { useUserData } from '../hooks/useUserData';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';

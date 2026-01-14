@@ -1,9 +1,8 @@
-import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { formatDistanceToNow } from 'date-fns';
-import { Star, Sparkles, MessageCircle, Heart, ThumbsUp, PartyPopper, Lock, Users } from 'lucide-react';
+import { Star, Sparkles, MessageCircle, Lock, Users } from 'lucide-react';
 
 const CATEGORY_CONFIG = {
   teamwork: { icon: '🤝', label: 'Teamwork', color: 'bg-blue-100 text-blue-700' },

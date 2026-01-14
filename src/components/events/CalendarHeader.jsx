@@ -3,7 +3,6 @@
  * Header component for Calendar page with action buttons
  */
 
-import React from 'react';
 import { Button } from '@/components/ui/button';
 import PageHeader from '../common/PageHeader';
 import { CalendarPlus, Layers, Vote, Plus } from 'lucide-react';

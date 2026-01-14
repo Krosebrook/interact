@@ -8,7 +8,6 @@ import { useMemo } from 'react';
 import { apiClient } from '../lib/apiClient';
 import { queryKeys } from '../lib/queryKeys';
 import { usePermissions } from './usePermissions';
-import { transformOutput } from '../lib/dataTransformers';
 
 /**
  * Central hook for gamification-related data with security and performance

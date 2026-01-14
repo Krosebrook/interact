@@ -3,7 +3,6 @@
  * Reusable tooltips and help popovers for features
  */
 
-import React, { useState } from 'react';
 import { HelpCircle, BookOpen, Video, ExternalLink } from 'lucide-react';
 import {
   Popover,

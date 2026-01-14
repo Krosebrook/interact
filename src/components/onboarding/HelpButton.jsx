@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { HelpCircle, BookOpen, Video, MessageCircle } from 'lucide-react';
+import { HelpCircle, BookOpen, Video } from 'lucide-react';
 
 /**
  * Contextual help button that appears on pages

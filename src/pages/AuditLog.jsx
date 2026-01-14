@@ -3,7 +3,7 @@
  * View all system actions and changes
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useUserData } from '../components/hooks/useUserData.jsx';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';

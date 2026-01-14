@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Bell, Clock, Mail, MessageSquare, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
-import { format, subHours, subDays, subWeeks, subMinutes } from 'date-fns';
+import { format, subMinutes } from 'date-fns';
 
 const REMINDER_OPTIONS = [
   { value: '1_week', label: '1 week before', minutes: 10080 },

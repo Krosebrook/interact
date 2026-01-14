@@ -1,4 +1,3 @@
-import React from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useUserData } from '@/components/hooks/useUserData';
 import LoadingSpinner from '@/components/common/LoadingSpinner';

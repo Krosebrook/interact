@@ -6,7 +6,7 @@
 
 import { useMemo } from 'react';
 import * as eventService from '../services/eventService';
-import { errorService, useErrorHandler } from '../services/errorService';
+import { useErrorHandler } from '../services/errorService';
 
 /**
  * Central hook for accessing service layer

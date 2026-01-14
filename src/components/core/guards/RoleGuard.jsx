@@ -3,11 +3,9 @@
  * Protects routes by required role/permission
  */
 
-import React from 'react';
 import { useRBAC } from '../../lib/rbac/useRBAC';
 import { Navigate } from 'react-router-dom';
 import { createPageUrl } from '../../../utils';
-import { PageLoading } from '../../shared/ui/LoadingState';
 import EmptyState from '../../shared/ui/EmptyState';
 
 export function RoleGuard({ 

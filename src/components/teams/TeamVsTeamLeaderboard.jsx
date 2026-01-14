@@ -1,22 +1,19 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   Trophy, 
   Users, 
-  TrendingUp, 
   Crown, 
   Medal,
   Zap,
   Flame,
   Award,
   Target,
-  ChevronRight,
   Swords
 } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';

@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { AlertTriangle, TrendingUp, Activity, Calendar, RefreshCw, ChevronRight } from 'lucide-react';
+import { AlertTriangle, Activity, RefreshCw } from 'lucide-react';
 import { toast } from 'sonner';
 import LoadingSpinner from '../common/LoadingSpinner';
 

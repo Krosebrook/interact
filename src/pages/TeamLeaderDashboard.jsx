@@ -1,20 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useUserData } from '../components/hooks/useUserData';
-import { useTeamLeaderData } from '../components/hooks/useTeamLeaderData';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { 
   Users, 
-  TrendingUp, 
   Award, 
   Target, 
   BarChart3,
   CheckCircle,
-  Clock,
-  Plus,
-  Sparkles
+  Clock
 } from 'lucide-react';
 import TeamChallengeManager from '../components/teamLeader/TeamChallengeManager';
 import TeamAnalyticsDashboard from '../components/teamLeader/TeamAnalyticsDashboard';

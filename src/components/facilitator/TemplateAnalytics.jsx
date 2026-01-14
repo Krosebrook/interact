@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -23,8 +23,6 @@ import {
 } from 'recharts';
 import { 
   LayoutTemplate, 
-  TrendingUp, 
-  Users, 
   Star, 
   Trophy,
   Target,

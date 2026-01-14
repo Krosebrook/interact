@@ -3,7 +3,7 @@
  * Centralized formatting functions
  */
 
-import { format, formatDistance, formatDistanceToNow, isValid, parseISO } from 'date-fns';
+import { format, formatDistanceToNow, isValid, parseISO } from 'date-fns';
 import { DATE_FORMATS } from '../constants';
 
 // Date Formatting

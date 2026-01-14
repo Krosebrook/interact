@@ -4,7 +4,6 @@
  * (activities, events, challenges, templates, etc.)
  */
 
-import React from 'react';
 import { cn } from '@/lib/utils';
 import {
   Sparkles,

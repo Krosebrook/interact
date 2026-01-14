@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
@@ -6,9 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Heart, MessageCircle, Award, Send, Loader2, TrendingUp } from 'lucide-react';
+import { MessageCircle, Award, Send, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
-import confetti from 'canvas-confetti';
 
 export default function RecognitionFeed({ userEmail }) {
   const queryClient = useQueryClient();

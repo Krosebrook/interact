@@ -3,7 +3,6 @@
  * Conditional rendering based on permissions
  */
 
-import React from 'react';
 import { useRBAC } from './useRBAC';
 
 export function PermissionGate({ 

@@ -7,7 +7,6 @@ import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { X, Lightbulb } from 'lucide-react';
-import { cn } from '@/lib/utils';
 
 export default function FeatureHighlight({ 
   isVisible,

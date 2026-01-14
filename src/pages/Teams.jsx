@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { Button } from '@/components/ui/button';
@@ -9,7 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Users, Plus } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import { useUserData } from '../components/hooks/useUserData.jsx';
 import { useTeamData } from '../components/hooks/useTeamData';

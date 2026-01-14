@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -15,7 +14,7 @@ import {
   ArrowRight,
   Flame
 } from 'lucide-react';
-import { format, differenceInDays, differenceInHours } from 'date-fns';
+import { differenceInDays, differenceInHours } from 'date-fns';
 
 const DIFFICULTY_CONFIG = {
   easy: { color: 'bg-emerald-100 text-emerald-700', label: 'Easy', points: '50-100' },

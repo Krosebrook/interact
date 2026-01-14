@@ -18,7 +18,6 @@ import {
   Gift,
   Trash2
 } from 'lucide-react';
-import React from 'react';
 
 // Custom toast icons
 const icons = {

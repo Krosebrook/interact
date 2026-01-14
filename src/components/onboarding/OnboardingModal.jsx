@@ -3,9 +3,8 @@
  * Main interactive onboarding UI component with accessibility
  */
 
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useOnboarding } from './OnboardingProvider';
-import DynamicOnboardingAdjuster from './DynamicOnboardingAdjuster';
 import { useStepValidation } from './useStepValidation';
 import { usePermissions } from '../hooks/usePermissions';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
@@ -16,7 +15,6 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
   ChevronLeft,
   ChevronRight,
-  X,
   CheckCircle2,
   Clock,
   Sparkles,

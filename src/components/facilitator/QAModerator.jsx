@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -14,8 +14,7 @@ import {
   Trash2,
   ThumbsUp,
   Send,
-  Megaphone,
-  Filter
+  Megaphone
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { format } from 'date-fns';

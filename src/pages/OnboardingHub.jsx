@@ -3,7 +3,7 @@
  * Central page for tutorials, quests, and progress tracking
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useUserData } from '../components/hooks/useUserData';
 import { useOnboarding } from '../components/onboarding/OnboardingProvider';
 import LoadingSpinner from '../components/common/LoadingSpinner';
@@ -20,8 +20,7 @@ import {
   CheckCircle2,
   RotateCcw,
   Sparkles,
-  Target,
-  Award
+  Target
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Progress } from '@/components/ui/progress';

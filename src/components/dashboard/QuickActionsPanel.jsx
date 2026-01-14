@@ -1,14 +1,10 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '../../utils';
 import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { 
-  Calendar, 
   Users, 
   Sparkles, 
-  BarChart3, 
-  MessageSquare,
+  BarChart3,
   Layers,
   PlusCircle,
   Bot

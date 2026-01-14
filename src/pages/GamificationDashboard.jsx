@@ -4,57 +4,31 @@ import { useQuery } from '@tanstack/react-query';
 import AIGamificationEngine from '../components/gamification/AIGamificationEngine';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { 
-  BarChart, 
-  Bar, 
-  LineChart, 
-  Line, 
-  PieChart, 
-  Pie, 
-  Cell,
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  Legend, 
-  ResponsiveContainer,
-  AreaChart,
-  Area
-} from 'recharts';
+
+
+
+
 import { 
   Trophy, 
   TrendingUp, 
   Award, 
   Zap,
   Users,
-  Calendar,
-  Filter,
   Target,
   Settings,
   Flame,
   Gift,
   Star,
-  Crown,
-  Medal
+  Crown
 } from 'lucide-react';
-import { format, subDays, subMonths, isAfter, isBefore } from 'date-fns';
-import { motion, AnimatePresence } from 'framer-motion';
+import { format, subDays } from 'date-fns';
+import { AnimatePresence } from 'framer-motion';
 import { useUserData } from '../components/hooks/useUserData';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import { StatCard } from '../components/common/StatsGrid';
 import XPProgressRing from '../components/gamification/XPProgressRing';
-import AnimatedPointsCounter from '../components/gamification/AnimatedPointsCounter';
 import StreakFlame from '../components/gamification/StreakFlame';
 import BadgeCard from '../components/gamification/BadgeCard';
 import LeaderboardRow from '../components/gamification/LeaderboardRow';
@@ -68,10 +42,6 @@ import SocialFeedSection from '../components/gamification/SocialFeedSection';
 import PersonalizedRecommendationsEngine from '../components/gamification/PersonalizedRecommendationsEngine';
 import TailoredLeaderboardFormats from '../components/gamification/TailoredLeaderboardFormats';
 import PersonalizedGamificationTips from '../components/gamification/PersonalizedGamificationTips';
-import SeasonalEventsManager from '../components/gamification/SeasonalEventsManager';
-import TeamTournamentBracket from '../components/gamification/TeamTournamentBracket';
-import AchievementSystem from '../components/gamification/AchievementSystem';
-import BuddySystemManager from '../components/social/BuddySystemManager';
 import RedemptionHistory from '../components/gamification/RedemptionHistory';
 import RewardsRedemptionSection from '../components/gamification/RewardsRedemptionSection';
 import TierStatusDisplay from '../components/gamification/TierStatusDisplay';

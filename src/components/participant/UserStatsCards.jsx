@@ -1,4 +1,3 @@
-import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Calendar, TrendingUp, MessageSquare, Users } from 'lucide-react';
 import { motion } from 'framer-motion';

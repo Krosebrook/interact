@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,8 +10,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Slider } from '@/components/ui/slider';
 import { 
-  Settings, Palette, Award, Target, Users, Sliders, 
-  Save, RefreshCw, Plus, Trash2, Eye
+  Settings, Award, Users, 
+  Save, RefreshCw, Plus, Trash2
 } from 'lucide-react';
 import { toast } from 'sonner';
 

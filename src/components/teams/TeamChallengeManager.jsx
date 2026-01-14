@@ -1,14 +1,11 @@
-import React, { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Trophy, Target, Users, TrendingUp, Clock, CheckCircle, Flame } from 'lucide-react';
+import { Trophy, Clock, CheckCircle, Flame } from 'lucide-react';
 import LoadingSpinner from '../common/LoadingSpinner';
-import { toast } from 'sonner';
 
 export default function TeamChallengeManager({ userEmail, userTeamId }) {
   const [activeTab, setActiveTab] = useState('active');

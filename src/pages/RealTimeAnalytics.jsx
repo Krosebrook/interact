@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { useUserData } from '../components/hooks/useUserData';
@@ -7,7 +7,7 @@ import FeatureUsageDashboard from '../components/analytics/FeatureUsageDashboard
 import CohortAnalysis from '../components/analytics/CohortAnalysis';
 import OnboardingAnalytics from '../components/analytics/OnboardingAnalytics';
 import AIFeatureAnalytics from '../components/analytics/AIFeatureAnalytics';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Activity, Users, Sparkles, UserCheck, TrendingUp, Clock } from 'lucide-react';

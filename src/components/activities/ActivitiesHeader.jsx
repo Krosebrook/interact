@@ -3,7 +3,6 @@
  * Header component for Activities page with action buttons
  */
 
-import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Brain, Plus } from 'lucide-react';
 

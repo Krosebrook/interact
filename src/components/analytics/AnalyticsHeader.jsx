@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import StatsCard from '../dashboard/StatsCard';
 import { Button } from '@/components/ui/button';
 import { TrendingUp, Users, Star, Calendar, Download, FileText, Loader2 } from 'lucide-react';

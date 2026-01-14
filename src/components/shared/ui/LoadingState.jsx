@@ -3,7 +3,6 @@
  * Reusable loading states for different contexts
  */
 
-import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import LoadingSpinner from '../../common/LoadingSpinner';

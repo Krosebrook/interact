@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, useSpring, useTransform } from 'framer-motion';
 import { Zap, TrendingUp, Sparkles } from 'lucide-react';
 

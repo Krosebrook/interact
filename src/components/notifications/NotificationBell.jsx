@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
@@ -12,7 +12,6 @@ import { Bell, Check, X, Award, Calendar, TrendingUp, Users } from 'lucide-react
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
-import { createPageUrl } from '../../utils';
 import { formatDistanceToNow } from 'date-fns';
 
 export default function NotificationBell({ userEmail }) {
