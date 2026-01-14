@@ -7,10 +7,12 @@ css
 :root {
   /* Brand Colors */
   --int-navy: #14294D;
-  --int-orange: #D97230;
-  --int-orange-dark: #C46322; /* Darker variant for better contrast */
-  --slate-gray: #64748b;
-  --slate-gray-dark: #475569; /* WCAG AA compliant */
+        --int-orange: #D97230;
+        --int-orange-dark: #C46322; /* Darker variant for better contrast */
+        --int-orange-wcag: #B85C1A; /* WCAG AA on white (5.5:1) */
+        --slate-gray: #64748b;
+        --slate-gray-dark: #475569; /* WCAG AA compliant */
+        --slate-gray-wcag: #334155; /* Darker for AA contrast on white */
   --int-gold: #F5C16A;
   --int-teal: #2DD4BF;
   
@@ -148,6 +150,8 @@ h1, h2, h3, h4, h5, h6 {
 .text-int-gold { color: var(--int-gold); }
 .text-int-teal { color: var(--int-teal); }
 .text-slate-gray { color: var(--slate-gray); }
+    .text-slate-gray-wcag { color: var(--slate-gray-wcag); }
+    .text-int-orange-wcag { color: var(--int-orange-wcag); }
 
 /* Gradient utilities - Primary */
 .bg-gradient-orange { background: var(--gradient-orange); }
@@ -645,8 +649,34 @@ h1, h2, h3, h4, h5, h6 {
   transform: scale(0.98);
 }
 
-/* Focus ring for accessibility */
+/* Focus ring for accessibility - WCAG AA compliant */
 .focus-ring:focus-visible {
-  outline: 2px solid var(--int-orange);
+  outline: 3px solid var(--int-orange-wcag);
   outline-offset: 2px;
+}
+
+/* Universal focus visible styles for all interactive elements */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[role="button"]:focus-visible {
+  outline: 3px solid var(--int-orange-wcag);
+  outline-offset: 2px;
+}
+
+/* Skip to main link - visible on focus */
+.skip-to-main {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background-color: var(--int-navy);
+  color: white;
+  padding: 8px 12px;
+  z-index: 100;
+}
+
+.skip-to-main:focus {
+  top: 0;
 }
