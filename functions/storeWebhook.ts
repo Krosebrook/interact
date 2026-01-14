@@ -33,10 +33,24 @@ Deno.serve(async (req) => {
       const { user_email, item_id, transaction_id, quantity } = session.metadata;
 
       try {
+        // Log webhook processing (for replay attack detection)
+        console.log(`[STRIPE WEBHOOK] Processing checkout: ${transaction_id} for user: ${user_email}`);
+        
+        // Check for idempotency: prevent replay attacks by verifying transaction isn't already completed
+        const existingTransaction = await base44.asServiceRole.entities.StoreTransaction.filter({ 
+          id: transaction_id 
+        });
+        
+        if (existingTransaction.length > 0 && existingTransaction[0].status === 'completed') {
+          console.log(`[STRIPE WEBHOOK] Transaction ${transaction_id} already processed - ignoring replay`);
+          return Response.json({ received: true, warning: 'duplicate' });
+        }
+
         // Update transaction
         await base44.asServiceRole.entities.StoreTransaction.update(transaction_id, {
           status: 'completed',
-          stripe_payment_intent_id: session.payment_intent
+          stripe_payment_intent_id: session.payment_intent,
+          completed_at: new Date().toISOString()
         });
 
         // Get item

@@ -164,9 +164,12 @@ export default function Layout({ children, currentPageName }) {
 
   return (
     <OnboardingProvider>
-      <div className="min-h-screen flex flex-col bg-slate-100">
+      <div className="min-h-screen flex flex-col bg-slate-100" lang="en">
         {/* Skip to main content - WCAG 2.4.1 */}
-        <a href="#main-content" className="skip-to-main">
+        <a 
+          href="#main-content" 
+          className="absolute -top-10 left-0 bg-int-orange text-white px-3 py-2 rounded focus:top-0 transition-all z-50 focus:outline-none focus:ring-2 focus:ring-white"
+        >
           Skip to main content
         </a>
         {/* Header with scenic image */}
