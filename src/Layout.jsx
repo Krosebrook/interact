@@ -100,6 +100,7 @@ export default function Layout({ children, currentPageName }) {
         { name: 'Teams', icon: Users, page: 'Teams' },
         { name: 'Channels', icon: Users, page: 'Channels' },
         { name: 'Recognition', icon: Gift, page: 'Recognition' },
+        { name: 'My Profile', icon: User, page: 'ExpandedUserProfile' },
         { name: 'Leaderboards', icon: BarChart3, page: 'Leaderboards' },
         { name: 'Team Competition', icon: Users, page: 'TeamCompetition' },
         { name: 'Skills', icon: BarChart3, page: 'SkillsDashboard' },
