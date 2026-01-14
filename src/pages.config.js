@@ -1,6 +1,7 @@
 import AIEventPlanner from './pages/AIEventPlanner';
 import AIPersonalization from './pages/AIPersonalization';
 import Activities from './pages/Activities';
+import AdvancedAnalytics from './pages/AdvancedAnalytics';
 import AdvancedGamificationAnalytics from './pages/AdvancedGamificationAnalytics';
 import Analytics from './pages/Analytics';
 import AuditLog from './pages/AuditLog';
@@ -59,7 +60,9 @@ import TeamPerformanceDashboard from './pages/TeamPerformanceDashboard';
 import Teams from './pages/Teams';
 import UserProfile from './pages/UserProfile';
 import UserRoleAssignment from './pages/UserRoleAssignment';
-import AdvancedAnalytics from './pages/AdvancedAnalytics';
+import TeamLeaderboard from './pages/TeamLeaderboard';
+import TeamAnalyticsDashboard from './pages/TeamAnalyticsDashboard';
+import GamificationRuleBuilder from './pages/GamificationRuleBuilder';
 import __Layout from './Layout.jsx';
 
 
@@ -67,6 +70,7 @@ export const PAGES = {
     "AIEventPlanner": AIEventPlanner,
     "AIPersonalization": AIPersonalization,
     "Activities": Activities,
+    "AdvancedAnalytics": AdvancedAnalytics,
     "AdvancedGamificationAnalytics": AdvancedGamificationAnalytics,
     "Analytics": Analytics,
     "AuditLog": AuditLog,
@@ -125,7 +129,9 @@ export const PAGES = {
     "Teams": Teams,
     "UserProfile": UserProfile,
     "UserRoleAssignment": UserRoleAssignment,
-    "AdvancedAnalytics": AdvancedAnalytics,
+    "TeamLeaderboard": TeamLeaderboard,
+    "TeamAnalyticsDashboard": TeamAnalyticsDashboard,
+    "GamificationRuleBuilder": GamificationRuleBuilder,
 }
 
 export const pagesConfig = {
