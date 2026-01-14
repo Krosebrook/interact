@@ -118,13 +118,13 @@ Deno.serve(async (req) => {
 
     const data = await response.json();
 
-    // Update event with Google Calendar ID for future updates/deletes using user-scoped access
-    if (action === 'create' && data.id) {
-     await base44.entities.Event.update(event_id, {
-       google_calendar_id: data.id,
-       google_calendar_link: data.htmlLink,
-     });
-    }
+    // Update event with Google Calendar ID for future updates/deletes (user-scoped)
+     if (action === 'create' && data.id) {
+       await base44.entities.Event.update(event_id, {
+         google_calendar_id: data.id,
+         google_calendar_link: data.htmlLink,
+       });
+     }
 
     return Response.json({
       success: true,
