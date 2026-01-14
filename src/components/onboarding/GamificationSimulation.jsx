@@ -3,10 +3,10 @@
  * Shows simulated badge/point rewards during onboarding
  */
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
-import { Trophy, Star, Sparkles, Plus } from 'lucide-react';
+import { Trophy, Star, Plus } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 export function BadgeAwardSimulation({ show, badgeName = "First Steps", onComplete }) {

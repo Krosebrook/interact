@@ -3,13 +3,13 @@
  * Production-grade with apiClient and performance optimizations
  */
 
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { apiClient } from '../lib/apiClient';
 import { queryKeys } from '../lib/queryKeys';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Award, Trophy, Star, Sparkles } from 'lucide-react';
+import { Award, Trophy, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { format } from 'date-fns';
 

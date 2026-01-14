@@ -3,7 +3,6 @@
  * Persistent progress bar for active onboarding
  */
 
-import React from 'react';
 import { useOnboarding } from './OnboardingProvider';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';

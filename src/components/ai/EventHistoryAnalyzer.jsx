@@ -1,7 +1,7 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -15,15 +15,11 @@ import {
 } from '@/components/ui/select';
 import { 
   History, 
-  TrendingUp, 
-  TrendingDown,
+  TrendingUp,
   Calendar,
   Users,
   Star,
-  ThumbsUp,
-  ThumbsDown,
   BarChart3,
-  Clock,
   Award,
   Zap,
   CheckCircle2,
@@ -33,10 +29,7 @@ import {
   FileText
 } from 'lucide-react';
 import { 
-  BarChart, 
   Bar, 
-  LineChart, 
-  Line, 
   XAxis, 
   YAxis, 
   CartesianGrid, 

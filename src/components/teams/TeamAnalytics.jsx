@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -15,7 +15,6 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   ResponsiveContainer
 } from 'recharts';
 import { 
@@ -27,7 +26,7 @@ import {
   Target,
   Zap
 } from 'lucide-react';
-import { format, subDays, subMonths, parseISO } from 'date-fns';
+import { format, subDays } from 'date-fns';
 
 const COLORS = ['#0A1C39', '#F47C20', '#4A6070', '#7A94A6', '#C46322', '#F5C16A'];
 

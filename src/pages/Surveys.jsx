@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { useUserData } from '../components/hooks/useUserData';
@@ -10,7 +10,7 @@ import LoadingSpinner from '../components/common/LoadingSpinner';
 import EmptyState from '../components/common/EmptyState';
 import SurveyForm from '../components/surveys/SurveyForm';
 import SurveyResults from '../components/surveys/SurveyResults';
-import { FileText, Plus, BarChart3, Users, Lock } from 'lucide-react';
+import { FileText, BarChart3, Users, Lock } from 'lucide-react';
 import { format } from 'date-fns';
 
 /**

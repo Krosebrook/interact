@@ -3,7 +3,6 @@
  * User-friendly error component for React Query errors
  */
 
-import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { AlertCircle, RefreshCw } from 'lucide-react';

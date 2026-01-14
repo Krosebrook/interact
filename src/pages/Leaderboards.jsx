@@ -1,4 +1,3 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { useUserData } from '../components/hooks/useUserData';

@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useUserData } from '../components/hooks/useUserData';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   Select,
   SelectContent,
@@ -21,7 +20,6 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import EventTemplateEditor from '../components/events/EventTemplateEditor';
-import TemplatePreview from '../components/events/TemplatePreview';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import { PREMADE_TEMPLATES, TEMPLATE_CATEGORIES } from '../components/templates/TemplateData';
 import { playSound, initAudio } from '../components/utils/soundEffects';
@@ -30,7 +28,6 @@ import {
   Plus, 
   Search, 
   Edit, 
-  Trash2, 
   Copy,
   Presentation, 
   Users, 
@@ -43,7 +40,6 @@ import {
   LayoutTemplate,
   Clock,
   Play,
-  ChevronRight,
   Filter,
   Grid3X3,
   List,

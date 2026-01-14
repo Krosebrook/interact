@@ -4,7 +4,7 @@
  * Ensures consistent user state across the entire application
  */
 
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { authClient } from '../lib/apiClient';
 import { logError } from '../lib/errors';

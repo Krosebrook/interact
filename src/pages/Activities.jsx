@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useQueryClient, useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { useUserData } from '../components/hooks/useUserData';
@@ -16,9 +16,7 @@ import ActivityDetailDialog from '../components/activities/ActivityDetailDialog'
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import EmptyState from '../components/common/EmptyState';
 import SkeletonGrid from '../components/common/SkeletonGrid';
-import PageHeader, { SectionHeader } from '../components/common/PageHeader';
-import { Search, Sparkles, Plus } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Search } from 'lucide-react';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '../utils';

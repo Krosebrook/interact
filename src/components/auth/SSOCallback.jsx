@@ -18,7 +18,7 @@ export default function SSOCallback() {
 
   useEffect(() => {
     handleSSOCallback();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, []);
 
   const handleSSOCallback = async () => {

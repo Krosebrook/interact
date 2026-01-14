@@ -3,7 +3,6 @@
  * Contextual tooltips for highlighting UI elements during onboarding
  */
 
-import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { X, ChevronRight, HelpCircle } from 'lucide-react';

@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -13,11 +12,9 @@ import {
   Award,
   Target,
   TrendingUp,
-  CheckCircle2,
-  Play,
   Crown
 } from 'lucide-react';
-import { format, differenceInDays, differenceInHours } from 'date-fns';
+import { differenceInDays, differenceInHours } from 'date-fns';
 
 const CHALLENGE_TYPE_CONFIG = {
   head_to_head: { icon: Swords, label: 'Head to Head', color: 'from-red-500 to-orange-500' },

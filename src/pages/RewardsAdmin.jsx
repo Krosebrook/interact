@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useUserData } from '../components/hooks/useUserData';
@@ -31,18 +31,14 @@ import {
   Gift, 
   Plus, 
   CheckCircle, 
-  XCircle, 
   Clock,
   Edit,
   Package,
-  TrendingUp,
   Award,
   Trash2,
   Users,
   Zap,
-  Search,
-  RotateCcw,
-  Eye
+  RotateCcw
 } from 'lucide-react';
 import { toast } from 'sonner';
 

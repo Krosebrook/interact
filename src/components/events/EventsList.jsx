@@ -3,7 +3,6 @@
  * Reusable grid of event cards with loading and empty states
  */
 
-import React from 'react';
 import EventCalendarCard from './EventCalendarCard';
 import EmptyState from '../common/EmptyState';
 import { Calendar as CalendarIcon } from 'lucide-react';

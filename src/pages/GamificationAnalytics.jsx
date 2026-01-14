@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { useUserData } from '@/components/hooks/useUserData';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import TierPerformanceChart from '@/components/analytics/TierPerformanceChart';
 import RedemptionAnalytics from '@/components/analytics/RedemptionAnalytics';
 import EngagementCorrelation from '@/components/analytics/EngagementCorrelation';
-import { Trophy, TrendingUp, Gift, Users, BarChart3, Calendar } from 'lucide-react';
+import { Trophy, TrendingUp, Gift, Users, BarChart3 } from 'lucide-react';
 
 export default function GamificationAnalytics() {
   const { user, loading: userLoading } = useUserData(true, true);

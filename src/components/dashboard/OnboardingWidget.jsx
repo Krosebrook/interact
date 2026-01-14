@@ -3,7 +3,6 @@
  * Dashboard widget to show onboarding progress and quick actions
  */
 
-import React from 'react';
 import { useOnboarding } from '../onboarding/OnboardingProvider';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';

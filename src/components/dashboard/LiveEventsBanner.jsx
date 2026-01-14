@@ -1,10 +1,7 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '../../utils';
 import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { format } from 'date-fns';
 import { Play, Users, ArrowRight, Radio } from 'lucide-react';
 import { motion } from 'framer-motion';
 

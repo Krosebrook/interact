@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -11,7 +11,6 @@ import {
   Star, 
   Crown, 
   Gift,
-  TrendingUp,
   Target,
   X,
   Sparkles,

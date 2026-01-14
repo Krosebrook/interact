@@ -1,6 +1,5 @@
-import React from 'react';
 import { motion } from 'framer-motion';
-import { Trophy, Medal, TrendingUp, TrendingDown, Minus, Flame, Star, Award } from 'lucide-react';
+import { Trophy, Medal, TrendingUp, TrendingDown, Flame, Star, Award } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
 const RANK_CONFIG = {

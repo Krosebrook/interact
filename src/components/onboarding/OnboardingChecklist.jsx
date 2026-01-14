@@ -3,7 +3,6 @@
  * Compact checklist widget showing onboarding progress
  */
 
-import React from 'react';
 import { useOnboarding } from './OnboardingProvider';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';

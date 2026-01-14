@@ -3,7 +3,6 @@
  * Extracted dialog for creating time slot polls
  */
 
-import React from 'react';
 import {
   Dialog,
   DialogContent,

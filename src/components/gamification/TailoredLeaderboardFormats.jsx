@@ -1,11 +1,10 @@
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Crown, Medal, Star, Users, Flame, TrendingUp, Sparkles, Zap } from 'lucide-react';
+import { Crown, Medal, Star, Users } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const SEGMENT_CONFIGS = {

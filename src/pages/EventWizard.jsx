@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
@@ -20,7 +20,7 @@ import { ArrowLeft, ArrowRight, Sparkles, Loader2, CheckCircle2 } from 'lucide-r
 import { toast } from 'sonner';
 import RecurrenceSettings from '../components/events/RecurrenceSettings';
 import EventTasksManager from '../components/events/EventTasksManager';
-import { format, addDays, addWeeks, addMonths } from 'date-fns';
+import { addDays, addWeeks, addMonths } from 'date-fns';
 
 export default function EventWizard() {
   const navigate = useNavigate();

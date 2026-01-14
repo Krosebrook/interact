@@ -1,9 +1,6 @@
-import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import {
-  LineChart,
-  Line,
   BarChart,
   Bar,
   XAxis,
@@ -15,7 +12,7 @@ import {
   ComposedChart,
   Area
 } from 'recharts';
-import { Sparkles, TrendingUp, Award } from 'lucide-react';
+import { Sparkles, Award } from 'lucide-react';
 import { format, subWeeks, startOfWeek, endOfWeek, isWithinInterval } from 'date-fns';
 
 export default function EngagementOverTime({ events, participations, userProfiles }) {

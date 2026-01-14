@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { useUserData } from '../components/hooks/useUserData.jsx';
@@ -10,13 +10,12 @@ import {
   calculateDashboardStats } from
 '../components/utils/eventUtils';
 import { Button } from '@/components/ui/button';
-import StatsGrid, { StatCard } from '../components/common/StatsGrid';
+import { StatCard } from '../components/common/StatsGrid';
 import SkeletonGrid from '../components/common/SkeletonGrid';
 import QuickActionCard from '../components/common/QuickActionCard';
 import EventCalendarCard from '../components/events/EventCalendarCard';
 import AISuggestionsWidget from '../components/ai/AISuggestionsWidget';
 import ActivityGenerator from '../components/ai/ActivityGenerator';
-import PredictiveHealthDashboard from '../components/admin/PredictiveHealthDashboard';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import EmptyState from '../components/common/EmptyState';
 import { useEventActions } from '../components/events/useEventActions';
@@ -27,8 +26,7 @@ import {
   Users,
   Sparkles,
   TrendingUp,
-  ArrowRight,
-  Zap } from
+  ArrowRight } from
 'lucide-react';
 import ErrorBoundary from '../components/common/ErrorBoundary';
 

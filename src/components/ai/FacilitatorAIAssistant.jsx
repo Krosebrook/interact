@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -12,8 +12,6 @@ import {
   Sparkles, 
   Copy, 
   RefreshCw,
-  Send,
-  Users,
   ThumbsUp,
   AlertCircle
 } from 'lucide-react';

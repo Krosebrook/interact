@@ -3,7 +3,6 @@
  * Centralized provider composition
  */
 
-import React from 'react';
 import { QueryProvider } from './QueryProvider';
 import { OnboardingProvider } from '../../onboarding/OnboardingProvider';
 import { Toaster } from '@/components/ui/sonner';

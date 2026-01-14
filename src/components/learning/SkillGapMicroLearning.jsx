@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useState } from 'react';
+import { useMutation } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Target, Sparkles, Loader2, Zap, TrendingUp, BookOpen } from 'lucide-react';
 import MicroLearningModule from './MicroLearningModule';
 import { toast } from 'sonner';

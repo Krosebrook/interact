@@ -1,4 +1,3 @@
-import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import ProtectedRoute from '../components/common/ProtectedRoute';
 import LoadingSpinner from '../components/common/LoadingSpinner';
@@ -7,7 +6,6 @@ import AnalyticsOverview from '../components/analytics/AnalyticsOverview';
 import { useAnalyticsData } from '../components/analytics/useAnalyticsData';
 import { useUserData } from '../components/hooks/useUserData.jsx';
 import AttendanceMetrics from '../components/analytics/AttendanceMetrics';
-import EngagementOverTime from '../components/analytics/EngagementOverTime';
 import ActivityTypeAnalytics from '../components/analytics/ActivityTypeAnalytics';
 import SkillDevelopmentCorrelation from '../components/analytics/SkillDevelopmentCorrelation';
 import EngagementAnalytics from '../components/analytics/EngagementAnalytics';

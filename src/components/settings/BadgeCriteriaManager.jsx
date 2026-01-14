@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -24,10 +24,7 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog';
 import {
-  Tooltip,
-  TooltipContent,
   TooltipProvider,
-  TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { 
   Award, 
@@ -35,7 +32,6 @@ import {
   Edit2, 
   Trash2, 
   Save,
-  HelpCircle,
   Star,
   Zap,
   Users,

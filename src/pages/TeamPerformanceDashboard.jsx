@@ -4,8 +4,6 @@ import { base44 } from '@/api/base44Client';
 import { useUserData } from '../components/hooks/useUserData';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Select,
@@ -14,14 +12,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import {
-  LineChart, Line, AreaChart, Area, BarChart, Bar, RadarChart, Radar,
+import { AreaChart, Area, BarChart, Bar, RadarChart, Radar,
   PolarGrid, PolarAngleAxis, PolarRadiusAxis,
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
 } from 'recharts';
 import { 
   Users, 
-  TrendingUp, 
   Target, 
   Award, 
   Calendar, 

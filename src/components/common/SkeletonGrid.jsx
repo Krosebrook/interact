@@ -1,4 +1,3 @@
-import React from 'react';
 
 export default function SkeletonGrid({ count = 3, height = 'h-48', columns = 3 }) {
   const gridCols = {

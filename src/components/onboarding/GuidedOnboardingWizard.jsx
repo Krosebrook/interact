@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
-import { CheckCircle2, Circle, ChevronRight, Sparkles, Trophy } from 'lucide-react';
+import { CheckCircle2, Circle, ChevronRight, Sparkles } from 'lucide-react';
 import { useAnalytics } from '../hooks/useAnalytics';
 import { toast } from 'sonner';
 import confetti from 'canvas-confetti';

@@ -1,6 +1,5 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check, AlertCircle, Info, Loader2 } from 'lucide-react';
 
 /**
  * Animated tooltip that appears on hover

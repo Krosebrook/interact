@@ -3,7 +3,6 @@
  * Button to manually start/restart onboarding
  */
 
-import React from 'react';
 import { useOnboarding } from './OnboardingProvider';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Users, Trophy, MessageSquare, Target, Send, TrendingUp, Award } from 'lucide-react';
+import { Users, MessageSquare, Target, Send, Award } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useUserData } from '../components/hooks/useUserData';

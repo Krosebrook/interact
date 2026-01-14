@@ -3,7 +3,7 @@
  * Production-grade with apiClient, memoization, and performance
  */
 
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { apiClient } from '../lib/apiClient';
 import { queryKeys } from '../lib/queryKeys';
@@ -14,8 +14,7 @@ import {
   Star,
   MessageSquare,
   CheckCircle2,
-  Clock,
-  Trophy
+  Clock
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { format, formatDistanceToNow } from 'date-fns';

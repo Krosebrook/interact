@@ -3,7 +3,7 @@
  * Initial onboarding wizard for first-time users (alternative to modal)
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useOnboarding } from './OnboardingProvider';
 import { usePermissions } from '../hooks/usePermissions';
 import { useQueryClient } from '@tanstack/react-query';

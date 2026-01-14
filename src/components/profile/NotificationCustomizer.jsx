@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
-import { Bell, Mail, Smartphone, CheckCircle } from 'lucide-react';
+import { Bell, Mail, Smartphone } from 'lucide-react';
 
 const NOTIFICATION_TYPES = [
   {

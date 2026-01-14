@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Button } from '@/components/ui/button';
 import { Bell, Layout, Target, Sparkles, Settings } from 'lucide-react';
 import NotificationCustomizer from './NotificationCustomizer';
 import WidgetLayoutCustomizer from './WidgetLayoutCustomizer';

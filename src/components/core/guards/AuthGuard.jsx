@@ -3,7 +3,7 @@
  * Protects routes requiring authentication
  */
 
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { PageLoading } from '../../shared/ui/LoadingState';
 

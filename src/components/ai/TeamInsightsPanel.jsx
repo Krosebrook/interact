@@ -1,16 +1,14 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { 
   Users, 
-  TrendingUp, 
-  TrendingDown,
-  Heart,
+  TrendingUp,
   Zap,
   Award,
   Target,
@@ -23,8 +21,6 @@ import {
   RefreshCw
 } from 'lucide-react';
 import { 
-  BarChart, 
-  Bar, 
   LineChart, 
   Line, 
   PieChart, 
@@ -34,14 +30,9 @@ import {
   YAxis, 
   CartesianGrid, 
   Tooltip, 
-  ResponsiveContainer,
-  RadarChart,
-  Radar,
-  PolarGrid,
-  PolarAngleAxis,
-  PolarRadiusAxis
+  ResponsiveContainer
 } from 'recharts';
-import { format, subDays, subMonths } from 'date-fns';
+import { format, subDays } from 'date-fns';
 import LoadingSpinner from '../common/LoadingSpinner';
 
 const CHART_COLORS = ['#D97230', '#14294D', '#8B5CF6', '#10B981', '#F59E0B', '#EC4899'];

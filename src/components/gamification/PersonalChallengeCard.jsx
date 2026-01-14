@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
@@ -15,12 +14,11 @@ import {
   Calendar,
   Flame,
   Users,
-  MessageSquare,
   Award,
   Sparkles,
   Share2
 } from 'lucide-react';
-import { format, differenceInDays, differenceInHours } from 'date-fns';
+import { differenceInDays, differenceInHours } from 'date-fns';
 import { toast } from 'sonner';
 
 const CHALLENGE_TYPE_CONFIG = {

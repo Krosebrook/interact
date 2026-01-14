@@ -1,4 +1,3 @@
-import React from 'react';
 import { useAvatarCustomization } from './hooks/useAvatarCustomization';
 import AvatarPreview from './AvatarPreview';
 import InventorySelector from './InventorySelector';

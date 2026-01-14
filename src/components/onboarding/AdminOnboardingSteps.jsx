@@ -3,18 +3,14 @@
  * Interactive components for admin/facilitator onboarding
  */
 
-import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { 
   Sparkles, 
   Calendar, 
   Users, 
   Trophy,
   BarChart3,
-  Shield,
   CheckCircle2,
-  Clock,
   Target
 } from 'lucide-react';
 import { motion } from 'framer-motion';

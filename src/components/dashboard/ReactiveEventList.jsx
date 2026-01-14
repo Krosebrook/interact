@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -9,8 +9,7 @@ import {
   Calendar, 
   Clock, 
   Users, 
-  ChevronRight, 
-  Sparkles,
+  ChevronRight,
   Play,
   Bell,
   Eye

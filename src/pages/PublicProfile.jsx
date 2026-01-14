@@ -4,7 +4,6 @@
  * Respects privacy settings
  */
 
-import React from 'react';
 import { useUserData } from '../components/hooks/useUserData.jsx';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
@@ -27,8 +26,6 @@ import {
 } from 'lucide-react';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import EmptyState from '../components/common/EmptyState';
-import { Link } from 'react-router-dom';
-import { createPageUrl } from '../utils';
 
 export default function PublicProfile() {
   const { user: currentUser } = useUserData(true);

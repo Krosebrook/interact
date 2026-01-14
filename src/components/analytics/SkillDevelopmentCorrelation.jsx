@@ -1,11 +1,8 @@
-import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import {
   ScatterChart,
   Scatter,
-  LineChart,
-  Line,
   BarChart,
   Bar,
   XAxis,
@@ -16,7 +13,7 @@ import {
   ResponsiveContainer,
   ZAxis
 } from 'recharts';
-import { GraduationCap, TrendingUp, Users, Target } from 'lucide-react';
+import { GraduationCap, TrendingUp, Target } from 'lucide-react';
 
 export default function SkillDevelopmentCorrelation({ participations, userProfiles, events, activities }) {
   // Build participation-skill correlation data

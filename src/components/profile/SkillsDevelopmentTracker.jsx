@@ -3,7 +3,7 @@
  * Production-grade with apiClient and memoization
  */
 
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { apiClient } from '../lib/apiClient';
 import { queryKeys } from '../lib/queryKeys';

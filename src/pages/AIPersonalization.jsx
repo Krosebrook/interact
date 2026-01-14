@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,18 +8,14 @@ import { Badge } from '@/components/ui/badge';
 import { 
   Sparkles, 
   Users, 
-  TrendingUp, 
   BookOpen, 
   Target,
   Briefcase,
-  Award,
-  RefreshCw,
-  ChevronRight
+  RefreshCw
 } from 'lucide-react';
 import { useUserData } from '../components/hooks/useUserData';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import { toast } from 'sonner';
-import ReactMarkdown from 'react-markdown';
 
 export default function AIPersonalization() {
   const { user, loading: userLoading } = useUserData(true);

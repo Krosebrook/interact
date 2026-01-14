@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,9 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Progress } from '@/components/ui/progress';
-import { Badge } from '@/components/ui/badge';
-import { Target, TrendingUp, CheckCircle, AlertCircle } from 'lucide-react';
-import LoadingSpinner from '../common/LoadingSpinner';
+import { Target, CheckCircle, AlertCircle } from 'lucide-react';
 
 export default function GoalsCustomizer({ userEmail, currentGoals = {}, userPoints, onSave, isSaving }) {
   const [weeklyTarget, setWeeklyTarget] = useState(currentGoals.weekly_points_target || 100);

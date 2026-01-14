@@ -1,4 +1,3 @@
-import React from 'react';
 import { useUserData } from '../components/hooks/useUserData';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import GuidedOnboardingWizard from '../components/onboarding/GuidedOnboardingWizard';

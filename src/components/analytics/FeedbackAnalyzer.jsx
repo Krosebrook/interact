@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -13,25 +13,20 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import {
-  PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer
+  PieChart, Pie, Cell, Tooltip, ResponsiveContainer
 } from 'recharts';
 import { 
   Brain, 
   ThumbsUp, 
   ThumbsDown, 
-  Minus, 
   Lightbulb, 
   AlertTriangle,
-  TrendingUp,
-  TrendingDown,
   Loader2,
-  RefreshCw,
   MessageSquare,
   Target,
   Sparkles
 } from 'lucide-react';
 import { toast } from 'sonner';
-import { format } from 'date-fns';
 
 const SENTIMENT_COLORS = {
   positive: '#10b981',

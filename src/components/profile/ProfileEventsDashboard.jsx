@@ -1,4 +1,3 @@
-import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -9,12 +8,11 @@ import {
   Calendar, 
   Bookmark, 
   Clock, 
-  MapPin, 
-  Users,
+  MapPin,
   ExternalLink,
   Video
 } from 'lucide-react';
-import { format, isAfter, isBefore, isToday } from 'date-fns';
+import { format, isAfter, isToday } from 'date-fns';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '../../utils';
 import BookmarkButton from '../events/BookmarkButton';

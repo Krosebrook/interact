@@ -1,7 +1,6 @@
-import React from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Clock, Users, Calendar, Copy, GraduationCap, ChevronRight, Star } from 'lucide-react';
+import { Clock, Users, Calendar, Copy, ChevronRight, Star } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';

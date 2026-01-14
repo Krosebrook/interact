@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { FileText, Download, Users, TrendingUp, MessageSquare, Camera } from 'lucide-react';
+import { Download, Users, TrendingUp, Camera } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function EventReportViewer({ eventId, eventTitle }) {

@@ -1,6 +1,5 @@
-import React from 'react';
 import { motion } from 'framer-motion';
-import { Trophy, Zap, Star } from 'lucide-react';
+import { Zap, Star } from 'lucide-react';
 
 /**
  * Animated XP progress ring with level display

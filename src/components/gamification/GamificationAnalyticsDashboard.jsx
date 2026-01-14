@@ -1,11 +1,9 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Select,
@@ -17,7 +15,6 @@ import {
 import { 
   BarChart, 
   Bar, 
-  LineChart, 
   Line, 
   PieChart, 
   Pie, 
@@ -28,23 +25,15 @@ import {
   Tooltip, 
   Legend, 
   ResponsiveContainer,
-  AreaChart,
   Area,
-  RadarChart,
-  Radar,
-  PolarGrid,
-  PolarAngleAxis,
-  PolarRadiusAxis,
   ComposedChart
 } from 'recharts';
 import { 
   BarChart3, 
-  TrendingUp, 
-  TrendingDown,
+  TrendingUp,
   Users,
   Zap,
   Award,
-  Target,
   Trophy,
   Flame,
   Gift,
@@ -56,7 +45,7 @@ import {
   Download,
   Calendar
 } from 'lucide-react';
-import { format, subDays, subMonths, startOfWeek, endOfWeek, isWithinInterval, parseISO } from 'date-fns';
+import { format, subDays } from 'date-fns';
 
 const CHART_COLORS = ['#D97230', '#14294D', '#8B5CF6', '#10B981', '#F59E0B', '#EC4899', '#06B6D4', '#6366F1'];
 

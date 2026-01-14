@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
@@ -13,14 +13,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Calendar, Clock, AlertTriangle, Send } from 'lucide-react';
+
+
+import { Calendar, AlertTriangle, Send } from 'lucide-react';
 import { toast } from 'sonner';
 import { format, parseISO } from 'date-fns';
 

@@ -1,10 +1,9 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Treemap } from 'recharts';
-import { Award, TrendingUp, TrendingDown, AlertTriangle, Star, Lock } from 'lucide-react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { Award, AlertTriangle, Star, Lock } from 'lucide-react';
 
 const RARITY_COLORS = {
   common: '#94a3b8',

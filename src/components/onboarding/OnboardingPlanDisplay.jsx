@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Calendar, Target, BookOpen, Award, ChevronDown, ChevronUp } from 'lucide-react';
 
 export default function OnboardingPlanDisplay({ plan }) {

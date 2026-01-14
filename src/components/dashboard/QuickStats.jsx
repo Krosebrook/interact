@@ -1,4 +1,3 @@
-import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function QuickStats({ stats, icon: Icon, color = 'indigo' }) {

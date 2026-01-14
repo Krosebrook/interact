@@ -3,7 +3,6 @@
  * Standardized loading, error, and empty states for data fetching
  */
 
-import React from 'react';
 import LoadingSpinner from './LoadingSpinner';
 import EmptyState from './EmptyState';
 import ErrorBoundary from './ErrorBoundary';

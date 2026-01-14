@@ -1,10 +1,10 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { MessageCircle, Send, Bot, User, Loader2 } from 'lucide-react';
+import { Send, Bot, User, Loader2 } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
 export default function OnboardingChatbot({ userName }) {

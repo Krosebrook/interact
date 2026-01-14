@@ -3,7 +3,7 @@
  * Cross-page UI element highlighter with persistent state
  */
 
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';

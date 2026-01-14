@@ -1,9 +1,8 @@
-import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Trophy, TrendingUp, Users, Zap } from 'lucide-react';
+import { Trophy, Users, Zap } from 'lucide-react';
 
 export default function TeamChallengeLeaderboard({ challengeId }) {
   const { data: challenge } = useQuery({

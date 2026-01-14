@@ -3,7 +3,6 @@
  * Consistent, accessible filter/tag component with clear visual states
  */
 
-import React from 'react';
 import { X, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
