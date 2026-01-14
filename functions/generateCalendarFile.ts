@@ -4,6 +4,12 @@ Deno.serve(async (req) => {
     try {
         const base44 = createClientFromRequest(req);
         
+        // SECURITY: Verify authentication
+        const user = await base44.auth.me();
+        if (!user) {
+            return Response.json({ error: 'Unauthorized' }, { status: 401 });
+        }
+        
         const urlParams = new URL(req.url).searchParams;
         const eventId = urlParams.get('eventId');
 
@@ -11,15 +17,24 @@ Deno.serve(async (req) => {
             return Response.json({ error: 'eventId required' }, { status: 400 });
         }
 
-        // Get event data
-        const events = await base44.asServiceRole.entities.Event.filter({ id: eventId });
+        // Get event data using user-scoped access
+        const events = await base44.entities.Event.filter({ id: eventId });
         if (events.length === 0) {
             return Response.json({ error: 'Event not found' }, { status: 404 });
         }
         const event = events[0];
 
-        // Get activity data
-        const activities = await base44.asServiceRole.entities.Activity.filter({ 
+        // SECURITY: Verify user is authorized (participant, facilitator, or admin)
+        const isAdmin = user.role === 'admin';
+        const isFacilitator = event.facilitator_email === user.email;
+        const isParticipant = event.max_participants > 0; // Public event
+        
+        if (!isAdmin && !isFacilitator && !isParticipant) {
+            return Response.json({ error: 'Forbidden - not authorized to access this event' }, { status: 403 });
+        }
+
+        // Get activity data using user-scoped access
+        const activities = await base44.entities.Activity.filter({ 
             id: event.activity_id 
         });
         const activity = activities[0];
