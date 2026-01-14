@@ -263,8 +263,58 @@ export function logError(error, context = {}) {
     console.error('🔴 Error:', errorData);
   }
 
-  // In production, send to error tracking service (e.g., Sentry)
-  // Implement when error tracking is set up
+  // ============================================================================
+  // PRODUCTION ERROR TRACKING (Sentry Integration Placeholder)
+  // ============================================================================
+  // TODO: Implement Sentry integration for production error tracking
+  // 
+  // Installation:
+  //   npm install @sentry/react
+  // 
+  // Setup in main.jsx or App.jsx:
+  //   import * as Sentry from "@sentry/react";
+  //   
+  //   Sentry.init({
+  //     dsn: import.meta.env.VITE_SENTRY_DSN,
+  //     integrations: [
+  //       new Sentry.BrowserTracing(),
+  //       new Sentry.Replay()
+  //     ],
+  //     tracesSampleRate: 1.0,
+  //     replaysSessionSampleRate: 0.1,
+  //     replaysOnErrorSampleRate: 1.0,
+  //     environment: import.meta.env.MODE,
+  //   });
+  //
+  // Usage here:
+  //   if (process.env.NODE_ENV === 'production') {
+  //     Sentry.captureException(error, {
+  //       tags: {
+  //         code: error?.code,
+  //         statusCode: error?.statusCode,
+  //       },
+  //       contexts: {
+  //         custom: errorData.context
+  //       },
+  //       level: error?.isOperational ? 'warning' : 'error'
+  //     });
+  //   }
+  //
+  // Alternative services:
+  //   - LogRocket: https://logrocket.com
+  //   - Bugsnag: https://www.bugsnag.com
+  //   - Rollbar: https://rollbar.com
+  // ============================================================================
+  
+  // Fallback: Log critical errors to console in production
+  // This ensures errors are not silently lost before Sentry is integrated
+  if (process.env.NODE_ENV === 'production' && error?.statusCode >= 500) {
+    console.error('Production Error:', {
+      message: error.message,
+      code: error.code,
+      timestamp: errorData.timestamp
+    });
+  }
   
   return errorData;
 }
