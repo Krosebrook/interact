@@ -8,11 +8,13 @@ css
   /* Brand Colors */
   --int-navy: #14294D;
         --int-orange: #D97230;
-        --int-orange-dark: #C46322; /* Darker variant for better contrast */
+        --int-orange-dark: #C46322;
         --int-orange-wcag: #B85C1A; /* WCAG AA on white (5.5:1) */
         --slate-gray: #64748b;
-        --slate-gray-dark: #475569; /* WCAG AA compliant */
-        --slate-gray-wcag: #334155; /* Darker for AA contrast on white */
+        --slate-gray-dark: #475569;
+        --slate-gray-wcag: #334155; /* WCAG AA on white (4.5:1) */
+        --border-wcag: #94a3b8; /* WCAG-compliant border color (3:1+) */
+        --text-secondary-wcag: #334155; /* All secondary text */
   --int-gold: #F5C16A;
   --int-teal: #2DD4BF;
   
@@ -149,9 +151,33 @@ h1, h2, h3, h4, h5, h6 {
 .text-int-orange { color: var(--int-orange); }
 .text-int-gold { color: var(--int-gold); }
 .text-int-teal { color: var(--int-teal); }
-.text-slate-gray { color: var(--slate-gray); }
-    .text-slate-gray-wcag { color: var(--slate-gray-wcag); }
-    .text-int-orange-wcag { color: var(--int-orange-wcag); }
+.text-slate-gray { color: var(--text-secondary-wcag); }
+.text-slate-gray-wcag { color: var(--text-secondary-wcag); }
+.text-int-orange-wcag { color: var(--int-orange-wcag); }
+
+/* Form inputs - WCAG placeholder color */
+input::placeholder,
+textarea::placeholder,
+select::placeholder {
+  color: var(--text-secondary-wcag);
+  opacity: 1;
+}
+
+/* Table and list borders */
+table,
+[role="table"] {
+  border-color: var(--border-wcag);
+}
+
+/* Secondary navigation and labels */
+.nav-secondary,
+.breadcrumb,
+.text-muted,
+.help-text,
+.form-hint,
+.label-secondary {
+  color: var(--text-secondary-wcag);
+}
 
 /* Gradient utilities - Primary */
 .bg-gradient-orange { background: var(--gradient-orange); }
