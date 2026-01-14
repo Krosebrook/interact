@@ -1,0 +1,121 @@
+# Cursor AI Rules for Interact Platform
+
+## Project Context
+- Employee engagement platform built with React 18 + Vite 6 + Base44 SDK
+- 566 JavaScript files, transitioning to TypeScript in Q2-Q3 2026
+- TailwindCSS for styling, Radix UI for components
+- TanStack Query for data fetching, React Hook Form for forms
+
+## Coding Standards
+
+### React Components
+- Use functional components with hooks only
+- NEVER call hooks conditionally or in loops
+- PropTypes for all components (until TypeScript migration)
+- Use PascalCase for component names
+
+### File Organization
+- Components in src/components/
+- Pages in src/pages/
+- Hooks in src/hooks/
+- Utilities in src/lib/ and src/utils/
+
+### Styling
+- Use TailwindCSS utility classes
+- Use cn() helper from src/lib/utils.js for conditional classes
+- Mobile-first responsive design
+
+### Forms
+- React Hook Form + Zod validation
+- Comprehensive error handling
+- Accessible labels and error messages
+
+### Data Fetching
+- TanStack Query for all API calls
+- Proper cache management
+- Error and loading states
+
+## Testing Requirements
+- Write tests for all new code
+- Use Vitest + React Testing Library
+- User-centric testing (test behavior, not implementation)
+- AAA pattern: Arrange, Act, Assert
+
+## Security Rules
+- Validate all user inputs
+- Never commit secrets or API keys
+- Use parameterized queries
+- Sanitize before rendering user content
+- Follow OWASP Top 10 guidelines
+
+## Documentation
+- JSDoc for complex functions
+- Update relevant docs with code changes
+- Keep README.md current
+- Document breaking changes in CHANGELOG.md
+
+## Common Patterns
+
+### Custom Hook Example
+```javascript
+import { useQuery } from '@tanstack/react-query';
+
+export const useActivities = () => {
+  return useQuery({
+    queryKey: ['activities'],
+    queryFn: () => api.get('/activities'),
+  });
+};
+```
+
+### Component Example
+```javascript
+import { useState } from 'react';
+import PropTypes from 'prop-types';
+import { cn } from '@/lib/utils';
+
+export const ActivityCard = ({ title, points, onJoin }) => {
+  const [isJoined, setIsJoined] = useState(false);
+  
+  return (
+    <div className={cn("p-4 rounded-lg", isJoined && "bg-green-50")}>
+      <h3>{title}</h3>
+      <p>{points} points</p>
+      <button onClick={() => {
+        onJoin();
+        setIsJoined(true);
+      }}>
+        {isJoined ? 'Joined' : 'Join'}
+      </button>
+    </div>
+  );
+};
+
+ActivityCard.propTypes = {
+  title: PropTypes.string.isRequired,
+  points: PropTypes.number.isRequired,
+  onJoin: PropTypes.func.isRequired,
+};
+```
+
+## Don't Do
+- ❌ Class components
+- ❌ Conditional hook calls
+- ❌ moment.js (use date-fns)
+- ❌ Inline styles (use TailwindCSS)
+- ❌ any type (after TypeScript migration)
+- ❌ Commit without running linter
+
+## Do
+- ✅ Functional components with hooks
+- ✅ TailwindCSS for styling
+- ✅ Write tests
+- ✅ Document complex logic
+- ✅ Handle errors gracefully
+- ✅ Think accessibility
+
+## Related Documentation
+- README.md - Project overview
+- CONTRIBUTING.md - Contribution guide
+- TESTING.md - Testing guide
+- .github/copilot-instructions.md - GitHub Copilot guide
