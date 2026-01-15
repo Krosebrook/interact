@@ -189,11 +189,16 @@ For each suggestion, provide:
         activityId = newActivity.id;
       }
 
-      // Create the event with proper datetime format
+      // Create the event with proper datetime format and required fields
+      const scheduledDate = eventData.scheduled_date 
+        ? new Date(eventData.scheduled_date).toISOString() 
+        : new Date(addDays(new Date(), 7)).toISOString();
+
       const event = await base44.entities.Event.create({
         activity_id: activityId,
         title: eventData.title,
-        scheduled_date: eventData.scheduled_date ? new Date(eventData.scheduled_date).toISOString() : new Date(addDays(new Date(), 7)).toISOString(),
+        scheduled_date: scheduledDate,
+        start_date: scheduledDate, // Required field
         duration_minutes: parseInt(eventData.duration) || 30,
         status: 'scheduled',
         max_participants: parseInt(eventData.max_participants) || 20,
