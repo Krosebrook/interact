@@ -74,15 +74,27 @@ export default function FeatureWalkthrough({ steps, onComplete, featureName }) {
             <p className="text-sm text-slate-600 mb-4">{step.description}</p>
 
             <div className="flex items-center justify-between gap-3">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setCurrentStep(Math.max(0, currentStep - 1))}
-                disabled={currentStep === 0}
-              >
-                <ArrowLeft className="h-4 w-4 mr-1" />
-                Back
-              </Button>
+              <div className="flex gap-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setCurrentStep(Math.max(0, currentStep - 1))}
+                  disabled={currentStep === 0}
+                  aria-label="Go to previous step"
+                >
+                  <ArrowLeft className="h-4 w-4 mr-1" />
+                  Back
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleDismiss}
+                  className="text-slate-500"
+                  aria-label="Close walkthrough"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
 
               <div className="flex gap-1">
                 {steps.map((_, idx) => (
@@ -95,14 +107,37 @@ export default function FeatureWalkthrough({ steps, onComplete, featureName }) {
                 ))}
               </div>
 
-              <Button
-                size="sm"
-                onClick={handleNext}
-                className="bg-int-orange hover:bg-int-orange/90"
-              >
-                {currentStep === steps.length - 1 ? 'Finish' : 'Next'}
-                {currentStep < steps.length - 1 && <ArrowRight className="h-4 w-4 ml-1" />}
-              </Button>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    if (confirm('Skip this walkthrough?')) {
+                      handleDismiss();
+                    }
+                  }}
+                >
+                  Skip
+                </Button>
+                <Button
+                  size="sm"
+                  onClick={handleNext}
+                  className="bg-int-orange hover:bg-int-orange/90"
+                  aria-label={currentStep === steps.length - 1 ? 'Complete walkthrough' : 'Continue to next step'}
+                >
+                  {currentStep === steps.length - 1 ? (
+                    <>
+                      <CheckCircle2 className="h-4 w-4 mr-1" />
+                      Finish
+                    </>
+                  ) : (
+                    <>
+                      Next
+                      <ArrowRight className="h-4 w-4 ml-1" />
+                    </>
+                  )}
+                </Button>
+              </div>
             </div>
           </div>
         </motion.div>

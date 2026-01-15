@@ -170,14 +170,26 @@ export function OnboardingSpotlight({
             {description}
           </p>
 
-          <Button
-            onClick={onNext}
-            className="w-full bg-int-orange hover:bg-int-orange/90"
-            size="sm"
-          >
-            Got it!
-            <ChevronRight className="h-4 w-4 ml-1" />
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              onClick={onDismiss}
+              variant="outline"
+              className="flex-1"
+              size="sm"
+              aria-label="Skip this step"
+            >
+              Skip
+            </Button>
+            <Button
+              onClick={onNext}
+              className="flex-1 bg-int-orange hover:bg-int-orange/90"
+              size="sm"
+              aria-label="Continue to next step"
+            >
+              Got it!
+              <ChevronRight className="h-4 w-4 ml-1" />
+            </Button>
+          </div>
         </div>
       </motion.div>
     </AnimatePresence>,

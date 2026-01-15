@@ -299,31 +299,56 @@ export default function InteractiveTutorial({ open, onClose, userRole = 'partici
 
         {/* Navigation */}
         <div className="flex items-center justify-between pt-6 border-t">
-          <Button
-            variant="ghost"
-            onClick={handlePrevious}
-            disabled={currentStep === 0}
-          >
-            <ChevronLeft className="h-4 w-4 mr-2" />
-            Previous
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              variant="ghost"
+              onClick={handlePrevious}
+              disabled={currentStep === 0}
+              aria-label="Go to previous step"
+            >
+              <ChevronLeft className="h-4 w-4 mr-2" />
+              Back
+            </Button>
+            <Button
+              variant="ghost"
+              onClick={onClose}
+              className="text-slate-500 hover:text-slate-700"
+              aria-label="Close tutorial"
+            >
+              <X className="h-4 w-4 mr-2" />
+              Close
+            </Button>
+          </div>
 
-          <Button
-            onClick={handleNext}
-            className="bg-int-orange hover:bg-int-orange/90"
-          >
-            {currentStep === steps.length - 1 ? (
-              <>
-                <CheckCircle2 className="h-4 w-4 mr-2" />
-                Complete Tutorial
-              </>
-            ) : (
-              <>
-                Next Step
-                <ChevronRight className="h-4 w-4 ml-2" />
-              </>
-            )}
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              onClick={() => {
+                if (confirm('Skip the rest of this tutorial?')) {
+                  onClose();
+                }
+              }}
+              className="text-slate-600"
+            >
+              Skip Tutorial
+            </Button>
+            <Button
+              onClick={handleNext}
+              className="bg-int-orange hover:bg-int-orange/90"
+            >
+              {currentStep === steps.length - 1 ? (
+                <>
+                  <CheckCircle2 className="h-4 w-4 mr-2" />
+                  Complete
+                </>
+              ) : (
+                <>
+                  Next
+                  <ChevronRight className="h-4 w-4 ml-2" />
+                </>
+              )}
+            </Button>
+          </div>
         </div>
 
         {/* Step Progress Indicators */}
