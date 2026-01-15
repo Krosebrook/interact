@@ -14,12 +14,14 @@ import EmployeeDirectory from './pages/EmployeeDirectory';
 import EventTemplates from './pages/EventTemplates';
 import EventWizard from './pages/EventWizard';
 import ExampleModulePage from './pages/ExampleModulePage';
+import ExpandedUserProfile from './pages/ExpandedUserProfile';
 import FacilitatorDashboard from './pages/FacilitatorDashboard';
 import FacilitatorView from './pages/FacilitatorView';
 import Gamification from './pages/Gamification';
 import GamificationAdmin from './pages/GamificationAdmin';
 import GamificationAnalytics from './pages/GamificationAnalytics';
 import GamificationDashboard from './pages/GamificationDashboard';
+import GamificationRuleBuilder from './pages/GamificationRuleBuilder';
 import GamificationRulesAdmin from './pages/GamificationRulesAdmin';
 import GamificationSettings from './pages/GamificationSettings';
 import Home from './pages/Home';
@@ -51,19 +53,18 @@ import SkillsDashboard from './pages/SkillsDashboard';
 import SocialGamification from './pages/SocialGamification';
 import SocialHub from './pages/SocialHub';
 import Surveys from './pages/Surveys';
+import TeamAnalyticsDashboard from './pages/TeamAnalyticsDashboard';
 import TeamAutomation from './pages/TeamAutomation';
 import TeamAutomations from './pages/TeamAutomations';
 import TeamCompetition from './pages/TeamCompetition';
 import TeamDashboard from './pages/TeamDashboard';
 import TeamLeaderDashboard from './pages/TeamLeaderDashboard';
+import TeamLeaderboard from './pages/TeamLeaderboard';
 import TeamPerformanceDashboard from './pages/TeamPerformanceDashboard';
 import Teams from './pages/Teams';
 import UserProfile from './pages/UserProfile';
 import UserRoleAssignment from './pages/UserRoleAssignment';
-import TeamLeaderboard from './pages/TeamLeaderboard';
-import TeamAnalyticsDashboard from './pages/TeamAnalyticsDashboard';
-import GamificationRuleBuilder from './pages/GamificationRuleBuilder';
-import ExpandedUserProfile from './pages/ExpandedUserProfile';
+import AIAdminDashboard from './pages/AIAdminDashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -84,12 +85,14 @@ export const PAGES = {
     "EventTemplates": EventTemplates,
     "EventWizard": EventWizard,
     "ExampleModulePage": ExampleModulePage,
+    "ExpandedUserProfile": ExpandedUserProfile,
     "FacilitatorDashboard": FacilitatorDashboard,
     "FacilitatorView": FacilitatorView,
     "Gamification": Gamification,
     "GamificationAdmin": GamificationAdmin,
     "GamificationAnalytics": GamificationAnalytics,
     "GamificationDashboard": GamificationDashboard,
+    "GamificationRuleBuilder": GamificationRuleBuilder,
     "GamificationRulesAdmin": GamificationRulesAdmin,
     "GamificationSettings": GamificationSettings,
     "Home": Home,
@@ -121,19 +124,18 @@ export const PAGES = {
     "SocialGamification": SocialGamification,
     "SocialHub": SocialHub,
     "Surveys": Surveys,
+    "TeamAnalyticsDashboard": TeamAnalyticsDashboard,
     "TeamAutomation": TeamAutomation,
     "TeamAutomations": TeamAutomations,
     "TeamCompetition": TeamCompetition,
     "TeamDashboard": TeamDashboard,
     "TeamLeaderDashboard": TeamLeaderDashboard,
+    "TeamLeaderboard": TeamLeaderboard,
     "TeamPerformanceDashboard": TeamPerformanceDashboard,
     "Teams": Teams,
     "UserProfile": UserProfile,
     "UserRoleAssignment": UserRoleAssignment,
-    "TeamLeaderboard": TeamLeaderboard,
-    "TeamAnalyticsDashboard": TeamAnalyticsDashboard,
-    "GamificationRuleBuilder": GamificationRuleBuilder,
-    "ExpandedUserProfile": ExpandedUserProfile,
+    "AIAdminDashboard": AIAdminDashboard,
 }
 
 export const pagesConfig = {
