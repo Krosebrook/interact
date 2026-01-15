@@ -37,6 +37,7 @@ import GamificationAnalyticsDashboard from '../components/gamification/Gamificat
 import ChallengeCard from '../components/gamification/ChallengeCard';
 import RewardCard from '../components/gamification/RewardCard';
 import PersonalChallengesSection from '../components/gamification/PersonalChallengesSection';
+import MyCustomChallenges from '../components/gamification/MyCustomChallenges';
 import AchievementTiersSection from '../components/gamification/AchievementTiersSection';
 import SocialFeedSection from '../components/gamification/SocialFeedSection';
 import PersonalizedRecommendationsEngine from '../components/gamification/PersonalizedRecommendationsEngine';
@@ -549,6 +550,7 @@ export default function GamificationDashboard() {
           <div className="space-y-8">
             {/* Personal Challenges */}
             <PersonalChallengesSection userEmail={user?.email} />
+          <MyCustomChallenges userEmail={user?.email} />
             
             {/* Team Challenges */}
             <ChallengesSection userEmail={user?.email} />
