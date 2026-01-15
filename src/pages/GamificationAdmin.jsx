@@ -92,7 +92,7 @@ export default function GamificationAdmin() {
 
       {/* Main Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 lg:grid-cols-8">
+        <TabsList className="grid w-full grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
           <TabsTrigger value="overview" className="gap-2">
             <Users className="h-4 w-4" />
             Overview
@@ -105,25 +105,13 @@ export default function GamificationAdmin() {
             <Settings className="h-4 w-4" />
             Rules
           </TabsTrigger>
-          <TabsTrigger value="ai-optimizer" className="gap-2">
-            <Sparkles className="h-4 w-4" />
-            AI Rules
+          <TabsTrigger value="team-rules" className="gap-2">
+            <Users className="h-4 w-4" />
+            Team Rules
           </TabsTrigger>
           <TabsTrigger value="analytics" className="gap-2">
             <TrendingUp className="h-4 w-4" />
             Analytics
-          </TabsTrigger>
-          <TabsTrigger value="skills" className="gap-2">
-            <BookOpen className="h-4 w-4" />
-            Skills
-          </TabsTrigger>
-          <TabsTrigger value="ai-content" className="gap-2">
-            <Sparkles className="h-4 w-4" />
-            AI Content
-          </TabsTrigger>
-          <TabsTrigger value="integrations" className="gap-2">
-            <Zap className="h-4 w-4" />
-            External
           </TabsTrigger>
         </TabsList>
 
@@ -139,24 +127,12 @@ export default function GamificationAdmin() {
           <GamificationRulesConfig />
         </TabsContent>
 
-        <TabsContent value="ai-optimizer" className="mt-6">
-          <AIRuleOptimizer />
+        <TabsContent value="team-rules" className="mt-6">
+          <TeamGamificationRules />
         </TabsContent>
 
         <TabsContent value="analytics" className="mt-6">
           <EngagementAnalytics />
-        </TabsContent>
-
-        <TabsContent value="skills" className="mt-6">
-          <SkillDevelopmentTrends />
-        </TabsContent>
-
-        <TabsContent value="ai-content" className="mt-6">
-          <AIContentGenerator />
-        </TabsContent>
-
-        <TabsContent value="integrations" className="mt-6">
-          <ContentIntegrationManager />
         </TabsContent>
       </Tabs>
     </div>
