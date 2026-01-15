@@ -135,8 +135,17 @@ export function useEventScheduling(options = {}) {
     // Clean up type_specific_fields - only include relevant fields for the event type
     const cleanedTypeFields = cleanTypeSpecificFields(data.event_type, data.type_specific_fields);
     
+    // Ensure scheduled_date is properly formatted
+    const scheduledDate = data.scheduled_date 
+      ? (typeof data.scheduled_date === 'string' && data.scheduled_date.includes('T') 
+          ? new Date(data.scheduled_date).toISOString() 
+          : new Date(data.scheduled_date).toISOString())
+      : new Date().toISOString();
+    
     const eventData = {
       ...data,
+      scheduled_date: scheduledDate,
+      start_date: scheduledDate,
       magic_link: magicLink,
       status: 'scheduled',
       type_specific_fields: cleanedTypeFields,
