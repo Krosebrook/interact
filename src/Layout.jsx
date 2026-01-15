@@ -89,9 +89,10 @@ export default function Layout({ children, currentPageName }) {
   // This must be called unconditionally before any early returns
   const navigation = useMemo(() => {
     if (isAdmin) {
-      return [
-        { name: 'Dashboard', icon: LayoutDashboard, page: 'Dashboard' },
-        { name: 'Facilitator', icon: Users, page: 'FacilitatorDashboard' },
+        return [
+          { name: 'Dashboard', icon: LayoutDashboard, page: 'Dashboard' },
+          { name: 'Admin Panel', icon: Shield, page: 'AdminHub' },
+          { name: 'Facilitator', icon: Users, page: 'FacilitatorDashboard' },
         { name: 'Activities', icon: Sparkles, page: 'Activities' },
         { name: 'Templates', icon: LayoutDashboard, page: 'EventTemplates' },
         { name: 'Calendar', icon: Calendar, page: 'Calendar' },
