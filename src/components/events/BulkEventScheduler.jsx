@@ -137,6 +137,7 @@ export default function BulkEventScheduler({
           activity_id: event.activity_id,
           title: event.title || activity?.title || 'Untitled Event',
           scheduled_date: event.scheduled_date,
+          start_date: event.scheduled_date,
           duration_minutes: event.duration_minutes,
           facilitator_name: event.facilitator_name,
           facilitator_email: event.facilitator_email,
