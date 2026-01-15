@@ -3,6 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useUserData } from '../components/hooks/useUserData';
 import { useGamificationData } from '../components/hooks/useGamificationData';
+import TieredRewardsDisplay from '../components/gamification/TieredRewardsDisplay';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -159,7 +160,7 @@ export default function RewardsStore() {
             </div>
           </div>
 
-          {/* Rewards Grid */}
+          {/* Tiered Rewards Display */}
           {!rewards.length ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[1, 2, 3, 4, 5, 6].map(i => (
@@ -173,18 +174,12 @@ export default function RewardsStore() {
               <p className="text-slate-600">Try adjusting your filters or search query</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredRewards.map((reward, index) => (
-                <RewardCard
-                  key={reward.id}
-                  reward={reward}
-                  userPoints={currentPoints}
-                  onRedeem={setSelectedReward}
-                  isRedeeming={redeemMutation.isLoading}
-                  index={index}
-                />
-              ))}
-            </div>
+            <TieredRewardsDisplay
+              storeItems={filteredRewards}
+              userTier={userPoints?.tier || 'bronze'}
+              userLifetimePoints={userPoints?.lifetime_points || 0}
+              onRedeem={setSelectedReward}
+            />
           )}
 
           {/* My Redemptions Section */}

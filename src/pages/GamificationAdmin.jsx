@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useUserData } from '../components/hooks/useUserData';
+import TeamGamificationRules from '../components/admin/TeamGamificationRules';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent } from '@/components/ui/card';
 import { Shield, Users, Award, TrendingUp, Settings, Zap, BookOpen, Sparkles } from 'lucide-react';
