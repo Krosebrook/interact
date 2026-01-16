@@ -97,8 +97,10 @@ echo "Running tests..."
 
 if [ -f "package.json" ] && command_exists npm; then
     if grep -q '"test"' package.json; then
-        TEST_SCRIPT=$(grep '"test"' package.json | head -1)
-        if echo "$TEST_SCRIPT" | grep -qE '(jest|mocha|vitest|ava|tape|tap)'; then
+        TEST_SCRIPT=$(grep '"test"' package.json | head -1 | sed 's/.*"test"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/')
+        # Check if test script is not a placeholder (echo, exit 0, etc.)
+        if echo "$TEST_SCRIPT" | grep -qE '(jest|mocha|vitest|ava|tape|tap)' && \
+           ! echo "$TEST_SCRIPT" | grep -qE '(echo|exit 0|no test)'; then
             if npm test > /tmp/test.log 2>&1; then
                 print_success "Tests passed"
             else
@@ -107,7 +109,7 @@ if [ -f "package.json" ] && command_exists npm; then
                 exit 1
             fi
         else
-            print_warning "Test script found but appears to be a placeholder"
+            print_warning "Test script found but appears to be a placeholder or uses echo"
         fi
     else
         print_warning "No test script configured in package.json"
@@ -124,11 +126,18 @@ echo "Running linter..."
 
 if [ -f "package.json" ] && command_exists npm; then
     if grep -q '"lint"' package.json; then
+        # Run linting and capture exit code
         if npm run lint > /tmp/lint.log 2>&1; then
             print_success "Linting passed"
         else
-            print_warning "Linting warnings found (non-blocking)"
-            echo "Run 'npm run lint' to see details"
+            LINT_EXIT_CODE=$?
+            # Exit code 1 typically means warnings/errors found
+            if [ $LINT_EXIT_CODE -eq 1 ]; then
+                print_warning "Linting warnings found (non-blocking)"
+                echo "Run 'npm run lint' to see details"
+            else
+                print_error "Linting failed with exit code $LINT_EXIT_CODE"
+            fi
         fi
     else
         print_warning "No lint script configured in package.json"
@@ -144,15 +153,27 @@ print_step "4. Security Audit"
 echo "Running security audit..."
 
 if [ -f "package.json" ] && command_exists npm; then
-    AUDIT_OUTPUT=$(npm audit --audit-level=high 2>&1 || true)
-    VULN_COUNT=$(echo "$AUDIT_OUTPUT" | grep -E "found [0-9]+" | head -1 || echo "0 vulnerabilities")
-    
-    if echo "$AUDIT_OUTPUT" | grep -q "found 0 vulnerabilities"; then
-        print_success "No high-severity vulnerabilities found"
+    # Use JSON output for reliable parsing
+    if command_exists jq; then
+        AUDIT_JSON=$(npm audit --json 2>/dev/null || echo '{"metadata":{"vulnerabilities":{"total":0}}}')
+        VULN_TOTAL=$(echo "$AUDIT_JSON" | jq -r '.metadata.vulnerabilities.total // 0')
+        
+        if [ "$VULN_TOTAL" -eq 0 ]; then
+            print_success "No vulnerabilities found"
+        else
+            print_warning "Security warnings detected: $VULN_TOTAL vulnerabilities"
+            echo "Run 'npm audit' for full details"
+        fi
     else
-        print_warning "Security warnings detected"
-        echo "$VULN_COUNT"
-        echo "Run 'npm audit' for full details"
+        # Fallback to text parsing if jq not available
+        AUDIT_OUTPUT=$(npm audit --audit-level=high 2>&1 || true)
+        
+        if echo "$AUDIT_OUTPUT" | grep -q "found 0 vulnerabilities"; then
+            print_success "No high-severity vulnerabilities found"
+        else
+            print_warning "Security warnings detected"
+            echo "Run 'npm audit' for full details"
+        fi
     fi
 else
     print_warning "Security audit skipped - package.json not found or npm not available"

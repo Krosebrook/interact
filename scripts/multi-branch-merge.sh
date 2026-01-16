@@ -102,7 +102,7 @@ if [ "$1" = "--file" ]; then
     
     while IFS= read -r line || [ -n "$line" ]; do
         # Skip empty lines and comments
-        if [ -n "$line" ] && [[ ! "$line" =~ ^[[:space:]]*# ]]; then
+        if [[ -n "$line" ]] && [[ ! "$line" =~ ^[[:space:]]*# ]]; then
             BRANCHES+=("$line")
         fi
     done < "$2"
@@ -281,14 +281,15 @@ for branch in "${BRANCHES[@]}"; do
     git checkout "$MAIN_BRANCH"
     print_status "Merging '$branch' into main..."
     
-    # Use safe merge script in non-interactive mode
-    # We'll simulate yes responses by using yes command with timeout
-    if timeout 300 yes | "$SAFE_MERGE_SCRIPT" "$branch" > /tmp/merge-$branch.log 2>&1; then
+    # Call safe merge script directly (it will handle prompts)
+    # Note: This assumes safe-merge-branch.sh will handle the merge
+    # For fully automated mode, you may need to modify safe-merge-branch.sh
+    # or use git merge directly with appropriate flags
+    if "$SAFE_MERGE_SCRIPT" "$branch"; then
         print_success "Branch '$branch' merged successfully!"
         MERGED_COUNT=$((MERGED_COUNT + 1))
     else
         print_error "Failed to merge '$branch'"
-        tail -30 /tmp/merge-$branch.log
         FAILED_BRANCHES+=("$branch")
         break
     fi
@@ -326,12 +327,15 @@ else
         echo "  - $branch"
     done
     echo ""
-    print_status "Remaining branches were not merged:"
-    REMAINING_START=$((MERGED_COUNT))
-    for i in $(seq $REMAINING_START $((${#BRANCHES[@]} - 1))); do
-        echo "  - ${BRANCHES[$i]}"
-    done
-    echo ""
+    # Only show remaining branches if there are any
+    if [ $MERGED_COUNT -lt ${#BRANCHES[@]} ]; then
+        print_status "Remaining branches were not merged:"
+        REMAINING_START=$((MERGED_COUNT))
+        for i in $(seq $REMAINING_START $((${#BRANCHES[@]} - 1))); do
+            echo "  - ${BRANCHES[$i]}"
+        done
+        echo ""
+    fi
     print_status "Please resolve the issues and re-run the script with remaining branches"
     exit 1
 fi
