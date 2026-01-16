@@ -155,6 +155,7 @@ echo "Running security audit..."
 if [ -f "package.json" ] && command_exists npm; then
     # Use JSON output for reliable parsing
     if command_exists jq; then
+        # Note: Requires npm 6+ for --json flag
         AUDIT_JSON=$(npm audit --json 2>/dev/null || echo '{"metadata":{"vulnerabilities":{"total":0}}}')
         VULN_TOTAL=$(echo "$AUDIT_JSON" | jq -r '.metadata.vulnerabilities.total // 0')
         
@@ -166,6 +167,7 @@ if [ -f "package.json" ] && command_exists npm; then
         fi
     else
         # Fallback to text parsing if jq not available
+        # Works with npm 6+ text output
         AUDIT_OUTPUT=$(npm audit --audit-level=high 2>&1 || true)
         
         if echo "$AUDIT_OUTPUT" | grep -q "found 0 vulnerabilities"; then

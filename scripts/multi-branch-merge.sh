@@ -281,10 +281,10 @@ for branch in "${BRANCHES[@]}"; do
     git checkout "$MAIN_BRANCH"
     print_status "Merging '$branch' into main..."
     
-    # Call safe merge script directly (it will handle prompts)
-    # Note: This assumes safe-merge-branch.sh will handle the merge
-    # For fully automated mode, you may need to modify safe-merge-branch.sh
-    # or use git merge directly with appropriate flags
+    # Note: This script coordinates multiple branches but delegates to safe-merge-branch.sh
+    # for the actual merge process. The safe-merge script handles prompts and confirmations.
+    # For fully unattended automation, consider modifying safe-merge-branch.sh or using
+    # direct git merge commands with appropriate flags.
     if "$SAFE_MERGE_SCRIPT" "$branch"; then
         print_success "Branch '$branch' merged successfully!"
         MERGED_COUNT=$((MERGED_COUNT + 1))
@@ -328,9 +328,9 @@ else
     done
     echo ""
     # Only show remaining branches if there are any
-    if [ $MERGED_COUNT -lt ${#BRANCHES[@]} ]; then
+    REMAINING_START=$((MERGED_COUNT))
+    if [ $REMAINING_START -lt ${#BRANCHES[@]} ]; then
         print_status "Remaining branches were not merged:"
-        REMAINING_START=$((MERGED_COUNT))
         for i in $(seq $REMAINING_START $((${#BRANCHES[@]} - 1))); do
             echo "  - ${BRANCHES[$i]}"
         done
