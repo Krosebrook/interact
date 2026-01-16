@@ -108,6 +108,34 @@ npm test             # Run tests
 npm run test:coverage # Coverage report
 ```
 
+### Custom Scripts
+
+#### PRD Generator
+Generate comprehensive Product Requirements Documents from feature ideas:
+
+```bash
+# Basic usage
+node scripts/generate-prd.js --idea "Add dark mode to dashboard"
+
+# With context
+node scripts/generate-prd.js --idea "Add AI chatbot" \
+  --context '{"targetAudience":"All users","timeline":"Q2 2026"}'
+
+# From file
+node scripts/generate-prd.js --file ideas/feature.txt --output PRD-feature.md
+
+# Interactive mode
+node scripts/generate-prd.js --interactive
+```
+
+**Context Options:**
+- `targetAudience` - Target user base
+- `businessGoals` - Business objectives
+- `technicalConstraints` - Technical limitations
+- `timeline` - Development timeline
+- `budget` - Budget constraints
+- `existingIntegrations` - Integration requirements
+
 ---
 
 ## AI Tools
@@ -116,6 +144,7 @@ npm run test:coverage # Coverage report
 - `generateActivityIdea(criteria)` - AI activity ideas
 - `generateQuizQuestions(topic, count)` - Quiz generation
 - `summarizeContent(content)` - Text summarization
+- `generatePRD(featureIdea, context)` - PRD generation
 
 ### Analysis
 - `analyzeEngagement(userId)` - Engagement analysis

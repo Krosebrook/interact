@@ -39,6 +39,7 @@ import OnboardingHub from './pages/OnboardingHub';
 import ParticipantEvent from './pages/ParticipantEvent';
 import ParticipantPortal from './pages/ParticipantPortal';
 import PointStore from './pages/PointStore';
+import PRDGenerator from './pages/PRDGenerator';
 import ProfileCustomization from './pages/ProfileCustomization';
 import ProjectPlan from './pages/ProjectPlan';
 import PublicProfile from './pages/PublicProfile';
@@ -111,6 +112,7 @@ export const PAGES = {
     "ParticipantEvent": ParticipantEvent,
     "ParticipantPortal": ParticipantPortal,
     "PointStore": PointStore,
+    "PRDGenerator": PRDGenerator,
     "ProfileCustomization": ProfileCustomization,
     "ProjectPlan": ProjectPlan,
     "PublicProfile": PublicProfile,
