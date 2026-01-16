@@ -796,12 +796,358 @@ describe('useActivityData', () => {
 
 ---
 
+## PRD Generator Examples
+
+### Using the CLI Tool
+
+#### Basic PRD Generation
+
+```bash
+# Simple feature idea
+node scripts/generate-prd.js --idea "Add dark mode to dashboard"
+
+# Output to specific file
+node scripts/generate-prd.js --idea "Add AI chatbot" --output PRD-chatbot.md
+```
+
+#### Interactive Mode
+
+```bash
+# Start interactive mode
+node scripts/generate-prd.js --interactive
+
+# You'll be prompted for:
+# - Feature idea (required)
+# - Target audience (optional)
+# - Business goals (optional)
+# - Technical constraints (optional)
+# - Timeline (optional)
+# - Budget (optional)
+# - Output filename (optional)
+```
+
+#### With Context
+
+```bash
+# Full context example
+node scripts/generate-prd.js \
+  --idea "Implement real-time collaborative whiteboard" \
+  --context '{
+    "targetAudience": "Remote teams, 100-1000 employees",
+    "businessGoals": "Improve remote collaboration by 50%",
+    "technicalConstraints": "Must integrate with existing React 18 app",
+    "timeline": "Q2 2026",
+    "budget": "$75,000",
+    "existingIntegrations": "Slack, Microsoft Teams, Google Calendar"
+  }' \
+  --output PRD-whiteboard.md
+```
+
+#### From File
+
+```bash
+# Create a feature idea file
+cat > ideas/new-feature.txt << EOF
+Feature Idea: AI-Powered Activity Recommendations
+
+Add an AI system that analyzes team dynamics, past activity participation,
+and individual preferences to suggest personalized activities. The system
+should learn from feedback and continuously improve recommendations.
+
+Target users: Team leaders and HR managers
+Goal: Increase activity participation by 40%
+EOF
+
+# Generate PRD from file
+node scripts/generate-prd.js --file ideas/new-feature.txt
+```
+
+### Using the Base44 Function
+
+#### Call from Frontend
+
+```javascript
+// src/pages/PRDGenerator.jsx
+import { useState } from 'react';
+import base44 from '@base44/sdk';
+
+const PRDGenerator = () => {
+  const [prd, setPrd] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleGenerate = async (featureIdea, context) => {
+    setLoading(true);
+    try {
+      const response = await base44.functions.call('generatePRD', {
+        featureIdea,
+        context,
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 8192,
+        temperature: 0.8
+      });
+
+      if (response.success) {
+        setPrd(response.prd);
+        console.log('Tokens used:', response.metadata.tokens_used);
+      } else {
+        console.error('Failed to generate PRD:', response.error);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div>
+      {/* PRD generator UI */}
+    </div>
+  );
+};
+```
+
+#### Call from Backend Function
+
+```typescript
+// functions/customWorkflow.ts
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.4';
+
+Deno.serve(async (req) => {
+  const base44 = createClientFromRequest(req);
+  
+  // Generate PRD as part of workflow
+  const prdResponse = await base44.functions.call('generatePRD', {
+    featureIdea: 'Add multi-language support',
+    context: {
+      targetAudience: 'Global users',
+      businessGoals: 'Expand to 10 new markets'
+    }
+  });
+
+  if (prdResponse.success) {
+    // Store PRD in database
+    await base44.createRecord('prds', {
+      content: prdResponse.prd,
+      feature: 'multi-language-support',
+      created_at: new Date().toISOString()
+    });
+  }
+
+  return Response.json(prdResponse);
+});
+```
+
+### Using the React Component
+
+```jsx
+// Example: Embedding PRD Generator in custom page
+import PRDGenerator from '@/pages/PRDGenerator';
+
+const CustomWorkflow = () => {
+  return (
+    <div className="container">
+      <h1>Feature Planning Workflow</h1>
+      
+      {/* Step 1: Brainstorming */}
+      <BrainstormingComponent />
+      
+      {/* Step 2: Generate PRD */}
+      <PRDGenerator />
+      
+      {/* Step 3: Review and Approve */}
+      <ReviewComponent />
+    </div>
+  );
+};
+```
+
+### Advanced Usage
+
+#### Custom PRD Template
+
+```javascript
+// Create custom PRD generation with specific sections
+const generateCustomPRD = async (featureIdea, customSections) => {
+  const context = {
+    targetAudience: 'Enterprise customers',
+    businessGoals: 'Increase ARR by 30%',
+    customSections: JSON.stringify(customSections)
+  };
+
+  const response = await base44.functions.call('generatePRD', {
+    featureIdea,
+    context,
+    model: 'gpt-4o', // Use GPT-4 instead
+    temperature: 0.9 // More creative
+  });
+
+  return response;
+};
+
+// Usage
+const customSections = {
+  additionalSections: [
+    'Market Analysis',
+    'Competitive Landscape',
+    'Go-to-Market Strategy'
+  ]
+};
+
+const result = await generateCustomPRD(
+  'Launch enterprise tier',
+  customSections
+);
+```
+
+#### Batch PRD Generation
+
+```javascript
+// Generate PRDs for multiple features
+const batchGeneratePRDs = async (features) => {
+  const results = await Promise.all(
+    features.map(async (feature) => {
+      try {
+        const response = await base44.functions.call('generatePRD', {
+          featureIdea: feature.idea,
+          context: feature.context
+        });
+        return {
+          feature: feature.name,
+          success: true,
+          prd: response.prd
+        };
+      } catch (error) {
+        return {
+          feature: feature.name,
+          success: false,
+          error: error.message
+        };
+      }
+    })
+  );
+
+  return results;
+};
+
+// Usage
+const features = [
+  {
+    name: 'Dark Mode',
+    idea: 'Add dark mode to all pages',
+    context: { timeline: 'Q2 2026' }
+  },
+  {
+    name: 'Mobile App',
+    idea: 'Create native mobile app',
+    context: { budget: '$200,000' }
+  }
+];
+
+const prds = await batchGeneratePRDs(features);
+console.log(`Generated ${prds.length} PRDs`);
+```
+
+#### Export to Different Formats
+
+```javascript
+// Convert PRD markdown to PDF
+import jsPDF from 'jspdf';
+
+const exportPRDToPDF = (prdMarkdown, filename) => {
+  const doc = new jsPDF();
+  
+  // Convert markdown to plain text (simplified)
+  const plainText = prdMarkdown
+    .replace(/#{1,6}\s/g, '')
+    .replace(/\*\*/g, '');
+  
+  // Add text to PDF
+  doc.setFontSize(10);
+  const lines = doc.splitTextToSize(plainText, 180);
+  doc.text(lines, 15, 15);
+  
+  // Save
+  doc.save(filename);
+};
+
+// Usage
+const prdContent = await generatePRD('Add AI features');
+exportPRDToPDF(prdContent.prd, 'PRD-AI-Features.pdf');
+```
+
+### Integration with Existing Workflows
+
+```javascript
+// Integrate PRD generation into project planning workflow
+const projectPlanningWorkflow = async (projectIdea) => {
+  // Step 1: Generate PRD
+  const prd = await base44.functions.call('generatePRD', {
+    featureIdea: projectIdea,
+    context: {
+      targetAudience: 'All users',
+      timeline: 'Q2 2026'
+    }
+  });
+
+  // Step 2: Extract requirements from PRD
+  const requirements = extractRequirements(prd.prd);
+
+  // Step 3: Create tasks in project management
+  const tasks = requirements.map(req => ({
+    title: req.title,
+    description: req.description,
+    priority: req.priority,
+    status: 'To Do'
+  }));
+
+  // Step 4: Create project in database
+  const project = await base44.createRecord('projects', {
+    name: projectIdea,
+    prd_content: prd.prd,
+    tasks: tasks,
+    status: 'Planning',
+    created_at: new Date().toISOString()
+  });
+
+  return project;
+};
+
+const extractRequirements = (prdMarkdown) => {
+  // Parse PRD to extract functional requirements
+  // This is a simplified example
+  const functionalSection = prdMarkdown
+    .split('## 4. Functional Requirements')[1]
+    ?.split('##')[0];
+  
+  // Extract individual requirements
+  const requirements = [];
+  const lines = functionalSection?.split('\n') || [];
+  
+  lines.forEach(line => {
+    if (line.startsWith('#### ')) {
+      requirements.push({
+        title: line.replace('#### ', ''),
+        description: '',
+        priority: 'Medium'
+      });
+    }
+  });
+  
+  return requirements;
+};
+```
+
+---
+
 ## Additional Resources
 
 - **[API Integration Guide](./API_INTEGRATION_GUIDE.md)** - Complete API documentation
 - **[Component Library](./components/docs/COMPONENT_LIBRARY.md)** - UI component reference
 - **[Testing Guide](./TESTING.md)** - Testing best practices
 - **[Contributing](./CONTRIBUTING.md)** - How to contribute
+- **[PRD Template](./PRD.md)** - Example PRD structure
+- **[TOOLS.md](./TOOLS.md)** - Development tools and utilities
 
 ---
 

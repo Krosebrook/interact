@@ -79,6 +79,40 @@ npm run preview
 - `npm run preview` - Preview production build locally
 - `npm run lint` - Run ESLint
 - `npm run lint:fix` - Fix ESLint issues automatically
+- `npm test` - Run unit tests
+- `npm run test:coverage` - Generate test coverage report
+
+### Tools & Utilities
+
+#### PRD Generator
+Generate comprehensive Product Requirements Documents from feature ideas using AI:
+
+```bash
+# Simple usage
+node scripts/generate-prd.js --idea "Add dark mode to dashboard"
+
+# Interactive mode (recommended)
+node scripts/generate-prd.js --interactive
+
+# With full context
+node scripts/generate-prd.js \
+  --idea "Add AI-powered chatbot for customer support" \
+  --context '{"targetAudience":"All users","businessGoals":"Reduce support costs","timeline":"Q2 2026"}' \
+  --output PRD-chatbot.md
+
+# From file
+node scripts/generate-prd.js --file ideas/feature.txt
+```
+
+**PRD Generator Features:**
+- ✅ 13-section comprehensive PRD structure
+- ✅ AI-powered content generation (Claude 4 Sonnet)
+- ✅ Gherkin-style user stories
+- ✅ Technical architecture templates
+- ✅ Security & compliance sections
+- ✅ CLI and web UI interfaces
+
+**Web Interface:** Navigate to `/prd-generator` in the application for a user-friendly form interface.
 
 ### Git & Branch Management
 
