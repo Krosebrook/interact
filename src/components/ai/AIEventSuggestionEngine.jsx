@@ -74,6 +74,66 @@ export default function AIEventSuggestionEngine({ teamId, onEventCreated }) {
   const [eventDetails, setEventDetails] = useState({});
   const [activeTab, setActiveTab] = useState('suggestions');
 
+  // Generate new activity recommendations
+  const generateNewActivitiesMutation = useMutation({
+    mutationFn: async () => {
+      // Analyze past events to find what hasn't been tried
+      const recentEvents = await base44.entities.Event.list('-created_date', 100);
+      const triedActivityTypes = [...new Set(recentEvents.map(e => e.event_type).filter(Boolean))];
+      const triedActivityIds = recentEvents.map(e => e.activity_id);
+      const triedActivities = activities.filter(a => triedActivityIds.includes(a.id));
+
+      const response = await base44.integrations.Core.InvokeLLM({
+        prompt: `You are an expert in team engagement and creative event planning. Analyze the team's past activities and recommend 5 NEW activity types they haven't tried yet.
+
+Team Context:
+- Total past events: ${recentEvents.length}
+- Activity types tried: ${triedActivityTypes.join(', ') || 'None yet'}
+- Specific activities tried: ${triedActivities.map(a => a.title).slice(0, 10).join(', ')}
+- Team interests: ${userProfiles.map(up => up.activity_preferences?.preferred_types || []).flat().slice(0, 15).join(', ')}
+
+Generate 5 NEW activity suggestions that:
+1. Are different from what they've already done
+2. Match team interests and preferences
+3. Are creative and engaging
+4. Have high potential for team building
+5. Include a mix of activity types (icebreaker, creative, competitive, wellness, learning, social)
+
+For each suggestion:
+- Title: Creative, engaging name
+- Type: One of (icebreaker, creative, competitive, wellness, learning, social)
+- Description: 2-3 sentences explaining the activity
+- Duration: Recommended duration (e.g., "30 minutes", "1 hour")
+- Team size: Ideal number of participants
+- Engagement score: Predicted engagement (70-100)
+- Why new: Explain why this is a fresh idea for the team`,
+        response_json_schema: {
+          type: 'object',
+          properties: {
+            new_activities: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  title: { type: 'string' },
+                  activity_type: { type: 'string' },
+                  description: { type: 'string' },
+                  duration: { type: 'string' },
+                  ideal_team_size: { type: 'string' },
+                  engagement_score: { type: 'number' },
+                  why_new: { type: 'string' },
+                  novelty_factor: { type: 'string' }
+                }
+              }
+            }
+          }
+        }
+      });
+
+      return response.new_activities || [];
+    }
+  });
+
   // Fetch user data
   const { data: user } = useQuery({
     queryKey: ['current-user'],
@@ -294,6 +354,10 @@ For each suggestion, provide:
             <Zap className="h-4 w-4 mr-2" />
             Triggers
           </TabsTrigger>
+          <TabsTrigger value="new-activities" className="data-[state=active]:bg-gradient-social data-[state=active]:text-white">
+            <Lightbulb className="h-4 w-4 mr-2" />
+            New Activities
+          </TabsTrigger>
           <TabsTrigger value="constraints" className="data-[state=active]:bg-gradient-navy data-[state=active]:text-white">
             <Filter className="h-4 w-4 mr-2" />
             Constraints
@@ -443,6 +507,150 @@ For each suggestion, provide:
               );
             })}
           </div>
+        </TabsContent>
+
+        {/* New Activities Tab */}
+        <TabsContent value="new-activities" className="mt-6">
+          {generateNewActivitiesMutation.isPending ? (
+            <div className="flex flex-col items-center justify-center py-16">
+              <LoadingSpinner size="large" type="purple" />
+              <p className="mt-4 text-slate-600 animate-pulse">
+                AI is discovering fresh activity ideas for your team...
+              </p>
+            </div>
+          ) : generateNewActivitiesMutation.data ? (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h3 className="text-lg font-bold text-slate-900">Untried Activities</h3>
+                  <p className="text-sm text-slate-600">Fresh ideas tailored to your team's interests</p>
+                </div>
+                <Button
+                  onClick={() => generateNewActivitiesMutation.mutate()}
+                  variant="outline"
+                  size="sm"
+                >
+                  <RefreshCw className="h-4 w-4 mr-2" />
+                  Refresh
+                </Button>
+              </div>
+
+              <div className="grid grid-cols-1 gap-4">
+                <AnimatePresence>
+                  {generateNewActivitiesMutation.data.map((activity, index) => {
+                    const typeConfig = ACTIVITY_TYPES[activity.activity_type] || ACTIVITY_TYPES.social;
+                    return (
+                      <motion.div
+                        key={index}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                      >
+                        <Card className="hover:shadow-lg transition-all border-2 hover:border-int-orange group">
+                          <CardContent className="p-6">
+                            <div className="flex items-start gap-4">
+                              {/* Icon & Badge */}
+                              <div className="flex-shrink-0">
+                                <div className={`p-3 rounded-xl ${typeConfig.color} shadow-md`}>
+                                  <span className="text-2xl">{typeConfig.emoji}</span>
+                                </div>
+                                <div className="mt-2 text-center">
+                                  <div className="flex items-center justify-center gap-1 text-xs font-semibold text-emerald-600">
+                                    <TrendingUp className="h-3 w-3" />
+                                    {activity.engagement_score}%
+                                  </div>
+                                </div>
+                              </div>
+
+                              {/* Content */}
+                              <div className="flex-1">
+                                <div className="flex items-start justify-between mb-2">
+                                  <div>
+                                    <h4 className="font-bold text-lg text-slate-900 group-hover:text-int-orange transition-colors">
+                                      {activity.title}
+                                    </h4>
+                                    <div className="flex items-center gap-2 mt-1">
+                                      <Badge variant="outline">{typeConfig.label}</Badge>
+                                      <Badge className="bg-purple-100 text-purple-700">
+                                        ✨ {activity.novelty_factor || 'New'}
+                                      </Badge>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <p className="text-sm text-slate-600 mb-4 leading-relaxed">
+                                  {activity.description}
+                                </p>
+
+                                {/* Meta Info */}
+                                <div className="flex items-center gap-4 text-xs text-slate-500 mb-4">
+                                  <span className="flex items-center gap-1">
+                                    <Clock className="h-3 w-3" />
+                                    {activity.duration}
+                                  </span>
+                                  <span className="flex items-center gap-1">
+                                    <Users className="h-3 w-3" />
+                                    {activity.ideal_team_size}
+                                  </span>
+                                </div>
+
+                                {/* Why New */}
+                                <div className="p-3 bg-int-orange/5 rounded-lg border border-int-orange/20 mb-4">
+                                  <div className="flex items-start gap-2">
+                                    <Sparkles className="h-4 w-4 text-int-orange mt-0.5 flex-shrink-0" />
+                                    <div>
+                                      <p className="text-xs font-semibold text-int-orange mb-1">Why this is fresh:</p>
+                                      <p className="text-xs text-slate-700">{activity.why_new}</p>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                {/* Action */}
+                                <div className="flex justify-end">
+                                  <Button
+                                    size="sm"
+                                    onClick={() => handleSelectSuggestion({
+                                      ...activity,
+                                      recommendation_reason: activity.why_new
+                                    })}
+                                    className="bg-gradient-orange hover:opacity-90 text-white"
+                                  >
+                                    Try This Activity
+                                    <ChevronRight className="h-4 w-4 ml-1" />
+                                  </Button>
+                                </div>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </motion.div>
+                    );
+                  })}
+                </AnimatePresence>
+              </div>
+            </div>
+          ) : (
+            <Card className="border-dashed border-2">
+              <CardContent className="flex flex-col items-center justify-center py-16">
+                <div className="p-4 rounded-full bg-int-orange/10 mb-4">
+                  <Lightbulb className="h-8 w-8 text-int-orange" />
+                </div>
+                <h3 className="text-lg font-semibold text-slate-900 mb-2">
+                  Discover New Activities
+                </h3>
+                <p className="text-sm text-slate-500 text-center max-w-md mb-4">
+                  Let AI analyze your team's history and recommend fresh activity types you haven't tried yet
+                </p>
+                <Button
+                  onClick={() => generateNewActivitiesMutation.mutate()}
+                  className="bg-gradient-orange hover:opacity-90 text-white"
+                >
+                  <Lightbulb className="h-4 w-4 mr-2" />
+                  Find New Activities
+                </Button>
+              </CardContent>
+            </Card>
+          )}
         </TabsContent>
 
         {/* Constraints Tab */}
