@@ -1,6 +1,6 @@
 # INTeract - Employee Engagement Platform
 
-## Version 5.0.0 | Last Updated: 2025-12-21
+## Version 0.0.0 (In Development) | Last Updated: 2026-01-16
 
 A comprehensive, AI-powered employee engagement platform designed for remote-first tech companies (50-200 employees).
 
@@ -125,6 +125,40 @@ import { formatDate, calculateLevel, filterUpcomingEvents } from '../components/
 - **Channels** - Topic-based communication
 - **Profiles** - Customizable with avatars
 - **Following** - Connect with colleagues
+- **Employee Directory** - Searchable directory with public profiles
+- **Social Gamification** - Social sharing and community challenges
+
+### 📚 Knowledge Hub
+
+- **Knowledge Search** - AI-powered knowledge base search
+- **Knowledge Indexer** - Automatic documentation indexing
+- **Content Curation** - AI-curated learning content
+- **Knowledge Base Rebuild** - Automated knowledge base updates
+
+### 🎓 Learning & Development
+
+- **Learning Paths** - Structured learning journeys
+- **Learning Dashboard** - Track progress and achievements
+- **AI Learning Recommendations** - Personalized course suggestions
+- **Career Path Recommendations** - AI-powered career guidance
+- **Mentor Matching** - AI-based mentor-mentee pairing
+- **Buddy Matching** - Onboarding buddy assignment
+
+### 🎯 Milestones & Skills
+
+- **Milestone Detection** - Automated milestone recognition
+- **Skills Dashboard** - Track and develop skills
+- **Skill Development Tracking** - Progress analytics
+- **Skills & Interests** - User profile enrichment
+
+### 👶 Onboarding
+
+- **New Employee Onboarding** - Comprehensive onboarding workflows
+- **Onboarding Dashboard** - Track onboarding progress
+- **Onboarding Hub** - Centralized onboarding resources
+- **AI Onboarding Plans** - Personalized onboarding paths
+- **Dynamic Onboarding** - Adaptive onboarding based on progress
+- **Onboarding Reminders** - Automated check-ins
 
 ---
 
@@ -203,6 +237,98 @@ await base44.functions.invoke('geminiIntegration', {
 });
 ```
 
+### Complete Functions Reference
+
+The platform includes **110+ backend functions** organized into the following categories:
+
+**Gamification (8 functions):**
+- `awardPoints` - Award points to users
+- `recordPointsTransaction` - Track points history
+- `executeGamificationRules` - Process gamification logic
+- `processGamificationRules` - Execute rule engine
+- `generateChallengeSuggestions` - Create challenge ideas
+- `leaderboardRealtime` - Real-time leaderboard updates
+- `getTeamLeaderboardStats` - Team rankings
+- `redeemReward` - Process reward redemptions
+
+**AI Features (20+ functions):**
+- `aiAdminAssistant` - Admin automation
+- `aiContentGenerator` - Generate content
+- `aiContentRecommendations` - Personalized suggestions
+- `aiPersonalizedChallenges` - Custom challenges
+- `aiOnboardingPlanGenerator` - Onboarding workflows
+- `aiCareerPathRecommendations` - Career guidance
+- `aiMentorMatcher` - Match mentors
+- `aiBuddyMatcher` - Buddy system
+- `aiKnowledgeSearch` - Search knowledge base
+- `aiKnowledgeIndexer` - Index documents
+- `aiTeamStructureOptimizer` - Optimize teams
+- `teamLeaderAIAssistant` - Team leader support
+- `gamificationAI` - Gamification optimization
+- `learningPathAI` - Learning recommendations
+
+**Notifications (10+ functions):**
+- `sendTeamsNotification` - Microsoft Teams alerts
+- `slackNotifications` - Slack integration
+- `teamsNotifications` - Teams messaging
+- `createNotification` - Create notifications
+- `automatedTeamCheckIn` - Team check-ins
+- `automatedGoalReminders` - Goal reminders
+- `sendGoalReminders` - Send reminders
+- `checkEventReminders` - Event notifications
+- `sendOneHourReminder` - Pre-event reminders
+
+**Events & Calendar (8 functions):**
+- `checkEventReminders` - Event reminder system
+- `handleEventCancellation` - Cancel events
+- `importFromGoogleCalendar` - Google Calendar import
+- `syncToGoogleCalendar` - Sync to Google
+- `googleCalendarSync` - Two-way sync
+- `exportEventReport` - Export reports
+- `generateCalendarFile` - Generate .ics files
+
+**Analytics (8 functions):**
+- `advancedAnalytics` - Advanced metrics
+- `aggregateAnalytics` - Aggregate data
+- `getEngagementNudges` - Engagement insights
+- `getTeamAnalytics` - Team metrics
+- `exportAnalyticsReport` - Export reports
+- `exportEventReport` - Event analytics
+- `exportUserData` - User data export
+- `aiPredictiveHealthAnalysis` - Predictive analytics
+
+**Onboarding (5 functions):**
+- `checkOnboardingReminders` - Onboarding follow-ups
+- `adjustOnboardingDynamically` - Adaptive onboarding
+- `aiOnboardingPlanGenerator` - AI-powered plans
+- `newEmployeeOnboardingAI` - New hire support
+
+**Integrations (11+ functions):**
+- `cloudflareIntegration` - Cloudflare services
+- `cloudinaryIntegration` - Media management
+- `elevenlabsIntegration` - Text-to-speech
+- `googleMapsIntegration` - Location services
+- `hubspotIntegration` - CRM integration
+- `notionIntegration` - Notion sync
+- `perplexityIntegration` - AI search
+- `vercelIntegration` - Deployment
+- `zapierIntegration` - Workflow automation
+
+**Store & Commerce (3 functions):**
+- `createStoreCheckout` - Checkout process
+- `purchaseWithPoints` - Points redemption
+- `storeWebhook` - Stripe webhook handler
+
+**User Management (2 functions):**
+- `inviteUser` - Invite users
+- `manageUserRole` - Role management
+
+**Middleware & Libraries:**
+- `lib/middleware` - Function middleware
+- `lib/rbacMiddleware` - Permission checks
+- `lib/types` - Type definitions
+- `lib/webhookValidation` - Webhook security
+
 ---
 
 ## Styling System
@@ -261,6 +387,46 @@ await base44.functions.invoke('geminiIntegration', {
 
 ---
 
+## Testing
+
+### Current Status
+
+⚠️ **Test Coverage: 0%** (Target: 80%)
+
+The testing infrastructure is fully configured, but test implementation is in progress:
+
+**Infrastructure (✅ Complete):**
+- Vitest 4.0.17 configured with jsdom environment
+- React Testing Library 16.3.1 installed
+- Coverage reporting (v8 provider, HTML/LCOV)
+- Mock setups for browser APIs (matchMedia, IntersectionObserver, ResizeObserver)
+- Test scripts: `npm run test`, `npm run test:ui`, `npm run test:coverage`
+
+**Current Tests (6 frontend files):**
+- `src/lib/utils.test.js` - Utility functions (9 test cases)
+- `src/lib/app-params.test.js` - URL parameters
+- `src/lib/imageUtils.test.js` - Image utilities
+- `src/hooks/use-mobile.test.js` - Mobile detection
+- `src/utils/index.test.js` - General utilities
+- `src/test/utils/sample.test.js` - Sample tests
+
+**Backend Tests (4 function tests):**
+- `functions/tests/eventOwnership.test.ts`
+- `functions/tests/gamification.test.ts`
+- `functions/tests/stripeWebhook.test.ts`
+- `functions/tests/surveyAnonymization.test.ts`
+
+**Next Steps:**
+1. Achieve 30% coverage (Q1 2026)
+2. Add component tests for critical paths
+3. Add integration tests for user flows
+4. Implement E2E tests with Playwright
+5. Reach 80% coverage target (Q2-Q3 2026)
+
+See [TESTING.md](/TESTING.md) for complete testing guidelines and best practices.
+
+---
+
 ## Security
 
 - **Authentication** - Base44 Auth with SSO support (Azure AD, Google, Okta)
@@ -273,7 +439,7 @@ await base44.functions.invoke('geminiIntegration', {
 
 ## Changelog
 
-### v4.0.0 (2025-12-02)
+### v0.0.0 (In Development - 2026-01-16)
 
 - Added AI Insights Generator for analytics
 - Added personalized notification drafting

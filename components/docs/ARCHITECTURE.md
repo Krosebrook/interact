@@ -74,7 +74,7 @@
 ### 2.1 Directory Structure
 
 ```
-├── pages/                      # Route pages (25+ pages)
+├── pages/                      # Route pages (68 pages)
 │   ├── Dashboard.jsx           # Main admin dashboard
 │   ├── Activities.jsx          # Activity library (15+ templates)
 │   ├── Calendar.jsx            # Event calendar with scheduling
@@ -100,56 +100,81 @@
 │   ├── ProjectPlan.jsx         # Development tracking
 │   └── Settings.jsx            # App settings
 │
-├── components/                 # Reusable components
-│   ├── common/                 # Shared UI components
-│   │   ├── LoadingSpinner.jsx
-│   │   ├── EmptyState.jsx
-│   │   ├── PageHeader.jsx
-│   │   └── StatsGrid.jsx
-│   │
-│   ├── recognition/            # Recognition module
-│   │   ├── RecognitionComposer.jsx
-│   │   ├── RecognitionFeed.jsx
-│   │   ├── RecognitionCard.jsx
-│   │   └── ModerationQueue.jsx
-│   │
-│   ├── surveys/                # Survey module
-│   │   ├── SurveyBuilder.jsx
-│   │   ├── SurveyTaker.jsx
-│   │   └── SurveyResults.jsx
-│   │
-│   ├── channels/               # Channel module
+├── components/                 # Reusable components (46 categories)
+│   ├── accessibility/          # Accessibility features
+│   ├── activities/             # Activity management
+│   ├── admin/                  # Admin components
+│   ├── ai/                     # AI-powered components
+│   ├── analytics/              # Analytics dashboards
+│   │   └── gamification/       # Gamification analytics
+│   ├── auth/                   # Authentication
+│   ├── automation/             # Workflow automation
+│   ├── channels/               # Channel communication
 │   │   ├── ChannelList.jsx
 │   │   ├── ChannelChat.jsx
 │   │   └── CreateChannelDialog.jsx
-│   │
-│   ├── gamification/           # Gamification module
+│   ├── common/                 # Shared UI components
+│   │   ├── LoadingSpinner.jsx
+│   │   ├── EmptyState.jsx
+│   │   └── PageHeader.jsx
+│   ├── contexts/               # React contexts
+│   ├── core/                   # Core components
+│   ├── dashboard/              # Dashboard widgets
+│   ├── docs/                   # Documentation components
+│   ├── events/                 # Event management
+│   ├── facilitator/            # Facilitator tools
+│   ├── forms/                  # Form components
+│   ├── gamification/           # Gamification (42+ components)
 │   │   ├── PointsTracker.jsx
 │   │   ├── BadgeShowcase.jsx
 │   │   ├── Leaderboard.jsx
-│   │   └── StreakTracker.jsx
-│   │
-│   ├── store/                  # Point store module
-│   │   ├── PointStore.jsx
+│   │   ├── StreakTracker.jsx
+│   │   └── PersonalChallenges.jsx
+│   ├── hooks/                  # Custom React hooks (30+)
+│   │   ├── useUserData.jsx
+│   │   ├── useEventData.jsx
+│   │   └── useGamificationData.jsx
+│   ├── integrations/           # Third-party integrations
+│   ├── interactive/            # Interactive elements
+│   ├── leaderboard/            # Leaderboard components
+│   ├── learning/               # Learning & Development
+│   ├── lib/                    # Libraries and utilities
+│   │   ├── constants/          # Constants
+│   │   ├── rbac/               # RBAC system
+│   │   └── analytics/          # Analytics utilities
+│   ├── milestones/             # Milestone tracking
+│   ├── moderation/             # Content moderation
+│   ├── notifications/          # Notification system
+│   ├── onboarding/             # Employee onboarding
+│   ├── participant/            # Participant views
+│   ├── profile/                # User profiles
+│   ├── pwa/                    # Progressive Web App
+│   ├── recognition/            # Recognition system
+│   │   ├── RecognitionComposer.jsx
+│   │   ├── RecognitionFeed.jsx
+│   │   └── ModerationQueue.jsx
+│   ├── services/               # Service layer
+│   ├── settings/               # Settings panels
+│   ├── shared/                 # Shared resources
+│   │   ├── hooks/              # Shared hooks
+│   │   ├── ui/                 # UI components
+│   │   └── constants/          # Shared constants
+│   ├── skills/                 # Skills tracking
+│   ├── social/                 # Social features
+│   ├── store/                  # Point store
 │   │   ├── StoreItemCard.jsx
 │   │   ├── AvatarCustomizer.jsx
 │   │   └── UserInventory.jsx
-│   │
-│   ├── hooks/                  # Custom React hooks
-│   │   ├── useUserData.js
-│   │   ├── useEventData.js
-│   │   └── useGamificationData.js
-│   │
-│   ├── utils/                  # Utility functions
-│   │   ├── constants.js
-│   │   ├── formatters.js
-│   │   ├── validators.js
-│   │   └── soundEffects.js
-│   │
-│   └── docs/                   # Documentation
-│       ├── PRD_MASTER.md
-│       ├── API_REFERENCE.md
-│       └── ARCHITECTURE.md
+│   ├── surveys/                # Survey system
+│   │   ├── SurveyBuilder.jsx
+│   │   ├── SurveyTaker.jsx
+│   │   └── SurveyResults.jsx
+│   ├── teamLeader/             # Team leader tools
+│   ├── teams/                  # Team management
+│   ├── templates/              # Template components
+│   ├── tutorials/              # Tutorial system
+│   ├── types/                  # TypeScript types
+│   └── ui/                     # UI components
 │
 ├── entities/                   # Data schemas
 │   ├── Activity.json
@@ -159,11 +184,49 @@
 │   ├── Channel.json
 │   └── UserPoints.json
 │
-├── functions/                  # Backend functions
-│   ├── awardPoints.js
-│   ├── createRecognition.js
-│   ├── submitSurveyResponse.js
-│   └── storeWebhook.js
+├── functions/                  # Backend functions (110+)
+│   ├── Gamification/           # 8 functions
+│   │   ├── awardPoints.ts
+│   │   ├── recordPointsTransaction.ts
+│   │   ├── executeGamificationRules.ts
+│   │   └── leaderboardRealtime.ts
+│   ├── AI/                     # 20+ functions
+│   │   ├── openaiIntegration.ts
+│   │   ├── claudeIntegration.ts
+│   │   ├── geminiIntegration.ts
+│   │   ├── aiContentGenerator.ts
+│   │   ├── aiMentorMatcher.ts
+│   │   └── aiOnboardingPlanGenerator.ts
+│   ├── Notifications/          # 10+ functions
+│   │   ├── sendTeamsNotification.ts
+│   │   ├── slackNotifications.ts
+│   │   └── createNotification.ts
+│   ├── Events/                 # 8 functions
+│   │   ├── handleEventCancellation.ts
+│   │   ├── syncToGoogleCalendar.ts
+│   │   └── checkEventReminders.ts
+│   ├── Analytics/              # 8 functions
+│   │   ├── advancedAnalytics.ts
+│   │   ├── getTeamAnalytics.ts
+│   │   └── exportUserData.ts
+│   ├── Onboarding/             # 5 functions
+│   │   ├── checkOnboardingReminders.ts
+│   │   └── aiOnboardingPlanGenerator.ts
+│   ├── Integrations/           # 11+ functions
+│   │   ├── cloudinaryIntegration.ts
+│   │   ├── hubspotIntegration.ts
+│   │   └── zapierIntegration.ts
+│   ├── Store/                  # 3 functions
+│   │   ├── createStoreCheckout.ts
+│   │   ├── purchaseWithPoints.ts
+│   │   └── storeWebhook.ts
+│   ├── lib/                    # Middleware & libraries
+│   │   ├── middleware.ts
+│   │   ├── rbacMiddleware.ts
+│   │   └── types.ts
+│   └── tests/                  # Backend tests (4 files)
+│       ├── gamification.test.ts
+│       └── stripeWebhook.test.ts
 │
 ├── agents/                     # AI agents
 │   └── EventManagerAgent.json
