@@ -569,6 +569,8 @@ git push origin main --force      # Requires admin privileges
 |--------|---------|-------|
 | `safe-merge-branch.sh` | Automated safe merge | `./scripts/safe-merge-branch.sh <branch>` |
 | `cleanup-merged-branches.sh` | Remove merged branches | `./scripts/cleanup-merged-branches.sh` |
+| `post-merge-verify.sh` | Post-merge verification | `./scripts/post-merge-verify.sh` |
+| `multi-branch-merge.sh` | Multi-branch coordination | `./scripts/multi-branch-merge.sh <branch1> <branch2> ...` |
 
 ### CI/CD Workflows
 
