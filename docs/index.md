@@ -19,6 +19,7 @@ Interact is an enterprise-grade employee engagement platform that transforms wor
 - **[Documentation Summary](../DOCUMENTATION_SUMMARY.md)** - Overview of all documentation
 
 ### 🏗️ Architecture & Technical Design
+- **[Architecture Overview (Visual)](./ARCHITECTURE_OVERVIEW.md)** - Visual diagrams with Mermaid.js ⭐ NEW
 - **[Complete System Architecture](../components/docs/COMPLETE_SYSTEM_ARCHITECTURE.md)** - Full system design
 - **[Architecture Overview](../components/docs/ARCHITECTURE.md)** - High-level architecture
 - **[Database Schema](../components/docs/DATABASE_SCHEMA_TECHNICAL_SPEC.md)** - Database design
