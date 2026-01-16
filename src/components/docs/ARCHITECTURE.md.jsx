@@ -74,7 +74,7 @@
 ### 2.1 Directory Structure
 
 ```
-├── pages/                      # Route pages (25+ pages)
+├── pages/                      # Route pages (68 pages)
 │   ├── Dashboard.jsx           # Main admin dashboard
 │   ├── Activities.jsx          # Activity library (15+ templates)
 │   ├── Calendar.jsx            # Event calendar with scheduling
