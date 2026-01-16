@@ -1,11 +1,22 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.4';
+import type {
+  Base44Client,
+  Integration,
+  LLMMessage,
+  LLMGenerationConfig,
+  LLMFunctionCall,
+  LLMUsageMetadata,
+  GeminiRequestPayload,
+  GeminiResponse,
+} from './lib/types.ts';
+import { getErrorMessage } from './lib/types.ts';
 
 // Google Gemini API integration
 const GOOGLE_API_KEY = Deno.env.get("GOOGLE_API_KEY");
 const BASE_URL = "https://generativelanguage.googleapis.com/v1beta";
 
 // Available models - use latest/most capable
-const MODELS = {
+const MODELS: Record<string, string> = {
   pro: 'gemini-2.0-flash',              // Latest Gemini 2.0 Flash - very capable
   flash: 'gemini-2.0-flash',            // Fast option
   thinking: 'gemini-2.0-flash-thinking-exp-01-21',  // Thinking model
@@ -15,33 +26,82 @@ const MODELS = {
 
 const DEFAULT_MODEL = MODELS.pro;
 
-async function callGemini(endpoint, body) {
+interface GeminiContentPart {
+  text?: string;
+  functionCall?: LLMFunctionCall;
+  inlineData?: {
+    mimeType: string;
+    data: string;
+  };
+}
+
+interface GeminiContent {
+  role: 'user' | 'model';
+  parts: GeminiContentPart[];
+}
+
+interface GeminiCandidate {
+  content?: {
+    parts?: GeminiContentPart[];
+  };
+  finishReason?: string;
+  safetyRatings?: Record<string, unknown>[];
+}
+
+interface GeminiAPIResponse {
+  candidates?: GeminiCandidate[];
+  usageMetadata?: LLMUsageMetadata;
+  embedding?: {
+    values?: number[];
+  };
+  totalTokens?: number;
+}
+
+interface GeminiRequestBody {
+  contents: GeminiContent[];
+  generationConfig?: {
+    temperature?: number;
+    maxOutputTokens?: number;
+  };
+  systemInstruction?: {
+    parts: { text: string }[];
+  };
+  safetySettings?: Record<string, unknown>[];
+  tools?: { functionDeclarations: Record<string, unknown>[] }[];
+  toolConfig?: {
+    functionCallingConfig: {
+      mode: string;
+    };
+  };
+}
+
+async function callGemini(endpoint: string, body: GeminiRequestBody | Record<string, unknown>): Promise<GeminiAPIResponse> {
   const response = await fetch(`${BASE_URL}${endpoint}?key=${GOOGLE_API_KEY}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body)
   });
-  
+
   if (!response.ok) {
-    const error = await response.json();
+    const error = await response.json() as { error?: { message?: string } };
     throw new Error(error.error?.message || 'Gemini API error');
   }
-  
-  return response.json();
+
+  return response.json() as Promise<GeminiAPIResponse>;
 }
 
-Deno.serve(async (req) => {
+Deno.serve(async (req: Request): Promise<Response> => {
   try {
-    const base44 = createClientFromRequest(req);
+    const base44 = createClientFromRequest(req) as Base44Client;
     const user = await base44.auth.me();
-    
+
     if (!user) {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { 
+    const {
       action = 'chat',
-      prompt, 
+      prompt,
       model,
       messages,
       system,
@@ -50,16 +110,16 @@ Deno.serve(async (req) => {
       tools,
       safety_settings,
       generation_config = {}
-    } = await req.json();
+    }: GeminiRequestPayload = await req.json();
 
-    let result;
+    let result: Partial<GeminiResponse>;
     const selectedModel = model || DEFAULT_MODEL;
 
     switch (action) {
       case 'chat': {
         // Convert messages to Gemini format
-        const contents = [];
-        
+        const contents: GeminiContent[] = [];
+
         if (messages && messages.length > 0) {
           for (const msg of messages) {
             contents.push({
@@ -74,12 +134,12 @@ Deno.serve(async (req) => {
           });
         }
 
-        const requestBody = {
+        const requestBody: GeminiRequestBody = {
           contents,
           generationConfig: {
             temperature,
             maxOutputTokens: max_tokens || 8192,
-            ...generation_config
+            ...(generation_config as Record<string, unknown>)
           }
         };
 
@@ -99,11 +159,11 @@ Deno.serve(async (req) => {
         }
 
         const response = await callGemini(`/models/${selectedModel}:generateContent`, requestBody);
-        
+
         const candidate = response.candidates?.[0];
         let content = '';
-        let functionCalls = [];
-        
+        const functionCalls: LLMFunctionCall[] = [];
+
         if (candidate?.content?.parts) {
           for (const part of candidate.content.parts) {
             if (part.text) content += part.text;
@@ -128,17 +188,17 @@ Deno.serve(async (req) => {
           return Response.json({ error: 'prompt required' }, { status: 400 });
         }
 
-        const parts = [];
-        
+        const parts: GeminiContentPart[] = [];
+
         // Handle image(s)
         const imageUrls = messages?.[0]?.image_urls || (messages?.[0]?.image_url ? [messages[0].image_url] : []);
-        
+
         for (const imageUrl of imageUrls) {
           const imageResponse = await fetch(imageUrl);
           const imageBuffer = await imageResponse.arrayBuffer();
           const base64 = btoa(String.fromCharCode(...new Uint8Array(imageBuffer)));
           const mimeType = imageResponse.headers.get('content-type') || 'image/jpeg';
-          
+
           parts.push({
             inlineData: {
               mimeType,
@@ -146,7 +206,7 @@ Deno.serve(async (req) => {
             }
           });
         }
-        
+
         parts.push({ text: prompt });
 
         const visionResponse = await callGemini(`/models/${selectedModel}:generateContent`, {
@@ -207,11 +267,11 @@ Deno.serve(async (req) => {
       case 'thinking': {
         // Use Gemini's thinking model for complex reasoning
         const thinkingModel = 'gemini-2.0-flash-thinking-exp-01-21';
-        
+
         const thinkingResponse = await callGemini(`/models/${thinkingModel}:generateContent`, {
           contents: [{
             role: 'user',
-            parts: [{ text: prompt }]
+            parts: [{ text: prompt || '' }]
           }],
           generationConfig: {
             temperature: 0.7,
@@ -234,7 +294,7 @@ Deno.serve(async (req) => {
         const embeddingResponse = await callGemini(`/models/${MODELS.embedding}:embedContent`, {
           model: `models/${MODELS.embedding}`,
           content: {
-            parts: [{ text: prompt }]
+            parts: [{ text: prompt || '' }]
           }
         });
 
@@ -250,15 +310,15 @@ Deno.serve(async (req) => {
         const codeResponse = await callGemini(`/models/${selectedModel}:generateContent`, {
           contents: [{
             role: 'user',
-            parts: [{ text: prompt }]
+            parts: [{ text: prompt || '' }]
           }],
           generationConfig: {
             temperature: 0.2,  // Lower for code
             maxOutputTokens: max_tokens || 8192
           },
           systemInstruction: {
-            parts: [{ 
-              text: system || "You are an expert software engineer. Write clean, efficient, well-documented code." 
+            parts: [{
+              text: system || "You are an expert software engineer. Write clean, efficient, well-documented code."
             }]
           }
         });
@@ -280,12 +340,12 @@ Deno.serve(async (req) => {
         const fcResponse = await callGemini(`/models/${selectedModel}:generateContent`, {
           contents: [{
             role: 'user',
-            parts: [{ text: prompt }]
+            parts: [{ text: prompt || '' }]
           }],
           tools: [{ functionDeclarations: tools }],
           toolConfig: {
             functionCallingConfig: {
-              mode: "AUTO"  // AUTO, ANY, or NONE
+              mode: "AUTO"
             }
           },
           generationConfig: {
@@ -295,9 +355,9 @@ Deno.serve(async (req) => {
         });
 
         const fcCandidate = fcResponse.candidates?.[0];
-        const functionCalls = [];
+        const functionCalls: LLMFunctionCall[] = [];
         let textContent = '';
-        
+
         if (fcCandidate?.content?.parts) {
           for (const part of fcCandidate.content.parts) {
             if (part.functionCall) functionCalls.push(part.functionCall);
@@ -319,7 +379,7 @@ Deno.serve(async (req) => {
         const tokenResponse = await callGemini(`/models/${selectedModel}:countTokens`, {
           contents: [{
             role: 'user',
-            parts: [{ text: prompt }]
+            parts: [{ text: prompt || '' }]
           }]
         });
 
@@ -331,14 +391,14 @@ Deno.serve(async (req) => {
       }
 
       default:
-        return Response.json({ 
-          error: 'Invalid action. Use: chat, vision, video, thinking, embedding, code, function_calling, count_tokens' 
+        return Response.json({
+          error: 'Invalid action. Use: chat, vision, video, thinking, embedding, code, function_calling, count_tokens'
         }, { status: 400 });
     }
 
     // Update integration usage
     try {
-      const integrations = await base44.asServiceRole.entities.Integration.filter({ integration_key: 'gemini' });
+      const integrations = await base44.asServiceRole.entities.Integration.filter({ integration_key: 'gemini' }) as Integration[];
       if (integrations.length > 0) {
         await base44.asServiceRole.entities.Integration.update(integrations[0].id, {
           last_used: new Date().toISOString(),
@@ -346,12 +406,12 @@ Deno.serve(async (req) => {
           status: 'active'
         });
       }
-    } catch (e) {
+    } catch (e: unknown) {
       console.error('Failed to update integration stats:', e);
     }
 
     return Response.json({ success: true, ...result });
-  } catch (error) {
-    return Response.json({ error: error.message }, { status: 500 });
+  } catch (error: unknown) {
+    return Response.json({ error: getErrorMessage(error) }, { status: 500 });
   }
 });

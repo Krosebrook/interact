@@ -4,17 +4,39 @@
  */
 
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
+import type {
+  Base44Client,
+  UserPoints,
+  Event,
+  Recognition,
+  LeaderboardSnapshot,
+  ChurnPrediction,
+  EngagementTrajectory,
+  RiskSegment,
+  ActionTrend,
+  BadgeTrend,
+  ChallengeTrend,
+  TrendingItem,
+  AdvancedAnalyticsResult,
+} from './lib/types.ts';
+import { getErrorMessage } from './lib/types.ts';
 
-Deno.serve(async (req) => {
+interface AnalyticsFilters {
+  dateRange?: string;
+  department?: string;
+  teamId?: string;
+}
+
+Deno.serve(async (req: Request): Promise<Response> => {
   try {
-    const base44 = createClientFromRequest(req);
+    const base44 = createClientFromRequest(req) as Base44Client;
     const user = await base44.auth.me();
 
     if (!user || user.role !== 'admin') {
       return Response.json({ error: 'Unauthorized' }, { status: 403 });
     }
 
-    const { filters } = await req.json();
+    const { filters }: { filters?: AnalyticsFilters } = await req.json();
 
     // Fetch all necessary data
     const users = await base44.entities.UserPoints.list();
@@ -27,7 +49,7 @@ Deno.serve(async (req) => {
     const activeUsers7d = calculateActiveUsers(users, 7);
     const avgPoints = calculateAveragePoints(users);
     const participationRate = calculateParticipationRate(users, events);
-    const churnPrediction = predictChurn(users, recognitions);
+    const churnPrediction = predictChurn(users);
     const engagementTrajectory = projectEngagementTrajectory(users);
     const riskSegments = identifyRiskSegments(users);
     const actionTrends = calculateActionTrends(recognitions, events);
@@ -35,7 +57,7 @@ Deno.serve(async (req) => {
     const challengeTrends = calculateChallengeTrends(events);
     const topTrending = identifyTopTrending(actionTrends, badgeTrends);
 
-    return Response.json({
+    const result: AdvancedAnalyticsResult = {
       engagement_score: engagementScore,
       active_users_7d: activeUsers7d,
       avg_points: avgPoints,
@@ -47,42 +69,53 @@ Deno.serve(async (req) => {
       badge_trends: badgeTrends,
       challenge_trends: challengeTrends,
       top_trending: topTrending
-    });
-  } catch (error) {
+    };
+
+    return Response.json(result);
+  } catch (error: unknown) {
     console.error('[ADVANCED_ANALYTICS]', error);
-    return Response.json({ error: error.message }, { status: 500 });
+    return Response.json({ error: getErrorMessage(error) }, { status: 500 });
   }
 });
 
-function calculateEngagementScore(users, recognitions, events) {
+function calculateEngagementScore(
+  users: UserPoints[],
+  recognitions: Recognition[],
+  events: Event[]
+): number {
+  if (users.length === 0) return 0;
   const avgPoints = users.reduce((sum, u) => sum + (u.total_points || 0), 0) / users.length;
   const maxPoints = 5000;
   return Math.min(100, (avgPoints / maxPoints) * 100);
 }
 
-function calculateActiveUsers(users, days) {
-  return users.filter(u => {
+function calculateActiveUsers(users: UserPoints[], days: number): number {
+  return users.filter((u) => {
+    if (!u.last_activity_date) return false;
     const lastActivity = new Date(u.last_activity_date);
-    const daysAgo = (Date.now() - lastActivity) / (1000 * 60 * 60 * 24);
+    const daysAgo = (Date.now() - lastActivity.getTime()) / (1000 * 60 * 60 * 24);
     return daysAgo <= days;
   }).length;
 }
 
-function calculateAveragePoints(users) {
+function calculateAveragePoints(users: UserPoints[]): number {
+  if (users.length === 0) return 0;
   return Math.round(users.reduce((sum, u) => sum + (u.total_points || 0), 0) / users.length);
 }
 
-function calculateParticipationRate(users, events) {
+function calculateParticipationRate(users: UserPoints[], events: Event[]): number {
+  if (users.length === 0) return 0;
   const activeCount = calculateActiveUsers(users, 30);
   return Math.round((activeCount / users.length) * 100);
 }
 
-function predictChurn(users) {
-  const riskLevels = [];
-  
-  for (const risk of ['low', 'medium', 'high']) {
-    const filtered = users.filter(u => {
-      const daysInactive = (Date.now() - new Date(u.last_activity_date)) / (1000 * 60 * 60 * 24);
+function predictChurn(users: UserPoints[]): ChurnPrediction[] {
+  const riskLevels: ChurnPrediction[] = [];
+
+  for (const risk of ['low', 'medium', 'high'] as const) {
+    const filtered = users.filter((u) => {
+      if (!u.last_activity_date) return risk === 'high';
+      const daysInactive = (Date.now() - new Date(u.last_activity_date).getTime()) / (1000 * 60 * 60 * 24);
       if (risk === 'low') return daysInactive < 7;
       if (risk === 'medium') return daysInactive >= 7 && daysInactive < 14;
       return daysInactive >= 14;
@@ -98,9 +131,9 @@ function predictChurn(users) {
   return riskLevels;
 }
 
-function projectEngagementTrajectory(users) {
+function projectEngagementTrajectory(users: UserPoints[]): EngagementTrajectory[] {
   const days = 30;
-  const trajectory = [];
+  const trajectory: EngagementTrajectory[] = [];
   const avgCurrent = calculateAveragePoints(users);
 
   for (let i = 1; i <= days; i++) {
@@ -114,13 +147,14 @@ function projectEngagementTrajectory(users) {
   return trajectory;
 }
 
-function identifyRiskSegments(users) {
+function identifyRiskSegments(users: UserPoints[]): RiskSegment[] {
   return [
     {
       name: 'At-Risk Users',
       description: 'No activity in 14+ days',
-      user_count: users.filter(u => {
-        const daysInactive = (Date.now() - new Date(u.last_activity_date)) / (1000 * 60 * 60 * 24);
+      user_count: users.filter((u) => {
+        if (!u.last_activity_date) return true;
+        const daysInactive = (Date.now() - new Date(u.last_activity_date).getTime()) / (1000 * 60 * 60 * 24);
         return daysInactive >= 14;
       }).length,
       risk_score: 85,
@@ -129,7 +163,7 @@ function identifyRiskSegments(users) {
     {
       name: 'Low Engagement',
       description: 'Below average points for their tenure',
-      user_count: users.filter(u => u.total_points < 500).length,
+      user_count: users.filter((u) => (u.total_points || 0) < 500).length,
       risk_score: 45,
       churn_probability: 35
     },
@@ -143,21 +177,21 @@ function identifyRiskSegments(users) {
   ];
 }
 
-function calculateActionTrends(recognitions, events) {
+function calculateActionTrends(recognitions: Recognition[], events: Event[]): ActionTrend[] {
   const days = 30;
-  const trends = [];
+  const trends: ActionTrend[] = [];
 
   for (let i = 0; i < days; i++) {
     const date = new Date(Date.now() - i * 86400000);
     const dayStart = new Date(date.setHours(0, 0, 0, 0));
     const dayEnd = new Date(new Date(dayStart).setHours(23, 59, 59, 999));
 
-    const recognitionGiven = recognitions.filter(r => {
+    const recognitionGiven = recognitions.filter((r) => {
       const rDate = new Date(r.created_date);
       return rDate >= dayStart && rDate <= dayEnd;
     }).length;
 
-    const eventsAttended = events.filter(e => {
+    const eventsAttended = events.filter((e) => {
       const eDate = new Date(e.scheduled_date);
       return eDate >= dayStart && eDate <= dayEnd;
     }).length;
@@ -173,7 +207,7 @@ function calculateActionTrends(recognitions, events) {
   return trends;
 }
 
-function calculateBadgeTrends(users) {
+function calculateBadgeTrends(users: UserPoints[]): BadgeTrend[] {
   return [
     { name: 'First Event', earned_count: users.length * 0.85 },
     { name: 'Team Player', earned_count: users.length * 0.42 },
@@ -183,7 +217,7 @@ function calculateBadgeTrends(users) {
   ];
 }
 
-function calculateChallengeTrends(events) {
+function calculateChallengeTrends(events: Event[]): ChallengeTrend[] {
   return [
     {
       name: 'Q4 Challenge',
@@ -206,7 +240,7 @@ function calculateChallengeTrends(events) {
   ];
 }
 
-function identifyTopTrending(actionTrends, badgeTrends) {
+function identifyTopTrending(actionTrends: ActionTrend[], badgeTrends: BadgeTrend[]): TrendingItem[] {
   return [
     { name: 'Recognition Giving', type: 'Action', emoji: '💬', momentum: 45 },
     { name: 'Team Player', type: 'Badge', emoji: '🏆', momentum: 32 },

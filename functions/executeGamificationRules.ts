@@ -4,11 +4,34 @@
  */
 
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
+import type {
+  Base44Client,
+  GamificationRule,
+  RuleCondition,
+  RuleExecution,
+  RuleExecutionResult,
+  UserPoints,
+  Badge,
+  BadgeAward,
+} from './lib/types.ts';
+import { getErrorMessage } from './lib/types.ts';
 
-Deno.serve(async (req) => {
+interface ExecuteRulesPayload {
+  trigger_entity: string;
+  trigger_entity_id: string;
+  user_email: string;
+}
+
+interface ExecuteRulesResponse {
+  success: boolean;
+  executed_rules: number;
+  rules: RuleExecutionResult[];
+}
+
+Deno.serve(async (req: Request): Promise<Response> => {
   try {
-    const base44 = createClientFromRequest(req);
-    const { trigger_entity, trigger_entity_id, user_email } = await req.json();
+    const base44 = createClientFromRequest(req) as Base44Client;
+    const { trigger_entity, trigger_entity_id, user_email }: ExecuteRulesPayload = await req.json();
 
     if (!user_email) {
       return Response.json({ error: 'Missing user_email' }, { status: 400 });
@@ -17,9 +40,9 @@ Deno.serve(async (req) => {
     // Get all active rules
     const rules = await base44.asServiceRole.entities.GamificationRule.filter({
       is_active: true
-    });
+    }) as GamificationRule[];
 
-    const executedRules = [];
+    const executedRules: RuleExecutionResult[] = [];
 
     for (const rule of rules) {
       try {
@@ -53,29 +76,37 @@ Deno.serve(async (req) => {
             execution_count: (rule.execution_count || 0) + 1
           });
         }
-      } catch (error) {
+      } catch (error: unknown) {
         console.error(`[RULE_EXECUTION_ERROR] ${rule.rule_name}:`, error);
         // Continue to next rule instead of failing
       }
     }
 
-    return Response.json({
+    const response: ExecuteRulesResponse = {
       success: true,
       executed_rules: executedRules.length,
       rules: executedRules
-    });
-  } catch (error) {
+    };
+
+    return Response.json(response);
+  } catch (error: unknown) {
     console.error('[EXECUTE_RULES]', error);
-    return Response.json({ error: error.message }, { status: 500 });
+    return Response.json({ error: getErrorMessage(error) }, { status: 500 });
   }
 });
 
-async function evaluateRule(rule, triggerEntity, triggerId, userEmail, base44) {
+async function evaluateRule(
+  rule: GamificationRule,
+  triggerEntity: string,
+  triggerId: string,
+  userEmail: string,
+  base44: Base44Client
+): Promise<boolean> {
   // Check cooldown
   const recentExecutions = await base44.asServiceRole.entities.RuleExecution.filter({
     rule_id: rule.id,
     user_email: userEmail
-  });
+  }) as RuleExecution[];
 
   if (rule.cooldown_hours && recentExecutions.length > 0) {
     const lastExecution = new Date(recentExecutions[0].executed_date);
@@ -89,7 +120,7 @@ async function evaluateRule(rule, triggerEntity, triggerId, userEmail, base44) {
   if (rule.max_triggers_per_month) {
     const thisMonth = new Date();
     const monthStart = new Date(thisMonth.getFullYear(), thisMonth.getMonth(), 1);
-    const thisMonthExecutions = recentExecutions.filter(e => new Date(e.executed_date) >= monthStart);
+    const thisMonthExecutions = recentExecutions.filter((e) => new Date(e.executed_date) >= monthStart);
     if (thisMonthExecutions.length >= rule.max_triggers_per_month) {
       return false;
     }
@@ -97,35 +128,41 @@ async function evaluateRule(rule, triggerEntity, triggerId, userEmail, base44) {
 
   // Evaluate conditions
   const conditionResults = await Promise.all(
-    rule.conditions.map(cond => evaluateCondition(cond, triggerEntity, triggerId, userEmail, base44))
+    rule.conditions.map((cond) => evaluateCondition(cond, triggerEntity, triggerId, userEmail, base44))
   );
 
   // Apply logic (AND vs OR)
   if (rule.logic === 'AND') {
-    return conditionResults.every(r => r === true);
+    return conditionResults.every((r) => r === true);
   } else if (rule.logic === 'OR') {
-    return conditionResults.some(r => r === true);
+    return conditionResults.some((r) => r === true);
   }
 
   return false;
 }
 
-async function evaluateCondition(condition, triggerEntity, triggerId, userEmail, base44) {
+async function evaluateCondition(
+  condition: RuleCondition,
+  triggerEntity: string,
+  triggerId: string,
+  userEmail: string,
+  base44: Base44Client
+): Promise<boolean> {
   try {
     // If condition entity matches trigger, use that data
-    let entityData = null;
+    let entityData: Record<string, unknown> | null = null;
 
     if (condition.entity === triggerEntity) {
       const results = await base44.asServiceRole.entities[triggerEntity].filter({
         id: triggerId
       });
-      entityData = results[0];
+      entityData = results[0] as Record<string, unknown> | undefined ?? null;
     } else {
       // Fetch related data (simplified - adjust per your data model)
       const results = await base44.asServiceRole.entities[condition.entity].filter({
         user_email: userEmail
       });
-      entityData = results[0];
+      entityData = results[0] as Record<string, unknown> | undefined ?? null;
     }
 
     if (!entityData) return false;
@@ -137,15 +174,15 @@ async function evaluateCondition(condition, triggerEntity, triggerId, userEmail,
       case 'equals':
         return value === condition.value;
       case 'contains':
-        return typeof value === 'string' && value.includes(condition.value);
+        return typeof value === 'string' && value.includes(condition.value as string);
       case 'gt':
-        return value > condition.value;
+        return typeof value === 'number' && value > (condition.value as number);
       case 'lt':
-        return value < condition.value;
+        return typeof value === 'number' && value < (condition.value as number);
       case 'gte':
-        return value >= condition.value;
+        return typeof value === 'number' && value >= (condition.value as number);
       case 'lte':
-        return value <= condition.value;
+        return typeof value === 'number' && value <= (condition.value as number);
       case 'in':
         return Array.isArray(condition.value) && condition.value.includes(value);
       case 'exists':
@@ -153,24 +190,28 @@ async function evaluateCondition(condition, triggerEntity, triggerId, userEmail,
       default:
         return false;
     }
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('[CONDITION_EVAL_ERROR]', error);
     return false;
   }
 }
 
-async function executeRuleActions(rule, userEmail, base44) {
-  const actions = {};
-  const conditionsMet = rule.conditions.map(c => `${c.entity}.${c.field} ${c.operator}`);
+async function executeRuleActions(
+  rule: GamificationRule,
+  userEmail: string,
+  base44: Base44Client
+): Promise<RuleExecutionResult> {
+  const actions: Record<string, unknown> = {};
+  const conditionsMet = rule.conditions.map((c) => `${c.entity}.${c.field} ${c.operator}`);
 
   // Award points
   if (rule.actions.award_points) {
-    const userPoints = await base44.asServiceRole.entities.UserPoints.filter({
+    const userPointsList = await base44.asServiceRole.entities.UserPoints.filter({
       user_email: userEmail
-    });
+    }) as UserPoints[];
 
-    if (userPoints.length > 0) {
-      const currentPoints = userPoints[0];
+    if (userPointsList.length > 0) {
+      const currentPoints = userPointsList[0];
       await base44.asServiceRole.entities.UserPoints.update(currentPoints.id, {
         total_points: (currentPoints.total_points || 0) + rule.actions.award_points,
         lifetime_points: (currentPoints.lifetime_points || 0) + rule.actions.award_points,
@@ -192,7 +233,7 @@ async function executeRuleActions(rule, userEmail, base44) {
   if (rule.actions.award_badge) {
     const badge = await base44.asServiceRole.entities.Badge.filter({
       id: rule.actions.award_badge
-    });
+    }) as Badge[];
 
     if (badge.length > 0) {
       await base44.asServiceRole.entities.BadgeAward.create({

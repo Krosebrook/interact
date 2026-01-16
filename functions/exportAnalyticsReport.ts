@@ -5,17 +5,39 @@
 
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.4';
 import { jsPDF } from 'npm:jspdf@2.5.1';
+import type {
+  Base44Client,
+  Event,
+  Activity,
+  Participation,
+  UserPoints,
+} from './lib/types.ts';
+import { getErrorMessage } from './lib/types.ts';
 
-Deno.serve(async (req) => {
+interface ExportPayload {
+  format?: 'pdf' | 'csv';
+  dateRange?: string;
+}
+
+interface AnalyticsMetrics {
+  totalEvents: number;
+  completedEvents: number;
+  totalParticipants: number;
+  avgAttendance: number;
+  totalPoints: number;
+  typeBreakdown: Record<string, number>;
+}
+
+Deno.serve(async (req: Request): Promise<Response> => {
   try {
-    const base44 = createClientFromRequest(req);
+    const base44 = createClientFromRequest(req) as Base44Client;
     const user = await base44.auth.me();
 
     if (!user || user.role !== 'admin') {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { format = 'pdf', dateRange = 'all' } = await req.json();
+    const { format = 'pdf', dateRange = 'all' }: ExportPayload = await req.json();
 
     // Fetch analytics data
     const [events, participations, userPoints, activities] = await Promise.all([
@@ -23,20 +45,20 @@ Deno.serve(async (req) => {
       base44.asServiceRole.entities.Participation.list(),
       base44.asServiceRole.entities.UserPoints.list(),
       base44.asServiceRole.entities.Activity.list()
-    ]);
+    ]) as [Event[], Participation[], UserPoints[], Activity[]];
 
     // Calculate metrics
     const totalEvents = events.length;
-    const completedEvents = events.filter(e => e.status === 'completed').length;
-    const totalParticipants = new Set(participations.map(p => p.participant_email)).size;
+    const completedEvents = events.filter((e) => e.status === 'completed').length;
+    const totalParticipants = new Set(participations.map((p) => p.participant_email)).size;
     const avgAttendance = participations.length / (completedEvents || 1);
     const totalPoints = userPoints.reduce((sum, u) => sum + (u.total_points || 0), 0);
 
     // Activity type breakdown
-    const typeBreakdown = {};
-    events.forEach(event => {
-      const activity = activities.find(a => a.id === event.activity_id);
-      if (activity) {
+    const typeBreakdown: Record<string, number> = {};
+    events.forEach((event) => {
+      const activity = activities.find((a) => a.id === event.activity_id);
+      if (activity && activity.type) {
         typeBreakdown[activity.type] = (typeBreakdown[activity.type] || 0) + 1;
       }
     });
@@ -58,18 +80,22 @@ Deno.serve(async (req) => {
         participations
       );
     }
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Export error:', error);
-    return Response.json({ error: error.message }, { status: 500 });
+    return Response.json({ error: getErrorMessage(error) }, { status: 500 });
   }
 });
 
-function generateCSV(events, participations, userPoints) {
+function generateCSV(
+  events: Event[],
+  participations: Participation[],
+  userPoints: UserPoints[]
+): Response {
   // Event summary CSV
   const eventHeaders = 'Event ID,Title,Type,Date,Status,Participants\n';
-  const eventRows = events.map(e => {
-    const parts = participations.filter(p => p.event_id === e.id);
-    return `"${e.id}","${e.title}","${e.event_type || 'other'}","${e.scheduled_date}","${e.status}",${parts.length}`;
+  const eventRows = events.map((e) => {
+    const parts = participations.filter((p) => p.event_id === e.id);
+    return `"${e.id}","${e.title}","${'other'}","${e.scheduled_date}","${e.status || 'unknown'}",${parts.length}`;
   }).join('\n');
 
   const csv = eventHeaders + eventRows;
@@ -82,7 +108,11 @@ function generateCSV(events, participations, userPoints) {
   });
 }
 
-function generatePDF(metrics, events, participations) {
+function generatePDF(
+  metrics: AnalyticsMetrics,
+  events: Event[],
+  participations: Participation[]
+): Response {
   const doc = new jsPDF();
   const pageWidth = doc.internal.pageSize.getWidth();
   let yPos = 20;
@@ -91,7 +121,7 @@ function generatePDF(metrics, events, participations) {
   doc.setFontSize(24);
   doc.setTextColor(20, 41, 77); // INT Navy
   doc.text('INTeract Analytics Report', pageWidth / 2, yPos, { align: 'center' });
-  
+
   yPos += 10;
   doc.setFontSize(10);
   doc.setTextColor(100, 100, 100);
@@ -102,12 +132,12 @@ function generatePDF(metrics, events, participations) {
   doc.setFontSize(16);
   doc.setTextColor(20, 41, 77);
   doc.text('Overview Metrics', 20, yPos);
-  
+
   yPos += 10;
   doc.setFontSize(11);
   doc.setTextColor(0, 0, 0);
-  
-  const metricsData = [
+
+  const metricsData: [string, string | number][] = [
     ['Total Events:', metrics.totalEvents],
     ['Completed Events:', metrics.completedEvents],
     ['Total Participants:', metrics.totalParticipants],
@@ -117,9 +147,9 @@ function generatePDF(metrics, events, participations) {
 
   metricsData.forEach(([label, value]) => {
     doc.text(label, 25, yPos);
-    doc.setFont(undefined, 'bold');
+    doc.setFont(undefined as unknown as string, 'bold');
     doc.text(String(value), 80, yPos);
-    doc.setFont(undefined, 'normal');
+    doc.setFont(undefined as unknown as string, 'normal');
     yPos += 8;
   });
 
@@ -128,7 +158,7 @@ function generatePDF(metrics, events, participations) {
   doc.setFontSize(16);
   doc.setTextColor(20, 41, 77);
   doc.text('Activity Type Breakdown', 20, yPos);
-  
+
   yPos += 10;
   doc.setFontSize(11);
   doc.setTextColor(0, 0, 0);
@@ -155,27 +185,27 @@ function generatePDF(metrics, events, participations) {
   doc.setTextColor(0, 0, 0);
 
   // Table headers
-  doc.setFont(undefined, 'bold');
+  doc.setFont(undefined as unknown as string, 'bold');
   doc.text('Event', 20, yPos);
   doc.text('Date', 100, yPos);
   doc.text('Attendance', 150, yPos);
-  doc.setFont(undefined, 'normal');
+  doc.setFont(undefined as unknown as string, 'normal');
   yPos += 7;
 
   // Recent 10 events
   const recentEvents = events
-    .sort((a, b) => new Date(b.scheduled_date) - new Date(a.scheduled_date))
+    .sort((a, b) => new Date(b.scheduled_date).getTime() - new Date(a.scheduled_date).getTime())
     .slice(0, 10);
 
-  recentEvents.forEach(event => {
+  recentEvents.forEach((event) => {
     if (yPos > 270) {
       doc.addPage();
       yPos = 20;
     }
 
-    const parts = participations.filter(p => p.event_id === event.id).length;
+    const parts = participations.filter((p) => p.event_id === event.id).length;
     const eventTitle = event.title.length > 30 ? event.title.substring(0, 27) + '...' : event.title;
-    
+
     doc.text(eventTitle, 20, yPos);
     doc.text(new Date(event.scheduled_date).toLocaleDateString(), 100, yPos);
     doc.text(String(parts), 150, yPos);
