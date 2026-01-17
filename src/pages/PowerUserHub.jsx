@@ -63,7 +63,7 @@ export default function PowerUserHub() {
         <p className="text-slate-600">
           {powerUser?.power_user_tier === 'free'
             ? 'Keep engaging—unlock advanced capabilities as you grow.'
-            : 'You're unlocking premium capabilities based on how you work.'}
+            : "You're unlocking premium capabilities based on how you work."}
         </p>
       </div>
 
