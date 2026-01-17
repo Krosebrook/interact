@@ -78,10 +78,10 @@ export default function InterventionWidget() {
               <div className="flex-1">
                 <p className="font-medium text-slate-900 mb-1">{intervention.message}</p>
                 <p className="text-xs text-slate-600">
-                  {intervention.type === 'value_reminder' && 'We've curated updates for you.'}
-                  {intervention.type === 'context_restoration' && 'Your previous activities are waiting.'}
-                  {intervention.type === 'habit_reinforcement' && 'Keep the momentum going.'}
-                  {intervention.type === 'feature_discovery' && 'Unlock new capabilities.'}
+                  {intervention.type === 'value_reminder' && "We've curated updates for you."}
+                  {intervention.type === 'context_restoration' && "Your previous activities are waiting."}
+                  {intervention.type === 'habit_reinforcement' && "Keep the momentum going."}
+                  {intervention.type === 'feature_discovery' && "Unlock new capabilities."}
                 </p>
               </div>
               <button

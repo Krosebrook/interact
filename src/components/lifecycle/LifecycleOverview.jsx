@@ -68,13 +68,13 @@ export default function LifecycleOverview() {
         </CardHeader>
         <CardContent className="space-y-3">
           <p className="text-white/90">
-            {lifecycleState.current_state === 'new' && 'You're just getting started!'}
-            {lifecycleState.current_state === 'activated' && 'Great first steps—momentum building.'}
-            {lifecycleState.current_state === 'engaged' && 'You're building a habit with us.'}
-            {lifecycleState.current_state === 'power_user' && 'Advanced capabilities unlocked.'}
-            {lifecycleState.current_state === 'at_risk' && 'We'd love to help you get back on track.'}
-            {lifecycleState.current_state === 'dormant' && 'We miss you—welcome back anytime.'}
-            {lifecycleState.current_state === 'returning' && 'Glad you're back!'}
+            {lifecycleState.current_state === 'new' && "You're just getting started!"}
+            {lifecycleState.current_state === 'activated' && "Great first steps—momentum building."}
+            {lifecycleState.current_state === 'engaged' && "You're building a habit with us."}
+            {lifecycleState.current_state === 'power_user' && "Advanced capabilities unlocked."}
+            {lifecycleState.current_state === 'at_risk' && "We'd love to help you get back on track."}
+            {lifecycleState.current_state === 'dormant' && "We miss you—welcome back anytime."}
+            {lifecycleState.current_state === 'returning' && "Glad you're back!"}
           </p>
           <p className="text-sm text-white/70">
             {daysInState} day{daysInState !== 1 ? 's' : ''} in this state
