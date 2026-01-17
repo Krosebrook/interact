@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { useUserData } from '../components/hooks/useUserData.jsx';
 import { useEventData } from '../components/hooks/useEventData';
+import ContentRecommendationWidget from '../components/ai/ContentRecommendationWidget';
 import {
   filterUpcomingEvents,
   getParticipationStats,
