@@ -24,6 +24,10 @@ import RecurrenceSettings from './RecurrenceSettings';
 import TimeSlotSuggestions from './TimeSlotSuggestions';
 import RichTextEventEditor from './RichTextEventEditor';
 import EventTypeConditionalFields, { EVENT_TYPES } from './EventTypeConditionalFields';
+import TemplateSelector from './TemplateSelector';
+import AIEventPlanningAssistant from '../ai/AIEventPlanningAssistant';
+import { useState } from 'react';
+import { Layout, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function ScheduleEventDialog({
@@ -35,11 +39,48 @@ export default function ScheduleEventDialog({
   recurrenceSettings,
   setRecurrenceSettings,
   onSubmit,
-  isSubmitting = false
+  isSubmitting = false,
+  teams = []
 }) {
+  const [templateSelectorOpen, setTemplateSelectorOpen] = useState(false);
+  const [showAIAssistant, setShowAIAssistant] = useState(false);
   
   const updateField = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const updateMultipleFields = (fields) => {
+    setFormData(prev => ({ ...prev, ...fields }));
+  };
+
+  const handleTemplateSelect = ({ template, activity, aiSuggestions }) => {
+    updateMultipleFields({
+      activity_id: template.activity_id,
+      title: template.name,
+      event_type: template.event_type,
+      duration_minutes: aiSuggestions?.duration_minutes || template.duration_minutes,
+      event_format: template.event_format,
+      location: template.location,
+      max_participants: aiSuggestions?.max_participants || template.max_participants,
+      custom_instructions: template.custom_instructions
+    });
+
+    if (template.meeting_link_pattern) {
+      updateField('meeting_link', template.meeting_link_pattern);
+    }
+
+    toast.success('Template applied!');
+  };
+
+  const handleAISuggestions = (suggestions) => {
+    const updates = {
+      activity_id: suggestions.activity_id,
+      duration_minutes: suggestions.duration_minutes,
+      event_format: suggestions.event_format,
+      custom_instructions: suggestions.custom_instructions
+    };
+    updateMultipleFields(updates);
+    setShowAIAssistant(false);
   };
 
   const handleActivitySelect = (activityId) => {
@@ -76,11 +117,50 @@ export default function ScheduleEventDialog({
     <Dialog open={open} onOpenChange={onOpenChange} data-b44-sync="true" data-feature="events" data-component="scheduleeventdialog">
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Schedule New Event</DialogTitle>
-          <DialogDescription>
-            Create a new team activity event
-          </DialogDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <DialogTitle>Schedule New Event</DialogTitle>
+              <DialogDescription>
+                Create a new team activity event
+              </DialogDescription>
+            </div>
+            <div className="flex gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setShowAIAssistant(!showAIAssistant)}
+              >
+                <Sparkles className="h-4 w-4 mr-2" />
+                AI Assistant
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setTemplateSelectorOpen(true)}
+              >
+                <Layout className="h-4 w-4 mr-2" />
+                Template
+              </Button>
+            </div>
+          </div>
         </DialogHeader>
+
+        {showAIAssistant && (
+          <div className="mb-4">
+            <AIEventPlanningAssistant 
+              onApplySuggestions={handleAISuggestions}
+              teams={teams}
+            />
+          </div>
+        )}
+
+        <TemplateSelector
+          open={templateSelectorOpen}
+          onOpenChange={setTemplateSelectorOpen}
+          onSelectTemplate={handleTemplateSelect}
+        />
         
         <form onSubmit={handleSubmit} className="space-y-6">
           <TimeSlotSuggestions onSelectTime={handleTimeSlotSelect} />
