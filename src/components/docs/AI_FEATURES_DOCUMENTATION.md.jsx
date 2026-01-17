@@ -1,398 +1,584 @@
 # AI Features Documentation
+## Employee Engagement Platform - AI System Overview
+
+**Last Updated:** 2026-01-17  
+**Platform:** Intinc Employee Engagement Platform  
+**Target Users:** Remote employees, Team Leads, HR/People Ops
+
+---
+
+## Table of Contents
+
+1. [Overview](#overview)
+2. [AI Coaching Assistant](#ai-coaching-assistant)
+3. [Content Recommendation Engine](#content-recommendation-engine)
+4. [Team Challenge Generator](#team-challenge-generator)
+5. [Event Series Planner](#event-series-planner)
+6. [Skill Development Pathways](#skill-development-pathways)
+7. [Advanced Gamification](#advanced-gamification)
+8. [Integration Points](#integration-points)
+9. [Technical Architecture](#technical-architecture)
+
+---
 
 ## Overview
-This document details all AI-powered features in the Employee Engagement Platform, including gamification automation, team leader coaching, and new employee onboarding.
+
+The Employee Engagement Platform leverages AI to create personalized, data-driven experiences that enhance employee engagement, skill development, and team collaboration. All AI features are powered by the Base44 Core integration using `InvokeLLM` with structured JSON schemas.
+
+### Core AI Capabilities
+
+- **Personalized Coaching:** Identifies skill gaps and recommends development paths
+- **Smart Content Curation:** Recommends relevant resources, events, and activities
+- **Team Dynamics:** Generates collaborative challenges and suggests optimal team structures
+- **Event Intelligence:** Plans multi-session event series with resource allocation
+- **Adaptive Learning:** Continuously adjusts recommendations based on user progress
 
 ---
 
-## 1. Automated Gamification System
+## AI Coaching Assistant
 
 ### Purpose
-Automatically awards points and badges based on configurable rules when users perform specific actions.
+Provides personalized coaching recommendations for individual employees and teams, identifying skill gaps and suggesting targeted development opportunities.
 
-### Components
+### Backend Function
+**File:** `functions/aiCoachingRecommendations.js`
 
-#### Backend Function: `processGamificationRules`
-- **Triggers**: Event attendance, feedback submission, recognition, survey completion, profile completion, team joining
-- **Processing**: Evaluates rules, checks limits, awards points/badges, creates ledger entries
-- **Location**: `functions/processGamificationRules.js`
+### Key Features
 
-#### Frontend Hook: `useGamificationTrigger`
-- **Purpose**: Trigger gamification processing from any component
-- **Usage**:
+#### Skill Gap Analysis
+- Analyzes user profile, event participation, and collaboration patterns
+- Identifies critical, moderate, and minor skill gaps
+- Provides impact assessment for each gap
+- Suggests step-by-step learning paths
+
+#### Development Opportunities
+- Maps current skill level to target level
+- Estimates time to proficiency
+- Matches learning resources from the platform database
+- Suggests relevant internal events and workshops
+
+### Data Inputs
 ```javascript
-import { useGamificationTrigger } from '../hooks/useGamificationTrigger';
-
-const { trigger } = useGamificationTrigger();
-
-await trigger('event_attendance', userEmail, {
-  event_id: eventId,
-  reference_id: eventId
-});
-```
-- **Location**: `components/hooks/useGamificationTrigger.js`
-
-### Integrated Components
-All user actions now trigger gamification:
-- ✅ Event attendance (`useEventAttendance`)
-- ✅ Feedback submission (`FeedbackForm`)
-- ✅ Recognition given/received (`RecognitionForm`)
-- ✅ Survey completion (`SurveyForm`)
-- ✅ Team joining (`useTeamActions`)
-- ✅ Profile completion (`useProfileCompletion`)
-
-### Configuration
-Admins configure rules at: **Gamification Settings → Rules Admin**
-
----
-
-## 2. Team Leader AI Assistant
-
-### Purpose
-Provides AI-powered insights and content generation for team leaders.
-
-### Backend Function: `teamLeaderAIAssistant`
-**Location**: `functions/teamLeaderAIAssistant.js`
-
-**Actions**:
-1. **analyze_performance**: Team health scoring and recommendations
-2. **suggest_recognition**: Generate recognition message ideas
-3. **suggest_challenge**: Create team challenge proposals
-4. **draft_approval**: Draft responses for recognition approvals
-
-**Input**:
-```json
 {
-  "action": "analyze_performance",
-  "team_id": "team_123",
-  "context": { "context": "optional context string" }
+  target_user_email: string,
+  focus_area?: string // Optional: 'skill development', 'engagement', 'wellness'
 }
 ```
 
-**Output**: Structured JSON with insights and suggestions
-
-### Frontend Component: `TeamLeaderAIAssistant`
-**Location**: `components/teamLeader/TeamLeaderAIAssistant.jsx`
-
-**Features**:
-- 4 tabs: Insights, Recognition, Challenges, Approvals
-- Copy-to-clipboard for AI suggestions
-- Context-aware generation
-
-### Security
-- Validates team leader authorization
-- Only accessible by team leader or admin
-- Uses service role for data aggregation
-
----
-
-## 3. Team Coaching Module
-
-### Purpose
-Proactively identifies at-risk and excelling team members with personalized coaching strategies.
-
-### Backend Function: `teamCoachingAI`
-**Location**: `functions/teamCoachingAI.js`
-
-**Analysis Performed**:
-1. **Engagement Trends**: 30-day activity analysis
-2. **Risk Detection**: Identifies disengaging members
-3. **Excellence Recognition**: Highlights high performers
-4. **Skill Gap Analysis**: Maps team learning needs
-
-**Output Structure**:
+### AI Response Schema
 ```json
 {
-  "team_summary": {
-    "total_members": 10,
-    "avg_points": 150,
-    "at_risk_count": 2,
-    "excelling_count": 3
-  },
-  "at_risk_members": [
+  "skill_gaps": [
     {
-      "email": "user@example.com",
-      "coaching": {
-        "risk_level": "medium",
-        "coaching_strategies": ["..."],
-        "conversation_starters": ["..."],
-        "immediate_actions": ["..."]
-      }
+      "skill": "string",
+      "gap_severity": "critical|moderate|minor",
+      "impact": "string",
+      "suggested_learning_path": "string"
     }
   ],
-  "excelling_members": [...],
-  "skill_gaps": {
-    "top_gaps": [...],
-    "recommendations": [...]
-  }
+  "skill_development_opportunities": [
+    {
+      "skill": "string",
+      "current_level": "beginner|intermediate|advanced",
+      "target_level": "intermediate|advanced|expert",
+      "suggested_path": "string",
+      "estimated_time": "string",
+      "matched_resources": ["resource titles"]
+    }
+  ],
+  "recommended_activities": [...],
+  "engagement_insights": {...}
 }
 ```
 
-### Frontend Component: `TeamCoachingModule`
-**Location**: `components/teamLeader/TeamCoachingModule.jsx`
+### Frontend Components
+- **`components/admin/AICoachingAssistant.js`**: Admin dashboard for viewing team coaching insights
+- **`components/profile/SkillGapAnalysis.js`**: User-facing skill gap display with action items
 
-**Features**:
-- At-risk member coaching strategies
-- High performer leverage opportunities
-- Skill gap recommendations with learning paths
-- Expandable member cards
+### Usage
+```javascript
+import { base44 } from '@/api/base44Client';
 
-### Risk Levels
-- **High**: <2 events/month, decreasing trend, no streak
-- **Medium**: 2-3 events/month, stable trend
-- **Low**: Active but needs attention
+const response = await base44.functions.invoke('aiCoachingRecommendations', {
+  target_user_email: 'user@company.com',
+  focus_area: 'skill development'
+});
+
+const { skill_gaps, skill_development_opportunities } = response.data.coaching;
+```
 
 ---
 
-## 4. New Employee Onboarding AI
+## Content Recommendation Engine
 
 ### Purpose
-Generates personalized onboarding experiences for new hires.
+Delivers personalized content recommendations based on user role, engagement patterns, skill gaps, and active challenges.
 
-### Backend Function: `newEmployeeOnboardingAI`
-**Location**: `functions/newEmployeeOnboardingAI.js`
+### Backend Function
+**File:** `functions/aiContentRecommender.js`
 
-**Actions**:
+### Key Features
 
-#### 1. Generate Plan
+#### Multi-Source Recommendations
+- **Learning Resources:** Articles, courses, videos, tutorials
+- **Upcoming Events:** Workshops, training sessions, team activities
+- **Activities:** Practice exercises, collaborative tasks
+- **Internal Documents:** Knowledge base articles (via KnowledgeBase entity)
+
+#### Relevance Scoring
+Each recommendation includes:
+- Relevance score (1-10)
+- Match reason (skill gap, career goal, engagement pattern, challenge support)
+- Estimated time to complete
+- Personalized explanation
+
+### Data Inputs
+```javascript
+{
+  user_email?: string // Optional, defaults to authenticated user
+}
+```
+
+### AI Response Schema
 ```json
 {
-  "action": "generate_plan",
-  "context": {
-    "role": "facilitator",
-    "department": "Engineering"
+  "learning_recommendations": [
+    {
+      "content_type": "learning_resource|event|activity|internal_document",
+      "title": "string",
+      "description": "string",
+      "relevance_score": number,
+      "match_reason": "string",
+      "estimated_time": "string"
+    }
+  ],
+  "event_recommendations": [...],
+  "activity_recommendations": [...],
+  "personalized_message": "string"
+}
+```
+
+### Frontend Component
+**`components/ai/ContentRecommendationWidget.js`**
+
+Displays top 6 recommendations sorted by relevance score, with visual indicators for:
+- Content type (learning, event, activity)
+- Relevance score with star rating
+- Match reason badge
+- Quick action buttons
+
+### Integration Points
+- **User Dashboard:** Primary placement for personalized recommendations
+- **User Profile:** Secondary placement in "Contributions" tab
+- **Manager Dashboard:** View recommendations for team members
+
+---
+
+## Team Challenge Generator
+
+### Purpose
+Creates AI-powered team challenges that drive engagement, collaboration, and skill development aligned with organizational goals.
+
+### Backend Function
+**File:** `functions/aiTeamChallengeGenerator.js`
+
+### Key Features
+
+#### Challenge Design
+- Analyzes team context and historical engagement data
+- Generates challenge structure with milestones
+- Recommends activities and frequency
+- Suggests points multipliers and incentives
+
+#### AI-Generated Components
+- **Challenge Name & Description:** Engaging, goal-aligned
+- **Target Metrics:** Points, events attended, recognitions given, custom metrics
+- **Milestones:** Progressive goals with point rewards
+- **Recommended Activities:** Frequency-based activity suggestions
+- **Team Incentives:** Individual and team-level rewards
+- **Engagement Tactics:** Specific strategies to maintain momentum
+
+### Data Inputs
+```javascript
+{
+  team_id?: string,
+  goal_description: string,
+  duration_days: number
+}
+```
+
+### AI Response Schema
+```json
+{
+  "challenge_name": "string",
+  "description": "string",
+  "challenge_type": "points|events|recognition|learning|wellness|custom",
+  "duration_days": number,
+  "target_metric": {
+    "metric_type": "string",
+    "target_value": number,
+    "description": "string"
+  },
+  "milestones": [
+    {
+      "milestone_name": "string",
+      "threshold": number,
+      "reward_points": number,
+      "description": "string"
+    }
+  ],
+  "recommended_activities": [...],
+  "team_incentives": {...},
+  "engagement_tactics": [...],
+  "tracking_tips": [...],
+  "celebration_ideas": [...]
+}
+```
+
+### Frontend Component
+**`components/teams/TeamChallengeCreator.js`**
+
+### Related Entities
+- **TeamChallenge:** Stores challenge configuration
+- **TeamChallengeProgress:** Tracks individual/team progress
+- **BadgeAward:** Awarded upon milestone completion
+
+---
+
+## Event Series Planner
+
+### Purpose
+Automates the creation of multi-session event series with AI-suggested follow-up events, resources, and collaborators.
+
+### Backend Functions
+1. **`functions/aiTemplateSuggestions.js`**: Generates series structure
+2. **`functions/createDraftEventSeries.js`**: Creates draft events
+
+### Key Features
+
+#### Series Structure Generation
+- Analyzes template/objective and historical event data
+- Suggests total sessions, cadence, and duration
+- Plans participant learning journey
+- Identifies success indicators
+
+#### Follow-Up Event Planning
+- Generates session-by-session event titles and objectives
+- Suggests activities for each session
+- Calculates optimal timing and build-up sequence
+- Pre-fills event details for automation
+
+#### Resource & Collaborator Matching
+- Identifies required resources (documents, videos, tools, materials)
+- Suggests collaborators based on skills and expertise
+- Matches internal subject matter experts
+- Provides sourcing recommendations
+
+### Data Inputs (aiTemplateSuggestions)
+```javascript
+{
+  template_id?: string,
+  template_objective: string
+}
+```
+
+### AI Response Schema
+```json
+{
+  "series_structure": {
+    "total_sessions": number,
+    "recommended_cadence": "weekly|bi-weekly|monthly",
+    "duration_weeks": number
+  },
+  "follow_up_events": [
+    {
+      "session_number": number,
+      "title": "string",
+      "objective": "string",
+      "suggested_activity": "string",
+      "timing": "string",
+      "build_on": "string"
+    }
+  ],
+  "required_resources": [...],
+  "suggested_collaborators": [
+    {
+      "role": "facilitator|co-host|subject_expert",
+      "skills_needed": ["string"],
+      "when_needed": "string",
+      "reason": "string"
+    }
+  ],
+  "success_indicators": [...],
+  "participant_journey": "string"
+}
+```
+
+### Automated Series Creation
+**Function:** `createDraftEventSeries.js`
+
+- Creates draft Event entities for each session
+- Links events via `series_id`
+- Schedules based on recommended cadence
+- Assigns facilitators based on skill matching
+- Pre-fills event details from AI suggestions
+
+### Frontend Component
+**`components/templates/AITemplateSuggestions.js`**
+
+---
+
+## Skill Development Pathways
+
+### Purpose
+Creates dynamic, personalized learning pathways that adapt based on user progress and newly identified needs.
+
+### Implementation
+Enhanced via `aiCoachingRecommendations` function with structured pathway output.
+
+### Key Features
+
+#### Sequenced Learning
+- Step-by-step roadmap for each skill gap
+- Mix of learning resources, events, and activities
+- Progressive difficulty and skill building
+- Estimated completion timelines
+
+#### Adaptive Pathways
+- Re-evaluated periodically via scheduled automation
+- Adjusts based on:
+  - Module completions (`ModuleCompletion` entity)
+  - Event participation (`Participation` entity)
+  - Challenge progress (`PersonalChallenge` entity)
+  - Skill endorsements and assessments
+
+### Data Structure
+```json
+{
+  "skill_development_pathways": [
+    {
+      "skill": "string",
+      "target_level": "intermediate|advanced|expert",
+      "roadmap": [
+        {
+          "step_number": number,
+          "type": "resource|event|activity",
+          "title": "string",
+          "description": "string",
+          "estimated_time": "string",
+          "prerequisites": ["string"]
+        }
+      ],
+      "estimated_completion_time": "string",
+      "progress_tracking": {
+        "steps_completed": number,
+        "completion_percentage": number
+      }
+    }
+  ]
+}
+```
+
+### Future Enhancement
+Planned automation to periodically invoke `aiCoachingRecommendations` with progress data to dynamically update pathways.
+
+---
+
+## Advanced Gamification
+
+### Purpose
+Enhances team challenges with leaderboards, badges, and dynamic point multipliers to drive engagement and recognition.
+
+### Core Components
+
+#### Challenge Leaderboards
+**Function:** `functions/getTeamChallengeLeaderboard.js`
+
+Features:
+- Real-time ranking of participants
+- Progress visualization (completion percentage)
+- Milestone achievement tracking
+- Team vs. individual statistics
+
+#### Milestone Badges
+- Auto-awarded upon reaching challenge milestones
+- Tracked via `TeamChallengeProgress.badges_earned`
+- Displayed in user profiles and leaderboards
+
+#### Points Multiplier System
+- AI-suggested multipliers based on challenge difficulty
+- Team-level vs. individual multipliers
+- Applied automatically via gamification rules
+
+### Entity: TeamChallengeProgress
+**File:** `entities/TeamChallengeProgress.json`
+
+Tracks:
+- Current progress value
+- Milestones achieved
+- Points earned (with multiplier applied)
+- Badges earned
+- Leaderboard rank
+- Last activity timestamp
+
+---
+
+## Integration Points
+
+### User Dashboard
+- Content Recommendation Widget
+- Skill Gap Analysis summary
+- Active challenges progress
+- Personalized coaching insights
+
+### Manager Dashboard
+- Team skill gap overview
+- Challenge creation and tracking
+- Team member coaching recommendations
+- Event series planning
+
+### User Profile
+- Detailed skill gap analysis
+- Learning pathway roadmaps
+- Challenge participation history
+- Badge showcase
+
+### Event Management
+- AI template series suggestions
+- Automated series creation
+- Collaborator recommendations
+
+---
+
+## Technical Architecture
+
+### Backend Functions (Deno)
+All AI functions follow this pattern:
+
+```javascript
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
+
+Deno.serve(async (req) => {
+  const base44 = createClientFromRequest(req);
+  const user = await base44.auth.me();
+  
+  // Authentication check
+  if (!user) {
+    return Response.json({ error: 'Unauthorized' }, { status: 401 });
   }
-}
-```
-
-**Returns**: 30-day onboarding plan with weekly breakdown
-
-#### 2. Generate Introductions
-```json
-{
-  "action": "generate_introductions",
-  "context": {}
-}
-```
-
-**Returns**: Personalized intro messages to key team members
-
-#### 3. Suggest Tasks
-```json
-{
-  "action": "suggest_tasks",
-  "context": {}
-}
-```
-
-**Returns**: Categorized first-week tasks
-
-#### 4. Chatbot
-```json
-{
-  "action": "chatbot",
-  "context": { "question": "How do I join a team?" }
-}
-```
-
-**Returns**: AI answer with suggested actions and resources
-
-#### 5. Learning Resources
-```json
-{
-  "action": "learning_resources",
-  "context": { "interests": ["JavaScript", "Leadership"] }
-}
-```
-
-**Returns**: Prioritized learning resources
-
-### Frontend Page: `NewEmployeeOnboarding`
-**Location**: `pages/NewEmployeeOnboarding.js`
-
-**Features**:
-- 4-tab interface (Plan, Team, Tasks, Learn)
-- Progress tracking with task completion
-- Sticky AI chatbot sidebar
-- Auto-redirects if onboarding already completed
-
-### Components
-
-#### OnboardingChatbot
-**Location**: `components/onboarding/OnboardingChatbot.jsx`
-- Real-time Q&A with AI
-- Suggested actions and resources
-- Auto-scroll to latest message
-
-#### OnboardingPlanDisplay
-**Location**: `components/onboarding/OnboardingPlanDisplay.jsx`
-- Week-by-week expandable plan
-- Tasks, outcomes, resources, metrics per week
-
----
-
-## Usage Examples
-
-### Triggering Gamification from Event Check-in
-```javascript
-import { useEventAttendance } from '../events/useEventAttendance';
-
-const { markAttendance } = useEventAttendance();
-
-await markAttendance({
-  participationId: 'p123',
-  eventId: 'e456',
-  userEmail: 'user@example.com',
-  attended: true
+  
+  // Fetch context data
+  const [data1, data2] = await Promise.all([...]);
+  
+  // Build LLM prompt
+  const prompt = `...context and instructions...`;
+  
+  // Invoke AI
+  const aiResponse = await base44.asServiceRole.integrations.Core.InvokeLLM({
+    prompt,
+    response_json_schema: {...}
+  });
+  
+  // Post-process and return
+  return Response.json({ success: true, data: aiResponse });
 });
-// Automatically triggers: event_attendance rule
 ```
 
-### Getting Team Coaching Insights
+### Frontend Components (React)
+All AI components use React Query for data fetching:
+
 ```javascript
-import TeamCoachingModule from '../teamLeader/TeamCoachingModule';
-
-<TeamCoachingModule team={myTeam} />
-// Click "Generate Insights" to analyze team
+const { data, isLoading } = useQuery({
+  queryKey: ['ai-feature', userEmail],
+  queryFn: async () => {
+    const response = await base44.functions.invoke('aiFunction', {...});
+    return response.data;
+  },
+  staleTime: 1000 * 60 * 30 // 30 min cache
+});
 ```
 
-### New Employee Onboarding Flow
-1. New user logs in (first time)
-2. Redirects to `NewEmployeeOnboarding` page
-3. AI generates personalized plan automatically
-4. User completes tasks, chats with AI
-5. Gamification triggers on task completion
+### AI Provider
+- **Primary:** `base44.integrations.Core.InvokeLLM`
+- **Fallback:** None (single provider for consistency)
+- **Context Enhancement:** `add_context_from_internet: false` (uses internal data only)
+
+### Data Flow
+1. User action triggers frontend component
+2. Component invokes backend function via Base44 SDK
+3. Backend fetches relevant entities from database
+4. Backend constructs structured prompt with context
+5. AI generates JSON response matching schema
+6. Backend post-processes (matching, enrichment)
+7. Response returned to frontend
+8. Component renders personalized UI
 
 ---
 
-## Performance Considerations
+## Best Practices
 
-### Caching Strategy
-- Team analytics: 30s stale time
-- Gamification rules: On-demand processing
-- AI responses: Not cached (always fresh)
+### Prompt Engineering
+- Provide comprehensive context (user data, available content, historical patterns)
+- Use structured JSON schemas to ensure consistent outputs
+- Include examples in prompts for complex structures
+- Specify relevance scoring criteria
 
-### Rate Limiting
-- AI calls: Debounced to prevent spam
-- Silent fail on gamification errors (UX preservation)
+### Performance Optimization
+- Cache AI responses with appropriate `staleTime`
+- Use parallel queries (`Promise.all`) for data fetching
+- Implement loading states and progressive disclosure
+- Limit recommendations to top N results
 
-### Optimization
-- Parallel data fetching where possible
-- Service role for aggregations (avoid N+1 queries)
-- Progressive loading (show cached data while fetching)
+### Data Privacy
+- All functions verify user authentication
+- Role-based access control enforced
+- No PII exposed in AI prompts beyond necessary context
+- Anonymize survey data before AI analysis
 
----
-
-## Error Handling
-
-### Gamification Triggers
-- Silent fail (logs error, doesn't block user action)
-- Toast notifications only on success
-
-### AI Functions
-- User-facing error messages
-- Graceful degradation (show cached/manual options)
-- Retry mechanisms for transient failures
-
-### Team Leader Features
-- Authorization checks (team leader or admin only)
-- Fallback to manual entry if AI fails
-
----
-
-## Security & Privacy
-
-### RBAC Enforcement
-- Team leaders: Can only access their team's data
-- Admins: Full access to all teams
-- Service role: Used only for aggregations, not mutations
-
-### Data Access
-- Member PII: Displayed only as email (no sensitive info)
-- Survey responses: Already anonymized
-- Recognition: Respects visibility settings
-
-### API Authorization
-All backend functions:
-1. Authenticate user (`base44.auth.me()`)
-2. Verify team leader role
-3. Use service role only for reads
+### Error Handling
+- Graceful degradation if AI service unavailable
+- Fallback to manual content discovery
+- Log errors without exposing sensitive data
+- User-friendly error messages
 
 ---
 
 ## Future Enhancements
 
-### Potential Additions
-- [ ] Multi-language support for AI responses
-- [ ] Voice-based onboarding chatbot
-- [ ] Predictive analytics for retention risk
-- [ ] Automated coaching email drafts
-- [ ] Integration with HRIS systems
-- [ ] Slack/Teams bot for coaching reminders
-
-### Monitoring Needs
-- Track AI response quality (thumbs up/down)
-- Monitor trigger success rates
-- Measure coaching action follow-through
+1. **Multi-Modal AI:** Vision support for analyzing uploaded documents/images
+2. **Predictive Analytics:** Forecast engagement trends and proactive interventions
+3. **Natural Language Queries:** Chatbot interface for exploring content
+4. **A/B Testing:** AI-suggested variants for gamification rules
+5. **Sentiment Analysis:** Analyze feedback and comments for team health insights
+6. **Automated Pathways:** Fully automated skill pathway updates based on progress
+7. **Collaborative Filtering:** Enhanced recommendations based on similar user patterns
 
 ---
 
-## Troubleshooting
+## Support & Troubleshooting
 
-### Gamification Not Triggering
-1. Check rule is active in `GamificationRule` entity
-2. Verify trigger_type matches rule configuration
-3. Check user hasn't hit limit (daily/weekly/monthly)
-4. Review console for silent errors
+### Common Issues
 
-### AI Assistant Not Loading
-1. Verify OpenAI API key is set
-2. Check backend function deployed successfully
-3. Test function endpoint directly from Dashboard → Code
-4. Review network tab for 500 errors
+**AI recommendations not appearing:**
+- Verify user has sufficient activity history (min 3 events attended)
+- Check authentication token validity
+- Ensure `aiCoachingRecommendations` function deployed
 
-### Team Coaching Shows No Data
-1. Ensure team has at least 2 members
-2. Check 30-day activity window (new teams may show empty)
-3. Verify team_id is correct in request
-4. Check service role permissions
+**Low relevance scores:**
+- Review user profile completeness (skills, goals, preferences)
+- Increase diversity of learning resources in database
+- Adjust AI prompt to weight recent activity more heavily
 
----
+**Series creation fails:**
+- Verify template has valid `activity_id`
+- Check user has permissions to create events
+- Ensure series suggestions include valid `follow_up_events`
 
-## API Reference
-
-### Gamification Trigger Types
-- `event_attendance`
-- `event_completion`
-- `feedback_submitted`
-- `recognition_given`
-- `recognition_received`
-- `skill_achievement`
-- `streak_milestone`
-- `challenge_completed`
-- `survey_completed`
-- `profile_completed`
-- `team_join`
-- `channel_participation`
-- `milestone_celebrated`
-- `points_threshold`
-- `activity_completion`
-- `first_time_action`
-- `consecutive_actions`
-
-### Team Leader AI Actions
-- `analyze_performance`
-- `suggest_recognition`
-- `suggest_challenge`
-- `draft_approval`
-
-### Onboarding AI Actions
-- `generate_plan`
-- `generate_introductions`
-- `suggest_tasks`
-- `chatbot`
-- `learning_resources`
+### Admin Tools
+- Audit Log: Track AI function invocations
+- Analytics Dashboard: Monitor AI recommendation click-through rates
+- User Feedback: Collect input on recommendation quality
 
 ---
 
-Last Updated: 2025-12-21
+**End of Documentation**

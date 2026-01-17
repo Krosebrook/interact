@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Sparkles, Calendar, Users, BookOpen, CheckCircle, Lightbulb } from 'lucide-react';
 import LoadingSpinner from '../common/LoadingSpinner';
+import { toast } from 'sonner';
 
 export default function AITemplateSuggestions({ template, onApplySeries }) {
   const suggestionsMutation = useMutation({
@@ -16,6 +17,29 @@ export default function AITemplateSuggestions({ template, onApplySeries }) {
       return response.data;
     }
   });
+
+  const createSeriesMutation = useMutation({
+    mutationFn: async () => {
+      const response = await base44.functions.invoke('createDraftEventSeries', {
+        template_id: template.id,
+        series_suggestions: suggestions,
+        base_event_data: {
+          activity_id: template.activity_id,
+          event_type: template.category,
+          duration_minutes: template.duration_minutes,
+          event_format: template.event_format
+        }
+      });
+      return response.data;
+    },
+    onSuccess: (data) => {
+      toast.success(`Created ${data.events_created} draft events in series!`);
+    }
+  });
+
+  const handleCreateDraftSeries = () => {
+    createSeriesMutation.mutate();
+  };
 
   const suggestions = suggestionsMutation.data?.suggestions;
 
