@@ -30,6 +30,7 @@ import { OnboardingProvider } from './components/onboarding/OnboardingProvider';
 import OnboardingModal from './components/onboarding/OnboardingModal';
 import OnboardingProgress from './components/onboarding/OnboardingProgress';
 import OnboardingTrigger from './components/onboarding/OnboardingTrigger';
+import AIOnboardingAssistant from './components/onboarding/AIOnboardingAssistant';
 import KeyboardShortcuts from './components/core/KeyboardShortcuts';
 import { useSessionTimeout } from './components/hooks/useSessionTimeout';
 import HelpButton from './components/onboarding/HelpButton';
@@ -236,6 +237,7 @@ export default function Layout({ children, currentPageName }) {
         {/* Onboarding System */}
         <OnboardingModal />
         <OnboardingProgress />
+        <AIOnboardingAssistant />
 
         {/* Global Keyboard Shortcuts */}
         <KeyboardShortcuts />
