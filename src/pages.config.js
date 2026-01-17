@@ -70,6 +70,7 @@ import TeamPerformanceDashboard from './pages/TeamPerformanceDashboard';
 import Teams from './pages/Teams';
 import UserProfile from './pages/UserProfile';
 import UserRoleAssignment from './pages/UserRoleAssignment';
+import AIEnhancedCoaching from './pages/AIEnhancedCoaching';
 import __Layout from './Layout.jsx';
 
 
@@ -146,6 +147,7 @@ export const PAGES = {
     "Teams": Teams,
     "UserProfile": UserProfile,
     "UserRoleAssignment": UserRoleAssignment,
+    "AIEnhancedCoaching": AIEnhancedCoaching,
 }
 
 export const pagesConfig = {

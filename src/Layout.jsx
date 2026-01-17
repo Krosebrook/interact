@@ -94,6 +94,7 @@ export default function Layout({ children, currentPageName }) {
           { name: 'Dashboard', icon: LayoutDashboard, page: 'Dashboard' },
           { name: 'Admin Panel', icon: Shield, page: 'AdminHub' },
           { name: 'Facilitator', icon: Users, page: 'FacilitatorDashboard' },
+          { name: 'AI Coaching', icon: Sparkles, page: 'AIEnhancedCoaching' },
         { name: 'Activities', icon: Sparkles, page: 'Activities' },
         { name: 'Templates', icon: LayoutDashboard, page: 'EventTemplates' },
         { name: 'Calendar', icon: Calendar, page: 'Calendar' },
