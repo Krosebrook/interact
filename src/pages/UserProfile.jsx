@@ -12,12 +12,17 @@ import { format, isPast } from 'date-fns';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import NotificationSettings from '../components/profile/NotificationSettings';
 import ProfileContributionSummary from '../components/profile/ProfileContributionSummary';
+import CommentSection from '../components/collaboration/CommentSection';
+import DirectMessaging from '../components/messaging/DirectMessaging';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { MessageSquare as MessageSquareIcon } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function UserProfile() {
   const { user, loading } = useUserData();
   const queryClient = useQueryClient();
   const [editMode, setEditMode] = useState(false);
+  const [showMessaging, setShowMessaging] = useState(false);
 
   // Get user email from URL params (for admin viewing) or use current user
   const urlParams = new URLSearchParams(window.location.search);
@@ -136,16 +141,28 @@ export default function UserProfile() {
                     <p className="text-slate-600 mt-1">{userProfile.job_title}</p>
                   )}
                 </div>
-                {canEdit && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setEditMode(!editMode)}
-                  >
-                    <Edit className="h-4 w-4 mr-2" />
-                    {editMode ? 'Cancel' : 'Edit Profile'}
-                  </Button>
-                )}
+                <div className="flex gap-2">
+                  {!isOwnProfile && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setShowMessaging(true)}
+                    >
+                      <MessageSquareIcon className="h-4 w-4 mr-2" />
+                      Message
+                    </Button>
+                  )}
+                  {canEdit && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setEditMode(!editMode)}
+                    >
+                      <Edit className="h-4 w-4 mr-2" />
+                      {editMode ? 'Cancel' : 'Edit Profile'}
+                    </Button>
+                  )}
+                </div>
               </div>
 
               {userProfile?.bio && (
