@@ -268,6 +268,40 @@ export default function AICoachingAssistant() {
         </CardContent>
       </Card>
 
+      {/* Skill Gaps */}
+      {coaching?.skill_gaps?.length > 0 && (
+        <Card className="border-2 border-red-200">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <AlertCircle className="h-5 w-5 text-red-600" />
+              Identified Skill Gaps
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {coaching.skill_gaps.map((gap, idx) => (
+                <div key={idx} className="p-4 bg-red-50 rounded-lg border border-red-200">
+                  <div className="flex items-start justify-between mb-2">
+                    <h4 className="font-semibold text-slate-900">{gap.skill}</h4>
+                    <Badge className={
+                      gap.gap_severity === 'critical' ? 'bg-red-600' :
+                      gap.gap_severity === 'moderate' ? 'bg-orange-500' :
+                      'bg-yellow-500'
+                    }>
+                      {gap.gap_severity}
+                    </Badge>
+                  </div>
+                  <p className="text-sm text-slate-700 mb-2"><strong>Impact:</strong> {gap.impact}</p>
+                  <p className="text-xs text-slate-600 bg-white p-2 rounded">
+                    <strong>Path:</strong> {gap.suggested_learning_path}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Skill Development */}
       <Card>
         <CardHeader>
@@ -282,17 +316,24 @@ export default function AICoachingAssistant() {
               <div key={idx} className="p-4 bg-purple-50 rounded-lg border border-purple-200">
                 <div className="flex items-start justify-between mb-2">
                   <h4 className="font-semibold text-slate-900">{skill.skill}</h4>
-                  <Badge variant="outline" className="capitalize">{skill.current_level}</Badge>
+                  <div className="flex gap-2">
+                    <Badge variant="outline" className="capitalize">{skill.current_level}</Badge>
+                    <Badge className="bg-purple-600">→ {skill.target_level}</Badge>
+                  </div>
                 </div>
                 <p className="text-sm text-slate-700 mb-2">{skill.suggested_path}</p>
-                {skill.resources?.length > 0 && (
+                <p className="text-xs text-purple-700 mb-2">⏱️ {skill.estimated_time}</p>
+                {skill.resource_objects?.length > 0 && (
                   <div className="mt-2">
-                    <p className="text-xs font-medium text-purple-800 mb-1">Resources:</p>
-                    <ul className="space-y-1">
-                      {skill.resources.map((resource, ridx) => (
-                        <li key={ridx} className="text-xs text-purple-700">• {resource}</li>
+                    <p className="text-xs font-medium text-purple-800 mb-1">Matched Resources:</p>
+                    <div className="space-y-1">
+                      {skill.resource_objects.map((resource, ridx) => (
+                        <div key={ridx} className="text-xs bg-white p-2 rounded border border-purple-200">
+                          <div className="font-medium">{resource.title}</div>
+                          <div className="text-slate-600">{resource.description}</div>
+                        </div>
                       ))}
-                    </ul>
+                    </div>
                   </div>
                 )}
               </div>

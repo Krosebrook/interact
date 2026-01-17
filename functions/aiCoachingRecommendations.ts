@@ -12,7 +12,7 @@ Deno.serve(async (req) => {
     const { target_user_email, team_id, focus_area } = await req.json();
 
     // Fetch comprehensive data
-    const [userProfile, userPoints, participations, recognitions, comments, teams, activities, events] = await Promise.all([
+    const [userProfile, userPoints, participations, recognitions, comments, teams, activities, events, learningResources, badgeAwards] = await Promise.all([
       target_user_email ? base44.asServiceRole.entities.UserProfile.filter({ user_email: target_user_email }) : Promise.resolve([]),
       target_user_email ? base44.asServiceRole.entities.UserPoints.filter({ user_email: target_user_email }) : Promise.resolve([]),
       target_user_email ? base44.asServiceRole.entities.Participation.filter({ user_email: target_user_email }) : Promise.resolve([]),
@@ -20,7 +20,9 @@ Deno.serve(async (req) => {
       target_user_email ? base44.asServiceRole.entities.Comment.filter({ author_email: target_user_email }) : Promise.resolve([]),
       base44.asServiceRole.entities.Team.list(),
       base44.asServiceRole.entities.Activity.list(),
-      base44.asServiceRole.entities.Event.list('-created_date', 50)
+      base44.asServiceRole.entities.Event.list('-created_date', 50),
+      base44.asServiceRole.entities.LearningResource.list(),
+      target_user_email ? base44.asServiceRole.entities.BadgeAward.filter({ user_email: target_user_email }) : Promise.resolve([])
     ]);
 
     const profile = userProfile[0];
@@ -55,6 +57,14 @@ LIFETIME METRICS:
 - Total events attended: ${attendedEvents.length}
 - Total recognitions given: ${givenRecognitions.length}
 - Total recognitions received: ${receivedRecognitions.length}
+- Badges earned: ${badgeAwards.length}
+
+SKILLS & DEVELOPMENT:
+${profile?.skills ? `Current Skills: ${profile.skills.map(s => `${s.skill_name} (${s.proficiency})`).join(', ')}` : 'No skills listed'}
+${profile?.career_goals ? `Career Goals: ${profile.career_goals.map(g => g.goal).join(', ')}` : 'No goals set'}
+
+AVAILABLE LEARNING RESOURCES:
+${learningResources.slice(0, 10).map(r => `- ${r.title} (${r.resource_type}): ${r.category}`).join('\n')}
 
 ${focus_area ? `FOCUS AREA: ${focus_area}` : ''}
 
@@ -79,12 +89,22 @@ Provide coaching recommendations in JSON format:
       "expected_benefit": "how it helps"
     }
   ],
+  "skill_gaps": [
+    {
+      "skill": "missing or weak skill",
+      "gap_severity": "critical|moderate|minor",
+      "impact": "how this gap affects performance",
+      "suggested_learning_path": "step by step development plan"
+    }
+  ],
   "skill_development_opportunities": [
     {
       "skill": "skill name",
       "current_level": "beginner|intermediate|advanced",
+      "target_level": "intermediate|advanced|expert",
       "suggested_path": "how to develop",
-      "resources": ["resource1", "resource2"]
+      "estimated_time": "timeframe to proficiency",
+      "matched_resources": ["resource title from available resources"]
     }
   ],
   "quick_wins": ["easy win 1", "easy win 2"],
@@ -123,6 +143,18 @@ Provide coaching recommendations in JSON format:
               }
             }
           },
+          skill_gaps: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: {
+                skill: { type: "string" },
+                gap_severity: { type: "string" },
+                impact: { type: "string" },
+                suggested_learning_path: { type: "string" }
+              }
+            }
+          },
           skill_development_opportunities: {
             type: "array",
             items: {
@@ -130,8 +162,10 @@ Provide coaching recommendations in JSON format:
               properties: {
                 skill: { type: "string" },
                 current_level: { type: "string" },
+                target_level: { type: "string" },
                 suggested_path: { type: "string" },
-                resources: { type: "array", items: { type: "string" } }
+                estimated_time: { type: "string" },
+                matched_resources: { type: "array", items: { type: "string" } }
               }
             }
           },
@@ -150,11 +184,24 @@ Provide coaching recommendations in JSON format:
       return { ...rec, activity_id: activity?.id, matched: !!activity };
     }) || [];
 
+    // Match learning resources
+    const enhancedSkillDev = aiCoaching.skill_development_opportunities?.map(skill => {
+      const matchedResources = skill.matched_resources?.map(resTitle => {
+        return learningResources.find(r => 
+          r.title.toLowerCase().includes(resTitle.toLowerCase()) ||
+          resTitle.toLowerCase().includes(r.title.toLowerCase())
+        );
+      }).filter(Boolean) || [];
+      
+      return { ...skill, resource_objects: matchedResources };
+    }) || [];
+
     return Response.json({
       success: true,
       coaching: {
         ...aiCoaching,
-        recommended_activities: matchedActivities
+        recommended_activities: matchedActivities,
+        skill_development_opportunities: enhancedSkillDev
       },
       employee_data: {
         email: target_user_email,
