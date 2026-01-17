@@ -160,13 +160,13 @@ export default function LifecycleIntelligenceDashboard() {
 
         <CardContent>
           <p className="text-sm text-slate-700 mb-4">
-            {lifecycleState.current_state === 'new' && 'You're exploring the platform and completing onboarding. We're here to guide every step.'}
-            {lifecycleState.current_state === 'activated' && 'Great! You've taken your first meaningful action. We're building on this momentum.'}
-            {lifecycleState.current_state === 'engaged' && 'You're using us regularly and building habits. We'll continue to make the experience more valuable.'}
-            {lifecycleState.current_state === 'power_user' && 'You've unlocked advanced capabilities and are getting significant value. Keep exploring!'}
-            {lifecycleState.current_state === 'at_risk' && 'We noticed a dip in engagement. No judgment—we're here to help you get back on track with value-first reminders.'}
-            {lifecycleState.current_state === 'dormant' && 'You've been away for a while. Come back anytime—we'll have everything ready for you, no pressure.'}
-            {lifecycleState.current_state === 'returning' && 'Welcome back! We've preserved your context and are excited to continue our partnership.'}
+            {lifecycleState.current_state === 'new' && "You're exploring the platform and completing onboarding. We're here to guide every step."}
+            {lifecycleState.current_state === 'activated' && "Great! You've taken your first meaningful action. We're building on this momentum."}
+            {lifecycleState.current_state === 'engaged' && "You're using us regularly and building habits. We'll continue to make the experience more valuable."}
+            {lifecycleState.current_state === 'power_user' && "You've unlocked advanced capabilities and are getting significant value. Keep exploring!"}
+            {lifecycleState.current_state === 'at_risk' && "We noticed a dip in engagement. No judgment—we're here to help you get back on track with value-first reminders."}
+            {lifecycleState.current_state === 'dormant' && "You've been away for a while. Come back anytime—we'll have everything ready for you, no pressure."}
+            {lifecycleState.current_state === 'returning' && "Welcome back! We've preserved your context and are excited to continue our partnership."}
           </p>
 
           <div className="bg-gradient-to-r from-int-orange/10 to-transparent p-3 rounded-lg">
