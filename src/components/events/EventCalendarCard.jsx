@@ -68,6 +68,7 @@ export default function EventCalendarCard({
   // All hooks must be called before any conditional returns
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [saveTemplateOpen, setSaveTemplateOpen] = useState(false);
+  const [commsOpen, setCommsOpen] = useState(false);
 
   // Validate required props after hooks
   if (!event) {
@@ -190,6 +191,10 @@ export default function EventCalendarCard({
                     <Bookmark className="h-4 w-4 mr-2" />
                     Save as Template
                   </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setCommsOpen(true)}>
+                    <FileText className="h-4 w-4 mr-2" />
+                    Post-Event Comms
+                  </DropdownMenuItem>
                 </>
               )}
               {!isEventPast && event.status !== 'cancelled' && onCancel && (
@@ -262,6 +267,13 @@ export default function EventCalendarCard({
         onOpenChange={setSaveTemplateOpen}
         event={event}
         activity={activity}
+      />
+
+      {/* Post-Event Communications */}
+      <PostEventCommunications
+        event={event}
+        open={commsOpen}
+        onOpenChange={setCommsOpen}
       />
     </motion.div>);
 
