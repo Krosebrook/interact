@@ -1,334 +1,482 @@
-import { useState, useEffect } from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import React, { useState, useEffect } from 'react';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
-import { CheckCircle2, Circle, ChevronRight, Sparkles } from 'lucide-react';
-import { useAnalytics } from '../hooks/useAnalytics';
-import { toast } from 'sonner';
-import confetti from 'canvas-confetti';
+import { ChevronRight, ChevronLeft, Zap, Clock, Check } from 'lucide-react';
+import { motion } from 'framer-motion';
 
-const ONBOARDING_FLOWS = {
-  participant: [
-    {
-      id: 'welcome',
-      title: 'Welcome to INTeract! 👋',
-      description: 'Let\'s get you started with the platform',
-      content: 'INTeract helps you stay connected with your remote team through activities, recognition, and engagement.',
-      action: null
-    },
-    {
-      id: 'profile',
-      title: 'Complete Your Profile',
-      description: 'Tell us about yourself',
-      content: 'Add your bio, interests, and skills to help teammates get to know you better.',
-      action: { type: 'navigate', path: 'UserProfile' }
-    },
-    {
-      id: 'browse_events',
-      title: 'Explore Upcoming Events',
-      description: 'See what\'s happening',
-      content: 'Check out team events, activities, and workshops. RSVP to your first event!',
-      action: { type: 'navigate', path: 'ParticipantPortal' }
-    },
-    {
-      id: 'join_channel',
-      title: 'Join Team Channels',
-      description: 'Connect with your team',
-      content: 'Find your team\'s channel and say hello to your colleagues.',
-      action: { type: 'navigate', path: 'Channels' }
-    },
-    {
-      id: 'give_recognition',
-      title: 'Give Your First Recognition',
-      description: 'Appreciate a teammate',
-      content: 'Recognize someone who helped you or inspired you. It feels great!',
-      action: { type: 'navigate', path: 'Recognition' }
-    },
-    {
-      id: 'complete',
-      title: 'You\'re All Set! 🎉',
-      description: 'Onboarding complete',
-      content: 'You\'re ready to engage with your team. Keep exploring and earning points!',
-      action: null
-    }
-  ],
-  facilitator: [
-    {
-      id: 'welcome',
-      title: 'Welcome, Facilitator! 🌟',
-      description: 'Let\'s set up your facilitation toolkit',
-      content: 'As a facilitator, you\'ll create and lead engaging activities for your team.',
-      action: null
-    },
-    {
-      id: 'profile',
-      title: 'Complete Your Profile',
-      description: 'Set up your facilitator profile',
-      content: 'Add your expertise and interests to help participants connect with you.',
-      action: { type: 'navigate', path: 'UserProfile' }
-    },
-    {
-      id: 'explore_activities',
-      title: 'Browse Activity Library',
-      description: 'Discover activity templates',
-      content: 'Explore 15+ pre-built activities you can use for events.',
-      action: { type: 'navigate', path: 'Activities' }
-    },
-    {
-      id: 'create_event',
-      title: 'Schedule Your First Event',
-      description: 'Create an event',
-      content: 'Pick an activity and schedule your first team event.',
-      action: { type: 'navigate', path: 'Calendar' }
-    },
-    {
-      id: 'team_setup',
-      title: 'Set Up Your Team',
-      description: 'Organize your team',
-      content: 'Create or join your team to start tracking engagement.',
-      action: { type: 'navigate', path: 'Teams' }
-    },
-    {
-      id: 'complete',
-      title: 'Ready to Facilitate! 🚀',
-      description: 'Onboarding complete',
-      content: 'You\'re equipped to create engaging experiences for your team!',
-      action: null
-    }
-  ],
-  admin: [
-    {
-      id: 'welcome',
-      title: 'Welcome, Admin! 🛡️',
-      description: 'Let\'s configure your platform',
-      content: 'You have full control to customize INTeract for your organization.',
-      action: null
-    },
-    {
-      id: 'invite_users',
-      title: 'Invite Team Members',
-      description: 'Build your team',
-      content: 'Invite employees to join the platform and assign roles.',
-      action: { type: 'navigate', path: 'Settings' }
-    },
-    {
-      id: 'setup_gamification',
-      title: 'Configure Gamification',
-      description: 'Set up points and badges',
-      content: 'Customize points, badges, and rewards to match your culture.',
-      action: { type: 'navigate', path: 'GamificationSettings' }
-    },
-    {
-      id: 'create_activities',
-      title: 'Create Custom Activities',
-      description: 'Build your activity library',
-      content: 'Add company-specific activities beyond the default templates.',
-      action: { type: 'navigate', path: 'Activities' }
-    },
-    {
-      id: 'integrations',
-      title: 'Set Up Integrations',
-      description: 'Connect your tools',
-      content: 'Integrate with Slack, Teams, or Google Calendar for seamless workflows.',
-      action: { type: 'navigate', path: 'Integrations' }
-    },
-    {
-      id: 'complete',
-      title: 'Platform Ready! 🎯',
-      description: 'Onboarding complete',
-      content: 'Your platform is configured. Monitor analytics to track engagement!',
-      action: null
-    }
-  ]
-};
+const FLOW_TYPES = ['full_onboarding', 'quick_start'];
 
-export default function GuidedOnboardingWizard({ user, onComplete }) {
+export default function GuidedOnboardingWizard({ onComplete }) {
+  const [flowType, setFlowType] = useState(null);
   const [currentStep, setCurrentStep] = useState(0);
-  const [completedSteps, setCompletedSteps] = useState([]);
-  const queryClient = useQueryClient();
+  const [stepData, setStepData] = useState({});
 
-  const userRole = user?.role === 'admin' ? 'admin' : user?.user_type || 'participant';
-  const steps = ONBOARDING_FLOWS[userRole] || ONBOARDING_FLOWS.participant;
-  const { trackOnboardingStep } = useAnalytics();
-
-  const { data: onboardingRecord } = useQuery({
-    queryKey: ['user-onboarding', user?.email],
+  const { data: flow, isLoading: flowLoading } = useQuery({
+    queryKey: ['onboarding-flow', flowType],
     queryFn: async () => {
-      const records = await base44.entities.UserOnboarding.filter({
-        user_email: user?.email
+      const response = await base44.functions.invoke('aiOnboardingFlowEngine', {
+        action: 'get_flow',
+        flowType
       });
-      return records[0] || null;
+      return response.data;
     },
-    enabled: !!user?.email
+    enabled: !!flowType
   });
 
-  useEffect(() => {
-    if (onboardingRecord?.milestones_completed) {
-      const completed = onboardingRecord.milestones_completed.map(m => m.title);
-      setCompletedSteps(completed);
-      
-      // Find the first incomplete step
-      const firstIncomplete = steps.findIndex(s => !completed.includes(s.id));
-      if (firstIncomplete !== -1) {
-        setCurrentStep(firstIncomplete);
-      }
-    }
-  }, [onboardingRecord, steps]);
-
-  const markStepCompleteMutation = useMutation({
-    mutationFn: async (stepId) => {
-      if (!onboardingRecord) {
-        // Create new onboarding record
-        return await base44.entities.UserOnboarding.create({
-          user_email: user.email,
-          start_date: new Date().toISOString(),
-          status: 'in_progress',
-          role: userRole,
-          milestones_completed: [{
-            day: currentStep + 1,
-            title: stepId,
-            completed_date: new Date().toISOString()
-          }]
-        });
-      } else {
-        // Update existing record
-        const updatedMilestones = [
-          ...onboardingRecord.milestones_completed,
-          {
-            day: currentStep + 1,
-            title: stepId,
-            completed_date: new Date().toISOString()
-          }
-        ];
-        
-        return await base44.entities.UserOnboarding.update(onboardingRecord.id, {
-          milestones_completed: updatedMilestones,
-          tasks_completed: updatedMilestones.length,
-          status: updatedMilestones.length >= steps.length ? 'completed' : 'in_progress'
-        });
-      }
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries(['user-onboarding']);
-      setCompletedSteps([...completedSteps, steps[currentStep].id]);
-      
-      // Track analytics
-      trackOnboardingStep(steps[currentStep].id, currentStep + 1, steps.length);
-      
-      if (currentStep === steps.length - 1) {
-        confetti({
-          particleCount: 100,
-          spread: 70,
-          origin: { y: 0.6 }
-        });
-        toast.success('🎉 Onboarding complete!');
-        if (onComplete) onComplete();
-      } else {
-        setCurrentStep(currentStep + 1);
-      }
+  const saveMutation = useMutation({
+    mutationFn: async (data) => {
+      const response = await base44.functions.invoke('aiOnboardingFlowEngine', {
+        action: 'save_step',
+        flowType,
+        stepData: { stepIndex: currentStep, data }
+      });
+      return response.data;
     }
   });
 
-  const step = steps[currentStep];
-  const progress = (completedSteps.length / steps.length) * 100;
-  const isLastStep = currentStep === steps.length - 1;
+  const completeMutation = useMutation({
+    mutationFn: async () => {
+      const response = await base44.functions.invoke('aiOnboardingFlowEngine', {
+        action: 'complete_onboarding',
+        flowType
+      });
+      return response.data;
+    },
+    onSuccess: () => onComplete?.()
+  });
 
-  const handleAction = () => {
-    if (step.action?.type === 'navigate') {
-      window.location.href = `/pages/${step.action.path}`;
+  const handleNextStep = async () => {
+    await saveMutation.mutateAsync(stepData);
+    if (currentStep < flow.flow.length - 1) {
+      setCurrentStep(currentStep + 1);
+    } else {
+      completeMutation.mutate();
     }
   };
 
-  return (
-    <Card className="max-w-2xl mx-auto border-purple-200 bg-gradient-to-br from-purple-50 to-blue-50">
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-2xl">Getting Started</CardTitle>
-          <Badge variant="outline">
-            Step {currentStep + 1} of {steps.length}
-          </Badge>
-        </div>
-        <Progress value={progress} className="h-2 mt-2" />
-      </CardHeader>
+  const handlePrevStep = () => {
+    if (currentStep > 0) setCurrentStep(currentStep - 1);
+  };
 
-      <CardContent className="space-y-6">
-        {/* Current Step */}
-        <div className="bg-white rounded-lg p-6 shadow-sm">
-          <h3 className="text-xl font-semibold text-slate-900 mb-2">{step.title}</h3>
-          <p className="text-slate-600 mb-4">{step.content}</p>
-          
-          <div className="flex gap-3">
-            {step.action && (
-              <Button onClick={handleAction} className="bg-purple-600 hover:bg-purple-700">
-                <ChevronRight className="h-4 w-4 mr-2" />
-                {step.action.type === 'navigate' ? 'Go to ' + step.action.path.replace(/([A-Z])/g, ' $1').trim() : 'Continue'}
-              </Button>
-            )}
-            
-            {!completedSteps.includes(step.id) && (
-              <Button
-                onClick={() => markStepCompleteMutation.mutate(step.id)}
-                variant={step.action ? "outline" : "default"}
-                disabled={markStepCompleteMutation.isPending}
-              >
-                <CheckCircle2 className="h-4 w-4 mr-2" />
-                {isLastStep ? 'Complete Onboarding' : 'Mark Complete & Continue'}
-              </Button>
-            )}
+  // FLOW TYPE SELECTION
+  if (!flowType) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="fixed inset-0 bg-gradient-to-br from-slate-900/95 to-slate-800/95 flex items-center justify-center z-50"
+      >
+        <div className="max-w-2xl w-full mx-4 space-y-6">
+          <div className="text-center space-y-2">
+            <h1 className="text-4xl font-bold text-white">Welcome to INTeract</h1>
+            <p className="text-slate-300">Let's get you set up to succeed</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* FULL ONBOARDING */}
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              onClick={() => setFlowType('full_onboarding')}
+              className="bg-white rounded-xl p-6 cursor-pointer hover:shadow-xl transition-all"
+            >
+              <div className="flex items-start justify-between mb-3">
+                <div>
+                  <h3 className="text-xl font-bold text-slate-900">Complete Setup</h3>
+                  <p className="text-sm text-slate-600 mt-1">Best for new users</p>
+                </div>
+                <Badge className="bg-int-orange text-white">7 mins</Badge>
+              </div>
+              <p className="text-slate-600 mb-4">
+                Personalize your experience with preferences, goals, and interests
+              </p>
+              <div className="flex items-center gap-2 text-int-orange font-medium">
+                Get Started <ChevronRight className="w-4 h-4" />
+              </div>
+            </motion.div>
+
+            {/* QUICK START */}
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              onClick={() => setFlowType('quick_start')}
+              className="bg-gradient-to-br from-int-orange/20 to-int-navy/20 border-2 border-int-orange rounded-xl p-6 cursor-pointer hover:shadow-xl transition-all"
+            >
+              <div className="flex items-start justify-between mb-3">
+                <div>
+                  <h3 className="text-xl font-bold text-slate-900">Quick Start</h3>
+                  <p className="text-sm text-int-orange font-medium">⚡ Fastest path</p>
+                </div>
+                <Badge className="bg-int-navy text-white">2 mins</Badge>
+              </div>
+              <p className="text-slate-600 mb-4">
+                Jump in now, complete setup later when relevant
+              </p>
+              <div className="flex items-center gap-2 text-int-navy font-medium">
+                Skip to App <ChevronRight className="w-4 h-4" />
+              </div>
+            </motion.div>
           </div>
         </div>
+      </motion.div>
+    );
+  }
 
-        {/* Step Progress List */}
-        <div className="space-y-2">
-          <h4 className="text-sm font-medium text-slate-700">Your Progress</h4>
-          {steps.map((s, idx) => {
-            const isCompleted = completedSteps.includes(s.id);
-            const isCurrent = idx === currentStep;
-            
-            return (
-              <div
-                key={s.id}
-                className={`flex items-center gap-3 p-3 rounded-lg transition-all ${
-                  isCurrent ? 'bg-purple-100 border border-purple-300' : 'bg-slate-50'
-                }`}
-              >
-                {isCompleted ? (
-                  <CheckCircle2 className="h-5 w-5 text-green-600 flex-shrink-0" />
-                ) : (
-                  <Circle className="h-5 w-5 text-slate-300 flex-shrink-0" />
-                )}
-                <div className="flex-1">
-                  <div className="text-sm font-medium text-slate-900">{s.title}</div>
-                  <div className="text-xs text-slate-500">{s.description}</div>
-                </div>
-                {isCurrent && (
-                  <Badge variant="secondary">Current</Badge>
-                )}
-              </div>
-            );
-          })}
+  // LOADING
+  if (flowLoading) {
+    return (
+      <div className="fixed inset-0 bg-gradient-to-br from-slate-900/95 to-slate-800/95 flex items-center justify-center z-50">
+        <div className="text-center space-y-3">
+          <div className="w-12 h-12 rounded-full border-4 border-slate-600 border-t-int-orange animate-spin mx-auto" />
+          <p className="text-white">Loading setup...</p>
+        </div>
+      </div>
+    );
+  }
+
+  const step = flow.flow[currentStep];
+  const progress = ((currentStep + 1) / flow.flow.length) * 100;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="fixed inset-0 bg-gradient-to-br from-slate-50 to-slate-100 z-50 overflow-y-auto"
+    >
+      <div className="max-w-2xl mx-auto p-4 sm:p-6 lg:p-8 py-12">
+        {/* HEADER */}
+        <div className="mb-8 space-y-2">
+          <div className="flex items-center gap-2 text-sm text-slate-600">
+            <span>Step {currentStep + 1}</span>
+            <span className="text-slate-400">of</span>
+            <span>{flow.flow.length}</span>
+          </div>
+          <h1 className="text-3xl font-bold">{step.name}</h1>
+          <p className="text-slate-600">{step.description}</p>
         </div>
 
-        {/* AI Tip */}
-        <Card className="bg-gradient-to-r from-blue-50 to-cyan-50 border-blue-200">
-          <CardContent className="pt-4">
-            <div className="flex gap-3">
-              <Sparkles className="h-5 w-5 text-blue-600 flex-shrink-0 mt-1" />
-              <div>
-                <h5 className="font-medium text-slate-900 mb-1">Pro Tip</h5>
-                <p className="text-sm text-slate-600">
-                  {userRole === 'participant' && 'Completing your profile helps teammates connect with you faster!'}
-                  {userRole === 'facilitator' && 'Try scheduling a simple icebreaker activity for your first event.'}
-                  {userRole === 'admin' && 'Start with a small pilot group before rolling out to the entire organization.'}
-                </p>
-              </div>
-            </div>
+        {/* PROGRESS BAR */}
+        <div className="mb-6">
+          <Progress value={progress} className="h-2" />
+          <p className="text-xs text-slate-500 mt-2">~{step.estimatedTime} min</p>
+        </div>
+
+        {/* STEP CONTENT */}
+        <Card className="mb-8">
+          <CardContent className="pt-6 space-y-6">
+            <OnboardingStepContent 
+              step={step} 
+              stepData={stepData} 
+              setStepData={setStepData}
+            />
           </CardContent>
         </Card>
-      </CardContent>
-    </Card>
+
+        {/* ACTIONS */}
+        <div className="flex justify-between gap-3">
+          <Button
+            variant="outline"
+            onClick={handlePrevStep}
+            disabled={currentStep === 0}
+          >
+            <ChevronLeft className="w-4 h-4 mr-2" />
+            Back
+          </Button>
+
+          {step.skippable && (
+            <Button
+              variant="ghost"
+              onClick={() => handleNextStep()}
+            >
+              Skip
+            </Button>
+          )}
+
+          <Button
+            onClick={handleNextStep}
+            disabled={saveMutation.isPending || completeMutation.isPending}
+            className="bg-int-orange hover:bg-int-orange/90"
+          >
+            {currentStep === flow.flow.length - 1 ? (
+              <>
+                <Check className="w-4 h-4 mr-2" />
+                Complete Setup
+              </>
+            ) : (
+              <>
+                Next <ChevronRight className="w-4 h-4 ml-2" />
+              </>
+            )}
+          </Button>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+// STEP CONTENT RENDERER
+function OnboardingStepContent({ step, stepData, setStepData }) {
+  const stepName = step.name.toLowerCase().replace(/\s+/g, '_');
+
+  switch (stepName) {
+    case 'welcome_&_role':
+      return <RoleSelection stepData={stepData} setStepData={setStepData} />;
+    case 'interest_areas':
+      return <InterestSelection stepData={stepData} setStepData={setStepData} />;
+    case 'engagement_style':
+      return <EngagementStyle stepData={stepData} setStepData={setStepData} />;
+    case 'communication_preferences':
+      return <CommunicationPrefs stepData={stepData} setStepData={setStepData} />;
+    case 'growth_goals':
+      return <GrowthGoals stepData={stepData} setStepData={setStepData} />;
+    case 'community_&_groups':
+      return <CommunitySelection stepData={stepData} setStepData={setStepData} />;
+    case 'review_&_confirm':
+      return <ReviewStep stepData={stepData} />;
+    case 'quick_setup':
+      return <QuickSetup stepData={stepData} setStepData={setStepData} />;
+    case 'you\'re_in!':
+      return <SuccessScreen />;
+    default:
+      return <div>Step content</div>;
+  }
+}
+
+// INDIVIDUAL STEP COMPONENTS
+function RoleSelection({ stepData, setStepData }) {
+  const roles = [
+    { id: 'participant', label: 'Participant', desc: 'Attend events, engage' },
+    { id: 'facilitator', label: 'Team Lead/Facilitator', desc: 'Organize & host' },
+    { id: 'admin', label: 'HR/Admin', desc: 'Manage platform' }
+  ];
+
+  return (
+    <div className="space-y-3">
+      {roles.map(role => (
+        <motion.div
+          key={role.id}
+          whileHover={{ scale: 1.02 }}
+          onClick={() => setStepData({ ...stepData, role: role.id })}
+          className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${
+            stepData.role === role.id
+              ? 'border-int-orange bg-int-orange/10'
+              : 'border-slate-200 hover:border-slate-300'
+          }`}
+        >
+          <h4 className="font-semibold">{role.label}</h4>
+          <p className="text-sm text-slate-600">{role.desc}</p>
+        </motion.div>
+      ))}
+    </div>
+  );
+}
+
+function InterestSelection({ stepData, setStepData }) {
+  const interests = [
+    'Leadership', 'Technical Skills', 'Wellness', 'Networking',
+    'Learning & Development', 'Company Culture', 'Innovation'
+  ];
+
+  const selected = stepData.interests || [];
+
+  return (
+    <div className="space-y-3">
+      <p className="text-slate-600">Select all that apply</p>
+      <div className="grid grid-cols-2 gap-2">
+        {interests.map(interest => (
+          <Button
+            key={interest}
+            variant={selected.includes(interest) ? 'default' : 'outline'}
+            onClick={() => {
+              const updated = selected.includes(interest)
+                ? selected.filter(i => i !== interest)
+                : [...selected, interest];
+              setStepData({ ...stepData, interests: updated });
+            }}
+            className={selected.includes(interest) ? 'bg-int-orange' : ''}
+          >
+            {interest}
+          </Button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function EngagementStyle({ stepData, setStepData }) {
+  const styles = [
+    { id: 'learning', label: '📚 Learning', desc: 'Skill development & growth' },
+    { id: 'networking', label: '🤝 Networking', desc: 'Connect with peers' },
+    { id: 'competitive', label: '🏆 Competitive', desc: 'Leaderboards & challenges' },
+    { id: 'wellness', label: '🧘 Wellness', desc: 'Balance & mindfulness' }
+  ];
+
+  return (
+    <div className="space-y-3">
+      {styles.map(style => (
+        <motion.div
+          key={style.id}
+          whileHover={{ scale: 1.02 }}
+          onClick={() => setStepData({ ...stepData, engagementStyle: style.id })}
+          className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${
+            stepData.engagementStyle === style.id
+              ? 'border-int-orange bg-int-orange/10'
+              : 'border-slate-200'
+          }`}
+        >
+          <h4 className="font-semibold">{style.label}</h4>
+          <p className="text-sm text-slate-600">{style.desc}</p>
+        </motion.div>
+      ))}
+    </div>
+  );
+}
+
+function CommunicationPrefs({ stepData, setStepData }) {
+  const channels = ['Email', 'Slack', 'Push Notifications', 'In-App Only'];
+
+  return (
+    <div className="space-y-4">
+      <p className="text-slate-600">How should we notify you?</p>
+      {channels.map(channel => (
+        <label key={channel} className="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-50 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={stepData.channels?.includes(channel) || false}
+            onChange={(e) => {
+              const updated = e.target.checked
+                ? [...(stepData.channels || []), channel]
+                : (stepData.channels || []).filter(c => c !== channel);
+              setStepData({ ...stepData, channels: updated });
+            }}
+            className="w-4 h-4"
+          />
+          <span>{channel}</span>
+        </label>
+      ))}
+    </div>
+  );
+}
+
+function GrowthGoals({ stepData, setStepData }) {
+  return (
+    <div className="space-y-4">
+      <div>
+        <label className="block text-sm font-medium mb-2">What's your main goal?</label>
+        <select
+          value={stepData.mainGoal || ''}
+          onChange={(e) => setStepData({ ...stepData, mainGoal: e.target.value })}
+          className="w-full p-2 border rounded-lg"
+        >
+          <option value="">Select...</option>
+          <option value="skill_growth">Grow technical skills</option>
+          <option value="leadership">Develop leadership</option>
+          <option value="networking">Build network</option>
+          <option value="wellness">Improve wellness</option>
+          <option value="all">Well-rounded development</option>
+        </select>
+      </div>
+      <div>
+        <label className="block text-sm font-medium mb-2">Timeline</label>
+        <select
+          value={stepData.timeline || ''}
+          onChange={(e) => setStepData({ ...stepData, timeline: e.target.value })}
+          className="w-full p-2 border rounded-lg"
+        >
+          <option value="">Select...</option>
+          <option value="3_months">Next 3 months</option>
+          <option value="6_months">Next 6 months</option>
+          <option value="1_year">Next year</option>
+        </select>
+      </div>
+    </div>
+  );
+}
+
+function CommunitySelection({ stepData, setStepData }) {
+  const communities = ['Engineering', 'Product', 'Design', 'Sales', 'HR', 'Finance'];
+
+  return (
+    <div className="space-y-3">
+      <p className="text-slate-600">Which teams interest you? (optional)</p>
+      <div className="grid grid-cols-2 gap-2">
+        {communities.map(community => (
+          <Button
+            key={community}
+            variant={stepData.communities?.includes(community) ? 'default' : 'outline'}
+            onClick={() => {
+              const updated = stepData.communities?.includes(community)
+                ? stepData.communities.filter(c => c !== community)
+                : [...(stepData.communities || []), community];
+              setStepData({ ...stepData, communities: updated });
+            }}
+            className={stepData.communities?.includes(community) ? 'bg-int-orange' : ''}
+          >
+            {community}
+          </Button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ReviewStep({ stepData }) {
+  return (
+    <div className="space-y-4">
+      <div className="bg-slate-50 p-4 rounded-lg space-y-3">
+        <div>
+          <p className="text-sm text-slate-600">Role</p>
+          <p className="font-semibold capitalize">{stepData.role}</p>
+        </div>
+        <div>
+          <p className="text-sm text-slate-600">Interests</p>
+          <div className="flex flex-wrap gap-1 mt-1">
+            {(stepData.interests || []).map(i => (
+              <Badge key={i}>{i}</Badge>
+            ))}
+          </div>
+        </div>
+        <div>
+          <p className="text-sm text-slate-600">Engagement Style</p>
+          <p className="font-semibold capitalize">{stepData.engagementStyle}</p>
+        </div>
+      </div>
+      <p className="text-sm text-slate-600">You can update these preferences anytime</p>
+    </div>
+  );
+}
+
+function QuickSetup({ stepData, setStepData }) {
+  return (
+    <div className="space-y-4">
+      <p className="text-slate-600 mb-4">Just these essentials:</p>
+      <div>
+        <label className="block text-sm font-medium mb-2">Your Role</label>
+        <select
+          value={stepData.role || ''}
+          onChange={(e) => setStepData({ ...stepData, role: e.target.value })}
+          className="w-full p-2 border rounded-lg"
+        >
+          <option value="">Select...</option>
+          <option value="participant">Participant</option>
+          <option value="facilitator">Team Lead</option>
+          <option value="admin">Admin</option>
+        </select>
+      </div>
+    </div>
+  );
+}
+
+function SuccessScreen() {
+  return (
+    <div className="text-center space-y-4 py-8">
+      <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto">
+        <Check className="w-8 h-8 text-green-600" />
+      </div>
+      <h2 className="text-2xl font-bold">You're All Set!</h2>
+      <p className="text-slate-600">Let's get you engaging with the community</p>
+    </div>
   );
 }
