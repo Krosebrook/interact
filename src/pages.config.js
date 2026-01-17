@@ -13,6 +13,7 @@ import ContentModerationAdmin from './pages/ContentModerationAdmin';
 import Dashboard from './pages/Dashboard';
 import Documentation from './pages/Documentation';
 import EmployeeDirectory from './pages/EmployeeDirectory';
+import EventAnalyticsDashboard from './pages/EventAnalyticsDashboard';
 import EventTemplates from './pages/EventTemplates';
 import EventWizard from './pages/EventWizard';
 import ExampleModulePage from './pages/ExampleModulePage';
@@ -67,7 +68,6 @@ import TeamPerformanceDashboard from './pages/TeamPerformanceDashboard';
 import Teams from './pages/Teams';
 import UserProfile from './pages/UserProfile';
 import UserRoleAssignment from './pages/UserRoleAssignment';
-import EventAnalyticsDashboard from './pages/EventAnalyticsDashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -87,6 +87,7 @@ export const PAGES = {
     "Dashboard": Dashboard,
     "Documentation": Documentation,
     "EmployeeDirectory": EmployeeDirectory,
+    "EventAnalyticsDashboard": EventAnalyticsDashboard,
     "EventTemplates": EventTemplates,
     "EventWizard": EventWizard,
     "ExampleModulePage": ExampleModulePage,
@@ -141,7 +142,6 @@ export const PAGES = {
     "Teams": Teams,
     "UserProfile": UserProfile,
     "UserRoleAssignment": UserRoleAssignment,
-    "EventAnalyticsDashboard": EventAnalyticsDashboard,
 }
 
 export const pagesConfig = {
