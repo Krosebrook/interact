@@ -28,6 +28,7 @@ import {
 'lucide-react';
 import GoogleCalendarActions from './GoogleCalendarActions';
 import EventSyncActions from '../integrations/EventSyncActions';
+import PostEventCommunications from './PostEventCommunications';
 import SaveAsTemplateDialog from './SaveAsTemplateDialog';
 import { format, isPast } from 'date-fns';
 import { motion } from 'framer-motion';
