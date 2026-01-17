@@ -67,6 +67,9 @@ export default function Dashboard() {
         {/* Personalized Dashboard Section */}
         <PersonalizedDashboard user={user} userProfile={profile} userPoints={userPoints} />
 
+        {/* AI Content Recommendations */}
+        <ContentRecommendationWidget userEmail={user?.email} />
+
         {/* Welcome Header - Glass Panel */}
         <div className="glass-panel-solid relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-int-navy/5 via-transparent to-int-orange/5 pointer-events-none" />

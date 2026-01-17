@@ -47,6 +47,7 @@ import ProjectPlan from './pages/ProjectPlan';
 import PublicProfile from './pages/PublicProfile';
 import RealTimeAnalytics from './pages/RealTimeAnalytics';
 import Recognition from './pages/Recognition';
+import RecognitionFeed from './pages/RecognitionFeed';
 import RewardsAdmin from './pages/RewardsAdmin';
 import RewardsStore from './pages/RewardsStore';
 import RoleManagement from './pages/RoleManagement';
@@ -60,6 +61,7 @@ import Surveys from './pages/Surveys';
 import TeamAnalyticsDashboard from './pages/TeamAnalyticsDashboard';
 import TeamAutomation from './pages/TeamAutomation';
 import TeamAutomations from './pages/TeamAutomations';
+import TeamChallenges from './pages/TeamChallenges';
 import TeamCompetition from './pages/TeamCompetition';
 import TeamDashboard from './pages/TeamDashboard';
 import TeamLeaderDashboard from './pages/TeamLeaderDashboard';
@@ -68,8 +70,6 @@ import TeamPerformanceDashboard from './pages/TeamPerformanceDashboard';
 import Teams from './pages/Teams';
 import UserProfile from './pages/UserProfile';
 import UserRoleAssignment from './pages/UserRoleAssignment';
-import RecognitionFeed from './pages/RecognitionFeed';
-import TeamChallenges from './pages/TeamChallenges';
 import __Layout from './Layout.jsx';
 
 
@@ -123,6 +123,7 @@ export const PAGES = {
     "PublicProfile": PublicProfile,
     "RealTimeAnalytics": RealTimeAnalytics,
     "Recognition": Recognition,
+    "RecognitionFeed": RecognitionFeed,
     "RewardsAdmin": RewardsAdmin,
     "RewardsStore": RewardsStore,
     "RoleManagement": RoleManagement,
@@ -136,6 +137,7 @@ export const PAGES = {
     "TeamAnalyticsDashboard": TeamAnalyticsDashboard,
     "TeamAutomation": TeamAutomation,
     "TeamAutomations": TeamAutomations,
+    "TeamChallenges": TeamChallenges,
     "TeamCompetition": TeamCompetition,
     "TeamDashboard": TeamDashboard,
     "TeamLeaderDashboard": TeamLeaderDashboard,
@@ -144,8 +146,6 @@ export const PAGES = {
     "Teams": Teams,
     "UserProfile": UserProfile,
     "UserRoleAssignment": UserRoleAssignment,
-    "RecognitionFeed": RecognitionFeed,
-    "TeamChallenges": TeamChallenges,
 }
 
 export const pagesConfig = {
