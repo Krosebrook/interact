@@ -1,241 +1,291 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { MessageCircle, Award, Send, Loader2 } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { 
+  Heart, 
+  MessageSquare, 
+  Award, 
+  TrendingUp,
+  Filter,
+  ArrowUp,
+  Sparkles,
+  Trophy
+} from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
+import moment from 'moment';
 
-export default function RecognitionFeed({ userEmail }) {
+const TIER_BADGES = {
+  bronze: '🥉',
+  silver: '🥈', 
+  gold: '🥇',
+  platinum: '💎'
+};
+
+export default function RecognitionFeed() {
+  const [filter, setFilter] = useState('all');
+  const [sort, setSort] = useState('recent');
   const queryClient = useQueryClient();
-  const [expandedComments, setExpandedComments] = useState(new Set());
-  const [commentText, setCommentText] = useState({});
 
-  const { data: recognitions = [], isLoading } = useQuery({
-    queryKey: ['recognition-feed'],
+  // Fetch recognitions
+  const { data: recognitions = [], isLoading: recognitionsLoading } = useQuery({
+    queryKey: ['recognitions-feed', filter],
     queryFn: async () => {
-      const data = await base44.entities.Recognition.filter({
-        status: 'approved',
-        visibility: { $in: ['public', 'team_only'] }
-      }, '-created_date', 50);
-      return data;
-    }
-  });
-
-  const { data: comments = [] } = useQuery({
-    queryKey: ['recognition-comments'],
-    queryFn: async () => {
-      return await base44.entities.RecognitionComment.list();
-    }
-  });
-
-  const toggleReactionMutation = useMutation({
-    mutationFn: async ({ recognitionId, emoji }) => {
-      const recognition = recognitions.find(r => r.id === recognitionId);
-      const reactions = recognition.reactions || [];
-      const existingIndex = reactions.findIndex(r => 
-        r.emoji === emoji && r.user_email === userEmail
+      const allRecognitions = await base44.entities.Recognition.filter(
+        filter === 'all' ? {} : { visibility: filter }
       );
+      return allRecognitions.filter(r => r.status === 'approved');
+    }
+  });
 
-      let updatedReactions;
-      if (existingIndex >= 0) {
-        updatedReactions = reactions.filter((_, i) => i !== existingIndex);
+  // Fetch badge awards
+  const { data: badgeAwards = [], isLoading: badgesLoading } = useQuery({
+    queryKey: ['badge-awards-feed'],
+    queryFn: async () => {
+      const awards = await base44.entities.BadgeAward.list('-earned_date', 50);
+      return awards;
+    }
+  });
+
+  // Fetch user points for tier changes
+  const { data: userPoints = [] } = useQuery({
+    queryKey: ['user-points-feed'],
+    queryFn: async () => {
+      return await base44.entities.UserPoints.list('-updated_date', 50);
+    }
+  });
+
+  // Subscribe to real-time updates
+  useEffect(() => {
+    const unsubscribe1 = base44.entities.Recognition.subscribe((event) => {
+      queryClient.invalidateQueries({ queryKey: ['recognitions-feed'] });
+    });
+    
+    const unsubscribe2 = base44.entities.BadgeAward.subscribe((event) => {
+      queryClient.invalidateQueries({ queryKey: ['badge-awards-feed'] });
+    });
+
+    return () => {
+      unsubscribe1();
+      unsubscribe2();
+    };
+  }, [queryClient]);
+
+  // Kudos mutation
+  const kudosMutation = useMutation({
+    mutationFn: async (recognitionId) => {
+      const recognition = recognitions.find(r => r.id === recognitionId);
+      const currentReactions = recognition.reactions || [];
+      const userEmail = (await base44.auth.me()).email;
+      
+      const hasReacted = currentReactions.some(r => r.user_email === userEmail && r.emoji === '❤️');
+      
+      if (hasReacted) {
+        // Remove reaction
+        await base44.entities.Recognition.update(recognitionId, {
+          reactions: currentReactions.filter(r => !(r.user_email === userEmail && r.emoji === '❤️'))
+        });
       } else {
-        updatedReactions = [...reactions, { emoji, user_email: userEmail }];
+        // Add reaction
+        await base44.entities.Recognition.update(recognitionId, {
+          reactions: [...currentReactions, { emoji: '❤️', user_email: userEmail }]
+        });
       }
-
-      await base44.entities.Recognition.update(recognitionId, {
-        reactions: updatedReactions
-      });
-
-      return { recognitionId, reactions: updatedReactions };
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(['recognition-feed']);
+      queryClient.invalidateQueries({ queryKey: ['recognitions-feed'] });
     }
   });
 
-  const addCommentMutation = useMutation({
-    mutationFn: async ({ recognitionId, content }) => {
-      const user = await base44.auth.me();
-      await base44.entities.RecognitionComment.create({
-        recognition_id: recognitionId,
-        author_email: user.email,
-        author_name: user.full_name,
-        content
-      });
-    },
-    onSuccess: (_, variables) => {
-      queryClient.invalidateQueries(['recognition-comments']);
-      setCommentText({ ...commentText, [variables.recognitionId]: '' });
-      toast.success('Comment added!');
+  // Combine and sort feed items
+  const feedItems = [
+    ...recognitions.map(r => ({ ...r, type: 'recognition', timestamp: r.created_date })),
+    ...badgeAwards.map(b => ({ ...b, type: 'badge', timestamp: b.earned_date })),
+    ...userPoints.filter(p => p.tier && p.tier !== 'bronze').map(p => ({ 
+      ...p, 
+      type: 'tier_change', 
+      timestamp: p.updated_date 
+    }))
+  ].sort((a, b) => {
+    if (sort === 'recent') {
+      return new Date(b.timestamp) - new Date(a.timestamp);
     }
+    // Sort by reactions/engagement
+    const aEngagement = (a.reactions?.length || 0) + (a.comments_count || 0);
+    const bEngagement = (b.reactions?.length || 0) + (b.comments_count || 0);
+    return bEngagement - aEngagement;
   });
 
-  const toggleComments = (recognitionId) => {
-    const newSet = new Set(expandedComments);
-    if (newSet.has(recognitionId)) {
-      newSet.delete(recognitionId);
-    } else {
-      newSet.add(recognitionId);
-    }
-    setExpandedComments(newSet);
-  };
-
-  const handleAddComment = (recognitionId) => {
-    const content = commentText[recognitionId]?.trim();
-    if (!content) return;
-    addCommentMutation.mutate({ recognitionId, content });
-  };
-
-  if (isLoading) {
-    return (
-      <div className="flex justify-center py-12">
-        <Loader2 className="h-8 w-8 animate-spin text-purple-600" />
-      </div>
-    );
+  if (recognitionsLoading || badgesLoading) {
+    return <div className="text-center py-8">Loading feed...</div>;
   }
 
   return (
     <div className="space-y-4">
-      {recognitions.map(recognition => {
-        const recognitionComments = comments.filter(c => 
-          c.recognition_id === recognition.id && !c.is_deleted
-        );
-        const reactionCounts = {};
-        (recognition.reactions || []).forEach(r => {
-          reactionCounts[r.emoji] = (reactionCounts[r.emoji] || 0) + 1;
-        });
-        const userReactions = new Set(
-          (recognition.reactions || [])
-            .filter(r => r.user_email === userEmail)
-            .map(r => r.emoji)
-        );
+      {/* Filters */}
+      <Card>
+        <CardContent className="pt-6">
+          <div className="flex gap-4 items-center">
+            <Filter className="h-5 w-5 text-slate-500" />
+            <Select value={filter} onValueChange={setFilter}>
+              <SelectTrigger className="w-40">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Posts</SelectItem>
+                <SelectItem value="public">Public Only</SelectItem>
+                <SelectItem value="team_only">Team Only</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={sort} onValueChange={setSort}>
+              <SelectTrigger className="w-40">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="recent">Most Recent</SelectItem>
+                <SelectItem value="popular">Most Popular</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </CardContent>
+      </Card>
 
-        return (
-          <Card key={recognition.id} className="hover:shadow-lg transition-shadow">
-            <CardHeader className="pb-3">
-              <div className="flex items-start gap-3">
-                <Avatar className="h-12 w-12">
-                  <AvatarFallback className="bg-gradient-to-br from-purple-600 to-blue-600 text-white">
-                    {recognition.sender_name?.substring(0, 2).toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="font-semibold text-slate-900">
-                      {recognition.sender_name}
-                    </span>
-                    <span className="text-slate-500 text-sm">recognized</span>
-                    <span className="font-semibold text-slate-900">
-                      {recognition.recipient_name}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2 text-xs text-slate-500">
-                    <Badge className="bg-purple-100 text-purple-800 text-xs">
-                      {recognition.category}
-                    </Badge>
-                    <span>•</span>
-                    <span>{new Date(recognition.created_date).toLocaleDateString()}</span>
-                  </div>
-                </div>
-                {recognition.points_awarded > 0 && (
-                  <div className="flex items-center gap-1 bg-amber-100 text-amber-800 px-3 py-1 rounded-full">
-                    <Award className="h-4 w-4" />
-                    <span className="font-semibold">+{recognition.points_awarded}</span>
-                  </div>
-                )}
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <p className="text-slate-700 leading-relaxed">{recognition.message}</p>
+      {/* Feed */}
+      <AnimatePresence>
+        {feedItems.map((item) => (
+          <motion.div
+            key={`${item.type}-${item.id}`}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+          >
+            {item.type === 'recognition' && (
+              <RecognitionCard 
+                recognition={item} 
+                onKudos={() => kudosMutation.mutate(item.id)}
+                kudosLoading={kudosMutation.isPending}
+              />
+            )}
+            {item.type === 'badge' && <BadgeCard badge={item} />}
+            {item.type === 'tier_change' && <TierChangeCard tierData={item} />}
+          </motion.div>
+        ))}
+      </AnimatePresence>
 
-              {/* Reactions */}
-              <div className="flex items-center gap-2 flex-wrap border-t pt-3">
-                {['❤️', '👏', '🎉', '🔥', '💯'].map(emoji => (
-                  <button
-                    key={emoji}
-                    onClick={() => toggleReactionMutation.mutate({ 
-                      recognitionId: recognition.id, 
-                      emoji 
-                    })}
-                    className={`px-3 py-1.5 rounded-full border transition-all ${
-                      userReactions.has(emoji)
-                        ? 'bg-purple-100 border-purple-300 scale-110'
-                        : 'bg-slate-50 border-slate-200 hover:bg-slate-100'
-                    }`}
-                  >
-                    <span className="text-lg">{emoji}</span>
-                    {reactionCounts[emoji] > 0 && (
-                      <span className="ml-1 text-xs font-medium text-slate-700">
-                        {reactionCounts[emoji]}
-                      </span>
-                    )}
-                  </button>
-                ))}
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => toggleComments(recognition.id)}
-                  className="ml-auto"
-                >
-                  <MessageCircle className="h-4 w-4 mr-1" />
-                  {recognitionComments.length}
-                </Button>
-              </div>
-
-              {/* Comments Section */}
-              {expandedComments.has(recognition.id) && (
-                <div className="space-y-3 border-t pt-3">
-                  {recognitionComments.map(comment => (
-                    <div key={comment.id} className="flex gap-2">
-                      <Avatar className="h-8 w-8">
-                        <AvatarFallback className="bg-slate-200 text-slate-600 text-xs">
-                          {comment.author_name?.substring(0, 2).toUpperCase()}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="flex-1 bg-slate-50 rounded-lg p-3">
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="font-medium text-sm text-slate-900">
-                            {comment.author_name}
-                          </span>
-                          <span className="text-xs text-slate-500">
-                            {new Date(comment.created_date).toLocaleTimeString()}
-                          </span>
-                        </div>
-                        <p className="text-sm text-slate-700">{comment.content}</p>
-                      </div>
-                    </div>
-                  ))}
-                  <div className="flex gap-2">
-                    <Input
-                      placeholder="Add a comment..."
-                      value={commentText[recognition.id] || ''}
-                      onChange={(e) => setCommentText({
-                        ...commentText,
-                        [recognition.id]: e.target.value
-                      })}
-                      onKeyPress={(e) => {
-                        if (e.key === 'Enter') handleAddComment(recognition.id);
-                      }}
-                    />
-                    <Button
-                      size="icon"
-                      onClick={() => handleAddComment(recognition.id)}
-                      disabled={!commentText[recognition.id]?.trim()}
-                    >
-                      <Send className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        );
-      })}
+      {feedItems.length === 0 && (
+        <div className="text-center py-12 text-slate-500">
+          <Sparkles className="h-12 w-12 mx-auto mb-2 opacity-50" />
+          <p>No activity yet. Be the first to recognize someone!</p>
+        </div>
+      )}
     </div>
+  );
+}
+
+function RecognitionCard({ recognition, onKudos, kudosLoading }) {
+  const currentUserEmail = base44.auth.me().then(u => u.email);
+  const reactions = recognition.reactions || [];
+  const heartCount = reactions.filter(r => r.emoji === '❤️').length;
+  
+  return (
+    <Card className="hover:shadow-lg transition-shadow">
+      <CardContent className="pt-6">
+        <div className="flex items-start gap-4">
+          <div className="h-10 w-10 rounded-full bg-gradient-to-br from-int-orange to-int-orange-dark flex items-center justify-center text-white font-bold">
+            {recognition.sender_name?.charAt(0) || '?'}
+          </div>
+          <div className="flex-1">
+            <div className="flex items-start justify-between mb-2">
+              <div>
+                <p className="font-semibold text-slate-900">
+                  {recognition.sender_name} 
+                  <span className="text-slate-600 font-normal"> recognized </span>
+                  {recognition.recipient_name}
+                </p>
+                <p className="text-xs text-slate-500">{moment(recognition.created_date).fromNow()}</p>
+              </div>
+              <Badge className="capitalize">{recognition.category}</Badge>
+            </div>
+            <p className="text-slate-700 mb-3">{recognition.message}</p>
+            {recognition.company_values?.length > 0 && (
+              <div className="flex gap-2 mb-3">
+                {recognition.company_values.map((value, idx) => (
+                  <Badge key={idx} variant="outline" className="text-xs">{value}</Badge>
+                ))}
+              </div>
+            )}
+            <div className="flex items-center gap-4 text-sm">
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={onKudos}
+                disabled={kudosLoading}
+                className="gap-2 text-pink-600 hover:text-pink-700 hover:bg-pink-50"
+              >
+                <Heart className={`h-4 w-4 ${heartCount > 0 ? 'fill-pink-600' : ''}`} />
+                {heartCount > 0 && heartCount}
+              </Button>
+              <div className="flex items-center gap-1 text-slate-500">
+                <MessageSquare className="h-4 w-4" />
+                {recognition.comments_count || 0}
+              </div>
+            </div>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+function BadgeCard({ badge }) {
+  return (
+    <Card className="bg-gradient-to-r from-purple-50 to-pink-50 border-purple-200">
+      <CardContent className="pt-6">
+        <div className="flex items-center gap-4">
+          <div className="h-12 w-12 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-2xl">
+            {badge.badge_icon}
+          </div>
+          <div className="flex-1">
+            <div className="flex items-center gap-2 mb-1">
+              <Award className="h-4 w-4 text-purple-600" />
+              <p className="font-semibold text-slate-900">New Badge Unlocked!</p>
+            </div>
+            <p className="text-sm text-slate-700">
+              <strong>{badge.user_email.split('@')[0]}</strong> earned the <strong>{badge.badge_name}</strong> badge
+            </p>
+            <p className="text-xs text-slate-500 mt-1">{moment(badge.earned_date).fromNow()}</p>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+function TierChangeCard({ tierData }) {
+  return (
+    <Card className="bg-gradient-to-r from-amber-50 to-yellow-50 border-amber-200">
+      <CardContent className="pt-6">
+        <div className="flex items-center gap-4">
+          <div className="h-12 w-12 rounded-full bg-gradient-to-br from-amber-500 to-yellow-500 flex items-center justify-center text-2xl">
+            {TIER_BADGES[tierData.tier]}
+          </div>
+          <div className="flex-1">
+            <div className="flex items-center gap-2 mb-1">
+              <TrendingUp className="h-4 w-4 text-amber-600" />
+              <p className="font-semibold text-slate-900">Tier Advancement!</p>
+            </div>
+            <p className="text-sm text-slate-700">
+              <strong>{tierData.user_email.split('@')[0]}</strong> reached <strong className="capitalize">{tierData.tier}</strong> tier
+            </p>
+            <p className="text-xs text-slate-500 mt-1">{moment(tierData.updated_date).fromNow()}</p>
+          </div>
+          <Trophy className="h-8 w-8 text-amber-600" />
+        </div>
+      </CardContent>
+    </Card>
   );
 }
