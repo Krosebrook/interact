@@ -28,6 +28,7 @@ import {
 'lucide-react';
 import GoogleCalendarActions from './GoogleCalendarActions';
 import EventSyncActions from '../integrations/EventSyncActions';
+import SaveAsTemplateDialog from './SaveAsTemplateDialog';
 import { format, isPast } from 'date-fns';
 import { motion } from 'framer-motion';
 
@@ -65,6 +66,7 @@ export default function EventCalendarCard({
 }) {
   // All hooks must be called before any conditional returns
   const [isBookmarked, setIsBookmarked] = useState(false);
+  const [saveTemplateOpen, setSaveTemplateOpen] = useState(false);
 
   // Validate required props after hooks
   if (!event) {
@@ -175,11 +177,19 @@ export default function EventCalendarCard({
                   )}
                 </>
               )}
-              {isEventPast && event.status === 'completed' && onSendRecap && (
-                <DropdownMenuItem onClick={handleSendRecap}>
-                  <FileText className="h-4 w-4 mr-2" />
-                  Send Recap
-                </DropdownMenuItem>
+              {isEventPast && event.status === 'completed' && (
+                <>
+                  {onSendRecap && (
+                    <DropdownMenuItem onClick={handleSendRecap}>
+                      <FileText className="h-4 w-4 mr-2" />
+                      Send Recap
+                    </DropdownMenuItem>
+                  )}
+                  <DropdownMenuItem onClick={() => setSaveTemplateOpen(true)}>
+                    <Bookmark className="h-4 w-4 mr-2" />
+                    Save as Template
+                  </DropdownMenuItem>
+                </>
               )}
               {!isEventPast && event.status !== 'cancelled' && onCancel && (
                 <>
@@ -244,6 +254,14 @@ export default function EventCalendarCard({
           </Button>
         </Link>
       </div>
+
+      {/* Save as Template Dialog */}
+      <SaveAsTemplateDialog
+        open={saveTemplateOpen}
+        onOpenChange={setSaveTemplateOpen}
+        event={event}
+        activity={activity}
+      />
     </motion.div>);
 
 }
