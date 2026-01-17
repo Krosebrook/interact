@@ -13,7 +13,9 @@
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:run": "vitest run",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "prd:generate": "python3 scripts/generate_prd.py",
+    "prd:interactive": "python3 scripts/generate_prd.py --interactive"
   },
   "dependencies": {
     "@base44/sdk": "^0.8.3",
