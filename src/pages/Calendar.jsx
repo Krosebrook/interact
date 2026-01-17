@@ -18,6 +18,8 @@ import LoadingSpinner from '../components/common/LoadingSpinner';
 import { useEventActions } from '../components/events/useEventActions';
 import { useTeamData } from '../components/hooks/useTeamData';
 import GoogleCalendarActions from '../components/events/GoogleCalendarActions';
+import CommentSection from '../components/collaboration/CommentSection';
+import { Card } from '@/components/ui/card';
 import { toast } from 'sonner';
 
 export default function Calendar() {
@@ -201,6 +203,15 @@ export default function Calendar() {
         event={rescheduleEvent}
         onRescheduleComplete={() => queryClient.invalidateQueries(['events'])}
       />
+
+      {/* Event Discussion (if viewing single event) */}
+      {upcomingEvents.length === 1 && (
+        <CommentSection
+          entityType="event"
+          entityId={upcomingEvents[0].id}
+          title="Event Discussion"
+        />
+      )}
     </div>
   );
 }
