@@ -69,6 +69,7 @@ import Teams from './pages/Teams';
 import UserProfile from './pages/UserProfile';
 import UserRoleAssignment from './pages/UserRoleAssignment';
 import RecognitionFeed from './pages/RecognitionFeed';
+import TeamChallenges from './pages/TeamChallenges';
 import __Layout from './Layout.jsx';
 
 
@@ -144,6 +145,7 @@ export const PAGES = {
     "UserProfile": UserProfile,
     "UserRoleAssignment": UserRoleAssignment,
     "RecognitionFeed": RecognitionFeed,
+    "TeamChallenges": TeamChallenges,
 }
 
 export const pagesConfig = {

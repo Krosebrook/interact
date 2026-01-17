@@ -305,6 +305,12 @@ export default function UserProfile() {
 
         {/* Contributions Tab */}
         <TabsContent value="contributions" className="space-y-4">
+          {/* Badges */}
+          <BadgeShowcase userEmail={viewingUserEmail} showTier={true} />
+
+          {/* Skill Gaps */}
+          <SkillGapAnalysis userEmail={viewingUserEmail} />
+
           <ProfileContributionSummary
             recognitionsReceived={recognitionsReceived}
             recognitionsGiven={recognitionsGiven}
