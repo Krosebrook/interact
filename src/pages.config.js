@@ -1,4 +1,5 @@
 import AIAdminDashboard from './pages/AIAdminDashboard';
+import AIEnhancedCoaching from './pages/AIEnhancedCoaching';
 import AIEventPlanner from './pages/AIEventPlanner';
 import AIPersonalization from './pages/AIPersonalization';
 import Activities from './pages/Activities';
@@ -70,12 +71,12 @@ import TeamPerformanceDashboard from './pages/TeamPerformanceDashboard';
 import Teams from './pages/Teams';
 import UserProfile from './pages/UserProfile';
 import UserRoleAssignment from './pages/UserRoleAssignment';
-import AIEnhancedCoaching from './pages/AIEnhancedCoaching';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
     "AIAdminDashboard": AIAdminDashboard,
+    "AIEnhancedCoaching": AIEnhancedCoaching,
     "AIEventPlanner": AIEventPlanner,
     "AIPersonalization": AIPersonalization,
     "Activities": Activities,
@@ -147,7 +148,6 @@ export const PAGES = {
     "Teams": Teams,
     "UserProfile": UserProfile,
     "UserRoleAssignment": UserRoleAssignment,
-    "AIEnhancedCoaching": AIEnhancedCoaching,
 }
 
 export const pagesConfig = {
