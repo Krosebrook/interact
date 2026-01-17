@@ -11,6 +11,7 @@ import { User, Calendar, Bell, Award, TrendingUp, Edit, Mail } from 'lucide-reac
 import { format, isPast } from 'date-fns';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import NotificationSettings from '../components/profile/NotificationSettings';
+import ProfileContributionSummary from '../components/profile/ProfileContributionSummary';
 import { toast } from 'sonner';
 
 export default function UserProfile() {
@@ -287,6 +288,12 @@ export default function UserProfile() {
 
         {/* Contributions Tab */}
         <TabsContent value="contributions" className="space-y-4">
+          <ProfileContributionSummary
+            recognitionsReceived={recognitionsReceived}
+            recognitionsGiven={recognitionsGiven}
+            participations={participations}
+          />
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Recognitions Received */}
             <Card>
@@ -301,12 +308,14 @@ export default function UserProfile() {
                     {recognitionsReceived.slice(0, 10).map(rec => (
                       <div key={rec.id} className="p-3 bg-amber-50 rounded-lg border border-amber-200">
                         <div className="flex items-start justify-between mb-2">
-                          <Badge className="bg-amber-100 text-amber-700">{rec.category}</Badge>
+                          <Badge className="bg-amber-100 text-amber-700 capitalize">
+                            {rec.category.replace('_', ' ')}
+                          </Badge>
                           <span className="text-xs text-slate-500">
                             {format(new Date(rec.created_date), 'MMM d, yyyy')}
                           </span>
                         </div>
-                        <p className="text-sm text-slate-700 italic">"{rec.message}"</p>
+                        <p className="text-sm text-slate-700 italic line-clamp-2">"{rec.message}"</p>
                         <p className="text-xs text-slate-500 mt-2">— {rec.sender_name}</p>
                       </div>
                     ))}
@@ -328,12 +337,14 @@ export default function UserProfile() {
                     {recognitionsGiven.slice(0, 10).map(rec => (
                       <div key={rec.id} className="p-3 bg-purple-50 rounded-lg border border-purple-200">
                         <div className="flex items-start justify-between mb-2">
-                          <Badge className="bg-purple-100 text-purple-700">{rec.category}</Badge>
+                          <Badge className="bg-purple-100 text-purple-700 capitalize">
+                            {rec.category.replace('_', ' ')}
+                          </Badge>
                           <span className="text-xs text-slate-500">
                             {format(new Date(rec.created_date), 'MMM d, yyyy')}
                           </span>
                         </div>
-                        <p className="text-sm text-slate-700 italic">"{rec.message}"</p>
+                        <p className="text-sm text-slate-700 italic line-clamp-2">"{rec.message}"</p>
                         <p className="text-xs text-slate-500 mt-2">To: {rec.recipient_name}</p>
                       </div>
                     ))}
@@ -342,44 +353,6 @@ export default function UserProfile() {
               </CardContent>
             </Card>
           </div>
-
-          {/* Engagement Summary */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Engagement Summary</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="text-center p-4 bg-slate-50 rounded-lg">
-                  <div className="text-2xl font-bold text-slate-900">
-                    {participations.filter(p => p.feedback_rating).length}
-                  </div>
-                  <div className="text-xs text-slate-500 mt-1">Feedback Given</div>
-                </div>
-                <div className="text-center p-4 bg-slate-50 rounded-lg">
-                  <div className="text-2xl font-bold text-slate-900">
-                    {(() => {
-                      const ratings = participations.filter(p => p.feedback_rating).map(p => p.feedback_rating);
-                      return ratings.length > 0 ? (ratings.reduce((a, b) => a + b, 0) / ratings.length).toFixed(1) : '0';
-                    })()}
-                  </div>
-                  <div className="text-xs text-slate-500 mt-1">Avg Rating</div>
-                </div>
-                <div className="text-center p-4 bg-slate-50 rounded-lg">
-                  <div className="text-2xl font-bold text-slate-900">
-                    {recognitionsReceived.length + recognitionsGiven.length}
-                  </div>
-                  <div className="text-xs text-slate-500 mt-1">Total Recognitions</div>
-                </div>
-                <div className="text-center p-4 bg-slate-50 rounded-lg">
-                  <div className="text-2xl font-bold text-slate-900">
-                    {userPoints?.tier || 'bronze'}
-                  </div>
-                  <div className="text-xs text-slate-500 mt-1">Current Tier</div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
         </TabsContent>
 
         {/* Notifications Tab (Only for own profile) */}

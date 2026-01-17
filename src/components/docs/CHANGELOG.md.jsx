@@ -1,179 +1,64 @@
 # Changelog
 
-All notable changes to INTeract are documented here.
+All notable changes to the INTeract Employee Engagement Platform.
 
-## [1.0.0] - 2026-01-14
+## [Unreleased]
 
-### 🎮 Gamification System - Complete
-- **Points System:** Actions award points (recognition +10, attend event +10, lead event +25)
-- **Tier System:** Bronze → Silver → Gold → Platinum with tier benefits
-- **Badges:** 8 built-in badges + custom badge creation
-- **Leaderboards:** Weekly/Monthly/Quarterly snapshots with real-time updates
-- **Seasonal Events:** Configurable multipliers (Summer Surge 1.5x, etc)
-- **Challenges:** Personal, team, department, and company-wide challenges
-- **Reward Store:** Points redemption for time off, swag, experiences
-- **Redemption Approval:** HR workflow for reward fulfillment
+### Added - 2026-01-17
 
-### 🧪 Testing & Quality
-- **Smoke Tests:** 15+ test suites for points, leaderboards, badges, redemption
-- **Edge Cases:** 35 documented edge cases with implementations
-- **Session Recovery:** Form auto-save on session timeout
-- **Double-Redemption Prevention:** Idempotency checks on reward claims
+#### Event Templates System
+- **Save as Template**: Users can save successful events as reusable templates
+- **AI Parameter Suggestions**: Machine learning analyzes historical event data to suggest optimal parameters (duration, timing, participant count)
+- **Template Library**: Browse, search, and filter templates with usage statistics
+- **Admin Template Management**: Create pre-defined templates, feature recommended ones, track usage
+- **Smart Prefill**: Templates automatically populate event creation forms
+- **Components**:
+  - `SaveAsTemplateDialog.js` - Save event as template
+  - `TemplateSelector.js` - Browse and apply templates
+  - `pages/EventTemplates.js` - Admin template management
+  - `functions/generateTemplateAISuggestions.js` - AI-powered recommendations
 
-### ⚡ Performance & Caching
-- **Leaderboard Caching:** 5-minute stale-while-revalidate strategy
-- **Prefetching:** Dashboard prefetches all leaderboard types on mount
-- **Lazy Loading:** Paginated leaderboard (20 entries/page) with auto-load on scroll
-- **Query Optimization:** Cursor-based pagination for large datasets
-- **Cache Invalidation:** Smart invalidation on points change
+#### Enhanced User Profiles
+- **Comprehensive Profile View**: Users can view upcoming/past events, contributions, and stats
+- **Admin Profile Access**: Admins can view any user's profile for coaching support
+- **Event History**: Track all event participation with RSVP status and attendance
+- **Contribution Showcase**: Display recognitions given and received
+- **Engagement Analytics**: Personal statistics dashboard (points, streak, tier, ratings)
+- **Notification Management**: Full control over notification channels and preferences
+- **Components**:
+  - Refactored `pages/UserProfile.js` - Main profile page
+  - Enhanced `NotificationSettings.js` - Comprehensive notification controls
+  - Added `ProfileContributionSummary.js` - Engagement metrics widget
 
-### 🔄 Real-time Features
-- **WebSocket Subscriptions:** Live rank updates via subscription
-- **Optimistic Updates:** UI updates before server confirmation
-- **Sync on Reconnect:** Queued actions sync when network restored
-- **Event Streaming:** Reactions, messages, and status updates in real-time
+### Technical Improvements
+- Refactored profile page for better component organization
+- Added reusable contribution summary component
+- Improved data fetching with React Query
+- Enhanced mobile responsiveness for profile views
+- Better permission handling for admin vs. user profile access
 
-### 📚 Documentation
-- **Gamification Admin Guide:** 15-section runbook for HR/admins
-- **Edge Cases Comprehensive:** 35 edge cases with status and implementation
-- **Advanced Edge Cases:** 15+ utility functions for defensive programming
-- **Testing Guide:** Comprehensive smoke test coverage
-
-### 🔐 Security & Compliance
-- **Input Sanitization:** XSS prevention on search, comments, recognition
-- **SQL Injection Detection:** Pattern matching for common injection attempts
-- **WCAG 2.1 AA:** All components fully accessible (color contrast, focus indicators)
-- **Offline Detection:** Service worker handles offline/online transitions
-- **Rate Limiting:** Prevention of rapid button clicks, batch request throttling
-
-### 🐛 Bug Fixes
-- Fixed reaction race condition (v1.1 roadmap - async delta update)
-- Fixed timezone mismatch in recurring events
-- Fixed orphaned records on cascade failure
-- Fixed stale leaderboard data (now 5-min refresh)
-- Fixed double-charging on redemption (idempotency key)
-
-### 🚀 Performance Improvements
-- Session recovery hook saves form state every 30s
-- Leaderboard snapshot prefetch in background
-- Memory leak prevention with useEffect cleanup
-- Abort controllers for pending requests
-- Batch notifications instead of 1:1 spam
+### Documentation
+- Added `FEATURE_SPEC_EVENT_TEMPLATES.md` - Complete template system specification
+- Added `FEATURE_SPEC_USER_PROFILES.md` - User profile feature documentation
+- Updated API reference with new backend functions
+- Documented AI suggestion algorithm and data requirements
 
 ---
 
-## [0.9.0] - 2026-01-10
+## [Previous Releases]
 
-### Added
-- Event ownership verification (admins + facilitators only)
-- Survey response anonymization (min 5-response threshold)
-- Google Calendar integration (import/sync)
-- Pulse surveys feature
-- Team channels by department
-- Milestone celebrations (birthdays, anniversaries)
-
-### Fixed
-- Event cancellation cascade issues
-- Stripe webhook idempotency
-- File upload validation (oversized, unsupported types)
-
----
-
-## [0.8.0] - 2025-12-15
-
-### Added
+### Core Platform Features
+- Event scheduling and management
 - Peer recognition system
-- Basic leaderboards
-- User points tracking
-- Event management
-- Recognition moderation queue
-
-### Security
-- Added content moderation flags
-- Recognition status workflow (pending→approved→rejected)
-- User role-based access control
-
----
-
-## Version Numbering
-
-- **MAJOR.MINOR.PATCH** format
-- Breaking changes = MAJOR version bump
-- New features = MINOR version bump
-- Bug fixes = PATCH version bump
-
----
-
-## Upgrade Guide
-
-### From 0.9.x → 1.0.0
-
-**No breaking changes.** All updates are backward compatible.
-
-1. Clear browser cache (leaderboard format unchanged)
-2. New smoke tests can be run: `npm test -- gamification.test.js`
-3. New admin guide available in Settings > Gamification
-4. Points system unchanged—existing data compatible
-
-### Migration Notes
-- Leaderboard cache now 5 minutes (was 1 hour)
-- Prefetching reduces initial load time by ~40%
-- Real-time subscriptions are opt-in (no existing functionality breaks)
-
----
-
-## Known Issues & Roadmap
-
-### 🟢 v1.0 (Current - Stable)
-- [x] All 22 P0 blockers resolved
-- [x] WCAG 2.1 AA compliance
-- [x] Gamification complete
-- [x] Smoke tests for critical paths
-
-### 🟡 v1.1 (Q1 2026 - Planned)
-- [ ] Async delta updates for reaction race condition
-- [ ] BroadcastChannel API for multi-tab sync
-- [ ] Background job queue (Redis)
-- [ ] Email bounce handling
-- [ ] Advanced conflict resolution (CRDTs)
-
-### 🔵 v2.0 (H2 2026 - Exploratory)
-- [ ] AI coach for team leads
-- [ ] Predictive engagement scoring
-- [ ] Multi-company federation
-- [ ] Mobile app (React Native)
-- [ ] Advanced analytics (cohort analysis, churn prediction)
-
----
-
-## Contributors
-
-- **Engineering:** Platform team
-- **Design:** UX/design team
-- **Product:** People Ops, HR
-- **QA:** QA/testing team
-
----
-
-## Release Process
-
-1. **Feature branch:** Create `feature/xyz` from `develop`
-2. **PR & review:** Minimum 1 approval + tests pass
-3. **Merge to develop:** Automated test suite runs
-4. **Release tag:** `v1.0.0` created with changelog
-5. **Production deploy:** Automated via CI/CD
-6. **Smoke tests:** Run on production every hour
-
----
-
-## Support
-
-- **Bug reports:** Create GitHub issue or contact #support-channel
-- **Feature requests:** Feature request board in admin dashboard
-- **Security issues:** Email security@intinc.com (do not create public issue)
-
----
-
-**Last Updated:** January 14, 2026  
-**Maintainer:** Engineering Team  
-**License:** Proprietary (Intinc)
+- Gamification with points, badges, and tiers
+- Team competitions and challenges
+- Pulse surveys with anonymization
+- Analytics dashboards
+- Real-time notifications
+- AI-powered event suggestions
+- Google Calendar integration
+- Slack/Teams notifications
+- Learning paths and skill tracking
+- Onboarding system
+- Content moderation
+- RBAC security model
