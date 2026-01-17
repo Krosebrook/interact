@@ -2,6 +2,7 @@ import AIAdminDashboard from './pages/AIAdminDashboard';
 import AIEventPlanner from './pages/AIEventPlanner';
 import AIPersonalization from './pages/AIPersonalization';
 import Activities from './pages/Activities';
+import AdminHub from './pages/AdminHub';
 import AdvancedAnalytics from './pages/AdvancedAnalytics';
 import AdvancedGamificationAnalytics from './pages/AdvancedGamificationAnalytics';
 import Analytics from './pages/Analytics';
@@ -36,10 +37,10 @@ import Milestones from './pages/Milestones';
 import NewEmployeeOnboarding from './pages/NewEmployeeOnboarding';
 import OnboardingDashboard from './pages/OnboardingDashboard';
 import OnboardingHub from './pages/OnboardingHub';
+import PRDGenerator from './pages/PRDGenerator';
 import ParticipantEvent from './pages/ParticipantEvent';
 import ParticipantPortal from './pages/ParticipantPortal';
 import PointStore from './pages/PointStore';
-import PRDGenerator from './pages/PRDGenerator';
 import ProfileCustomization from './pages/ProfileCustomization';
 import ProjectPlan from './pages/ProjectPlan';
 import PublicProfile from './pages/PublicProfile';
@@ -66,7 +67,7 @@ import TeamPerformanceDashboard from './pages/TeamPerformanceDashboard';
 import Teams from './pages/Teams';
 import UserProfile from './pages/UserProfile';
 import UserRoleAssignment from './pages/UserRoleAssignment';
-import AdminHub from './pages/AdminHub';
+import EventAnalyticsDashboard from './pages/EventAnalyticsDashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -75,6 +76,7 @@ export const PAGES = {
     "AIEventPlanner": AIEventPlanner,
     "AIPersonalization": AIPersonalization,
     "Activities": Activities,
+    "AdminHub": AdminHub,
     "AdvancedAnalytics": AdvancedAnalytics,
     "AdvancedGamificationAnalytics": AdvancedGamificationAnalytics,
     "Analytics": Analytics,
@@ -109,10 +111,10 @@ export const PAGES = {
     "NewEmployeeOnboarding": NewEmployeeOnboarding,
     "OnboardingDashboard": OnboardingDashboard,
     "OnboardingHub": OnboardingHub,
+    "PRDGenerator": PRDGenerator,
     "ParticipantEvent": ParticipantEvent,
     "ParticipantPortal": ParticipantPortal,
     "PointStore": PointStore,
-    "PRDGenerator": PRDGenerator,
     "ProfileCustomization": ProfileCustomization,
     "ProjectPlan": ProjectPlan,
     "PublicProfile": PublicProfile,
@@ -139,7 +141,7 @@ export const PAGES = {
     "Teams": Teams,
     "UserProfile": UserProfile,
     "UserRoleAssignment": UserRoleAssignment,
-    "AdminHub": AdminHub,
+    "EventAnalyticsDashboard": EventAnalyticsDashboard,
 }
 
 export const pagesConfig = {
