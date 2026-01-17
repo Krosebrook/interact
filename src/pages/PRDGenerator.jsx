@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Loader2, FileText, Download, Copy, CheckCircle } from 'lucide-react';
 import { toast } from 'react-hot-toast';
-import base44 from '@base44/sdk';
+import { base44 } from '@/api/base44Client';
 
 const PRDGenerator = () => {
   const navigate = useNavigate();
@@ -49,7 +49,7 @@ const PRDGenerator = () => {
       if (formData.existingIntegrations) context.existingIntegrations = formData.existingIntegrations;
 
       // Call Base44 function to generate PRD
-      const response = await base44.functions.call('generatePRD', {
+      const response = await base44.functions.invoke('generatePRD', {
         featureIdea: formData.featureIdea,
         context,
         model: 'claude-sonnet-4-20250514',
