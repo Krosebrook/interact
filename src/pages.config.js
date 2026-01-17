@@ -72,6 +72,7 @@ import Teams from './pages/Teams';
 import UserProfile from './pages/UserProfile';
 import UserRoleAssignment from './pages/UserRoleAssignment';
 import PowerUserHub from './pages/PowerUserHub';
+import LifecycleIntelligenceDashboard from './pages/LifecycleIntelligenceDashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -150,6 +151,7 @@ export const PAGES = {
     "UserProfile": UserProfile,
     "UserRoleAssignment": UserRoleAssignment,
     "PowerUserHub": PowerUserHub,
+    "LifecycleIntelligenceDashboard": LifecycleIntelligenceDashboard,
 }
 
 export const pagesConfig = {
