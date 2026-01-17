@@ -242,6 +242,30 @@ export default function AIEventPlanningAssistant({ onApplySuggestions, teams = [
               </div>
             </div>
 
+            {/* Suggested Participants */}
+            {suggestions.suggested_participants && suggestions.suggested_participants.length > 0 && (
+              <div className="space-y-2">
+                <h4 className="font-semibold flex items-center gap-2">
+                  <Users className="h-4 w-4 text-teal-600" />
+                  Suggested Participants
+                </h4>
+                <div className="space-y-2">
+                  {suggestions.suggested_participants.slice(0, 5).map((participant, idx) => (
+                    <div key={idx} className="p-2 bg-teal-50 rounded-lg border border-teal-200 text-sm">
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <span className="font-medium">{participant.display_name || participant.email}</span>
+                          {participant.matched && <Badge variant="outline" className="ml-2 text-xs">Matched</Badge>}
+                        </div>
+                        <Badge variant="outline" className="text-xs capitalize">{participant.role_in_event}</Badge>
+                      </div>
+                      <p className="text-xs text-slate-600 mt-1">{participant.reason}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Success Tips */}
             <div className="space-y-2">
               <h4 className="font-semibold flex items-center gap-2">

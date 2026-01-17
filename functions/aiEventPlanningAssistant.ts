@@ -23,9 +23,16 @@ Deno.serve(async (req) => {
     
     // Get team members if team specified
     let teamMembers = [];
+    let teamMemberProfiles = [];
     if (team_id) {
       const memberships = await base44.asServiceRole.entities.TeamMembership.filter({ team_id });
       teamMembers = memberships.map(m => m.user_email);
+      // Get user profiles for skills matching
+      const profiles = await base44.asServiceRole.entities.UserProfile.list();
+      teamMemberProfiles = profiles.filter(p => teamMembers.includes(p.user_email));
+    } else {
+      // Get all user profiles
+      teamMemberProfiles = await base44.asServiceRole.entities.UserProfile.list();
     }
 
     // Calculate engagement metrics
@@ -94,7 +101,16 @@ Return ONLY valid JSON with this exact structure:
   "success_tips": ["tip1", "tip2", "tip3"],
   "estimated_participants": number,
   "recommended_duration": number (minutes),
-  "recommended_format": "online|offline|hybrid"
+  "recommended_format": "online|offline|hybrid",
+  "suggested_participants": [
+    {
+      "email": "user@example.com",
+      "reason": "why they should be invited",
+      "role_in_event": "participant|facilitator|co-host"
+    }
+  ],
+  "calendar_invite_body": "Full calendar invite text with agenda",
+  "follow_up_message": "Post-event thank you and feedback request message"
 }`;
 
     const aiResponse = await base44.asServiceRole.integrations.Core.InvokeLLM({
@@ -142,10 +158,37 @@ Return ONLY valid JSON with this exact structure:
           success_tips: { type: "array", items: { type: "string" } },
           estimated_participants: { type: "number" },
           recommended_duration: { type: "number" },
-          recommended_format: { type: "string" }
+          recommended_format: { type: "string" },
+          suggested_participants: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: {
+                email: { type: "string" },
+                reason: { type: "string" },
+                role_in_event: { type: "string" }
+              }
+            }
+          },
+          calendar_invite_body: { type: "string" },
+          follow_up_message: { type: "string" }
         }
       }
     });
+
+    // Match suggested participants to actual users
+    const matchedParticipants = aiResponse.suggested_participants?.map(sugg => {
+      const profile = teamMemberProfiles.find(p => 
+        p.user_email.toLowerCase().includes(sugg.email.toLowerCase()) ||
+        p.display_name?.toLowerCase().includes(sugg.email.toLowerCase())
+      );
+      return {
+        ...sugg,
+        user_email: profile?.user_email,
+        display_name: profile?.display_name,
+        matched: !!profile
+      };
+    }) || [];
 
     // Match activities to actual activity IDs
     const matchedActivities = aiResponse.recommended_activities.map(rec => {
@@ -164,12 +207,14 @@ Return ONLY valid JSON with this exact structure:
       success: true,
       suggestions: {
         ...aiResponse,
-        recommended_activities: matchedActivities
+        recommended_activities: matchedActivities,
+        suggested_participants: matchedParticipants
       },
       metadata: {
         events_analyzed: events.length,
         activities_available: activities.length,
-        team_size: teamMembers.length
+        team_size: teamMembers.length,
+        profiles_analyzed: teamMemberProfiles.length
       }
     });
 
