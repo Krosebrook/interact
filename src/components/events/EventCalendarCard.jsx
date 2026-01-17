@@ -27,6 +27,7 @@ import {
   RefreshCw } from
 'lucide-react';
 import GoogleCalendarActions from './GoogleCalendarActions';
+import EventSyncActions from '../integrations/EventSyncActions';
 import { format, isPast } from 'date-fns';
 import { motion } from 'framer-motion';
 
@@ -217,6 +218,11 @@ export default function EventCalendarCard({
           <span className="text-slate-600 truncate">• {event.location}</span>
           }
         </div>
+      </div>
+
+      {/* Sync Actions */}
+      <div className="mb-3">
+        <EventSyncActions event={event} onSyncComplete={() => {}} />
       </div>
 
       {/* Participants */}
