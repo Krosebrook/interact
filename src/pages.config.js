@@ -35,6 +35,7 @@ import KnowledgeHub from './pages/KnowledgeHub';
 import Leaderboards from './pages/Leaderboards';
 import LearningDashboard from './pages/LearningDashboard';
 import LearningPath from './pages/LearningPath';
+import LifecycleIntelligenceDashboard from './pages/LifecycleIntelligenceDashboard';
 import Milestones from './pages/Milestones';
 import NewEmployeeOnboarding from './pages/NewEmployeeOnboarding';
 import OnboardingDashboard from './pages/OnboardingDashboard';
@@ -43,6 +44,7 @@ import PRDGenerator from './pages/PRDGenerator';
 import ParticipantEvent from './pages/ParticipantEvent';
 import ParticipantPortal from './pages/ParticipantPortal';
 import PointStore from './pages/PointStore';
+import PowerUserHub from './pages/PowerUserHub';
 import ProfileCustomization from './pages/ProfileCustomization';
 import ProjectPlan from './pages/ProjectPlan';
 import PublicProfile from './pages/PublicProfile';
@@ -71,8 +73,7 @@ import TeamPerformanceDashboard from './pages/TeamPerformanceDashboard';
 import Teams from './pages/Teams';
 import UserProfile from './pages/UserProfile';
 import UserRoleAssignment from './pages/UserRoleAssignment';
-import PowerUserHub from './pages/PowerUserHub';
-import LifecycleIntelligenceDashboard from './pages/LifecycleIntelligenceDashboard';
+import ABTestingDashboard from './pages/ABTestingDashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -114,6 +115,7 @@ export const PAGES = {
     "Leaderboards": Leaderboards,
     "LearningDashboard": LearningDashboard,
     "LearningPath": LearningPath,
+    "LifecycleIntelligenceDashboard": LifecycleIntelligenceDashboard,
     "Milestones": Milestones,
     "NewEmployeeOnboarding": NewEmployeeOnboarding,
     "OnboardingDashboard": OnboardingDashboard,
@@ -122,6 +124,7 @@ export const PAGES = {
     "ParticipantEvent": ParticipantEvent,
     "ParticipantPortal": ParticipantPortal,
     "PointStore": PointStore,
+    "PowerUserHub": PowerUserHub,
     "ProfileCustomization": ProfileCustomization,
     "ProjectPlan": ProjectPlan,
     "PublicProfile": PublicProfile,
@@ -150,8 +153,7 @@ export const PAGES = {
     "Teams": Teams,
     "UserProfile": UserProfile,
     "UserRoleAssignment": UserRoleAssignment,
-    "PowerUserHub": PowerUserHub,
-    "LifecycleIntelligenceDashboard": LifecycleIntelligenceDashboard,
+    "ABTestingDashboard": ABTestingDashboard,
 }
 
 export const pagesConfig = {

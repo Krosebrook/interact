@@ -156,6 +156,47 @@ Deno.serve(async (req) => {
       }
 
       const state = lifecycle[0];
+
+      // Check for active A/B tests for this state
+      const activeTests = await base44.asServiceRole.entities.ABTest.filter({
+        lifecycle_state: state.current_state,
+        status: 'active'
+      });
+
+      // If user is in an A/B test, return test variant intervention
+      for (const test of activeTests) {
+        const assignments = await base44.asServiceRole.entities.ABTestAssignment.filter({
+          test_id: test.id,
+          user_email: userEmail
+        });
+
+        if (assignments.length > 0) {
+          const assignment = assignments[0];
+          const variant = test.variants.find(v => v.variant_id === assignment.variant_id);
+
+          if (variant && !assignment.intervention_shown) {
+            // Return A/B test intervention
+            return Response.json({
+              success: true,
+              state: state.current_state,
+              interventions: [{
+                id: `abtest_${test.id}_${variant.variant_id}`,
+                type: 'ab_test_variant',
+                message: variant.message,
+                content_type: 'ab_test',
+                surface: variant.surface,
+                ab_test_id: test.id,
+                ab_test_assignment_id: assignment.id,
+                variant_id: variant.variant_id
+              }],
+              tone: 'enabling',
+              is_ab_test: true
+            });
+          }
+        }
+      }
+
+      // Standard intervention logic (no A/B test)
       const playbook = INTERVENTION_PLAYBOOKS[state.current_state];
 
       if (!playbook) {
@@ -186,7 +227,8 @@ Deno.serve(async (req) => {
         state: state.current_state,
         playbook: playbook.name,
         interventions: eligibleInterventions,
-        tone: playbook.tone
+        tone: playbook.tone,
+        is_ab_test: false
       });
     }
 
