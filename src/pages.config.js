@@ -74,6 +74,7 @@ import Teams from './pages/Teams';
 import UserProfile from './pages/UserProfile';
 import UserRoleAssignment from './pages/UserRoleAssignment';
 import ABTestingDashboard from './pages/ABTestingDashboard';
+import LifecycleAnalyticsDashboard from './pages/LifecycleAnalyticsDashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -154,6 +155,7 @@ export const PAGES = {
     "UserProfile": UserProfile,
     "UserRoleAssignment": UserRoleAssignment,
     "ABTestingDashboard": ABTestingDashboard,
+    "LifecycleAnalyticsDashboard": LifecycleAnalyticsDashboard,
 }
 
 export const pagesConfig = {
