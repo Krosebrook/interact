@@ -1,3 +1,4 @@
+import ABTestingDashboard from './pages/ABTestingDashboard';
 import AIAdminDashboard from './pages/AIAdminDashboard';
 import AIEnhancedCoaching from './pages/AIEnhancedCoaching';
 import AIEventPlanner from './pages/AIEventPlanner';
@@ -35,6 +36,7 @@ import KnowledgeHub from './pages/KnowledgeHub';
 import Leaderboards from './pages/Leaderboards';
 import LearningDashboard from './pages/LearningDashboard';
 import LearningPath from './pages/LearningPath';
+import LifecycleAnalyticsDashboard from './pages/LifecycleAnalyticsDashboard';
 import LifecycleIntelligenceDashboard from './pages/LifecycleIntelligenceDashboard';
 import Milestones from './pages/Milestones';
 import NewEmployeeOnboarding from './pages/NewEmployeeOnboarding';
@@ -73,12 +75,11 @@ import TeamPerformanceDashboard from './pages/TeamPerformanceDashboard';
 import Teams from './pages/Teams';
 import UserProfile from './pages/UserProfile';
 import UserRoleAssignment from './pages/UserRoleAssignment';
-import ABTestingDashboard from './pages/ABTestingDashboard';
-import LifecycleAnalyticsDashboard from './pages/LifecycleAnalyticsDashboard';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
+    "ABTestingDashboard": ABTestingDashboard,
     "AIAdminDashboard": AIAdminDashboard,
     "AIEnhancedCoaching": AIEnhancedCoaching,
     "AIEventPlanner": AIEventPlanner,
@@ -116,6 +117,7 @@ export const PAGES = {
     "Leaderboards": Leaderboards,
     "LearningDashboard": LearningDashboard,
     "LearningPath": LearningPath,
+    "LifecycleAnalyticsDashboard": LifecycleAnalyticsDashboard,
     "LifecycleIntelligenceDashboard": LifecycleIntelligenceDashboard,
     "Milestones": Milestones,
     "NewEmployeeOnboarding": NewEmployeeOnboarding,
@@ -154,8 +156,6 @@ export const PAGES = {
     "Teams": Teams,
     "UserProfile": UserProfile,
     "UserRoleAssignment": UserRoleAssignment,
-    "ABTestingDashboard": ABTestingDashboard,
-    "LifecycleAnalyticsDashboard": LifecycleAnalyticsDashboard,
 }
 
 export const pagesConfig = {

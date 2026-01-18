@@ -10,6 +10,7 @@ import InterventionMetrics from '../components/lifecycle/analytics/InterventionM
 import ABTestSummary from '../components/lifecycle/analytics/ABTestSummary';
 import CohortAnalysis from '../components/lifecycle/analytics/CohortAnalysis';
 import PersonalizationDistribution from '../components/lifecycle/analytics/PersonalizationDistribution';
+import ReportGenerator from '../components/lifecycle/analytics/ReportGenerator';
 
 export default function LifecycleAnalyticsDashboard() {
   const [timeRange, setTimeRange] = useState('30');
@@ -169,13 +170,16 @@ export default function LifecycleAnalyticsDashboard() {
       {/* Churn Trends */}
       <ChurnTrendChart data={churnTrends} timeRange={timeRange} />
 
-      {/* Two Column Layout */}
-      <div className="grid grid-cols-2 gap-6">
+      {/* Three Column Layout */}
+      <div className="grid grid-cols-3 gap-6">
         {/* Intervention Metrics */}
         <InterventionMetrics data={interventionEffectiveness} />
 
         {/* A/B Test Summary */}
         <ABTestSummary data={abtestSummary} />
+
+        {/* Report Generator */}
+        <ReportGenerator />
       </div>
 
       {/* Personalization Distribution */}
