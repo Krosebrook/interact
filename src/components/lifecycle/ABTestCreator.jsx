@@ -18,6 +18,8 @@ export default function ABTestCreator({ onTestCreated }) {
     lifecycle_state: 'at_risk',
     status: 'draft',
     sample_size_target: 100,
+    start_date: new Date().toISOString(),
+    end_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
     variants: [
       { variant_id: 'control', name: 'Control', message: '', surface: 'banner', timing_delay_hours: 0, traffic_allocation: 50 },
       { variant_id: 'treatment_a', name: 'Treatment A', message: '', surface: 'banner', timing_delay_hours: 0, traffic_allocation: 50 }
@@ -121,6 +123,25 @@ export default function ABTestCreator({ onTestCreated }) {
               placeholder="What are you testing?"
               rows={2}
             />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label>Start Date</Label>
+              <Input
+                type="date"
+                value={testData.start_date.split('T')[0]}
+                onChange={(e) => setTestData({ ...testData, start_date: new Date(e.target.value).toISOString() })}
+              />
+            </div>
+            <div>
+              <Label>End Date</Label>
+              <Input
+                type="date"
+                value={testData.end_date.split('T')[0]}
+                onChange={(e) => setTestData({ ...testData, end_date: new Date(e.target.value).toISOString() })}
+              />
+            </div>
           </div>
 
           <div className="grid grid-cols-3 gap-4">
