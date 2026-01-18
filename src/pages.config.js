@@ -58,6 +58,7 @@ import RewardsStore from './pages/RewardsStore';
 import RoleManagement from './pages/RoleManagement';
 import RoleSelection from './pages/RoleSelection';
 import RoleSetup from './pages/RoleSetup';
+import SegmentationDashboard from './pages/SegmentationDashboard';
 import Settings from './pages/Settings';
 import SkillsDashboard from './pages/SkillsDashboard';
 import SocialGamification from './pages/SocialGamification';
@@ -75,7 +76,7 @@ import TeamPerformanceDashboard from './pages/TeamPerformanceDashboard';
 import Teams from './pages/Teams';
 import UserProfile from './pages/UserProfile';
 import UserRoleAssignment from './pages/UserRoleAssignment';
-import SegmentationDashboard from './pages/SegmentationDashboard';
+import IntegrationsAdmin from './pages/IntegrationsAdmin';
 import __Layout from './Layout.jsx';
 
 
@@ -140,6 +141,7 @@ export const PAGES = {
     "RoleManagement": RoleManagement,
     "RoleSelection": RoleSelection,
     "RoleSetup": RoleSetup,
+    "SegmentationDashboard": SegmentationDashboard,
     "Settings": Settings,
     "SkillsDashboard": SkillsDashboard,
     "SocialGamification": SocialGamification,
@@ -157,7 +159,7 @@ export const PAGES = {
     "Teams": Teams,
     "UserProfile": UserProfile,
     "UserRoleAssignment": UserRoleAssignment,
-    "SegmentationDashboard": SegmentationDashboard,
+    "IntegrationsAdmin": IntegrationsAdmin,
 }
 
 export const pagesConfig = {
