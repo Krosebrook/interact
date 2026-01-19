@@ -5,8 +5,10 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
-import { Play, RefreshCw, CheckCircle, XCircle, Clock, AlertTriangle } from 'lucide-react';
+import { Play, RefreshCw, CheckCircle, XCircle, Clock, AlertTriangle, Activity } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
+import OutboxMonitor from '../components/integrations/OutboxMonitor';
 
 const INTEGRATIONS = [
   { id: 'google_sheets', name: 'Google Sheets', type: 'oauth', connector: 'googlesheets' },
@@ -162,8 +164,18 @@ export default function IntegrationsAdmin() {
         </Button>
       </div>
 
-      {/* Summary Cards */}
-      <div className="grid grid-cols-4 gap-4">
+      <Tabs defaultValue="integrations" className="space-y-6">
+        <TabsList>
+          <TabsTrigger value="integrations">Integrations</TabsTrigger>
+          <TabsTrigger value="monitor">
+            <Activity className="w-4 h-4 mr-2" />
+            Outbox Monitor
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="integrations" className="space-y-6">
+          {/* Summary Cards */}
+          <div className="grid grid-cols-4 gap-4">
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium">Total Queued</CardTitle>
@@ -304,6 +316,12 @@ export default function IntegrationsAdmin() {
           </div>
         </CardContent>
       </Card>
+        </TabsContent>
+
+        <TabsContent value="monitor">
+          <OutboxMonitor />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
