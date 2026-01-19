@@ -14,11 +14,12 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { action } = await req.json();
+    const payload = await req.json();
+    const { action } = payload;
 
     // GET ACTIVE TESTS FOR STATE
     if (action === 'get_active_tests_for_state') {
-      const { lifecycleState } = await req.json();
+      const { lifecycleState } = payload;
       
       const tests = await base44.entities.ABTest.filter({
         lifecycle_state: lifecycleState,
@@ -37,7 +38,7 @@ Deno.serve(async (req) => {
 
     // ASSIGN USER TO TEST VARIANT
     if (action === 'assign_user_to_test') {
-      const { testId, userEmail, lifecycleState } = await req.json();
+      const { testId, userEmail, lifecycleState } = payload;
 
       // Check if user already assigned
       const existing = await base44.asServiceRole.entities.ABTestAssignment.filter({
@@ -121,7 +122,7 @@ Deno.serve(async (req) => {
 
     // TRACK INTERVENTION SHOWN
     if (action === 'track_intervention_shown') {
-      const { assignmentId } = await req.json();
+      const { assignmentId } = payload;
 
       await base44.asServiceRole.entities.ABTestAssignment.update(assignmentId, {
         intervention_shown: true,
@@ -133,7 +134,7 @@ Deno.serve(async (req) => {
 
     // TRACK USER ACTION
     if (action === 'track_user_action') {
-      const { assignmentId, actionType } = await req.json();
+      const { assignmentId, actionType } = payload;
 
       await base44.asServiceRole.entities.ABTestAssignment.update(assignmentId, {
         user_action: actionType,
@@ -145,7 +146,7 @@ Deno.serve(async (req) => {
 
     // TRACK CONVERSION EVENT
     if (action === 'track_conversion_event') {
-      const { assignmentId, eventType, eventValue = 0 } = await req.json();
+      const { assignmentId, eventType, eventValue = 0 } = payload;
 
       const assignments = await base44.asServiceRole.entities.ABTestAssignment.filter({
         id: assignmentId
@@ -172,7 +173,7 @@ Deno.serve(async (req) => {
 
     // UPDATE POST-TEST METRICS
     if (action === 'update_post_test_metrics') {
-      const { assignmentId } = await req.json();
+      const { assignmentId } = payload;
 
       const assignments = await base44.asServiceRole.entities.ABTestAssignment.filter({
         id: assignmentId
@@ -208,7 +209,7 @@ Deno.serve(async (req) => {
 
     // ANALYZE TEST RESULTS (Enhanced with Bayesian + MVT + Anomaly Detection)
     if (action === 'analyze_test_results') {
-      const { testId, method = 'bayesian' } = await req.json();
+      const { testId, method = 'bayesian' } = payload;
 
       const assignments = await base44.asServiceRole.entities.ABTestAssignment.filter({
         test_id: testId
