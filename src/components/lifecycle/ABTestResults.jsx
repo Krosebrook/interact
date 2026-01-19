@@ -1,22 +1,30 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { TrendingUp, Award, BarChart3, RefreshCcw } from 'lucide-react';
+import { TrendingUp, Award, BarChart3, RefreshCcw, Activity } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import BayesianAnalysisPanel from './analytics/BayesianAnalysisPanel';
+import MVTInteractionPanel from './analytics/MVTInteractionPanel';
+import AnomalyDetectionPanel from './analytics/AnomalyDetectionPanel';
 
 export default function ABTestResults({ testId }) {
+  const [analysisMethod, setAnalysisMethod] = useState('bayesian');
+
   const { data: results, refetch, isLoading } = useQuery({
-    queryKey: ['ab-test-results', testId],
+    queryKey: ['ab-test-results', testId, analysisMethod],
     queryFn: async () => {
       const response = await base44.functions.invoke('abTestEngine', {
         action: 'analyze_test_results',
-        testId
+        testId,
+        method: analysisMethod
       });
       return response.data;
-    }
+    },
+    staleTime: 30000
   });
 
   if (isLoading) return <div className="text-center py-8">Analyzing results...</div>;
@@ -32,6 +40,26 @@ export default function ABTestResults({ testId }) {
 
   return (
     <div className="space-y-4">
+      {/* Analysis Method Toggle */}
+      <div className="flex items-center justify-between">
+        <Tabs value={analysisMethod} onValueChange={setAnalysisMethod}>
+          <TabsList>
+            <TabsTrigger value="bayesian" className="text-xs">
+              <Activity className="w-3 h-3 mr-1" />
+              Bayesian
+            </TabsTrigger>
+            <TabsTrigger value="frequentist" className="text-xs">
+              <BarChart3 className="w-3 h-3 mr-1" />
+              Frequentist
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+        <Button size="sm" variant="outline" onClick={() => refetch()}>
+          <RefreshCcw className="w-4 h-4 mr-1" />
+          Refresh
+        </Button>
+      </div>
+
       {/* Summary */}
       <Card>
         <CardHeader>
@@ -40,14 +68,13 @@ export default function ABTestResults({ testId }) {
               <BarChart3 className="w-5 h-5 text-purple-600" />
               Test Results Summary
             </span>
-            <Button size="sm" variant="outline" onClick={() => refetch()}>
-              <RefreshCcw className="w-4 h-4 mr-1" />
-              Refresh
-            </Button>
+            <Badge className="bg-purple-100 text-purple-800">
+              {analysisMethod === 'bayesian' ? 'Bayesian Analysis' : 'Frequentist Analysis'}
+            </Badge>
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-4 gap-4">
+          <div className="grid grid-cols-5 gap-4">
             <div>
               <p className="text-xs text-slate-600 mb-1">Total Users</p>
               <p className="text-2xl font-bold text-slate-900">{results.total_assignments}</p>
@@ -69,9 +96,29 @@ export default function ABTestResults({ testId }) {
                 {results.improvement_percentage.toFixed(1)}%
               </p>
             </div>
+            <div>
+              <p className="text-xs text-slate-600 mb-1">Anomalies</p>
+              <p className={`text-2xl font-bold ${results.anomalies?.length > 0 ? 'text-amber-600' : 'text-green-600'}`}>
+                {results.anomalies?.length || 0}
+              </p>
+            </div>
           </div>
         </CardContent>
       </Card>
+
+      {/* Advanced Analytics Panels */}
+      <div className="grid grid-cols-1 gap-4">
+        <BayesianAnalysisPanel 
+          bayesianData={results.bayesian_analysis} 
+          winningVariant={results.winning_variant}
+        />
+        
+        {results.mvt_analysis && (
+          <MVTInteractionPanel mvtData={results.mvt_analysis} />
+        )}
+        
+        <AnomalyDetectionPanel anomalies={results.anomalies} />
+      </div>
 
       {/* Variant Comparison */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
