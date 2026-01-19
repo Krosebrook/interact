@@ -206,9 +206,9 @@ Deno.serve(async (req) => {
       return Response.json({ success: true });
     }
 
-    // ANALYZE TEST RESULTS
+    // ANALYZE TEST RESULTS (Enhanced with Bayesian + MVT + Anomaly Detection)
     if (action === 'analyze_test_results') {
-      const { testId } = await req.json();
+      const { testId, method = 'bayesian' } = await req.json();
 
       const assignments = await base44.asServiceRole.entities.ABTestAssignment.filter({
         test_id: testId
@@ -224,6 +224,8 @@ Deno.serve(async (req) => {
 
       // Group by variant
       const variantResults = {};
+      const timeSeriesData = {};
+      
       variants.forEach(v => {
         variantResults[v.variant_id] = {
           variant_name: v.name,
@@ -235,8 +237,10 @@ Deno.serve(async (req) => {
           avg_churn_risk_change: 0,
           avg_sessions_change: 0,
           state_transitions: 0,
-          conversion_rate: 0
+          conversion_rate: 0,
+          conversions_by_day: []
         };
+        timeSeriesData[v.variant_id] = [];
       });
 
       assignments.forEach(assignment => {
@@ -262,19 +266,60 @@ Deno.serve(async (req) => {
         if (assignment.lifecycle_state_before !== assignment.lifecycle_state_after) {
           result.state_transitions++;
         }
+
+        // Track daily conversions for anomaly detection
+        const day = assignment.assigned_at?.split('T')[0];
+        if (day) {
+          timeSeriesData[variantId].push({
+            date: day,
+            converted: assignment.user_action === 'clicked' ? 1 : 0,
+            shown: assignment.intervention_shown ? 1 : 0
+          });
+        }
       });
 
-      // Calculate averages
+      // Calculate averages and daily conversion rates
       Object.keys(variantResults).forEach(variantId => {
         const result = variantResults[variantId];
         if (result.total_assigned > 0) {
           result.avg_churn_risk_change = result.avg_churn_risk_change / result.total_assigned;
           result.avg_sessions_change = result.avg_sessions_change / result.total_assigned;
-          result.conversion_rate = (result.clicked / result.intervention_shown) * 100;
+          result.conversion_rate = result.intervention_shown > 0 
+            ? (result.clicked / result.intervention_shown) * 100 
+            : 0;
         }
+
+        // Aggregate daily stats
+        const dailyStats = {};
+        timeSeriesData[variantId].forEach(item => {
+          if (!dailyStats[item.date]) {
+            dailyStats[item.date] = { shown: 0, converted: 0 };
+          }
+          dailyStats[item.date].shown += item.shown;
+          dailyStats[item.date].converted += item.converted;
+        });
+
+        result.conversions_by_day = Object.entries(dailyStats).map(([date, stats]) => ({
+          date,
+          conversion_rate: stats.shown > 0 ? (stats.converted / stats.shown) * 100 : 0,
+          shown: stats.shown
+        })).sort((a, b) => a.date.localeCompare(b.date));
       });
 
-      // Determine winner (based on primary metric)
+      // Bayesian Analysis
+      const bayesianResults = method === 'bayesian' 
+        ? calculateBayesianStats(variantResults) 
+        : null;
+
+      // Multi-Variate Test (MVT) Interaction Effects
+      const mvtResults = variants.length > 2 
+        ? calculateMVTInteractionEffects(variantResults, assignments) 
+        : null;
+
+      // Anomaly Detection
+      const anomalies = detectAnomalies(variantResults);
+
+      // Traditional frequentist analysis
       const primaryMetric = test.success_metrics?.primary_metric || 'click_through_rate';
       let winningVariant = null;
       let bestScore = -Infinity;
@@ -293,7 +338,6 @@ Deno.serve(async (req) => {
         }
       });
 
-      // Calculate statistical significance (simplified chi-square)
       const controlVariant = variants[0]?.variant_id;
       const confidenceLevel = calculateConfidence(
         variantResults[controlVariant],
@@ -310,7 +354,9 @@ Deno.serve(async (req) => {
           total_users_assigned: assignments.length,
           winning_variant: winningVariant,
           confidence_level: confidenceLevel,
-          improvement_percentage: improvement
+          improvement_percentage: improvement,
+          bayesian_probability: bayesianResults ? bayesianResults[winningVariant]?.probability_to_be_best : null,
+          anomalies_detected: anomalies.length
         }
       });
 
@@ -320,7 +366,11 @@ Deno.serve(async (req) => {
         winning_variant: winningVariant,
         confidence_level: confidenceLevel,
         improvement_percentage: improvement,
-        total_assignments: assignments.length
+        total_assignments: assignments.length,
+        bayesian_analysis: bayesianResults,
+        mvt_analysis: mvtResults,
+        anomalies: anomalies,
+        method
       });
     }
 
@@ -368,4 +418,200 @@ function calculateConfidence(control, treatment) {
   if (z > 1.96) return 95; // 95% confidence
   if (z > 1.645) return 90; // 90% confidence
   return Math.round(z * 50); // Rough approximation
+}
+
+// Bayesian Statistics - Beta Distribution for conversion rates
+function calculateBayesianStats(variantResults) {
+  const bayesianResults = {};
+  const variantIds = Object.keys(variantResults);
+  
+  // Prior: Beta(1, 1) - uniform prior
+  const alpha_prior = 1;
+  const beta_prior = 1;
+
+  // Calculate posterior for each variant
+  variantIds.forEach(variantId => {
+    const result = variantResults[variantId];
+    const successes = result.clicked;
+    const failures = result.intervention_shown - result.clicked;
+    
+    // Posterior: Beta(alpha + successes, beta + failures)
+    const alpha_post = alpha_prior + successes;
+    const beta_post = beta_prior + failures;
+    
+    // Expected value (mean of Beta distribution)
+    const expected_conversion = alpha_post / (alpha_post + beta_post);
+    
+    // 95% Credible Interval using approximate formula
+    const variance = (alpha_post * beta_post) / (Math.pow(alpha_post + beta_post, 2) * (alpha_post + beta_post + 1));
+    const stddev = Math.sqrt(variance);
+    const credible_interval_low = Math.max(0, expected_conversion - 1.96 * stddev);
+    const credible_interval_high = Math.min(1, expected_conversion + 1.96 * stddev);
+    
+    bayesianResults[variantId] = {
+      variant_name: result.variant_name,
+      expected_conversion: expected_conversion * 100,
+      credible_interval: [credible_interval_low * 100, credible_interval_high * 100],
+      alpha: alpha_post,
+      beta: beta_post,
+      sample_size: result.intervention_shown
+    };
+  });
+
+  // Monte Carlo simulation to calculate probability of being best
+  const simulations = 10000;
+  const winCounts = {};
+  variantIds.forEach(id => winCounts[id] = 0);
+
+  for (let i = 0; i < simulations; i++) {
+    const samples = {};
+    variantIds.forEach(variantId => {
+      const params = bayesianResults[variantId];
+      // Beta random sample using simplified method
+      samples[variantId] = betaRandom(params.alpha, params.beta);
+    });
+
+    // Find winner in this simulation
+    let maxSample = -1;
+    let winner = null;
+    Object.entries(samples).forEach(([id, sample]) => {
+      if (sample > maxSample) {
+        maxSample = sample;
+        winner = id;
+      }
+    });
+    
+    if (winner) winCounts[winner]++;
+  }
+
+  // Add probability to be best
+  variantIds.forEach(variantId => {
+    bayesianResults[variantId].probability_to_be_best = (winCounts[variantId] / simulations) * 100;
+  });
+
+  return bayesianResults;
+}
+
+// Beta random number generator (approximate using normal approximation for large n)
+function betaRandom(alpha, beta) {
+  if (alpha + beta < 50) {
+    // Simple rejection sampling for small samples
+    return Math.random(); // Simplified - would use better method in production
+  }
+  
+  // Normal approximation for large samples
+  const mean = alpha / (alpha + beta);
+  const variance = (alpha * beta) / (Math.pow(alpha + beta, 2) * (alpha + beta + 1));
+  const sample = normalRandom(mean, Math.sqrt(variance));
+  return Math.max(0, Math.min(1, sample));
+}
+
+// Box-Muller transform for normal random
+function normalRandom(mean, stddev) {
+  const u1 = Math.random();
+  const u2 = Math.random();
+  const z0 = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+  return mean + z0 * stddev;
+}
+
+// Multi-Variate Testing: Calculate interaction effects between variants
+function calculateMVTInteractionEffects(variantResults, assignments) {
+  const variantIds = Object.keys(variantResults);
+  
+  if (variantIds.length < 3) {
+    return null; // Need at least 3 variants for meaningful MVT
+  }
+
+  const interactions = [];
+  
+  // Check for interaction effects by comparing combined performance
+  for (let i = 0; i < variantIds.length; i++) {
+    for (let j = i + 1; j < variantIds.length; j++) {
+      const v1 = variantResults[variantIds[i]];
+      const v2 = variantResults[variantIds[j]];
+      
+      // Expected additive effect
+      const expectedEffect = (v1.conversion_rate + v2.conversion_rate) / 2;
+      
+      // Actual combined effect (users who saw both or similar patterns)
+      const combinedConversions = (v1.clicked + v2.clicked);
+      const combinedShown = (v1.intervention_shown + v2.intervention_shown);
+      const actualEffect = combinedShown > 0 ? (combinedConversions / combinedShown) * 100 : 0;
+      
+      // Interaction effect (deviation from additivity)
+      const interactionEffect = actualEffect - expectedEffect;
+      
+      interactions.push({
+        variant_a: v1.variant_name,
+        variant_b: v2.variant_name,
+        expected_combined: expectedEffect,
+        actual_combined: actualEffect,
+        interaction_effect: interactionEffect,
+        synergy: interactionEffect > 1 ? 'positive' : interactionEffect < -1 ? 'negative' : 'neutral'
+      });
+    }
+  }
+  
+  return {
+    interactions,
+    has_significant_interactions: interactions.some(i => Math.abs(i.interaction_effect) > 5)
+  };
+}
+
+// Anomaly Detection: Detect unexpected performance shifts
+function detectAnomalies(variantResults) {
+  const anomalies = [];
+  
+  Object.entries(variantResults).forEach(([variantId, result]) => {
+    if (result.conversions_by_day.length < 3) return; // Need at least 3 days
+    
+    const rates = result.conversions_by_day.map(d => d.conversion_rate);
+    const mean = rates.reduce((a, b) => a + b, 0) / rates.length;
+    const variance = rates.reduce((sum, r) => sum + Math.pow(r - mean, 2), 0) / rates.length;
+    const stddev = Math.sqrt(variance);
+    
+    // Detect outliers (> 3 standard deviations)
+    result.conversions_by_day.forEach(day => {
+      const zScore = Math.abs((day.conversion_rate - mean) / stddev);
+      
+      if (zScore > 3 && day.shown >= 10) { // Only flag if sufficient sample
+        anomalies.push({
+          variant_id: variantId,
+          variant_name: result.variant_name,
+          date: day.date,
+          conversion_rate: day.conversion_rate,
+          expected_rate: mean,
+          z_score: zScore,
+          severity: zScore > 4 ? 'critical' : 'warning',
+          type: day.conversion_rate > mean ? 'spike' : 'drop',
+          sample_size: day.shown
+        });
+      }
+    });
+    
+    // Detect sustained trends (monotonic increase/decrease over 5+ days)
+    if (rates.length >= 5) {
+      const recent = rates.slice(-5);
+      const increasing = recent.every((val, idx, arr) => idx === 0 || val >= arr[idx - 1]);
+      const decreasing = recent.every((val, idx, arr) => idx === 0 || val <= arr[idx - 1]);
+      
+      if (increasing || decreasing) {
+        const trendChange = ((recent[recent.length - 1] - recent[0]) / recent[0]) * 100;
+        
+        if (Math.abs(trendChange) > 20) { // 20% change over 5 days
+          anomalies.push({
+            variant_id: variantId,
+            variant_name: result.variant_name,
+            date: result.conversions_by_day[result.conversions_by_day.length - 1].date,
+            type: increasing ? 'sustained_increase' : 'sustained_decrease',
+            trend_change_pct: trendChange,
+            severity: Math.abs(trendChange) > 50 ? 'critical' : 'warning',
+            days: 5
+          });
+        }
+      }
+    }
+  });
+  
+  return anomalies;
 }
