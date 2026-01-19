@@ -24,8 +24,81 @@ const RATE_LIMITS = {
   'custom_api': { rps: 1, concurrency: 4 }
 };
 
-function calculateBackoff(attemptCount) {
-  return Math.min(1000 * Math.pow(2, attemptCount), 3600000); // Max 1 hour
+// Error classification patterns
+const ERROR_PATTERNS = {
+  RATE_LIMIT: [
+    /rate limit/i,
+    /too many requests/i,
+    /quota exceeded/i,
+    /429/,
+    /throttle/i
+  ],
+  TRANSIENT: [
+    /timeout/i,
+    /connection/i,
+    /network/i,
+    /503/,
+    /502/,
+    /500/,
+    /temporarily unavailable/i,
+    /ECONNREFUSED/i,
+    /ETIMEDOUT/i
+  ],
+  AUTH: [
+    /unauthorized/i,
+    /invalid token/i,
+    /authentication/i,
+    /401/,
+    /403/,
+    /expired/i
+  ],
+  PERMANENT: [
+    /not found/i,
+    /404/,
+    /invalid email/i,
+    /invalid phone/i,
+    /malformed/i,
+    /400/
+  ]
+};
+
+function classifyError(error) {
+  const errorStr = String(error || '').toLowerCase();
+  
+  if (ERROR_PATTERNS.RATE_LIMIT.some(pattern => pattern.test(errorStr))) {
+    return { type: 'RATE_LIMIT', retryable: true, backoffMultiplier: 4 };
+  }
+  if (ERROR_PATTERNS.AUTH.some(pattern => pattern.test(errorStr))) {
+    return { type: 'AUTH', retryable: false, backoffMultiplier: 1 };
+  }
+  if (ERROR_PATTERNS.PERMANENT.some(pattern => pattern.test(errorStr))) {
+    return { type: 'PERMANENT', retryable: false, backoffMultiplier: 1 };
+  }
+  if (ERROR_PATTERNS.TRANSIENT.some(pattern => pattern.test(errorStr))) {
+    return { type: 'TRANSIENT', retryable: true, backoffMultiplier: 2 };
+  }
+  
+  // Unknown errors - treat as retryable with caution
+  return { type: 'UNKNOWN', retryable: true, backoffMultiplier: 2 };
+}
+
+function calculateIntelligentBackoff(attemptCount, errorClassification, integrationId) {
+  const { backoffMultiplier } = errorClassification;
+  
+  // Base backoff: 5s, 20s, 80s, 320s, 1280s
+  let backoffMs = 5000 * Math.pow(backoffMultiplier, attemptCount);
+  
+  // Rate limit errors get longer backoff
+  if (errorClassification.type === 'RATE_LIMIT') {
+    backoffMs = Math.max(backoffMs, 60000); // Min 1 minute for rate limits
+  }
+  
+  // Add jitter to prevent thundering herd (±20%)
+  const jitter = backoffMs * 0.2 * (Math.random() - 0.5);
+  backoffMs += jitter;
+  
+  // Cap at 1 hour
+  return Math.min(backoffMs, 3600000);
 }
 
 Deno.serve(async (req) => {
@@ -101,19 +174,35 @@ Deno.serve(async (req) => {
           results.sent++;
         } else {
           const newAttemptCount = item.attempt_count + 1;
-          if (newAttemptCount >= MAX_ATTEMPTS) {
+          const errorClassification = classifyError(response.error);
+          
+          // Permanent errors go straight to dead letter
+          if (!errorClassification.retryable) {
             await base44.asServiceRole.entities.IntegrationOutbox.update(item.id, {
               status: 'dead_letter',
-              last_error: response.error || 'Max attempts reached',
+              last_error: `${errorClassification.type}: ${response.error}`,
+              attempt_count: newAttemptCount
+            });
+            results.dead_letter++;
+          } else if (newAttemptCount >= MAX_ATTEMPTS) {
+            await base44.asServiceRole.entities.IntegrationOutbox.update(item.id, {
+              status: 'dead_letter',
+              last_error: `Max attempts (${errorClassification.type}): ${response.error}`,
               attempt_count: newAttemptCount
             });
             results.dead_letter++;
           } else {
+            const backoffMs = calculateIntelligentBackoff(
+              newAttemptCount,
+              errorClassification,
+              item.integration_id
+            );
+            
             await base44.asServiceRole.entities.IntegrationOutbox.update(item.id, {
               status: 'failed',
-              last_error: response.error || 'Unknown error',
+              last_error: `${errorClassification.type} (retry ${newAttemptCount}/${MAX_ATTEMPTS}): ${response.error}`,
               attempt_count: newAttemptCount,
-              next_attempt_at: new Date(Date.now() + calculateBackoff(newAttemptCount)).toISOString()
+              next_attempt_at: new Date(Date.now() + backoffMs).toISOString()
             });
             results.failed++;
           }
@@ -163,11 +252,20 @@ async function dispatchResend(item, payload) {
       const data = await response.json();
       return { success: true, data };
     } else {
-      const error = await response.text();
+      const errorText = await response.text();
+      let errorData;
+      try {
+        errorData = JSON.parse(errorText);
+      } catch {
+        errorData = { message: errorText };
+      }
+      
+      // Enhanced error context for Resend
+      const error = `HTTP ${response.status}: ${errorData.message || errorText}`;
       return { success: false, error };
     }
   } catch (error) {
-    return { success: false, error: error.message };
+    return { success: false, error: `Network error: ${error.message}` };
   }
 }
 
@@ -196,10 +294,18 @@ async function dispatchTwilio(item, payload) {
       const data = await response.json();
       return { success: true, data };
     } else {
-      const error = await response.text();
+      const errorText = await response.text();
+      let errorData;
+      try {
+        errorData = JSON.parse(errorText);
+      } catch {
+        errorData = { message: errorText };
+      }
+      
+      const error = `HTTP ${response.status}: ${errorData.message || errorData.code || errorText}`;
       return { success: false, error };
     }
   } catch (error) {
-    return { success: false, error: error.message };
+    return { success: false, error: `Network error: ${error.message}` };
   }
 }
