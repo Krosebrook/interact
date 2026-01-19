@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Beaker, Plus, Play, Pause, BarChart3 } from 'lucide-react';
 import ABTestCreator from '../components/lifecycle/ABTestCreator';
 import ABTestResults from '../components/lifecycle/ABTestResults';
-// ABTestMetricsDashboard removed due to missing dependencies
+import ABTestMetricsDashboard from '../components/abtesting/ABTestMetricsDashboard';
 
 export default function ABTestingDashboard() {
   const queryClient = useQueryClient();
@@ -99,10 +99,18 @@ export default function ABTestingDashboard() {
       {/* Test List */}
       <Tabs defaultValue="active">
         <TabsList>
+          <TabsTrigger value="analytics">
+            <BarChart3 className="w-4 h-4 mr-2" />
+            Analytics
+          </TabsTrigger>
           <TabsTrigger value="active">Active Tests</TabsTrigger>
           <TabsTrigger value="completed">Completed</TabsTrigger>
           <TabsTrigger value="draft">Drafts</TabsTrigger>
         </TabsList>
+
+        <TabsContent value="analytics">
+          <ABTestMetricsDashboard />
+        </TabsContent>
 
         <TabsContent value="active" className="space-y-4">
           {activeTests.length === 0 ? (
