@@ -31,6 +31,7 @@ import GamificationRulesAdmin from './pages/GamificationRulesAdmin';
 import GamificationSettings from './pages/GamificationSettings';
 import Home from './pages/Home';
 import Integrations from './pages/Integrations';
+import IntegrationsAdmin from './pages/IntegrationsAdmin';
 import IntegrationsHub from './pages/IntegrationsHub';
 import KnowledgeHub from './pages/KnowledgeHub';
 import Leaderboards from './pages/Leaderboards';
@@ -76,7 +77,6 @@ import TeamPerformanceDashboard from './pages/TeamPerformanceDashboard';
 import Teams from './pages/Teams';
 import UserProfile from './pages/UserProfile';
 import UserRoleAssignment from './pages/UserRoleAssignment';
-import IntegrationsAdmin from './pages/IntegrationsAdmin';
 import __Layout from './Layout.jsx';
 
 
@@ -114,6 +114,7 @@ export const PAGES = {
     "GamificationSettings": GamificationSettings,
     "Home": Home,
     "Integrations": Integrations,
+    "IntegrationsAdmin": IntegrationsAdmin,
     "IntegrationsHub": IntegrationsHub,
     "KnowledgeHub": KnowledgeHub,
     "Leaderboards": Leaderboards,
@@ -159,7 +160,6 @@ export const PAGES = {
     "Teams": Teams,
     "UserProfile": UserProfile,
     "UserRoleAssignment": UserRoleAssignment,
-    "IntegrationsAdmin": IntegrationsAdmin,
 }
 
 export const pagesConfig = {
