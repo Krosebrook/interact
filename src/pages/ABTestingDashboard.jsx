@@ -9,6 +9,9 @@ import { Beaker, Plus, Play, Pause, BarChart3 } from 'lucide-react';
 import ABTestCreator from '../components/lifecycle/ABTestCreator';
 import ABTestResults from '../components/lifecycle/ABTestResults';
 import ABTestMetricsDashboard from '../components/abtesting/ABTestMetricsDashboard';
+import AIPredictions from '../components/lifecycle/AIPredictions';
+import AITestSuggestions from '../components/lifecycle/AITestSuggestions';
+import AIAnomalyDetection from '../components/lifecycle/AIAnomalyDetection';
 
 export default function ABTestingDashboard() {
   const queryClient = useQueryClient();
