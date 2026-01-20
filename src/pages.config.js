@@ -78,6 +78,7 @@ import Teams from './pages/Teams';
 import UserProfile from './pages/UserProfile';
 import UserRoleAssignment from './pages/UserRoleAssignment';
 import UserSegmentation from './pages/UserSegmentation';
+import PredictiveAnalyticsDashboard from './pages/PredictiveAnalyticsDashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -162,6 +163,7 @@ export const PAGES = {
     "UserProfile": UserProfile,
     "UserRoleAssignment": UserRoleAssignment,
     "UserSegmentation": UserSegmentation,
+    "PredictiveAnalyticsDashboard": PredictiveAnalyticsDashboard,
 }
 
 export const pagesConfig = {
