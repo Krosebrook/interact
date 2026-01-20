@@ -66,6 +66,16 @@ export default function ABTestingDashboard() {
         </Button>
       </div>
 
+      {/* AI Insights Section */}
+      <div className="grid grid-cols-2 gap-6">
+        <AIAnomalyDetection />
+        <AIPredictions />
+      </div>
+
+      <AITestSuggestions onCreateTest={(suggestion) => {
+        setShowCreator(true);
+      }} />
+
       {/* Stats */}
       <div className="grid grid-cols-4 gap-4">
         <Card>

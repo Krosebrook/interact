@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import BayesianAnalysisPanel from './analytics/BayesianAnalysisPanel';
 import MVTInteractionPanel from './analytics/MVTInteractionPanel';
 import AnomalyDetectionPanel from './analytics/AnomalyDetectionPanel';
+import AITestInsights from './AITestInsights';
 
 export default function ABTestResults({ testId }) {
   const [analysisMethod, setAnalysisMethod] = useState('bayesian');
@@ -40,6 +41,8 @@ export default function ABTestResults({ testId }) {
 
   return (
     <div className="space-y-4">
+      <AITestInsights testId={testId} />
+      
       {/* Analysis Method Toggle */}
       <div className="flex items-center justify-between">
         <Tabs value={analysisMethod} onValueChange={setAnalysisMethod}>
