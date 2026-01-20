@@ -81,6 +81,7 @@ import UserProfile from './pages/UserProfile';
 import UserRoleAssignment from './pages/UserRoleAssignment';
 import UserSegmentation from './pages/UserSegmentation';
 import CustomizableAnalyticsDashboard from './pages/CustomizableAnalyticsDashboard';
+import KnowledgeBase from './pages/KnowledgeBase';
 import __Layout from './Layout.jsx';
 
 
@@ -168,6 +169,7 @@ export const PAGES = {
     "UserRoleAssignment": UserRoleAssignment,
     "UserSegmentation": UserSegmentation,
     "CustomizableAnalyticsDashboard": CustomizableAnalyticsDashboard,
+    "KnowledgeBase": KnowledgeBase,
 }
 
 export const pagesConfig = {
