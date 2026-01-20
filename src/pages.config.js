@@ -11,6 +11,7 @@ import Analytics from './pages/Analytics';
 import AuditLog from './pages/AuditLog';
 import Calendar from './pages/Calendar';
 import Channels from './pages/Channels';
+import ComprehensiveProfile from './pages/ComprehensiveProfile';
 import ContentModerationAdmin from './pages/ContentModerationAdmin';
 import Dashboard from './pages/Dashboard';
 import Documentation from './pages/Documentation';
@@ -48,6 +49,7 @@ import ParticipantEvent from './pages/ParticipantEvent';
 import ParticipantPortal from './pages/ParticipantPortal';
 import PointStore from './pages/PointStore';
 import PowerUserHub from './pages/PowerUserHub';
+import PredictiveAnalyticsDashboard from './pages/PredictiveAnalyticsDashboard';
 import ProfileCustomization from './pages/ProfileCustomization';
 import ProjectPlan from './pages/ProjectPlan';
 import PublicProfile from './pages/PublicProfile';
@@ -78,8 +80,7 @@ import Teams from './pages/Teams';
 import UserProfile from './pages/UserProfile';
 import UserRoleAssignment from './pages/UserRoleAssignment';
 import UserSegmentation from './pages/UserSegmentation';
-import PredictiveAnalyticsDashboard from './pages/PredictiveAnalyticsDashboard';
-import ComprehensiveProfile from './pages/ComprehensiveProfile';
+import CustomizableAnalyticsDashboard from './pages/CustomizableAnalyticsDashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -97,6 +98,7 @@ export const PAGES = {
     "AuditLog": AuditLog,
     "Calendar": Calendar,
     "Channels": Channels,
+    "ComprehensiveProfile": ComprehensiveProfile,
     "ContentModerationAdmin": ContentModerationAdmin,
     "Dashboard": Dashboard,
     "Documentation": Documentation,
@@ -134,6 +136,7 @@ export const PAGES = {
     "ParticipantPortal": ParticipantPortal,
     "PointStore": PointStore,
     "PowerUserHub": PowerUserHub,
+    "PredictiveAnalyticsDashboard": PredictiveAnalyticsDashboard,
     "ProfileCustomization": ProfileCustomization,
     "ProjectPlan": ProjectPlan,
     "PublicProfile": PublicProfile,
@@ -164,8 +167,7 @@ export const PAGES = {
     "UserProfile": UserProfile,
     "UserRoleAssignment": UserRoleAssignment,
     "UserSegmentation": UserSegmentation,
-    "PredictiveAnalyticsDashboard": PredictiveAnalyticsDashboard,
-    "ComprehensiveProfile": ComprehensiveProfile,
+    "CustomizableAnalyticsDashboard": CustomizableAnalyticsDashboard,
 }
 
 export const pagesConfig = {
