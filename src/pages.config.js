@@ -66,6 +66,7 @@ import RoleSetup from './pages/RoleSetup';
 import SegmentationDashboard from './pages/SegmentationDashboard';
 import Settings from './pages/Settings';
 import SkillsDashboard from './pages/SkillsDashboard';
+import SkillsMatrix from './pages/SkillsMatrix';
 import SocialGamification from './pages/SocialGamification';
 import SocialHub from './pages/SocialHub';
 import Surveys from './pages/Surveys';
@@ -82,7 +83,8 @@ import Teams from './pages/Teams';
 import UserProfile from './pages/UserProfile';
 import UserRoleAssignment from './pages/UserRoleAssignment';
 import UserSegmentation from './pages/UserSegmentation';
-import SkillsMatrix from './pages/SkillsMatrix';
+import NewHireOnboarding from './pages/NewHireOnboarding';
+import ManagerOnboardingDashboard from './pages/ManagerOnboardingDashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -155,6 +157,7 @@ export const PAGES = {
     "SegmentationDashboard": SegmentationDashboard,
     "Settings": Settings,
     "SkillsDashboard": SkillsDashboard,
+    "SkillsMatrix": SkillsMatrix,
     "SocialGamification": SocialGamification,
     "SocialHub": SocialHub,
     "Surveys": Surveys,
@@ -171,7 +174,8 @@ export const PAGES = {
     "UserProfile": UserProfile,
     "UserRoleAssignment": UserRoleAssignment,
     "UserSegmentation": UserSegmentation,
-    "SkillsMatrix": SkillsMatrix,
+    "NewHireOnboarding": NewHireOnboarding,
+    "ManagerOnboardingDashboard": ManagerOnboardingDashboard,
 }
 
 export const pagesConfig = {
