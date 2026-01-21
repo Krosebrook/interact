@@ -33,7 +33,7 @@ import ProfileRecognitionFeed from '../components/profile/ProfileRecognitionFeed
 import CareerPathVisualization from '../components/profile/CareerPathVisualization';
 
 export default function ExpandedUserProfile() {
-  const { user } = useUserData(true);
+  const { user, userPoints } = useUserData(true);
   const [isEditing, setIsEditing] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
 
@@ -459,6 +459,8 @@ export default function ExpandedUserProfile() {
       </Tabs>
     </div>
   );
+}
+
 
 function InfoCard({ label, value }) {
   return (
