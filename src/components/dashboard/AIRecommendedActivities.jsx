@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Sparkles, Clock, Users, Zap } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '../../utils';
+import AIActivityCard from './AIActivityCard';
 
 export default function AIRecommendedActivities({ userEmail }) {
   const { data: activities = [], isLoading } = useQuery({
@@ -64,56 +65,12 @@ export default function AIRecommendedActivities({ userEmail }) {
       {/* Horizontal Scroll Container */}
       <div className="flex overflow-x-auto no-scrollbar gap-4 pb-4 -mx-4 px-4 snap-x">
         {activities.map((activity) => (
-          <div key={activity.id} className="flex-none w-72 snap-center group">
-            <Card className="h-full glass-card hover:shadow-xl transition-all duration-300 border-0">
-              <div className="relative h-36 w-full bg-slate-100 overflow-hidden rounded-t-xl">
-                {activity.image_url ? (
-                  <img 
-                    src={activity.image_url}
-                    alt={activity.title}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-                ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-int-navy to-int-orange flex items-center justify-center text-6xl">
-                    {categoryIcons[activity.type] || '✨'}
-                  </div>
-                )}
-                <div className="absolute top-3 left-3">
-                  <Badge className={`${categoryColors[activity.type]} border font-semibold`}>
-                    {categoryIcons[activity.type]} {activity.type}
-                  </Badge>
-                </div>
-                {activity.duration && (
-                  <div className="absolute top-3 right-3 bg-black/60 backdrop-blur-sm px-2 py-1 rounded-lg flex items-center gap-1 text-white text-xs font-semibold">
-                    <Zap className="w-3 h-3" />
-                    Quick Win
-                  </div>
-                )}
-              </div>
-              <CardContent className="p-4">
-                <h4 className="font-bold text-slate-900 mb-2 line-clamp-2">{activity.title}</h4>
-                <p className="text-sm text-slate-600 mb-3 line-clamp-2">{activity.description}</p>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3 text-xs text-slate-500">
-                    {activity.duration && (
-                      <span className="flex items-center gap-1">
-                        <Clock className="w-3 h-3" />
-                        {activity.duration}
-                      </span>
-                    )}
-                    {activity.capacity && (
-                      <span className="flex items-center gap-1">
-                        <Users className="w-3 h-3" />
-                        {activity.capacity}
-                      </span>
-                    )}
-                  </div>
-                  <Button size="sm" className="bg-int-orange hover:bg-int-orange-dark">
-                    Join
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+          <div key={activity.id} className="flex-none w-72 snap-center">
+            <AIActivityCard 
+              activity={activity}
+              points={activity.points_awarded || 10}
+              onJoin={() => {}}
+            />
           </div>
         ))}
 

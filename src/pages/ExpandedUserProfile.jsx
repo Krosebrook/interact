@@ -24,6 +24,8 @@ import {
   TrendingUp
 } from 'lucide-react';
 import LoadingSpinner from '../components/common/LoadingSpinner';
+import GamificationStatsGrid from '../components/profile/GamificationStatsGrid';
+import ModernBadgesCarousel from '../components/profile/ModernBadgesCarousel';
 import ProjectContributionsShowcase from '../components/profile/ProjectContributionsShowcase';
 import AchievementsShowcase from '../components/profile/AchievementsShowcase';
 import PersonalInterestsSection from '../components/profile/PersonalInterestsSection';
@@ -71,30 +73,88 @@ export default function ExpandedUserProfile() {
 
   return (
     <div className="space-y-6">
-      {/* Profile Header */}
+      {/* Modern Profile Header */}
       <div className="relative">
-        <div className="h-32 bg-gradient-to-r from-int-navy to-int-orange rounded-t-xl" />
-        <div className="px-6 pb-6 bg-white rounded-b-xl shadow">
-          <div className="flex items-end gap-4 -mt-16">
-            <img
-              src={profile?.avatar_url}
-              alt={user?.full_name}
-              className="h-32 w-32 rounded-full border-4 border-white"
-            />
-            <div className="flex-1">
-              <h1 className="text-3xl font-bold text-slate-900">{user?.full_name}</h1>
-              <p className="text-slate-600">{profile?.job_title}</p>
+        <div className="h-40 bg-gradient-to-br from-int-navy via-blue-700 to-int-orange rounded-t-2xl" />
+        <div className="px-6 pb-6 bg-white dark:bg-slate-800 rounded-b-2xl shadow-xl">
+          <div className="flex flex-col sm:flex-row items-center sm:items-end gap-4 -mt-20">
+            <div className="relative group">
+              <div className="absolute -inset-1 bg-gradient-to-tr from-int-orange to-blue-500 rounded-full opacity-60 blur-md group-hover:opacity-100 transition-all duration-500" />
+              <img
+                src={profile?.avatar_url || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(user?.full_name)}
+                alt={user?.full_name}
+                className="relative h-32 w-32 rounded-full border-4 border-white dark:border-slate-800 object-cover shadow-xl"
+              />
+              <button className="absolute bottom-1 right-1 bg-int-navy text-white p-2 rounded-full border-3 border-white dark:border-slate-800 hover:scale-110 transition-transform">
+                <Edit2 className="h-3 w-3" />
+              </button>
+            </div>
+            <div className="flex-1 text-center sm:text-left">
+              <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                {user?.full_name}
+              </h1>
+              <p className="text-primary font-semibold text-sm mt-1">
+                {profile?.role || 'Employee'}
+              </p>
+              <p className="text-slate-500 dark:text-slate-400 text-xs mt-0.5">
+                {profile?.department || 'Team'} • INTInc
+              </p>
               {profile?.display_flair?.profile_title && (
-                <Badge className="mt-2">{profile.display_flair.profile_title}</Badge>
+                <Badge className="mt-2 bg-int-orange/10 text-int-orange border-int-orange/20">
+                  {profile.display_flair.profile_title}
+                </Badge>
               )}
             </div>
-            <Button onClick={() => setIsEditing(!isEditing)} className="gap-2">
-              <Edit2 className="h-4 w-4" />
+            <Button 
+              onClick={() => setIsEditing(!isEditing)} 
+              className="bg-primary hover:bg-primary/90 text-white font-semibold px-6"
+            >
+              <Edit2 className="h-4 w-4 mr-2" />
               Edit Profile
             </Button>
           </div>
+
+          {/* XP Progress Bar */}
+          <div className="mt-6 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-slate-700 dark:to-slate-600 rounded-xl p-5 border border-blue-100 dark:border-slate-600">
+            <div className="flex justify-between items-center mb-3">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-blue-500 flex items-center justify-center text-white shadow-lg font-bold text-sm">
+                  {userPoints?.level || 1}
+                </div>
+                <div>
+                  <span className="text-xs text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider">
+                    Current Level
+                  </span>
+                  <p className="text-sm font-bold text-slate-800 dark:text-white">
+                    Level {userPoints?.level || 1} - Team Player
+                  </p>
+                </div>
+              </div>
+              <span className="text-xs font-bold text-primary bg-white dark:bg-slate-800 px-3 py-1 rounded-lg">
+                {userPoints?.total_points || 0} / 2,000 XP
+              </span>
+            </div>
+            <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-3 overflow-hidden shadow-inner">
+              <div 
+                className="bg-gradient-to-r from-primary to-blue-500 h-full rounded-full transition-all duration-1000 shadow-[0_0_10px_rgba(19,19,236,0.4)] relative"
+                style={{ width: `${Math.min(((userPoints?.total_points || 0) / 2000) * 100, 100)}%` }}
+              >
+                <div className="absolute inset-0 bg-white/20 animate-pulse" />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
+
+      {/* Gamification Stats Grid */}
+      <GamificationStatsGrid 
+        eventsAttended={profile?.engagement_metrics?.total_events_attended || 0}
+        ideasSubmitted={12}
+        dayStreak={5}
+      />
+
+      {/* Badges Carousel */}
+      <ModernBadgesCarousel userEmail={user?.email} />
 
       {/* Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
@@ -399,7 +459,6 @@ export default function ExpandedUserProfile() {
       </Tabs>
     </div>
   );
-}
 
 function InfoCard({ label, value }) {
   return (
