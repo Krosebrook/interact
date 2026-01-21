@@ -44,15 +44,29 @@ We are committed to providing a welcoming and inspiring community for everyone. 
 
 ## Getting Started
 
+### First-Time Contributors
+
+👋 **Welcome!** We're excited to have you contribute to Interact!
+
+**Never contributed to open source before?** Here are some helpful resources:
+- [First Contributions Guide](https://github.com/firstcontributions/first-contributions)
+- [How to Contribute to Open Source](https://opensource.guide/how-to-contribute/)
+- [Understanding the GitHub Flow](https://guides.github.com/introduction/flow/)
+
+**Looking for a good first issue?**
+- Browse issues labeled [`good first issue`](https://github.com/Krosebrook/interact/labels/good%20first%20issue)
+- Check issues labeled [`help wanted`](https://github.com/Krosebrook/interact/labels/help%20wanted)
+- Read through [`documentation` issues](https://github.com/Krosebrook/interact/labels/documentation) for easy entry points
+
 ### Prerequisites
 
 Before you begin, ensure you have:
 
-- **Node.js 18+** installed
+- **Node.js 18+** installed ([Download](https://nodejs.org/))
 - **npm** or **yarn** package manager
-- **Git** for version control
-- **Code editor** (VS Code recommended)
-- **GitHub account** for pull requests
+- **Git** for version control ([Download](https://git-scm.com/))
+- **Code editor** (VS Code recommended, [Download](https://code.visualstudio.com/))
+- **GitHub account** for pull requests ([Sign up](https://github.com/join))
 
 ### Fork and Clone
 
@@ -548,8 +562,10 @@ npm audit
 ### Communication Channels
 
 - **GitHub Issues:** For bug reports and feature requests
-- **Pull Requests:** For code discussions
-- **GitHub Discussions:** For general questions (if enabled)
+- **Pull Requests:** For code discussions and reviews
+- **GitHub Discussions:** For general questions and community discussions
+- **Email:** contribute@krosebrook.com (for general contribution inquiries)
+- **Security:** security@krosebrook.com (for security-related issues only)
 
 ### Common Questions
 
@@ -628,9 +644,9 @@ Thank you for contributing to Interact! 🎉
 
 ---
 
-**Document Owner:** Engineering Team  
-**Last Updated:** January 12, 2026  
-**Next Review:** March 2026
+**Document Owner:** Engineering Team
+**Last Updated:** January 21, 2026
+**Next Review:** April 2026
 
 ---
 
