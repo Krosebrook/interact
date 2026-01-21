@@ -24,6 +24,7 @@ import OnboardingWidget from '../components/dashboard/OnboardingWidget';
 import PersonalizedDashboard from '../components/dashboard/PersonalizedDashboard';
 import GamificationHeroCard from '../components/dashboard/GamificationHeroCard';
 import AIRecommendedActivities from '../components/dashboard/AIRecommendedActivities';
+import ModernStatsCard from '../components/dashboard/ModernStatsCard';
 import {
   Calendar,
   Users,
@@ -113,12 +114,37 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Stats Grid */}
+      {/* Modern Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard title="Upcoming Events" value={stats.upcomingCount} subtitle="Scheduled activities" icon={Calendar} color="navy" delay={0} />
-        <StatCard title="Total Activities" value={stats.activitiesCount} subtitle="In your library" icon={Sparkles} color="orange" delay={0.1} />
-        <StatCard title="This Month" value={stats.completedThisMonth} subtitle="Events completed" trend={stats.completedThisMonth > 0 ? `${Math.round(stats.completedThisMonth / Math.max(stats.upcomingCount, 1) * 100)}% completion rate` : "Let's schedule more!"} icon={TrendingUp} color="green" delay={0.2} />
-        <StatCard title="Avg Participation" value={stats.avgParticipation} subtitle="People per event" icon={Users} color="purple" delay={0.3} />
+        <ModernStatsCard 
+          title="Upcoming Events" 
+          value={stats.upcomingCount} 
+          subtitle="Scheduled activities" 
+          icon={Calendar} 
+          color="blue"
+        />
+        <ModernStatsCard 
+          title="Total Activities" 
+          value={stats.activitiesCount} 
+          subtitle="In your library" 
+          icon={Sparkles} 
+          color="purple"
+        />
+        <ModernStatsCard 
+          title="This Month" 
+          value={stats.completedThisMonth} 
+          subtitle="Events completed" 
+          trend={stats.completedThisMonth > 0 ? '+12%' : null}
+          icon={TrendingUp} 
+          color="green"
+        />
+        <ModernStatsCard 
+          title="Avg Participation" 
+          value={stats.avgParticipation} 
+          subtitle="People per event" 
+          icon={Users} 
+          color="orange"
+        />
       </div>
 
       {/* Upcoming Events */}
