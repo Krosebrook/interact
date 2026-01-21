@@ -22,6 +22,8 @@ import EmptyState from '../components/common/EmptyState';
 import { useEventActions } from '../components/events/useEventActions';
 import OnboardingWidget from '../components/dashboard/OnboardingWidget';
 import PersonalizedDashboard from '../components/dashboard/PersonalizedDashboard';
+import GamificationHeroCard from '../components/dashboard/GamificationHeroCard';
+import AIRecommendedActivities from '../components/dashboard/AIRecommendedActivities';
 import {
   Calendar,
   Users,
@@ -64,6 +66,17 @@ export default function Dashboard() {
 
         {/* Onboarding Widget */}
         <OnboardingWidget variant="banner" />
+
+        {/* Gamification Hero Card */}
+        <GamificationHeroCard 
+          points={userPoints?.total_points || 0}
+          level={userPoints?.level || 1}
+          nextLevelPoints={2000}
+          userName={user.full_name}
+        />
+
+        {/* AI Recommended Activities */}
+        <AIRecommendedActivities userEmail={user?.email} />
 
         {/* Personalized Dashboard Section */}
         <PersonalizedDashboard user={user} userProfile={profile} userPoints={userPoints} />
