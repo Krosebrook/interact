@@ -13,6 +13,7 @@ import Calendar from './pages/Calendar';
 import Channels from './pages/Channels';
 import ComprehensiveProfile from './pages/ComprehensiveProfile';
 import ContentModerationAdmin from './pages/ContentModerationAdmin';
+import CustomizableAnalyticsDashboard from './pages/CustomizableAnalyticsDashboard';
 import Dashboard from './pages/Dashboard';
 import Documentation from './pages/Documentation';
 import EmployeeDirectory from './pages/EmployeeDirectory';
@@ -34,6 +35,7 @@ import Home from './pages/Home';
 import Integrations from './pages/Integrations';
 import IntegrationsAdmin from './pages/IntegrationsAdmin';
 import IntegrationsHub from './pages/IntegrationsHub';
+import KnowledgeBase from './pages/KnowledgeBase';
 import KnowledgeHub from './pages/KnowledgeHub';
 import Leaderboards from './pages/Leaderboards';
 import LearningDashboard from './pages/LearningDashboard';
@@ -80,8 +82,6 @@ import Teams from './pages/Teams';
 import UserProfile from './pages/UserProfile';
 import UserRoleAssignment from './pages/UserRoleAssignment';
 import UserSegmentation from './pages/UserSegmentation';
-import CustomizableAnalyticsDashboard from './pages/CustomizableAnalyticsDashboard';
-import KnowledgeBase from './pages/KnowledgeBase';
 import __Layout from './Layout.jsx';
 
 
@@ -101,6 +101,7 @@ export const PAGES = {
     "Channels": Channels,
     "ComprehensiveProfile": ComprehensiveProfile,
     "ContentModerationAdmin": ContentModerationAdmin,
+    "CustomizableAnalyticsDashboard": CustomizableAnalyticsDashboard,
     "Dashboard": Dashboard,
     "Documentation": Documentation,
     "EmployeeDirectory": EmployeeDirectory,
@@ -122,6 +123,7 @@ export const PAGES = {
     "Integrations": Integrations,
     "IntegrationsAdmin": IntegrationsAdmin,
     "IntegrationsHub": IntegrationsHub,
+    "KnowledgeBase": KnowledgeBase,
     "KnowledgeHub": KnowledgeHub,
     "Leaderboards": Leaderboards,
     "LearningDashboard": LearningDashboard,
@@ -168,8 +170,6 @@ export const PAGES = {
     "UserProfile": UserProfile,
     "UserRoleAssignment": UserRoleAssignment,
     "UserSegmentation": UserSegmentation,
-    "CustomizableAnalyticsDashboard": CustomizableAnalyticsDashboard,
-    "KnowledgeBase": KnowledgeBase,
 }
 
 export const pagesConfig = {

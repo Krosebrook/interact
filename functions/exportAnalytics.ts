@@ -29,44 +29,61 @@ Deno.serve(async (req) => {
 async function gatherAnalyticsData(base44, metrics, date_range) {
   const data = {};
 
-  if (metrics.includes('engagement')) {
-    const participations = await base44.entities.Participation.list('-created_date', 500);
-    data.engagement = {
-      total: participations.length,
-      by_status: participations.reduce((acc, p) => {
-        acc[p.attendance_status] = (acc[p.attendance_status] || 0) + 1;
-        return acc;
-      }, {})
-    };
-  }
+  try {
+    if (metrics.includes('engagement')) {
+      const participations = await base44.entities.Participation.list('-created_date', 500);
+      data.engagement = {
+        total: participations.length,
+        by_status: participations.reduce((acc, p) => {
+          const status = p.attendance_status || 'unknown';
+          acc[status] = (acc[status] || 0) + 1;
+          return acc;
+        }, {}),
+        avg_engagement: participations.filter(p => p.engagement_score).length > 0
+          ? participations.reduce((sum, p) => sum + (p.engagement_score || 0), 0) / participations.filter(p => p.engagement_score).length
+          : 0
+      };
+    }
 
-  if (metrics.includes('lifecycle')) {
-    const states = await base44.entities.LifecycleState.list('-updated_date', 500);
-    data.lifecycle = {
-      distribution: states.reduce((acc, s) => {
-        acc[s.lifecycle_state] = (acc[s.lifecycle_state] || 0) + 1;
-        return acc;
-      }, {}),
-      avg_churn_risk: states.reduce((sum, s) => sum + (s.churn_risk || 0), 0) / states.length
-    };
-  }
+    if (metrics.includes('lifecycle')) {
+      const states = await base44.entities.LifecycleState.list('-updated_date', 500);
+      const validStates = states.filter(s => s.lifecycle_state);
+      data.lifecycle = {
+        distribution: validStates.reduce((acc, s) => {
+          acc[s.lifecycle_state] = (acc[s.lifecycle_state] || 0) + 1;
+          return acc;
+        }, {}),
+        avg_churn_risk: validStates.length > 0 
+          ? (validStates.reduce((sum, s) => sum + (s.churn_risk || 0), 0) / validStates.length).toFixed(3)
+          : 0,
+        total_users: validStates.length
+      };
+    }
 
-  if (metrics.includes('recognition')) {
-    const recognition = await base44.entities.Recognition.list('-created_date', 500);
-    data.recognition = {
-      total: recognition.length,
-      top_givers: getTopUsers(recognition, 'giver_email'),
-      top_receivers: getTopUsers(recognition, 'recipient_email')
-    };
-  }
+    if (metrics.includes('recognition')) {
+      const recognition = await base44.entities.Recognition.list('-created_date', 500);
+      data.recognition = {
+        total: recognition.length,
+        top_givers: getTopUsers(recognition, 'giver_email'),
+        top_receivers: getTopUsers(recognition, 'recipient_email'),
+        avg_per_user: recognition.length > 0 
+          ? (recognition.length / new Set(recognition.map(r => r.giver_email)).size).toFixed(2)
+          : 0
+      };
+    }
 
-  if (metrics.includes('abtest')) {
-    const tests = await base44.entities.ABTest.list();
-    data.abtest = {
-      total: tests.length,
-      active: tests.filter(t => t.status === 'active').length,
-      completed: tests.filter(t => t.status === 'completed').length
-    };
+    if (metrics.includes('abtest')) {
+      const tests = await base44.entities.ABTest.list();
+      data.abtest = {
+        total: tests.length,
+        active: tests.filter(t => t.status === 'active').length,
+        completed: tests.filter(t => t.status === 'completed').length,
+        draft: tests.filter(t => t.status === 'draft').length
+      };
+    }
+  } catch (error) {
+    console.error('Error gathering analytics data:', error);
+    throw new Error(`Failed to gather ${Object.keys(data).join(', ')} metrics: ${error.message}`);
   }
 
   return data;

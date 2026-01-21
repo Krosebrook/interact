@@ -16,8 +16,6 @@ export default function CustomizableAnalyticsDashboard() {
     return saved ? JSON.parse(saved) : ['engagement_score', 'lifecycle_dist', 'churn_risk', 'recognition'];
   });
 
-  const [isExporting, setIsExporting] = useState(false);
-
   const handleDragEnd = (result) => {
     if (!result.destination) return;
 
@@ -39,7 +37,6 @@ export default function CustomizableAnalyticsDashboard() {
   };
 
   const handleExport = async (format) => {
-    setIsExporting(true);
     try {
       const response = await base44.functions.invoke('exportAnalytics', {
         format,
@@ -53,15 +50,14 @@ export default function CustomizableAnalyticsDashboard() {
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `analytics-report.${format}`;
+      a.download = `analytics-report-${new Date().toISOString().split('T')[0]}.${format}`;
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
       a.remove();
     } catch (error) {
       console.error('Export failed:', error);
-    } finally {
-      setIsExporting(false);
+      alert(`Export failed: ${error.message}`);
     }
   };
 
@@ -104,11 +100,11 @@ export default function CustomizableAnalyticsDashboard() {
               </div>
             </DialogContent>
           </Dialog>
-          <Button variant="outline" onClick={() => handleExport('csv')} disabled={isExporting}>
+          <Button variant="outline" onClick={() => handleExport('csv')}>
             <Download className="w-4 h-4 mr-2" />
             Export CSV
           </Button>
-          <Button variant="outline" onClick={() => handleExport('pdf')} disabled={isExporting}>
+          <Button variant="outline" onClick={() => handleExport('pdf')}>
             <Download className="w-4 h-4 mr-2" />
             Export PDF
           </Button>

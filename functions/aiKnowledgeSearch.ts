@@ -31,46 +31,72 @@ Deno.serve(async (req) => {
       return Response.json({ results: filtered.slice(0, 20) });
     }
 
+    // Limit articles for AI context window
+    const articlesForAI = filtered.slice(0, 50);
+    
     // AI-powered semantic search
-    const articlesContext = filtered.map(a => ({
+    const articlesContext = articlesForAI.map(a => ({
       id: a.id,
       title: a.title,
       summary: a.summary || '',
-      content: a.content?.substring(0, 500) || '',
+      content: a.content?.substring(0, 400) || '',
       category: a.category,
-      tags: a.tags
+      tags: a.tags || []
     }));
 
-    const prompt = `You are a knowledge base search assistant. Given this search query and available articles, identify and rank the most relevant articles.
+    const prompt = `You are a knowledge base search assistant for an employee engagement platform. Given this search query and available articles, identify and rank the most relevant articles.
 
 Search Query: "${query}"
 
-Available Articles:
+Available Articles (${articlesContext.length}):
 ${articlesContext.map((a, idx) => `
-${idx + 1}. ${a.title}
-Category: ${a.category}
-Summary: ${a.summary}
-Preview: ${a.content}
+${idx + 1}. "${a.title}"
+   Category: ${a.category}
+   Tags: ${a.tags.join(', ') || 'none'}
+   Summary: ${a.summary}
+   Preview: ${a.content.replace(/<[^>]*>/g, '').substring(0, 200)}...
 `).join('\n')}
 
-Return the IDs of the most relevant articles in order of relevance (most relevant first).
-Include only articles that are actually relevant to the query.
+Instructions:
+- Rank by semantic relevance to the query
+- Consider title, summary, content, and tags
+- Return up to 10 most relevant article IDs
+- Only include articles truly relevant to the query
+- Provide brief reasoning for your selections
 
-Respond with JSON: { "article_ids": ["id1", "id2", ...], "reasoning": "explanation" }`;
+Respond with JSON: { "article_ids": ["id1", "id2", ...], "reasoning": "brief explanation of why these articles match" }`;
 
-    const aiResponse = await base44.integrations.Core.InvokeLLM({
-      prompt,
-      response_json_schema: {
-        type: "object",
-        properties: {
-          article_ids: {
-            type: "array",
-            items: { type: "string" }
-          },
-          reasoning: { type: "string" }
+    let aiResponse;
+    try {
+      aiResponse = await base44.integrations.Core.InvokeLLM({
+        prompt,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            article_ids: {
+              type: "array",
+              items: { type: "string" }
+            },
+            reasoning: { type: "string" }
+          }
         }
-      }
-    });
+      });
+    } catch (error) {
+      console.error('AI search failed, falling back to simple search:', error);
+      // Fallback: simple title/summary matching
+      const lowerQuery = query.toLowerCase();
+      const matched = filtered.filter(a => 
+        a.title.toLowerCase().includes(lowerQuery) ||
+        a.summary?.toLowerCase().includes(lowerQuery) ||
+        a.tags?.some(t => t.toLowerCase().includes(lowerQuery))
+      );
+      return Response.json({
+        results: matched.slice(0, 10),
+        total: matched.length,
+        query,
+        reasoning: 'AI search unavailable, showing keyword matches'
+      });
+    }
 
     // Return ranked results
     const rankedResults = aiResponse.article_ids

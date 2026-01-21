@@ -44,8 +44,18 @@ export default function DataExplorationPanel() {
   const calculateCorrelation = () => {
     if (data.length < 2) return 0;
     
-    const xValues = data.map(d => d[xMetric]);
-    const yValues = data.map(d => d[yMetric]);
+    // Filter out null/undefined/NaN values
+    const validData = data.filter(d => 
+      typeof d[xMetric] === 'number' && 
+      typeof d[yMetric] === 'number' &&
+      !isNaN(d[xMetric]) && 
+      !isNaN(d[yMetric])
+    );
+
+    if (validData.length < 2) return 0;
+    
+    const xValues = validData.map(d => d[xMetric]);
+    const yValues = validData.map(d => d[yMetric]);
     
     const xMean = xValues.reduce((a, b) => a + b, 0) / xValues.length;
     const yMean = yValues.reduce((a, b) => a + b, 0) / yValues.length;
@@ -54,7 +64,11 @@ export default function DataExplorationPanel() {
     const xDenom = Math.sqrt(xValues.reduce((sum, x) => sum + Math.pow(x - xMean, 2), 0));
     const yDenom = Math.sqrt(yValues.reduce((sum, y) => sum + Math.pow(y - yMean, 2), 0));
     
-    return (numerator / (xDenom * yDenom)).toFixed(3);
+    // Prevent division by zero
+    if (xDenom === 0 || yDenom === 0) return 0;
+    
+    const corr = numerator / (xDenom * yDenom);
+    return isNaN(corr) ? 0 : corr.toFixed(3);
   };
 
   const correlation = calculateCorrelation();
