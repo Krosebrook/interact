@@ -42,8 +42,10 @@ import LearningDashboard from './pages/LearningDashboard';
 import LearningPath from './pages/LearningPath';
 import LifecycleAnalyticsDashboard from './pages/LifecycleAnalyticsDashboard';
 import LifecycleIntelligenceDashboard from './pages/LifecycleIntelligenceDashboard';
+import ManagerOnboardingDashboard from './pages/ManagerOnboardingDashboard';
 import Milestones from './pages/Milestones';
 import NewEmployeeOnboarding from './pages/NewEmployeeOnboarding';
+import NewHireOnboarding from './pages/NewHireOnboarding';
 import OnboardingDashboard from './pages/OnboardingDashboard';
 import OnboardingHub from './pages/OnboardingHub';
 import PRDGenerator from './pages/PRDGenerator';
@@ -83,8 +85,6 @@ import Teams from './pages/Teams';
 import UserProfile from './pages/UserProfile';
 import UserRoleAssignment from './pages/UserRoleAssignment';
 import UserSegmentation from './pages/UserSegmentation';
-import NewHireOnboarding from './pages/NewHireOnboarding';
-import ManagerOnboardingDashboard from './pages/ManagerOnboardingDashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -133,8 +133,10 @@ export const PAGES = {
     "LearningPath": LearningPath,
     "LifecycleAnalyticsDashboard": LifecycleAnalyticsDashboard,
     "LifecycleIntelligenceDashboard": LifecycleIntelligenceDashboard,
+    "ManagerOnboardingDashboard": ManagerOnboardingDashboard,
     "Milestones": Milestones,
     "NewEmployeeOnboarding": NewEmployeeOnboarding,
+    "NewHireOnboarding": NewHireOnboarding,
     "OnboardingDashboard": OnboardingDashboard,
     "OnboardingHub": OnboardingHub,
     "PRDGenerator": PRDGenerator,
@@ -174,8 +176,6 @@ export const PAGES = {
     "UserProfile": UserProfile,
     "UserRoleAssignment": UserRoleAssignment,
     "UserSegmentation": UserSegmentation,
-    "NewHireOnboarding": NewHireOnboarding,
-    "ManagerOnboardingDashboard": ManagerOnboardingDashboard,
 }
 
 export const pagesConfig = {

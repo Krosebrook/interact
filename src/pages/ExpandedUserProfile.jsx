@@ -19,9 +19,16 @@ import {
   Trophy,
   Heart,
   Settings,
-  Edit2
+  Edit2,
+  Briefcase,
+  TrendingUp
 } from 'lucide-react';
 import LoadingSpinner from '../components/common/LoadingSpinner';
+import ProjectContributionsShowcase from '../components/profile/ProjectContributionsShowcase';
+import AchievementsShowcase from '../components/profile/AchievementsShowcase';
+import PersonalInterestsSection from '../components/profile/PersonalInterestsSection';
+import ProfileRecognitionFeed from '../components/profile/ProfileRecognitionFeed';
+import CareerPathVisualization from '../components/profile/CareerPathVisualization';
 
 export default function ExpandedUserProfile() {
   const { user } = useUserData(true);
@@ -91,10 +98,22 @@ export default function ExpandedUserProfile() {
 
       {/* Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid grid-cols-5 w-full">
+        <TabsList className="grid grid-cols-7 w-full">
           <TabsTrigger value="overview" className="flex items-center gap-2">
             <User className="h-4 w-4" />
             <span className="hidden sm:inline">Overview</span>
+          </TabsTrigger>
+          <TabsTrigger value="projects" className="flex items-center gap-2">
+            <Briefcase className="h-4 w-4" />
+            <span className="hidden sm:inline">Projects</span>
+          </TabsTrigger>
+          <TabsTrigger value="career" className="flex items-center gap-2">
+            <TrendingUp className="h-4 w-4" />
+            <span className="hidden sm:inline">Career</span>
+          </TabsTrigger>
+          <TabsTrigger value="recognition" className="flex items-center gap-2">
+            <Heart className="h-4 w-4" />
+            <span className="hidden sm:inline">Recognition</span>
           </TabsTrigger>
           <TabsTrigger value="skills" className="flex items-center gap-2">
             <Zap className="h-4 w-4" />
@@ -108,10 +127,6 @@ export default function ExpandedUserProfile() {
             <Users className="h-4 w-4" />
             <span className="hidden sm:inline">Mentoring</span>
           </TabsTrigger>
-          <TabsTrigger value="highlights" className="flex items-center gap-2">
-            <Trophy className="h-4 w-4" />
-            <span className="hidden sm:inline">Highlights</span>
-          </TabsTrigger>
         </TabsList>
 
         {/* Overview */}
@@ -121,14 +136,44 @@ export default function ExpandedUserProfile() {
             <InfoCard label="Location" value={profile?.location} />
             <InfoCard label="Years at Company" value={profile?.years_at_company?.toString()} />
           </div>
-          <Card>
-            <CardHeader>
-              <CardTitle>About</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-slate-700">{profile?.bio || 'No bio added yet'}</p>
-            </CardContent>
-          </Card>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>About</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-slate-700">{profile?.bio || 'No bio added yet'}</p>
+              </CardContent>
+            </Card>
+            <PersonalInterestsSection 
+              hobbies={profile?.hobbies} 
+              funFacts={profile?.fun_facts}
+              interests={profile?.interests}
+            />
+          </div>
+        </TabsContent>
+
+        {/* Projects Tab */}
+        <TabsContent value="projects" className="space-y-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <ProjectContributionsShowcase contributions={profile?.project_contributions} />
+            <AchievementsShowcase achievements={profile?.achievements} />
+          </div>
+        </TabsContent>
+
+        {/* Career Path Tab */}
+        <TabsContent value="career" className="space-y-4">
+          <CareerPathVisualization 
+            careerHistory={profile?.career_history}
+            currentRole={profile?.role}
+            performanceMetrics={profile?.performance_metrics}
+            skills={profile?.skills}
+          />
+        </TabsContent>
+
+        {/* Recognition Tab */}
+        <TabsContent value="recognition" className="space-y-4">
+          <ProfileRecognitionFeed userEmail={user?.email} />
         </TabsContent>
 
         {/* Skills & Expertise */}
