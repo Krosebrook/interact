@@ -1,0 +1,213 @@
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { X, ChevronLeft, ChevronRight, Sparkles, SkipForward } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { base44 } from '@/api/base44Client';
+import { toast } from 'sonner';
+
+export default function AIGuidedOnboarding({ 
+  steps = [], 
+  onComplete, 
+  onSkip,
+  tutorialName = 'onboarding'
+}) {
+  const [currentStep, setCurrentStep] = useState(0);
+  const [aiGuidance, setAiGuidance] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  const step = steps[currentStep];
+
+  useEffect(() => {
+    if (step) {
+      fetchAIGuidance();
+    }
+  }, [currentStep]);
+
+  const fetchAIGuidance = async () => {
+    setIsLoading(true);
+    try {
+      const response = await base44.integrations.Core.InvokeLLM({
+        prompt: `You are an onboarding assistant for an employee engagement platform. 
+        Current step: "${step.title}"
+        Description: "${step.description}"
+        
+        Provide a brief, friendly, and actionable tip (1-2 sentences) to help the user complete this step successfully. 
+        Be encouraging and specific.`,
+      });
+      setAiGuidance(response);
+    } catch (error) {
+      setAiGuidance('Take your time and explore this step!');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleNext = () => {
+    if (currentStep < steps.length - 1) {
+      setCurrentStep(currentStep + 1);
+    } else {
+      onComplete?.();
+    }
+  };
+
+  const handlePrevious = () => {
+    if (currentStep > 0) {
+      setCurrentStep(currentStep - 1);
+    }
+  };
+
+  const handleSkipAll = () => {
+    toast.info('You can restart the tutorial anytime from Help');
+    onSkip?.();
+  };
+
+  if (!step) return null;
+
+  return (
+    <>
+      {/* Focus Box Spotlight Overlay */}
+      <AnimatePresence>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
+          style={{ pointerEvents: 'none' }}
+        >
+          {/* Spotlight cutout effect */}
+          {step.targetElement && (
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              className="absolute border-4 border-[var(--orb-accent)] rounded-lg shadow-[0_0_0_9999px_rgba(0,0,0,0.6)] pointer-events-auto"
+              style={{
+                top: step.targetElement.top,
+                left: step.targetElement.left,
+                width: step.targetElement.width,
+                height: step.targetElement.height,
+              }}
+            />
+          )}
+        </motion.div>
+      </AnimatePresence>
+
+      {/* Guidance Card */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 20 }}
+        className="fixed z-50 bg-white rounded-2xl shadow-2xl border border-[var(--orb-accent)]/30 max-w-md"
+        style={{
+          top: step.cardPosition?.top || '50%',
+          left: step.cardPosition?.left || '50%',
+          transform: step.cardPosition ? 'none' : 'translate(-50%, -50%)',
+        }}
+      >
+        {/* Header */}
+        <div className="p-6 border-b border-slate-100">
+          <div className="flex items-start justify-between">
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[var(--orb-accent)] to-[var(--sunrise-glow)] flex items-center justify-center">
+                  <span className="text-white font-bold text-sm">
+                    {currentStep + 1}
+                  </span>
+                </div>
+                <span className="text-xs text-[var(--slate)]">
+                  Step {currentStep + 1} of {steps.length}
+                </span>
+              </div>
+              <h3 className="text-xl font-bold text-[var(--ink)]">{step.title}</h3>
+            </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleSkipAll}
+              className="text-[var(--slate)] hover:text-[var(--ink)]"
+            >
+              <X className="w-4 h-4" />
+            </Button>
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="p-6">
+          <p className="text-[var(--slate)] leading-relaxed mb-4">
+            {step.description}
+          </p>
+
+          {/* AI Guidance */}
+          <div className="bg-gradient-to-br from-[var(--orb-accent)]/5 to-[var(--sunrise-glow)]/5 rounded-lg p-4 border border-[var(--orb-accent)]/20 mb-4">
+            <div className="flex items-start gap-2">
+              <Sparkles className="w-4 h-4 text-[var(--orb-accent)] mt-0.5 flex-shrink-0" />
+              <div className="flex-1">
+                <p className="text-xs font-semibold text-[var(--orb-accent)] mb-1">
+                  AI Tip
+                </p>
+                {isLoading ? (
+                  <div className="h-4 w-3/4 bg-slate-200 animate-pulse rounded" />
+                ) : (
+                  <p className="text-sm text-[var(--ink)] leading-relaxed">
+                    {aiGuidance}
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Action Button (if step has specific action) */}
+          {step.actionButton && (
+            <Button
+              onClick={step.actionButton.onClick}
+              className="w-full mb-4 bg-[var(--orb-accent)] hover:bg-[var(--orb-accent)]/90"
+            >
+              {step.actionButton.label}
+            </Button>
+          )}
+        </div>
+
+        {/* Footer Navigation */}
+        <div className="p-6 border-t border-slate-100 flex items-center justify-between">
+          <Button
+            variant="outline"
+            onClick={handlePrevious}
+            disabled={currentStep === 0}
+            className="gap-2"
+          >
+            <ChevronLeft className="w-4 h-4" />
+            Previous
+          </Button>
+
+          <div className="flex gap-2">
+            <Button
+              variant="ghost"
+              onClick={handleSkipAll}
+              className="gap-2 text-[var(--slate)]"
+            >
+              <SkipForward className="w-4 h-4" />
+              Skip Tutorial
+            </Button>
+            
+            <Button
+              onClick={handleNext}
+              className="bg-[var(--orb-accent)] hover:bg-[var(--orb-accent)]/90 gap-2"
+            >
+              {currentStep === steps.length - 1 ? 'Complete' : 'Next'}
+              {currentStep < steps.length - 1 && <ChevronRight className="w-4 h-4" />}
+            </Button>
+          </div>
+        </div>
+
+        {/* Progress Indicator */}
+        <div className="h-1 bg-slate-100">
+          <motion.div
+            className="h-full bg-gradient-to-r from-[var(--orb-accent)] to-[var(--sunrise-glow)]"
+            initial={{ width: 0 }}
+            animate={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
+            transition={{ duration: 0.3 }}
+          />
+        </div>
+      </motion.div>
+    </>
+  );
+}
