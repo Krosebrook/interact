@@ -25,11 +25,14 @@ export default function OnboardingWidget({ variant = 'card' }) {
     onboardingState,
     steps,
     startOnboarding,
-    currentStep
+    currentStep,
+    onboardingSteps
   } = useOnboarding();
 
+  // Safely get steps array
+  const stepsArray = steps || onboardingSteps || [];
   const completedCount = onboardingState?.completed_steps?.length || 0;
-  const totalSteps = steps.length;
+  const totalSteps = stepsArray.length;
   const remainingSteps = totalSteps - completedCount;
 
   // Conditional rendering after all hooks - FIXED: moved to end
