@@ -102,31 +102,31 @@ export default function DawnHub() {
   }, [currentStreak]);
 
   return (
-    <div className="min-h-screen bg-[#0B0F19] text-white p-4 sm:p-6">
+    <div className="min-h-screen bg-[#0B0F19] text-white p-3 sm:p-4 md:p-6">
       {/* Header */}
-      <div className="max-w-6xl mx-auto mb-8">
-        <div className="flex items-center justify-between mb-6">
+      <div className="max-w-6xl mx-auto mb-4 sm:mb-6 md:mb-8">
+        <div className="flex items-center justify-between mb-4 sm:mb-6">
           <div>
-            <p className="text-[#A0A8B8] text-sm uppercase tracking-wider mb-1">
+            <p className="text-[#A0A8B8] text-xs sm:text-sm uppercase tracking-wider mb-1">
               Welcome back, {user?.full_name?.split(' ')[0]}
             </p>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-white via-[#FFB86C] to-[#FF8A3D] bg-clip-text text-transparent">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-white via-[#FFB86C] to-[#FF8A3D] bg-clip-text text-transparent">
               Ready for the day?
             </h1>
           </div>
         </div>
 
         {/* Top Stats */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-4 sm:mb-6">
           {/* Total Points */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-gradient-to-br from-[#1E2638] to-[#151B2B] rounded-2xl p-6 border border-[#2A3447]"
+            className="bg-gradient-to-br from-[#1E2638] to-[#151B2B] rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-[#2A3447]"
           >
             <p className="text-[#A0A8B8] text-xs uppercase tracking-wider mb-2">Total Points</p>
-            <div className="flex items-baseline gap-2">
-              <h2 className="text-4xl font-bold">{currentXP.toLocaleString()}</h2>
+            <div className="flex items-baseline gap-2 flex-wrap">
+              <h2 className="text-3xl sm:text-4xl font-bold">{currentXP.toLocaleString()}</h2>
               <div className="flex items-center gap-1 text-emerald-400 text-sm">
                 <TrendingUp className="h-4 w-4" />
                 <span>+120 today</span>
@@ -139,11 +139,11 @@ export default function DawnHub() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-gradient-to-br from-[#1E2638] to-[#151B2B] rounded-2xl p-6 border border-[#2A3447]"
+            className="bg-gradient-to-br from-[#1E2638] to-[#151B2B] rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-[#2A3447]"
           >
             <p className="text-[#A0A8B8] text-xs uppercase tracking-wider mb-2">Current Rank</p>
-            <div className="flex items-baseline gap-2">
-              <h2 className="text-4xl font-bold bg-gradient-to-r from-[#FFD700] to-[#FFA500] bg-clip-text text-transparent">
+            <div className="flex items-baseline gap-2 flex-wrap">
+              <h2 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-[#FFD700] to-[#FFA500] bg-clip-text text-transparent">
                 Top {rankPercentile}%
               </h2>
               <div className="flex items-center gap-1 text-amber-400 text-sm">
@@ -159,18 +159,18 @@ export default function DawnHub() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-gradient-to-br from-[#1E2638] to-[#151B2B] rounded-2xl p-6 border border-[#2A3447] mb-6"
+          className="bg-gradient-to-br from-[#1E2638] to-[#151B2B] rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-[#2A3447] mb-4 sm:mb-6"
         >
-          <div className="flex items-start justify-between mb-4">
-            <div className="flex items-center gap-4">
-              <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-[#FF8A3D] to-[#FFB86C] flex items-center justify-center">
-                <Trophy className="h-8 w-8 text-white" />
+          <div className="flex flex-col sm:flex-row items-start justify-between gap-4 mb-4">
+            <div className="flex items-center gap-3 sm:gap-4 w-full sm:w-auto">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl bg-gradient-to-br from-[#FF8A3D] to-[#FFB86C] flex items-center justify-center flex-shrink-0">
+                <Trophy className="h-7 w-7 sm:h-8 sm:w-8 text-white" />
               </div>
-              <div>
-                <Badge className="bg-purple-500/20 text-purple-300 border-purple-500/30 mb-2">
+              <div className="flex-1">
+                <Badge className="bg-purple-500/20 text-purple-300 border-purple-500/30 mb-2 text-xs">
                   RANKED ELITE
                 </Badge>
-                <h2 className="text-3xl font-bold">LVL {currentLevel}</h2>
+                <h2 className="text-2xl sm:text-3xl font-bold">LVL {currentLevel}</h2>
                 <p className="text-[#A0A8B8] text-sm">
                   {xpProgress.toLocaleString()} / {xpNeeded.toLocaleString()} XP to Level {currentLevel + 1}
                 </p>
@@ -228,18 +228,18 @@ export default function DawnHub() {
         )}
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6">
           {/* Awards */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.4 }}
-            className="bg-[#1E2638] rounded-2xl p-6 border border-[#2A3447]"
+            className="bg-[#1E2638] rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-[#2A3447]"
           >
-            <div className="w-12 h-12 rounded-xl bg-amber-500/20 flex items-center justify-center mb-3">
-              <Award className="h-6 w-6 text-amber-400" />
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-amber-500/20 flex items-center justify-center mb-2 sm:mb-3">
+              <Award className="h-5 w-5 sm:h-6 sm:w-6 text-amber-400" />
             </div>
-            <p className="text-3xl font-bold mb-1">{badges?.length || 0}</p>
+            <p className="text-2xl sm:text-3xl font-bold mb-1">{badges?.length || 0}</p>
             <p className="text-xs text-[#A0A8B8]">Badges Earned</p>
           </motion.div>
 
@@ -248,12 +248,12 @@ export default function DawnHub() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.5 }}
-            className="bg-[#1E2638] rounded-2xl p-6 border border-[#2A3447]"
+            className="bg-[#1E2638] rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-[#2A3447]"
           >
-            <div className="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center mb-3">
-              <CheckCircle2 className="h-6 w-6 text-blue-400" />
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-blue-500/20 flex items-center justify-center mb-2 sm:mb-3">
+              <CheckCircle2 className="h-5 w-5 sm:h-6 sm:w-6 text-blue-400" />
             </div>
-            <p className="text-3xl font-bold mb-1">{participations?.length || 0}</p>
+            <p className="text-2xl sm:text-3xl font-bold mb-1">{participations?.length || 0}</p>
             <p className="text-xs text-[#A0A8B8]">Quests</p>
           </motion.div>
 
@@ -262,12 +262,12 @@ export default function DawnHub() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.6 }}
-            className="bg-[#1E2638] rounded-2xl p-6 border border-[#2A3447]"
+            className="bg-[#1E2638] rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-[#2A3447]"
           >
-            <div className="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center mb-3">
-              <Users className="h-6 w-6 text-purple-400" />
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-purple-500/20 flex items-center justify-center mb-2 sm:mb-3">
+              <Users className="h-5 w-5 sm:h-6 sm:w-6 text-purple-400" />
             </div>
-            <p className="text-3xl font-bold mb-1">{recentRecognition?.length || 0}</p>
+            <p className="text-2xl sm:text-3xl font-bold mb-1">{recentRecognition?.length || 0}</p>
             <p className="text-xs text-[#A0A8B8]">Social</p>
           </motion.div>
 
@@ -276,12 +276,12 @@ export default function DawnHub() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.7 }}
-            className="bg-[#1E2638] rounded-2xl p-6 border border-[#2A3447]"
+            className="bg-[#1E2638] rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-[#2A3447]"
           >
-            <div className="w-12 h-12 rounded-xl bg-orange-500/20 flex items-center justify-center mb-3">
-              <Flame className="h-6 w-6 text-orange-400" />
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-orange-500/20 flex items-center justify-center mb-2 sm:mb-3">
+              <Flame className="h-5 w-5 sm:h-6 sm:w-6 text-orange-400" />
             </div>
-            <p className="text-3xl font-bold mb-1">{currentStreak} Days</p>
+            <p className="text-2xl sm:text-3xl font-bold mb-1">{currentStreak} Days</p>
             <p className="text-xs text-[#A0A8B8]">Current Streak</p>
           </motion.div>
         </div>
@@ -291,9 +291,9 @@ export default function DawnHub() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8 }}
-          className="bg-[#1E2638] rounded-2xl p-6 border border-[#2A3447]"
+          className="bg-[#1E2638] rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-[#2A3447]"
         >
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-4 gap-2">
             <h3 className="font-bold">Recent Activity</h3>
             <Button 
               variant="ghost" 

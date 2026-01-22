@@ -18,6 +18,7 @@ import ContentModerationAdmin from './pages/ContentModerationAdmin';
 import CustomAnalytics from './pages/CustomAnalytics';
 import CustomizableAnalyticsDashboard from './pages/CustomizableAnalyticsDashboard';
 import Dashboard from './pages/Dashboard';
+import DawnHub from './pages/DawnHub';
 import Documentation from './pages/Documentation';
 import EmployeeDirectory from './pages/EmployeeDirectory';
 import EventAnalyticsDashboard from './pages/EventAnalyticsDashboard';
@@ -27,6 +28,7 @@ import ExampleModulePage from './pages/ExampleModulePage';
 import ExpandedUserProfile from './pages/ExpandedUserProfile';
 import FacilitatorDashboard from './pages/FacilitatorDashboard';
 import FacilitatorView from './pages/FacilitatorView';
+import FeedbackAdmin from './pages/FeedbackAdmin';
 import Gamification from './pages/Gamification';
 import GamificationAdmin from './pages/GamificationAdmin';
 import GamificationAnalytics from './pages/GamificationAnalytics';
@@ -92,8 +94,6 @@ import UserProfile from './pages/UserProfile';
 import UserRoleAssignment from './pages/UserRoleAssignment';
 import UserSegmentation from './pages/UserSegmentation';
 import Whitepapers from './pages/Whitepapers';
-import FeedbackAdmin from './pages/FeedbackAdmin';
-import DawnHub from './pages/DawnHub';
 import __Layout from './Layout.jsx';
 
 
@@ -118,6 +118,7 @@ export const PAGES = {
     "CustomAnalytics": CustomAnalytics,
     "CustomizableAnalyticsDashboard": CustomizableAnalyticsDashboard,
     "Dashboard": Dashboard,
+    "DawnHub": DawnHub,
     "Documentation": Documentation,
     "EmployeeDirectory": EmployeeDirectory,
     "EventAnalyticsDashboard": EventAnalyticsDashboard,
@@ -127,6 +128,7 @@ export const PAGES = {
     "ExpandedUserProfile": ExpandedUserProfile,
     "FacilitatorDashboard": FacilitatorDashboard,
     "FacilitatorView": FacilitatorView,
+    "FeedbackAdmin": FeedbackAdmin,
     "Gamification": Gamification,
     "GamificationAdmin": GamificationAdmin,
     "GamificationAnalytics": GamificationAnalytics,
@@ -192,8 +194,6 @@ export const PAGES = {
     "UserRoleAssignment": UserRoleAssignment,
     "UserSegmentation": UserSegmentation,
     "Whitepapers": Whitepapers,
-    "FeedbackAdmin": FeedbackAdmin,
-    "DawnHub": DawnHub,
 }
 
 export const pagesConfig = {
