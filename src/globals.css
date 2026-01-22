@@ -18,6 +18,22 @@ css
   --int-gold: #F5C16A;
   --int-teal: #2DD4BF;
 
+  /* Dark Theme - Dawn Hub */
+  --dawn-bg: #0B0F19;
+  --dawn-surface: #151B2B;
+  --dawn-surface-elevated: #1E2638;
+  --dawn-border: #2A3447;
+  --dawn-text: #FFFFFF;
+  --dawn-text-muted: #A0A8B8;
+  --dawn-orange: #FF8A3D;
+  --dawn-orange-glow: rgba(255, 138, 61, 0.2);
+  --dawn-purple: #8B5CF6;
+  --dawn-blue: #3B82F6;
+  --dawn-success: #10B981;
+  --dawn-gradient-warm: linear-gradient(135deg, #FF8A3D 0%, #FFB86C 100%);
+  --dawn-gradient-purple: linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%);
+  --dawn-gradient-rank: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+
   /* Marketing Brand Colors - Warm Corporate Futurism */
   --ink: #0B1220;
   --slate: #1B2A41;

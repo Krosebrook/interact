@@ -93,6 +93,7 @@ import UserRoleAssignment from './pages/UserRoleAssignment';
 import UserSegmentation from './pages/UserSegmentation';
 import Whitepapers from './pages/Whitepapers';
 import FeedbackAdmin from './pages/FeedbackAdmin';
+import DawnHub from './pages/DawnHub';
 import __Layout from './Layout.jsx';
 
 
@@ -192,6 +193,7 @@ export const PAGES = {
     "UserSegmentation": UserSegmentation,
     "Whitepapers": Whitepapers,
     "FeedbackAdmin": FeedbackAdmin,
+    "DawnHub": DawnHub,
 }
 
 export const pagesConfig = {
