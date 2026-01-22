@@ -1,371 +1,228 @@
-import { useState } from 'react';
-import { base44 } from '@/api/base44Client';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useUserData } from '../components/hooks/useUserData';
-import { Card, CardContent } from '@/components/ui/card';
+import { Check, ExternalLink } from 'lucide-react';
+import MarketingFooter from '@/components/marketing/MarketingFooter';
+import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Badge } from '@/components/ui/badge';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from '@/components/ui/dialog';
-import PageHeader from '../components/common/PageHeader';
-import LoadingSpinner from '../components/common/LoadingSpinner';
-import IntegrationCard from '../components/integrations/IntegrationCard';
-import { 
-  Plug, 
-  Brain, 
-  Map, 
-  MessageSquare, 
-  Zap, 
-  Image,
-  Search,
-  RefreshCw,
-  CheckCircle,
-  XCircle,
-  Loader2
-} from 'lucide-react';
-import { toast } from 'sonner';
 
-const INTEGRATION_CATEGORIES = {
-  ai: {
-    name: 'AI & Language Models',
-    icon: Brain,
-    keys: ['openai', 'claude', 'gemini', 'perplexity']
+const integrations = [
+  {
+    name: 'Slack',
+    logo: '💬',
+    category: 'Communication',
+    description: 'Get engagement notifications, recognition alerts, and pulse survey reminders directly in Slack.',
+    features: ['Real-time notifications', 'Slash commands', 'Channel integrations'],
+    setupSteps: [
+      'Navigate to Settings > Integrations',
+      'Click "Connect Slack"',
+      'Authorize workspace access',
+      'Select default notification channel'
+    ],
+    status: 'available'
   },
-  productivity: {
-    name: 'Productivity',
-    icon: MessageSquare,
-    keys: ['notion', 'microsoft_teams', 'zapier']
+  {
+    name: 'Microsoft Teams',
+    logo: '🎯',
+    category: 'Communication',
+    description: 'Seamless integration with Teams for notifications, recognition, and team channels.',
+    features: ['Teams notifications', 'Bot commands', 'Adaptive cards'],
+    setupSteps: [
+      'Go to Settings > Integrations',
+      'Click "Connect Microsoft Teams"',
+      'Sign in with Microsoft 365',
+      'Configure notification preferences'
+    ],
+    status: 'available'
   },
-  crm: {
-    name: 'CRM & Marketing',
-    icon: Zap,
-    keys: ['hubspot']
+  {
+    name: 'Google Workspace',
+    logo: '📧',
+    category: 'Productivity',
+    description: 'Sync calendars, import employee directory, and enable SSO with Google.',
+    features: ['Calendar sync', 'SSO authentication', 'Directory import'],
+    setupSteps: [
+      'Access Settings > Integrations',
+      'Select "Google Workspace"',
+      'Authorize admin consent',
+      'Map employee attributes'
+    ],
+    status: 'available'
   },
-  location: {
-    name: 'Location & Maps',
-    icon: Map,
-    keys: ['google_maps', 'google_places']
+  {
+    name: 'BambooHR',
+    logo: '🌿',
+    category: 'HRIS',
+    description: 'Automatically sync employee data, track milestones, and update org charts.',
+    features: ['Employee sync', 'Milestone tracking', 'Org chart updates'],
+    setupSteps: [
+      'Navigate to Settings > HRIS',
+      'Choose BambooHR',
+      'Enter API key',
+      'Configure sync frequency'
+    ],
+    status: 'available'
   },
-  media: {
-    name: 'Media & Voice',
-    icon: Image,
-    keys: ['elevenlabs', 'cloudinary']
+  {
+    name: 'Workday',
+    logo: '💼',
+    category: 'HRIS',
+    description: 'Enterprise-grade HRIS integration for large organizations.',
+    features: ['Bulk employee import', 'Role mapping', 'Automated updates'],
+    setupSteps: [
+      'Contact support for enterprise setup',
+      'Provide Workday tenant details',
+      'Configure field mappings',
+      'Test sync in staging'
+    ],
+    status: 'enterprise'
   },
-  devops: {
-    name: 'DevOps & Hosting',
-    icon: Zap,
-    keys: ['cloudflare', 'vercel']
+  {
+    name: 'Okta',
+    logo: '🔐',
+    category: 'Security',
+    description: 'Single Sign-On (SSO) and identity management via Okta.',
+    features: ['SAML 2.0', 'SCIM provisioning', 'MFA support'],
+    setupSteps: [
+      'Access Settings > Security',
+      'Enable SSO',
+      'Enter Okta metadata URL',
+      'Test SSO flow'
+    ],
+    status: 'available'
+  },
+  {
+    name: 'Azure AD',
+    logo: '🔷',
+    category: 'Security',
+    description: 'Microsoft Azure Active Directory for enterprise authentication.',
+    features: ['SSO/SAML', 'User provisioning', 'Conditional access'],
+    setupSteps: [
+      'Go to Settings > Security',
+      'Select Azure AD',
+      'Configure app registration',
+      'Set redirect URIs'
+    ],
+    status: 'available'
+  },
+  {
+    name: 'Zapier',
+    logo: '⚡',
+    category: 'Automation',
+    description: 'Connect INTINC to 5,000+ apps for custom workflows.',
+    features: ['Custom triggers', 'Multi-step zaps', 'Webhook support'],
+    setupSteps: [
+      'Search for INTINC in Zapier',
+      'Authenticate your account',
+      'Create triggers and actions',
+      'Test your zap'
+    ],
+    status: 'beta'
   }
-};
-
-const DEFAULT_INTEGRATIONS = [
-  { integration_name: 'OpenAI', integration_key: 'openai', is_enabled: false, status: 'disabled' },
-  { integration_name: 'Claude', integration_key: 'claude', is_enabled: false, status: 'disabled' },
-  { integration_name: 'Google Gemini', integration_key: 'gemini', is_enabled: false, status: 'disabled' },
-  { integration_name: 'Perplexity', integration_key: 'perplexity', is_enabled: false, status: 'disabled' },
-  { integration_name: 'Notion', integration_key: 'notion', is_enabled: false, status: 'disabled' },
-  { integration_name: 'Microsoft Teams', integration_key: 'microsoft_teams', is_enabled: false, status: 'disabled' },
-  { integration_name: 'Zapier', integration_key: 'zapier', is_enabled: false, status: 'disabled' },
-  { integration_name: 'HubSpot', integration_key: 'hubspot', is_enabled: false, status: 'disabled' },
-  { integration_name: 'Google Maps', integration_key: 'google_maps', is_enabled: false, status: 'disabled' },
-  { integration_name: 'Google Places', integration_key: 'google_places', is_enabled: false, status: 'disabled' },
-  { integration_name: 'ElevenLabs', integration_key: 'elevenlabs', is_enabled: false, status: 'disabled' },
-  { integration_name: 'Cloudinary', integration_key: 'cloudinary', is_enabled: false, status: 'disabled' },
-  { integration_name: 'Cloudflare', integration_key: 'cloudflare', is_enabled: false, status: 'disabled' },
-  { integration_name: 'Vercel', integration_key: 'vercel', is_enabled: false, status: 'disabled' }
 ];
 
 export default function Integrations() {
-  const queryClient = useQueryClient();
-  const { user, loading, isAdmin } = useUserData(true, true);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [configuring, setConfiguring] = useState(null);
-  const [testing, setTesting] = useState(null);
-  const [testResult, setTestResult] = useState(null);
-
-  const { data: integrations = [], isLoading } = useQuery({
-    queryKey: ['integrations'],
-    queryFn: () => base44.entities.Integration.list()
-  });
-
-  // Merge saved integrations with defaults
-  const allIntegrations = DEFAULT_INTEGRATIONS.map(def => {
-    const saved = integrations.find(i => i.integration_key === def.integration_key);
-    return saved || def;
-  });
-
-  const toggleMutation = useMutation({
-    mutationFn: async ({ integration, enabled }) => {
-      const existing = integrations.find(i => i.integration_key === integration.integration_key);
-      if (existing) {
-        return base44.entities.Integration.update(existing.id, { 
-          is_enabled: enabled,
-          status: enabled ? 'active' : 'disabled'
-        });
-      } else {
-        return base44.entities.Integration.create({
-          ...integration,
-          is_enabled: enabled,
-          status: enabled ? 'active' : 'disabled'
-        });
-      }
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries(['integrations']);
-      toast.success('Integration updated');
-    }
-  });
-
-  const testMutation = useMutation({
-    mutationFn: async (integration) => {
-      setTesting(integration.integration_key);
-      setTestResult(null);
-
-      let functionName;
-      let testPayload;
-
-      switch (integration.integration_key) {
-        case 'openai':
-          functionName = 'openaiIntegration';
-          testPayload = { action: 'chat', prompt: 'Say "Integration test successful!" in one line.' };
-          break;
-        case 'claude':
-          functionName = 'claudeIntegration';
-          testPayload = { action: 'chat', prompt: 'Say "Integration test successful!" in one line.' };
-          break;
-        case 'gemini':
-          functionName = 'geminiIntegration';
-          testPayload = { action: 'chat', prompt: 'Say "Integration test successful!" in one line.' };
-          break;
-        case 'perplexity':
-          functionName = 'perplexityIntegration';
-          testPayload = { query: 'What is the current date?' };
-          break;
-        case 'notion':
-          functionName = 'notionIntegration';
-          testPayload = { action: 'list_databases' };
-          break;
-        case 'google_maps':
-          functionName = 'googleMapsIntegration';
-          testPayload = { action: 'geocode', query: 'New York City' };
-          break;
-        case 'elevenlabs':
-          functionName = 'elevenlabsIntegration';
-          testPayload = { action: 'list_voices' };
-          break;
-        default:
-          throw new Error('No test available for this integration');
-      }
-
-      const response = await base44.functions.invoke(functionName, testPayload);
-      return response.data;
-    },
-    onSuccess: (data) => {
-      setTestResult({ success: true, data });
-      toast.success('Integration test passed!');
-    },
-    onError: (error) => {
-      setTestResult({ success: false, error: error.message });
-      toast.error('Integration test failed');
-    },
-    onSettled: () => {
-      setTesting(null);
-    }
-  });
-
-  const filteredIntegrations = allIntegrations.filter(i => 
-    i.integration_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    i.integration_key.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  const enabledCount = allIntegrations.filter(i => i.is_enabled).length;
-
-  if (loading || !user) {
-    return <LoadingSpinner className="min-h-[60vh]" />;
-  }
+  const categories = [...new Set(integrations.map(i => i.category))];
 
   return (
-    <div className="space-y-8">
-      <PageHeader 
-        title="Integrations" 
-        description="Connect external services to enhance your platform"
-      >
-        <Badge className="bg-int-navy text-white">
-          {enabledCount} Active
-        </Badge>
-      </PageHeader>
+    <div className="min-h-screen bg-[var(--mist)]">
+      {/* Header */}
+      <section className="relative py-20 px-6 bg-gradient-to-br from-[var(--ink)] to-[var(--slate)] text-white overflow-hidden">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-[var(--orb-accent)] rounded-full blur-3xl opacity-20" />
+        <div className="relative z-10 max-w-4xl mx-auto text-center">
+          <motion.h1
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-5xl font-bold mb-6"
+          >
+            Integrations that work out of the box
+          </motion.h1>
+          <p className="text-xl text-white/80">
+            Connect INTINC to your existing tools. No custom development required.
+          </p>
+        </div>
+      </section>
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Card>
-          <CardContent className="pt-4">
-            <div className="text-2xl font-bold">{allIntegrations.length}</div>
-            <div className="text-sm text-slate-500">Available</div>
-          </CardContent>
-        </Card>
-        <Card className="bg-green-50">
-          <CardContent className="pt-4">
-            <div className="text-2xl font-bold text-green-600">{enabledCount}</div>
-            <div className="text-sm text-slate-500">Enabled</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-4">
-            <div className="text-2xl font-bold">
-              {integrations.reduce((sum, i) => sum + (i.usage_count || 0), 0)}
-            </div>
-            <div className="text-sm text-slate-500">Total Calls</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-4">
-            <div className="text-2xl font-bold">
-              {allIntegrations.filter(i => i.status === 'error').length}
-            </div>
-            <div className="text-sm text-slate-500">Errors</div>
-          </CardContent>
-        </Card>
-      </div>
+      {/* Integration Categories */}
+      <section className="py-16 px-6">
+        <div className="max-w-7xl mx-auto">
+          {categories.map((category, idx) => (
+            <div key={category} className="mb-16">
+              <h2 className="text-2xl font-bold text-[var(--ink)] mb-6">{category}</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {integrations
+                  .filter(i => i.category === category)
+                  .map((integration, i) => (
+                    <motion.div
+                      key={integration.name}
+                      initial={{ opacity: 0, y: 12 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: i * 0.1 }}
+                      className="bg-white rounded-xl p-6 border border-slate-200 hover:shadow-lg transition-all"
+                    >
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex items-center gap-3">
+                          <span className="text-4xl">{integration.logo}</span>
+                          <div>
+                            <h3 className="text-lg font-bold text-[var(--ink)]">{integration.name}</h3>
+                            {integration.status === 'beta' && (
+                              <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded-full">Beta</span>
+                            )}
+                            {integration.status === 'enterprise' && (
+                              <span className="text-xs bg-purple-100 text-purple-800 px-2 py-0.5 rounded-full">Enterprise</span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
 
-      {/* Search */}
-      <div className="relative max-w-md">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-        <Input
-          placeholder="Search integrations..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="pl-10"
-        />
-      </div>
+                      <p className="text-sm text-[var(--slate)] mb-4 leading-relaxed">
+                        {integration.description}
+                      </p>
 
-      {/* Categories */}
-      <Tabs defaultValue="all" className="space-y-6">
-        <TabsList className="flex flex-wrap h-auto gap-2">
-          <TabsTrigger value="all">
-            <Plug className="h-4 w-4 mr-2" />
-            All
-          </TabsTrigger>
-          {Object.entries(INTEGRATION_CATEGORIES).map(([key, cat]) => {
-            const Icon = cat.icon;
-            return (
-              <TabsTrigger key={key} value={key}>
-                <Icon className="h-4 w-4 mr-2" />
-                {cat.name}
-              </TabsTrigger>
-            );
-          })}
-        </TabsList>
+                      <div className="mb-4">
+                        <p className="text-xs font-bold text-[var(--ink)] mb-2">Key Features:</p>
+                        <ul className="space-y-1">
+                          {integration.features.map(f => (
+                            <li key={f} className="flex items-center gap-2 text-xs text-[var(--slate)]">
+                              <Check className="w-3 h-3 text-[var(--success)]" />
+                              {f}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
 
-        <TabsContent value="all">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredIntegrations.map(integration => (
-              <IntegrationCard
-                key={integration.integration_key}
-                integration={integration}
-                onToggle={(i, enabled) => toggleMutation.mutate({ integration: i, enabled })}
-                onConfigure={setConfiguring}
-                onTest={(i) => testMutation.mutate(i)}
-              />
-            ))}
-          </div>
-        </TabsContent>
-
-        {Object.entries(INTEGRATION_CATEGORIES).map(([key, cat]) => (
-          <TabsContent key={key} value={key}>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {filteredIntegrations
-                .filter(i => cat.keys.includes(i.integration_key))
-                .map(integration => (
-                  <IntegrationCard
-                    key={integration.integration_key}
-                    integration={integration}
-                    onToggle={(i, enabled) => toggleMutation.mutate({ integration: i, enabled })}
-                    onConfigure={setConfiguring}
-                    onTest={(i) => testMutation.mutate(i)}
-                  />
-                ))}
-            </div>
-          </TabsContent>
-        ))}
-      </Tabs>
-
-      {/* Configure Dialog */}
-      <Dialog open={!!configuring} onOpenChange={() => setConfiguring(null)}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Configure {configuring?.integration_name}</DialogTitle>
-            <DialogDescription>
-              API keys are managed in Settings → Environment Variables
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div className="bg-slate-50 p-4 rounded-lg">
-              <h4 className="font-medium mb-2">Required Secrets</h4>
-              <ul className="text-sm text-slate-600 space-y-1">
-                {configuring?.integration_key === 'openai' && <li>• OPENAI_API_KEY</li>}
-                {configuring?.integration_key === 'claude' && <li>• ANTHROPIC_API_KEY</li>}
-                {configuring?.integration_key === 'gemini' && <li>• GOOGLE_API_KEY</li>}
-                {configuring?.integration_key === 'perplexity' && <li>• PERPLEXITY_API_KEY</li>}
-                {configuring?.integration_key === 'notion' && <li>• NOTION_API_KEY</li>}
-                {configuring?.integration_key === 'google_maps' && <li>• GOOGLE_API_KEY</li>}
-                {configuring?.integration_key === 'hubspot' && <li>• HUBSPOT_API_KEY</li>}
-                {configuring?.integration_key === 'elevenlabs' && <li>• ELEVENLABS_API_KEY</li>}
-                {configuring?.integration_key === 'cloudinary' && (
-                  <>
-                    <li>• CLOUDINARY_CLOUD_NAME</li>
-                    <li>• CLOUDINARY_API_KEY</li>
-                    <li>• CLOUDINARY_API_SECRET</li>
-                  </>
-                )}
-                {configuring?.integration_key === 'cloudflare' && (
-                  <>
-                    <li>• CLOUDFLARE_API_KEY</li>
-                    <li>• CLOUDFLARE_ACCOUNT_ID (optional)</li>
-                  </>
-                )}
-                {configuring?.integration_key === 'vercel' && <li>• VERCEL_TOKEN</li>}
-              </ul>
-            </div>
-
-            {testResult && (
-              <div className={`p-4 rounded-lg ${testResult.success ? 'bg-green-50' : 'bg-red-50'}`}>
-                <div className="flex items-center gap-2 mb-2">
-                  {testResult.success ? (
-                    <CheckCircle className="h-5 w-5 text-green-600" />
-                  ) : (
-                    <XCircle className="h-5 w-5 text-red-600" />
-                  )}
-                  <span className="font-medium">
-                    {testResult.success ? 'Test Passed' : 'Test Failed'}
-                  </span>
-                </div>
-                <pre className="text-xs overflow-auto max-h-40">
-                  {JSON.stringify(testResult.success ? testResult.data : testResult.error, null, 2)}
-                </pre>
+                      <details className="text-xs">
+                        <summary className="cursor-pointer text-[var(--orb-accent)] font-semibold mb-2">
+                          Setup Guide
+                        </summary>
+                        <ol className="list-decimal list-inside space-y-1 text-[var(--slate)] pl-2">
+                          {integration.setupSteps.map((step, idx) => (
+                            <li key={idx}>{step}</li>
+                          ))}
+                        </ol>
+                      </details>
+                    </motion.div>
+                  ))}
               </div>
-            )}
+            </div>
+          ))}
+        </div>
+      </section>
 
-            <Button
-              onClick={() => testMutation.mutate(configuring)}
-              disabled={testing === configuring?.integration_key}
-              className="w-full"
-            >
-              {testing === configuring?.integration_key ? (
-                <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Testing...</>
-              ) : (
-                <><RefreshCw className="h-4 w-4 mr-2" /> Test Connection</>
-              )}
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      {/* CTA */}
+      <section className="py-16 px-6 bg-white">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-3xl font-bold text-[var(--ink)] mb-4">
+            Need a custom integration?
+          </h2>
+          <p className="text-[var(--slate)] mb-6">
+            Our enterprise plan includes custom API development and dedicated integration support.
+          </p>
+          <Button className="bg-[var(--orb-accent)] hover:bg-[var(--orb-accent)]/90 text-white">
+            Contact Sales <ExternalLink className="w-4 h-4 ml-2" />
+          </Button>
+        </div>
+      </section>
+
+      <MarketingFooter />
     </div>
   );
 }

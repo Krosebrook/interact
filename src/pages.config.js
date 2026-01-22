@@ -87,6 +87,11 @@ import UserRoleAssignment from './pages/UserRoleAssignment';
 import UserSegmentation from './pages/UserSegmentation';
 import MarketingHome from './pages/MarketingHome';
 import Product from './pages/Product';
+import Resources from './pages/Resources';
+import CaseStudies from './pages/CaseStudies';
+import Whitepapers from './pages/Whitepapers';
+import Blog from './pages/Blog';
+import CustomAnalytics from './pages/CustomAnalytics';
 import __Layout from './Layout.jsx';
 
 
@@ -180,6 +185,11 @@ export const PAGES = {
     "UserSegmentation": UserSegmentation,
     "MarketingHome": MarketingHome,
     "Product": Product,
+    "Resources": Resources,
+    "CaseStudies": CaseStudies,
+    "Whitepapers": Whitepapers,
+    "Blog": Blog,
+    "CustomAnalytics": CustomAnalytics,
 }
 
 export const pagesConfig = {
