@@ -5,7 +5,7 @@ css
 
 /* CSS Variables */
 :root {
-  /* Brand Colors */
+  /* Brand Colors - Legacy */
   --int-navy: #14294D;
         --int-orange: #D97230;
         --int-orange-dark: #C46322;
@@ -17,6 +17,16 @@ css
         --text-secondary-wcag: #334155; /* All secondary text */
   --int-gold: #F5C16A;
   --int-teal: #2DD4BF;
+
+  /* Marketing Brand Colors - Warm Corporate Futurism */
+  --ink: #0B1220;
+  --slate: #1B2A41;
+  --mist: #E8EEF5;
+  --orb-accent: #F28C28;
+  --sunrise-glow: #FFD39A;
+  --success: #2DBE7F;
+  --warning: #F2C94C;
+  --error: #EB5757;
   
   /* Activity Type Colors */
   --activity-icebreaker: #3B82F6;
