@@ -46,15 +46,15 @@ export default function FeedbackModal({ isOpen, onClose, pageName }) {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="w-[calc(100%-2rem)] sm:max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <MessageSquare className="w-5 h-5 text-[var(--orb-accent)]" />
-            Share Your Feedback
+          <DialogTitle className="flex items-center gap-2 text-base sm:text-lg">
+            <MessageSquare className="w-5 h-5 text-[var(--orb-accent)] flex-shrink-0" />
+            <span>Share Your Feedback</span>
           </DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4 mt-4">
           <div>
             <Label className="text-sm font-medium mb-2 block">
               How would you rate this page?
@@ -76,14 +76,19 @@ export default function FeedbackModal({ isOpen, onClose, pageName }) {
             />
           </div>
 
-          <div className="flex gap-2 justify-end pt-4">
-            <Button type="button" variant="outline" onClick={onClose}>
+          <div className="flex flex-col sm:flex-row gap-2 sm:justify-end pt-4">
+            <Button 
+              type="button" 
+              variant="outline" 
+              onClick={onClose}
+              className="w-full sm:w-auto min-h-[44px]"
+            >
               Cancel
             </Button>
             <Button 
               type="submit" 
               disabled={isSubmitting || rating === 0}
-              className="bg-[var(--orb-accent)] hover:bg-[var(--orb-accent)]/90"
+              className="bg-[var(--orb-accent)] hover:bg-[var(--orb-accent)]/90 w-full sm:w-auto min-h-[44px]"
             >
               {isSubmitting ? 'Submitting...' : 'Submit Feedback'}
             </Button>

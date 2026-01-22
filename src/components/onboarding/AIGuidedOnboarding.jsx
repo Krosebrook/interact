@@ -98,7 +98,7 @@ export default function AIGuidedOnboarding({
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: 20 }}
-        className="fixed z-50 bg-white rounded-2xl shadow-2xl border border-[var(--orb-accent)]/30 max-w-md"
+        className="fixed z-50 bg-white rounded-2xl shadow-2xl border border-[var(--orb-accent)]/30 w-[calc(100%-2rem)] sm:w-full max-w-md mx-4 sm:mx-0"
         style={{
           top: step.cardPosition?.top || '50%',
           left: step.cardPosition?.left || '50%',
@@ -106,26 +106,26 @@ export default function AIGuidedOnboarding({
         }}
       >
         {/* Header */}
-        <div className="p-6 border-b border-slate-100">
-          <div className="flex items-start justify-between">
-            <div className="flex-1">
+        <div className="p-4 sm:p-6 border-b border-slate-100">
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-2">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[var(--orb-accent)] to-[var(--sunrise-glow)] flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">
+                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-br from-[var(--orb-accent)] to-[var(--sunrise-glow)] flex items-center justify-center flex-shrink-0">
+                  <span className="text-white font-bold text-xs sm:text-sm">
                     {currentStep + 1}
                   </span>
                 </div>
-                <span className="text-xs text-[var(--slate)]">
+                <span className="text-xs text-[var(--slate)] whitespace-nowrap">
                   Step {currentStep + 1} of {validSteps.length}
                 </span>
               </div>
-              <h3 className="text-xl font-bold text-[var(--ink)]">{step.title}</h3>
+              <h3 className="text-lg sm:text-xl font-bold text-[var(--ink)] break-words">{step.title}</h3>
             </div>
             <Button
               variant="ghost"
               size="icon"
               onClick={handleSkipAll}
-              className="text-[var(--slate)] hover:text-[var(--ink)]"
+              className="text-[var(--slate)] hover:text-[var(--ink)] flex-shrink-0"
             >
               <X className="w-4 h-4" />
             </Button>
@@ -133,13 +133,13 @@ export default function AIGuidedOnboarding({
         </div>
 
         {/* Content */}
-        <div className="p-6">
-          <p className="text-[var(--slate)] leading-relaxed mb-4">
+        <div className="p-4 sm:p-6">
+          <p className="text-sm sm:text-base text-[var(--slate)] leading-relaxed mb-4">
             {step.description}
           </p>
 
           {/* AI Guidance */}
-          <div className="bg-gradient-to-br from-[var(--orb-accent)]/5 to-[var(--sunrise-glow)]/5 rounded-lg p-4 border border-[var(--orb-accent)]/20 mb-4">
+          <div className="bg-gradient-to-br from-[var(--orb-accent)]/5 to-[var(--sunrise-glow)]/5 rounded-lg p-3 sm:p-4 border border-[var(--orb-accent)]/20 mb-4">
             <div className="flex items-start gap-2">
               <Sparkles className="w-4 h-4 text-[var(--orb-accent)] mt-0.5 flex-shrink-0" />
               <div className="flex-1">
@@ -169,22 +169,22 @@ export default function AIGuidedOnboarding({
         </div>
 
         {/* Footer Navigation */}
-        <div className="p-6 border-t border-slate-100 flex items-center justify-between">
+        <div className="p-4 sm:p-6 border-t border-slate-100 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-0 sm:justify-between">
           <Button
             variant="outline"
             onClick={handlePrevious}
             disabled={currentStep === 0}
-            className="gap-2"
+            className="gap-2 order-2 sm:order-1 w-full sm:w-auto min-h-[44px]"
           >
             <ChevronLeft className="w-4 h-4" />
-            Previous
+            <span className="sm:inline">Previous</span>
           </Button>
 
-          <div className="flex gap-2">
+          <div className="flex flex-col sm:flex-row gap-2 order-1 sm:order-2">
             <Button
               variant="ghost"
               onClick={handleSkipAll}
-              className="gap-2 text-[var(--slate)]"
+              className="gap-2 text-[var(--slate)] w-full sm:w-auto min-h-[44px]"
             >
               <SkipForward className="w-4 h-4" />
               Skip Tutorial
@@ -192,7 +192,7 @@ export default function AIGuidedOnboarding({
             
             <Button
               onClick={handleNext}
-              className="bg-[var(--orb-accent)] hover:bg-[var(--orb-accent)]/90 gap-2"
+              className="bg-[var(--orb-accent)] hover:bg-[var(--orb-accent)]/90 gap-2 w-full sm:w-auto min-h-[44px]"
             >
               {currentStep === validSteps.length - 1 ? 'Complete' : 'Next'}
               {currentStep < validSteps.length - 1 && <ChevronRight className="w-4 h-4" />}
