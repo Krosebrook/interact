@@ -9,10 +9,13 @@ import AdvancedAnalytics from './pages/AdvancedAnalytics';
 import AdvancedGamificationAnalytics from './pages/AdvancedGamificationAnalytics';
 import Analytics from './pages/Analytics';
 import AuditLog from './pages/AuditLog';
+import Blog from './pages/Blog';
 import Calendar from './pages/Calendar';
+import CaseStudies from './pages/CaseStudies';
 import Channels from './pages/Channels';
 import ComprehensiveProfile from './pages/ComprehensiveProfile';
 import ContentModerationAdmin from './pages/ContentModerationAdmin';
+import CustomAnalytics from './pages/CustomAnalytics';
 import CustomizableAnalyticsDashboard from './pages/CustomizableAnalyticsDashboard';
 import Dashboard from './pages/Dashboard';
 import Documentation from './pages/Documentation';
@@ -43,6 +46,7 @@ import LearningPath from './pages/LearningPath';
 import LifecycleAnalyticsDashboard from './pages/LifecycleAnalyticsDashboard';
 import LifecycleIntelligenceDashboard from './pages/LifecycleIntelligenceDashboard';
 import ManagerOnboardingDashboard from './pages/ManagerOnboardingDashboard';
+import MarketingHome from './pages/MarketingHome';
 import Milestones from './pages/Milestones';
 import NewEmployeeOnboarding from './pages/NewEmployeeOnboarding';
 import NewHireOnboarding from './pages/NewHireOnboarding';
@@ -54,12 +58,14 @@ import ParticipantPortal from './pages/ParticipantPortal';
 import PointStore from './pages/PointStore';
 import PowerUserHub from './pages/PowerUserHub';
 import PredictiveAnalyticsDashboard from './pages/PredictiveAnalyticsDashboard';
+import Product from './pages/Product';
 import ProfileCustomization from './pages/ProfileCustomization';
 import ProjectPlan from './pages/ProjectPlan';
 import PublicProfile from './pages/PublicProfile';
 import RealTimeAnalytics from './pages/RealTimeAnalytics';
 import Recognition from './pages/Recognition';
 import RecognitionFeed from './pages/RecognitionFeed';
+import Resources from './pages/Resources';
 import RewardsAdmin from './pages/RewardsAdmin';
 import RewardsStore from './pages/RewardsStore';
 import RoleManagement from './pages/RoleManagement';
@@ -85,13 +91,8 @@ import Teams from './pages/Teams';
 import UserProfile from './pages/UserProfile';
 import UserRoleAssignment from './pages/UserRoleAssignment';
 import UserSegmentation from './pages/UserSegmentation';
-import MarketingHome from './pages/MarketingHome';
-import Product from './pages/Product';
-import Resources from './pages/Resources';
-import CaseStudies from './pages/CaseStudies';
 import Whitepapers from './pages/Whitepapers';
-import Blog from './pages/Blog';
-import CustomAnalytics from './pages/CustomAnalytics';
+import FeedbackAdmin from './pages/FeedbackAdmin';
 import __Layout from './Layout.jsx';
 
 
@@ -107,10 +108,13 @@ export const PAGES = {
     "AdvancedGamificationAnalytics": AdvancedGamificationAnalytics,
     "Analytics": Analytics,
     "AuditLog": AuditLog,
+    "Blog": Blog,
     "Calendar": Calendar,
+    "CaseStudies": CaseStudies,
     "Channels": Channels,
     "ComprehensiveProfile": ComprehensiveProfile,
     "ContentModerationAdmin": ContentModerationAdmin,
+    "CustomAnalytics": CustomAnalytics,
     "CustomizableAnalyticsDashboard": CustomizableAnalyticsDashboard,
     "Dashboard": Dashboard,
     "Documentation": Documentation,
@@ -141,6 +145,7 @@ export const PAGES = {
     "LifecycleAnalyticsDashboard": LifecycleAnalyticsDashboard,
     "LifecycleIntelligenceDashboard": LifecycleIntelligenceDashboard,
     "ManagerOnboardingDashboard": ManagerOnboardingDashboard,
+    "MarketingHome": MarketingHome,
     "Milestones": Milestones,
     "NewEmployeeOnboarding": NewEmployeeOnboarding,
     "NewHireOnboarding": NewHireOnboarding,
@@ -152,12 +157,14 @@ export const PAGES = {
     "PointStore": PointStore,
     "PowerUserHub": PowerUserHub,
     "PredictiveAnalyticsDashboard": PredictiveAnalyticsDashboard,
+    "Product": Product,
     "ProfileCustomization": ProfileCustomization,
     "ProjectPlan": ProjectPlan,
     "PublicProfile": PublicProfile,
     "RealTimeAnalytics": RealTimeAnalytics,
     "Recognition": Recognition,
     "RecognitionFeed": RecognitionFeed,
+    "Resources": Resources,
     "RewardsAdmin": RewardsAdmin,
     "RewardsStore": RewardsStore,
     "RoleManagement": RoleManagement,
@@ -183,13 +190,8 @@ export const PAGES = {
     "UserProfile": UserProfile,
     "UserRoleAssignment": UserRoleAssignment,
     "UserSegmentation": UserSegmentation,
-    "MarketingHome": MarketingHome,
-    "Product": Product,
-    "Resources": Resources,
-    "CaseStudies": CaseStudies,
     "Whitepapers": Whitepapers,
-    "Blog": Blog,
-    "CustomAnalytics": CustomAnalytics,
+    "FeedbackAdmin": FeedbackAdmin,
 }
 
 export const pagesConfig = {
