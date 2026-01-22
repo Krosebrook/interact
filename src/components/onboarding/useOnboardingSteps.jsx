@@ -1,11 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useMemo } from 'react';
 
 export function useOnboardingSteps(userRole = 'participant') {
-  const [steps, setSteps] = useState([]);
-
-  useEffect(() => {
-    // Define role-specific onboarding flows
+  const steps = useMemo(() => {
     const stepsByRole = {
+
       admin: [
         {
           title: 'Welcome to INTeract Admin',
@@ -112,7 +110,7 @@ export function useOnboardingSteps(userRole = 'participant') {
       ]
     };
 
-    setSteps(stepsByRole[userRole] || stepsByRole.participant);
+    return stepsByRole[userRole] || stepsByRole.participant;
   }, [userRole]);
 
   return steps;
