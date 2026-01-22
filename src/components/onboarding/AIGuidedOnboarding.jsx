@@ -15,7 +15,9 @@ export default function AIGuidedOnboarding({
   const [aiGuidance, setAiGuidance] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const step = steps[currentStep];
+  // Ensure steps is always an array
+  const validSteps = Array.isArray(steps) && steps.length > 0 ? steps : [];
+  const step = validSteps[currentStep];
 
   useEffect(() => {
     if (step) {
@@ -43,7 +45,7 @@ export default function AIGuidedOnboarding({
   };
 
   const handleNext = () => {
-    if (currentStep < steps.length - 1) {
+    if (currentStep < validSteps.length - 1) {
       setCurrentStep(currentStep + 1);
     } else {
       onComplete?.();
@@ -114,7 +116,7 @@ export default function AIGuidedOnboarding({
                   </span>
                 </div>
                 <span className="text-xs text-[var(--slate)]">
-                  Step {currentStep + 1} of {steps.length}
+                  Step {currentStep + 1} of {validSteps.length}
                 </span>
               </div>
               <h3 className="text-xl font-bold text-[var(--ink)]">{step.title}</h3>
@@ -192,8 +194,8 @@ export default function AIGuidedOnboarding({
               onClick={handleNext}
               className="bg-[var(--orb-accent)] hover:bg-[var(--orb-accent)]/90 gap-2"
             >
-              {currentStep === steps.length - 1 ? 'Complete' : 'Next'}
-              {currentStep < steps.length - 1 && <ChevronRight className="w-4 h-4" />}
+              {currentStep === validSteps.length - 1 ? 'Complete' : 'Next'}
+              {currentStep < validSteps.length - 1 && <ChevronRight className="w-4 h-4" />}
             </Button>
           </div>
         </div>
@@ -203,7 +205,7 @@ export default function AIGuidedOnboarding({
           <motion.div
             className="h-full bg-gradient-to-r from-[var(--orb-accent)] to-[var(--sunrise-glow)]"
             initial={{ width: 0 }}
-            animate={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
+            animate={{ width: `${validSteps.length > 0 ? ((currentStep + 1) / validSteps.length) * 100 : 0}%` }}
             transition={{ duration: 0.3 }}
           />
         </div>
