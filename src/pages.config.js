@@ -94,6 +94,8 @@ import UserProfile from './pages/UserProfile';
 import UserRoleAssignment from './pages/UserRoleAssignment';
 import UserSegmentation from './pages/UserSegmentation';
 import Whitepapers from './pages/Whitepapers';
+import Splash from './pages/Splash';
+import Landing from './pages/Landing';
 import __Layout from './Layout.jsx';
 
 
@@ -194,6 +196,8 @@ export const PAGES = {
     "UserRoleAssignment": UserRoleAssignment,
     "UserSegmentation": UserSegmentation,
     "Whitepapers": Whitepapers,
+    "Splash": Splash,
+    "Landing": Landing,
 }
 
 export const pagesConfig = {
