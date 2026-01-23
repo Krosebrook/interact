@@ -19,6 +19,7 @@ import {
   Target
 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import WellnessCheckWidget from '../components/wellness/WellnessCheckWidget';
 
 export default function DawnHub() {
   const { user, points } = useUserData(true);

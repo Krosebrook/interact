@@ -42,6 +42,7 @@ import IntegrationsAdmin from './pages/IntegrationsAdmin';
 import IntegrationsHub from './pages/IntegrationsHub';
 import KnowledgeBase from './pages/KnowledgeBase';
 import KnowledgeHub from './pages/KnowledgeHub';
+import Landing from './pages/Landing';
 import Leaderboards from './pages/Leaderboards';
 import LearningDashboard from './pages/LearningDashboard';
 import LearningPath from './pages/LearningPath';
@@ -79,6 +80,7 @@ import SkillsDashboard from './pages/SkillsDashboard';
 import SkillsMatrix from './pages/SkillsMatrix';
 import SocialGamification from './pages/SocialGamification';
 import SocialHub from './pages/SocialHub';
+import Splash from './pages/Splash';
 import Surveys from './pages/Surveys';
 import TeamAnalyticsDashboard from './pages/TeamAnalyticsDashboard';
 import TeamAutomation from './pages/TeamAutomation';
@@ -94,8 +96,6 @@ import UserProfile from './pages/UserProfile';
 import UserRoleAssignment from './pages/UserRoleAssignment';
 import UserSegmentation from './pages/UserSegmentation';
 import Whitepapers from './pages/Whitepapers';
-import Splash from './pages/Splash';
-import Landing from './pages/Landing';
 import __Layout from './Layout.jsx';
 
 
@@ -144,6 +144,7 @@ export const PAGES = {
     "IntegrationsHub": IntegrationsHub,
     "KnowledgeBase": KnowledgeBase,
     "KnowledgeHub": KnowledgeHub,
+    "Landing": Landing,
     "Leaderboards": Leaderboards,
     "LearningDashboard": LearningDashboard,
     "LearningPath": LearningPath,
@@ -181,6 +182,7 @@ export const PAGES = {
     "SkillsMatrix": SkillsMatrix,
     "SocialGamification": SocialGamification,
     "SocialHub": SocialHub,
+    "Splash": Splash,
     "Surveys": Surveys,
     "TeamAnalyticsDashboard": TeamAnalyticsDashboard,
     "TeamAutomation": TeamAutomation,
@@ -196,8 +198,6 @@ export const PAGES = {
     "UserRoleAssignment": UserRoleAssignment,
     "UserSegmentation": UserSegmentation,
     "Whitepapers": Whitepapers,
-    "Splash": Splash,
-    "Landing": Landing,
 }
 
 export const pagesConfig = {
