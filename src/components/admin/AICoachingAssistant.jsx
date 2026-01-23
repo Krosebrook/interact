@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import LoadingSpinner from '../common/LoadingSpinner';
 import { toast } from 'sonner';
+import BurnoutInsightsPanel from '../wellness/BurnoutInsightsPanel';
 
 const STATUS_COLORS = {
   thriving: 'bg-green-100 text-green-800 border-green-300',
@@ -341,6 +342,9 @@ export default function AICoachingAssistant() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Burnout Risk Analysis */}
+      <BurnoutInsightsPanel teamView={true} />
 
       {/* Quick Wins & Talking Points */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

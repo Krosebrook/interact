@@ -105,6 +105,11 @@ export default function DawnHub() {
   return (
     <div className="min-h-screen bg-[#0B0F19] text-white p-3 sm:p-4 md:p-6">
       {/* Header */}
+      {/* Wellness Check Widget */}
+      <div className="max-w-6xl mx-auto mb-4 sm:mb-6">
+        <WellnessCheckWidget />
+      </div>
+
       <div className="max-w-6xl mx-auto mb-4 sm:mb-6 md:mb-8">
         <div className="flex items-center justify-between mb-4 sm:mb-6">
           <div>
