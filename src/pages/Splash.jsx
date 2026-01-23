@@ -13,7 +13,7 @@ export default function Splash() {
     if (autoRedirect) {
       const timer = setTimeout(() => {
         navigate(createPageUrl('Landing'));
-      }, 3000);
+      }, 1200);
       return () => clearTimeout(timer);
     }
   }, [navigate, autoRedirect]);

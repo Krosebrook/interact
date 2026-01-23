@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
+import { base44 } from '@/api/base44Client';
 import { motion } from 'framer-motion';
 import {
   Sparkles,
@@ -104,11 +105,12 @@ export default function Landing() {
               <a href="#pricing" className="text-slate-700 hover:text-[#FF8A3D] transition-colors">
                 Pricing
               </a>
-              <Link to={createPageUrl('Dashboard')}>
-                <Button className="bg-gradient-to-r from-[#FF8A3D] to-[#FFB86C] hover:from-[#FFB86C] hover:to-[#FF8A3D] text-white">
-                  Get Started
-                </Button>
-              </Link>
+              <Button 
+                onClick={() => base44.auth.redirectToLogin()}
+                className="bg-gradient-to-r from-[#FF8A3D] to-[#FFB86C] hover:from-[#FFB86C] hover:to-[#FF8A3D] text-white"
+              >
+                Sign In
+              </Button>
             </div>
 
             {/* Mobile Menu Toggle */}
@@ -151,11 +153,12 @@ export default function Landing() {
               >
                 Pricing
               </a>
-              <Link to={createPageUrl('Dashboard')}>
-                <Button className="w-full bg-gradient-to-r from-[#FF8A3D] to-[#FFB86C] text-white">
-                  Get Started
-                </Button>
-              </Link>
+              <Button 
+                onClick={() => base44.auth.redirectToLogin()}
+                className="w-full bg-gradient-to-r from-[#FF8A3D] to-[#FFB86C] text-white"
+              >
+                Get Started
+              </Button>
             </div>
           </motion.div>
         )}
@@ -208,15 +211,14 @@ export default function Landing() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
             >
-              <Link to={createPageUrl('Dashboard')}>
-                <Button
-                  size="lg"
-                  className="bg-gradient-to-r from-[#FF8A3D] to-[#FFB86C] hover:from-[#FFB86C] hover:to-[#FF8A3D] text-white text-lg px-8 py-6 w-full sm:w-auto shadow-lg hover:shadow-xl transition-all"
-                >
-                  Start Free Trial
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </Link>
+              <Button
+                size="lg"
+                onClick={() => base44.auth.redirectToLogin()}
+                className="bg-gradient-to-r from-[#FF8A3D] to-[#FFB86C] hover:from-[#FFB86C] hover:to-[#FF8A3D] text-white text-lg px-8 py-6 w-full sm:w-auto shadow-lg hover:shadow-xl transition-all"
+              >
+                Start Free Trial
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
               <Button
                 size="lg"
                 variant="outline"
@@ -351,15 +353,14 @@ export default function Landing() {
             <p className="text-xl text-white/80 mb-8">
               Join hundreds of companies building thriving remote teams
             </p>
-            <Link to={createPageUrl('Dashboard')}>
-              <Button
-                size="lg"
-                className="bg-white text-[#14294D] hover:bg-white/90 text-lg px-8 py-6 rounded-full shadow-2xl hover:shadow-white/20 transition-all"
-              >
-                Start Your Free Trial
-                <ChevronRight className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
+            <Button
+              size="lg"
+              onClick={() => base44.auth.redirectToLogin()}
+              className="bg-white text-[#14294D] hover:bg-white/90 text-lg px-8 py-6 rounded-full shadow-2xl hover:shadow-white/20 transition-all"
+            >
+              Start Your Free Trial
+              <ChevronRight className="ml-2 h-5 w-5" />
+            </Button>
             <p className="text-white/60 text-sm mt-4">No credit card required • 14-day trial</p>
           </motion.div>
         </div>
