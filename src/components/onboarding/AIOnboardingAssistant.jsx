@@ -32,7 +32,21 @@ const ICON_MAP = {
 
 export default function AIOnboardingAssistant({ onDismiss }) {
   const [dismissed, setDismissed] = useState(false);
+  const [user, setUser] = useState(null);
   const queryClient = useQueryClient();
+
+  useEffect(() => {
+    // Check if user is authenticated before showing
+    const checkAuth = async () => {
+      try {
+        const currentUser = await base44.auth.me();
+        setUser(currentUser);
+      } catch {
+        setUser(null);
+      }
+    };
+    checkAuth();
+  }, []);
 
   const { data, isLoading, refetch } = useQuery({
     queryKey: ['ai-onboarding'],
@@ -40,6 +54,7 @@ export default function AIOnboardingAssistant({ onDismiss }) {
       const response = await base44.functions.invoke('aiOnboardingAssistant');
       return response.data;
     },
+    enabled: !!user, // Only run query if user is authenticated
     staleTime: 5 * 60 * 1000
   });
 
@@ -66,19 +81,35 @@ export default function AIOnboardingAssistant({ onDismiss }) {
   });
 
   useEffect(() => {
-    const hasSeenOnboarding = localStorage.getItem('seen_ai_onboarding');
+    if (!user) return;
+    
+    // Check if user has seen onboarding
+    const hasSeenOnboarding = localStorage.getItem(`seen_ai_onboarding_${user.email}`);
     if (hasSeenOnboarding) {
       setDismissed(true);
+      return;
     }
-  }, []);
+    
+    // Auto-show for new users (created within last 10 minutes)
+    const userCreatedDate = new Date(user.created_date);
+    const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000);
+    const isNewUser = userCreatedDate > tenMinutesAgo;
+    
+    if (!isNewUser) {
+      setDismissed(true);
+    }
+  }, [user]);
 
   const handleDismiss = () => {
     setDismissed(true);
-    localStorage.setItem('seen_ai_onboarding', 'true');
+    if (user?.email) {
+      localStorage.setItem(`seen_ai_onboarding_${user.email}`, 'true');
+    }
     onDismiss?.();
   };
 
-  if (dismissed || isLoading || !data) return null;
+  // Don't show if user not authenticated, dismissed, loading, or no data
+  if (!user || dismissed || isLoading || !data) return null;
 
   const guidance = data.guidance;
   const userContext = data.user_context;

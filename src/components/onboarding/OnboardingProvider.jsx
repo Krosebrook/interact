@@ -5,7 +5,7 @@ import { useOnboardingSteps } from './useOnboardingSteps';
 const OnboardingContext = createContext();
 
 export function OnboardingProvider({ children }) {
-  const { user } = useUserData();
+  const { user, loading: userLoading } = useUserData(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [completedSteps, setCompletedSteps] = useState([]);
@@ -15,23 +15,32 @@ export function OnboardingProvider({ children }) {
   const onboardingSteps = useOnboardingSteps(userRole);
 
   useEffect(() => {
-    if (user && !localStorage.getItem(`onboarding_completed_${user.email}`)) {
-      // Check if this is a new user (created within last 5 minutes)
-      const userCreatedDate = new Date(user.created_date);
-      const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
-      const isNewUser = userCreatedDate > fiveMinutesAgo;
+    // Only trigger for authenticated users
+    if (userLoading || !user) return;
+    
+    // Check if onboarding already completed
+    if (localStorage.getItem(`onboarding_completed_${user.email}`)) return;
+    
+    // Check if user has previously skipped onboarding
+    const hasSkipped = localStorage.getItem(`onboarding_skipped_${user.email}`);
+    if (hasSkipped) return;
+    
+    // Check if this is a new user (created within last 10 minutes)
+    const userCreatedDate = new Date(user.created_date);
+    const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000);
+    const isNewUser = userCreatedDate > tenMinutesAgo;
+    
+    // Only auto-trigger for brand new users
+    if (isNewUser) {
+      // Delay to ensure smooth post-login transition
+      const timer = setTimeout(() => {
+        setShowOnboarding(true);
+        setTutorialMode(true);
+      }, 1500);
       
-      // Auto-start onboarding for new users or if not previously skipped
-      const hasSkipped = localStorage.getItem(`onboarding_skipped_${user.email}`);
-      if (isNewUser || !hasSkipped) {
-        // Delay to ensure smooth transition from auth
-        setTimeout(() => {
-          setShowOnboarding(true);
-          setTutorialMode(true);
-        }, 800);
-      }
+      return () => clearTimeout(timer);
     }
-  }, [user]);
+  }, [user, userLoading]);
 
   const completeStep = (stepIndex) => {
     setCompletedSteps([...completedSteps, stepIndex]);
