@@ -216,7 +216,6 @@ export default function Layout({ children, currentPageName }) {
             <div className="flex items-center gap-3">
               {user && (
                 <>
-                  <OnboardingTrigger />
                   <NotificationBell userEmail={user.email} />
                   <div className="hidden sm:block text-right">
                     <p className="text-sm font-medium text-white drop-shadow">{user.full_name}</p>
@@ -398,7 +397,6 @@ export default function Layout({ children, currentPageName }) {
             <div className="flex items-center gap-3">
               {user && (
                 <>
-                  <OnboardingTrigger />
                   <NotificationBell userEmail={user.email} />
                   <div className="hidden sm:block text-right">
                     <p className="text-sm font-medium text-white drop-shadow">{user.full_name}</p>
@@ -430,6 +428,7 @@ export default function Layout({ children, currentPageName }) {
             <OnboardingModal />
             <OnboardingProgress />
             <AIOnboardingAssistant />
+            <OnboardingTrigger />
           </>
         )}
 
