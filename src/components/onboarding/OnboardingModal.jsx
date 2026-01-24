@@ -12,7 +12,7 @@ export default function OnboardingModal() {
     onboardingSteps 
   } = useOnboarding();
 
-  if (!showOnboarding || !tutorialMode) return null;
+  if (!showOnboarding) return null;
 
   return (
     <AIGuidedOnboarding

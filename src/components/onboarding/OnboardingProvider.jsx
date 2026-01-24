@@ -16,9 +16,19 @@ export function OnboardingProvider({ children }) {
 
   useEffect(() => {
     if (user && !localStorage.getItem(`onboarding_completed_${user.email}`)) {
-      const autoStart = localStorage.getItem('onboarding_auto_start');
-      if (autoStart !== 'false') {
-        setShowOnboarding(true);
+      // Check if this is a new user (created within last 5 minutes)
+      const userCreatedDate = new Date(user.created_date);
+      const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
+      const isNewUser = userCreatedDate > fiveMinutesAgo;
+      
+      // Auto-start onboarding for new users or if not previously skipped
+      const hasSkipped = localStorage.getItem(`onboarding_skipped_${user.email}`);
+      if (isNewUser || !hasSkipped) {
+        // Delay to ensure smooth transition from auth
+        setTimeout(() => {
+          setShowOnboarding(true);
+          setTutorialMode(true);
+        }, 800);
       }
     }
   }, [user]);
@@ -48,7 +58,9 @@ export function OnboardingProvider({ children }) {
   const skipTutorial = () => {
     setTutorialMode(false);
     setShowOnboarding(false);
-    localStorage.setItem('onboarding_skipped', 'true');
+    if (user?.email) {
+      localStorage.setItem(`onboarding_skipped_${user.email}`, 'true');
+    }
   };
 
   return (
