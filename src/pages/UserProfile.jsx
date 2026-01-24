@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { useUserData } from '../components/hooks/useUserData';
@@ -7,15 +7,17 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { User, Calendar, Bell, Award, TrendingUp, Edit, Mail } from 'lucide-react';
+import { User, Calendar, Bell, Award, TrendingUp, Edit, Mail, Sparkles } from 'lucide-react';
 import { format, isPast } from 'date-fns';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import NotificationSettings from '../components/profile/NotificationSettings';
 import ProfileContributionSummary from '../components/profile/ProfileContributionSummary';
-import CommentSection from '../components/collaboration/CommentSection';
-import DirectMessaging from '../components/messaging/DirectMessaging';
+import ProfilePictureUpload from '../components/profile/ProfilePictureUpload';
+import ProfileEditForm from '../components/profile/ProfileEditForm';
+import RecentlyViewedProfiles from '../components/profile/RecentlyViewedProfiles';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { MessageSquare as MessageSquareIcon } from 'lucide-react';
+import DirectMessaging from '../components/messaging/DirectMessaging';
 import { toast } from 'sonner';
 
 export default function UserProfile() {
@@ -37,6 +39,17 @@ export default function UserProfile() {
     },
     enabled: !!viewingUserEmail
   });
+
+  // Track profile view
+  useEffect(() => {
+    if (user?.email && viewingUserEmail && user.email !== viewingUserEmail) {
+      base44.entities.ProfileView.create({
+        viewer_email: user.email,
+        viewed_profile_email: viewingUserEmail,
+        viewed_at: new Date().toISOString()
+      }).catch(() => {}); // Silent fail
+    }
+  }, [user?.email, viewingUserEmail]);
 
   // Fetch user points
   const { data: userPoints } = useQuery({
@@ -107,6 +120,10 @@ export default function UserProfile() {
     }
   });
 
+  const handleProfilePictureUpload = async (fileUrl) => {
+    await updateProfileMutation.mutateAsync({ profile_picture_url: fileUrl });
+  };
+
   if (loading) {
     return <LoadingSpinner className="min-h-screen" />;
   }
@@ -120,12 +137,20 @@ export default function UserProfile() {
       <Card className="border-2 border-purple-200">
         <CardContent className="p-6">
           <div className="flex items-start gap-6">
-            <Avatar className="h-24 w-24 border-4 border-white shadow-lg">
-              <AvatarImage src={userProfile?.avatar_url} />
-              <AvatarFallback className="text-2xl bg-gradient-purple text-white">
-                {viewingUserEmail?.charAt(0).toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
+            {canEdit ? (
+              <ProfilePictureUpload
+                currentImageUrl={userProfile?.profile_picture_url}
+                userEmail={viewingUserEmail}
+                onUploadSuccess={handleProfilePictureUpload}
+              />
+            ) : (
+              <Avatar className="h-32 w-32 border-4 border-white shadow-lg">
+                <AvatarImage src={userProfile?.profile_picture_url} />
+                <AvatarFallback className="text-4xl bg-gradient-purple text-white">
+                  {viewingUserEmail?.charAt(0).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+            )}
 
             <div className="flex-1">
               <div className="flex items-start justify-between mb-2">
@@ -137,8 +162,8 @@ export default function UserProfile() {
                     <Mail className="h-4 w-4" />
                     <span>{viewingUserEmail}</span>
                   </div>
-                  {userProfile?.job_title && (
-                    <p className="text-slate-600 mt-1">{userProfile.job_title}</p>
+                  {userProfile?.role && (
+                    <p className="text-slate-600 mt-1">{userProfile.role}</p>
                   )}
                 </div>
                 <div className="flex gap-2">
@@ -165,8 +190,54 @@ export default function UserProfile() {
                 </div>
               </div>
 
-              {userProfile?.bio && (
-                <p className="text-slate-700 mt-3">{userProfile.bio}</p>
+              {editMode ? (
+                <div className="mt-4">
+                  <ProfileEditForm
+                    profile={userProfile}
+                    onSave={(data) => updateProfileMutation.mutate(data)}
+                    onCancel={() => setEditMode(false)}
+                  />
+                </div>
+              ) : (
+                <>
+                  {userProfile?.bio && (
+                    <p className="text-slate-700 mt-3 bg-slate-50 p-3 rounded-lg border border-slate-200">
+                      {userProfile.bio}
+                    </p>
+                  )}
+
+                  {/* Skills */}
+                  {userProfile?.skills && userProfile.skills.length > 0 && (
+                    <div className="mt-4">
+                      <h3 className="text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
+                        <Sparkles className="h-4 w-4" />
+                        Skills
+                      </h3>
+                      <div className="flex flex-wrap gap-2">
+                        {userProfile.skills.map((skill, index) => (
+                          <Badge key={index} variant="outline" className="px-3 py-1">
+                            {skill.skill_name}
+                            <span className="ml-2 text-xs text-slate-500">({skill.proficiency})</span>
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Interests */}
+                  {userProfile?.interests && userProfile.interests.length > 0 && (
+                    <div className="mt-4">
+                      <h3 className="text-sm font-semibold text-slate-700 mb-2">Interests</h3>
+                      <div className="flex flex-wrap gap-2">
+                        {userProfile.interests.map((interest, index) => (
+                          <Badge key={index} variant="secondary" className="px-3 py-1">
+                            {interest}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </>
               )}
 
               {/* Stats */}
@@ -201,187 +272,202 @@ export default function UserProfile() {
         </CardContent>
       </Card>
 
-      {/* Tabs */}
-      <Tabs defaultValue="events" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="events">
-            <Calendar className="h-4 w-4 mr-2" />
-            Events
-          </TabsTrigger>
-          <TabsTrigger value="contributions">
-            <Award className="h-4 w-4 mr-2" />
-            Contributions
-          </TabsTrigger>
-          {isOwnProfile && (
-            <TabsTrigger value="settings">
-              <Bell className="h-4 w-4 mr-2" />
-              Notifications
-            </TabsTrigger>
-          )}
-        </TabsList>
-
-        {/* Events Tab */}
-        <TabsContent value="events" className="space-y-4">
-          {/* Upcoming Events */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Calendar className="h-5 w-5 text-purple-600" />
-                Upcoming Events ({upcomingEvents.length})
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {upcomingEvents.length === 0 ? (
-                <p className="text-sm text-slate-500 text-center py-8">No upcoming events</p>
-              ) : (
-                <div className="space-y-3">
-                  {upcomingEvents.map(event => {
-                    const participation = participations.find(p => p.event_id === event.id);
-                    return (
-                      <div key={event.id} className="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-200">
-                        <div className="flex-1">
-                          <h4 className="font-semibold text-slate-900">{event.title}</h4>
-                          <div className="flex items-center gap-3 text-sm text-slate-600 mt-1">
-                            <span>{format(new Date(event.scheduled_date), 'MMM d, yyyy • h:mm a')}</span>
-                            <Badge variant="outline">{event.event_format}</Badge>
-                          </div>
-                        </div>
-                        <Badge className={
-                          participation?.rsvp_status === 'yes' ? 'bg-emerald-100 text-emerald-700' :
-                          participation?.rsvp_status === 'maybe' ? 'bg-amber-100 text-amber-700' :
-                          'bg-slate-100 text-slate-700'
-                        }>
-                          {participation?.rsvp_status || 'pending'}
-                        </Badge>
-                      </div>
-                    );
-                  })}
-                </div>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Main Content */}
+        <div className="lg:col-span-2">
+          {/* Tabs */}
+          <Tabs defaultValue="events" className="space-y-4">
+            <TabsList>
+              <TabsTrigger value="events">
+                <Calendar className="h-4 w-4 mr-2" />
+                Events
+              </TabsTrigger>
+              <TabsTrigger value="contributions">
+                <Award className="h-4 w-4 mr-2" />
+                Contributions
+              </TabsTrigger>
+              {isOwnProfile && (
+                <TabsTrigger value="settings">
+                  <Bell className="h-4 w-4 mr-2" />
+                  Settings
+                </TabsTrigger>
               )}
-            </CardContent>
-          </Card>
+            </TabsList>
 
-          {/* Past Events */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <TrendingUp className="h-5 w-5 text-slate-600" />
-                Past Events ({pastEvents.length})
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {pastEvents.length === 0 ? (
-                <p className="text-sm text-slate-500 text-center py-8">No past events</p>
-              ) : (
-                <div className="space-y-3">
-                  {pastEvents.map(event => {
-                    const participation = participations.find(p => p.event_id === event.id);
-                    const attended = participation?.attendance_status === 'attended';
-                    return (
-                      <div key={event.id} className="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-200">
-                        <div className="flex-1">
-                          <h4 className="font-semibold text-slate-900">{event.title}</h4>
-                          <div className="flex items-center gap-3 text-sm text-slate-600 mt-1">
-                            <span>{format(new Date(event.scheduled_date), 'MMM d, yyyy')}</span>
-                            {participation?.feedback_rating && (
-                              <span className="flex items-center gap-1">
-                                {'★'.repeat(participation.feedback_rating)}
-                                <span className="text-slate-400">{'★'.repeat(5 - participation.feedback_rating)}</span>
+            {/* Events Tab */}
+            <TabsContent value="events" className="space-y-4">
+              {/* Upcoming Events */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Calendar className="h-5 w-5 text-purple-600" />
+                    Upcoming Events ({upcomingEvents.length})
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {upcomingEvents.length === 0 ? (
+                    <p className="text-sm text-slate-500 text-center py-8">No upcoming events</p>
+                  ) : (
+                    <div className="space-y-3">
+                      {upcomingEvents.map(event => {
+                        const participation = participations.find(p => p.event_id === event.id);
+                        return (
+                          <div key={event.id} className="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-200">
+                            <div className="flex-1">
+                              <h4 className="font-semibold text-slate-900">{event.title}</h4>
+                              <div className="flex items-center gap-3 text-sm text-slate-600 mt-1">
+                                <span>{format(new Date(event.scheduled_date), 'MMM d, yyyy • h:mm a')}</span>
+                                <Badge variant="outline">{event.event_format}</Badge>
+                              </div>
+                            </div>
+                            <Badge className={
+                              participation?.rsvp_status === 'yes' ? 'bg-emerald-100 text-emerald-700' :
+                              participation?.rsvp_status === 'maybe' ? 'bg-amber-100 text-amber-700' :
+                              'bg-slate-100 text-slate-700'
+                            }>
+                              {participation?.rsvp_status || 'pending'}
+                            </Badge>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* Past Events */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <TrendingUp className="h-5 w-5 text-slate-600" />
+                    Past Events ({pastEvents.length})
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {pastEvents.length === 0 ? (
+                    <p className="text-sm text-slate-500 text-center py-8">No past events</p>
+                  ) : (
+                    <div className="space-y-3">
+                      {pastEvents.map(event => {
+                        const participation = participations.find(p => p.event_id === event.id);
+                        const attended = participation?.attendance_status === 'attended';
+                        return (
+                          <div key={event.id} className="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-200">
+                            <div className="flex-1">
+                              <h4 className="font-semibold text-slate-900">{event.title}</h4>
+                              <div className="flex items-center gap-3 text-sm text-slate-600 mt-1">
+                                <span>{format(new Date(event.scheduled_date), 'MMM d, yyyy')}</span>
+                                {participation?.feedback_rating && (
+                                  <span className="flex items-center gap-1">
+                                    {'★'.repeat(participation.feedback_rating)}
+                                    <span className="text-slate-400">{'★'.repeat(5 - participation.feedback_rating)}</span>
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                            <Badge className={attended ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}>
+                              {attended ? 'Attended' : 'No Show'}
+                            </Badge>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* Contributions Tab */}
+            <TabsContent value="contributions" className="space-y-4">
+              <ProfileContributionSummary
+                recognitionsReceived={recognitionsReceived}
+                recognitionsGiven={recognitionsGiven}
+                participations={participations}
+              />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Recognitions Received */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Recognitions Received ({recognitionsReceived.length})</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    {recognitionsReceived.length === 0 ? (
+                      <p className="text-sm text-slate-500 text-center py-8">No recognitions yet</p>
+                    ) : (
+                      <div className="space-y-3 max-h-96 overflow-auto">
+                        {recognitionsReceived.slice(0, 10).map(rec => (
+                          <div key={rec.id} className="p-3 bg-amber-50 rounded-lg border border-amber-200">
+                            <div className="flex items-start justify-between mb-2">
+                              <Badge className="bg-amber-100 text-amber-700 capitalize">
+                                {rec.category.replace('_', ' ')}
+                              </Badge>
+                              <span className="text-xs text-slate-500">
+                                {format(new Date(rec.created_date), 'MMM d, yyyy')}
                               </span>
-                            )}
+                            </div>
+                            <p className="text-sm text-slate-700 italic line-clamp-2">"{rec.message}"</p>
+                            <p className="text-xs text-slate-500 mt-2">— {rec.sender_name}</p>
                           </div>
-                        </div>
-                        <Badge className={attended ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}>
-                          {attended ? 'Attended' : 'No Show'}
-                        </Badge>
+                        ))}
                       </div>
-                    );
-                  })}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
+                    )}
+                  </CardContent>
+                </Card>
 
-        {/* Contributions Tab */}
-        <TabsContent value="contributions" className="space-y-4">
-          {/* Skill Gap Analysis */}
-          <SkillGapAnalysis userEmail={viewingUserEmail} />
-
-          <ProfileContributionSummary
-            recognitionsReceived={recognitionsReceived}
-            recognitionsGiven={recognitionsGiven}
-            participations={participations}
-          />
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Recognitions Received */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Recognitions Received ({recognitionsReceived.length})</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {recognitionsReceived.length === 0 ? (
-                  <p className="text-sm text-slate-500 text-center py-8">No recognitions yet</p>
-                ) : (
-                  <div className="space-y-3 max-h-96 overflow-auto">
-                    {recognitionsReceived.slice(0, 10).map(rec => (
-                      <div key={rec.id} className="p-3 bg-amber-50 rounded-lg border border-amber-200">
-                        <div className="flex items-start justify-between mb-2">
-                          <Badge className="bg-amber-100 text-amber-700 capitalize">
-                            {rec.category.replace('_', ' ')}
-                          </Badge>
-                          <span className="text-xs text-slate-500">
-                            {format(new Date(rec.created_date), 'MMM d, yyyy')}
-                          </span>
-                        </div>
-                        <p className="text-sm text-slate-700 italic line-clamp-2">"{rec.message}"</p>
-                        <p className="text-xs text-slate-500 mt-2">— {rec.sender_name}</p>
+                {/* Recognitions Given */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Recognitions Given ({recognitionsGiven.length})</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    {recognitionsGiven.length === 0 ? (
+                      <p className="text-sm text-slate-500 text-center py-8">No recognitions given yet</p>
+                    ) : (
+                      <div className="space-y-3 max-h-96 overflow-auto">
+                        {recognitionsGiven.slice(0, 10).map(rec => (
+                          <div key={rec.id} className="p-3 bg-purple-50 rounded-lg border border-purple-200">
+                            <div className="flex items-start justify-between mb-2">
+                              <Badge className="bg-purple-100 text-purple-700 capitalize">
+                                {rec.category.replace('_', ' ')}
+                              </Badge>
+                              <span className="text-xs text-slate-500">
+                                {format(new Date(rec.created_date), 'MMM d, yyyy')}
+                              </span>
+                            </div>
+                            <p className="text-sm text-slate-700 italic line-clamp-2">"{rec.message}"</p>
+                            <p className="text-xs text-slate-500 mt-2">To: {rec.recipient_name}</p>
+                          </div>
+                        ))}
                       </div>
-                    ))}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+                    )}
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
 
-            {/* Recognitions Given */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Recognitions Given ({recognitionsGiven.length})</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {recognitionsGiven.length === 0 ? (
-                  <p className="text-sm text-slate-500 text-center py-8">No recognitions given yet</p>
-                ) : (
-                  <div className="space-y-3 max-h-96 overflow-auto">
-                    {recognitionsGiven.slice(0, 10).map(rec => (
-                      <div key={rec.id} className="p-3 bg-purple-50 rounded-lg border border-purple-200">
-                        <div className="flex items-start justify-between mb-2">
-                          <Badge className="bg-purple-100 text-purple-700 capitalize">
-                            {rec.category.replace('_', ' ')}
-                          </Badge>
-                          <span className="text-xs text-slate-500">
-                            {format(new Date(rec.created_date), 'MMM d, yyyy')}
-                          </span>
-                        </div>
-                        <p className="text-sm text-slate-700 italic line-clamp-2">"{rec.message}"</p>
-                        <p className="text-xs text-slate-500 mt-2">To: {rec.recipient_name}</p>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
+            {/* Settings Tab (Only for own profile) */}
+            {isOwnProfile && (
+              <TabsContent value="settings">
+                <NotificationSettings userProfile={userProfile} />
+              </TabsContent>
+            )}
+          </Tabs>
+        </div>
 
-        {/* Notifications Tab (Only for own profile) */}
-        {isOwnProfile && (
-          <TabsContent value="settings">
-            <NotificationSettings userProfile={userProfile} />
-          </TabsContent>
-        )}
-      </Tabs>
+        {/* Sidebar */}
+        <div className="space-y-6">
+          {/* Recently Viewed (only show for own profile) */}
+          {isOwnProfile && <RecentlyViewedProfiles currentUserEmail={user?.email} />}
+        </div>
+      </div>
+
+      {/* Messaging Dialog */}
+      <Dialog open={showMessaging} onOpenChange={setShowMessaging}>
+        <DialogContent className="max-w-2xl max-h-[80vh]">
+          <DirectMessaging recipientEmail={viewingUserEmail} />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
