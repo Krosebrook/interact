@@ -72,6 +72,7 @@ import ProjectPlan from './pages/ProjectPlan';
 import PublicProfile from './pages/PublicProfile';
 import RealTimeAnalytics from './pages/RealTimeAnalytics';
 import Recognition from './pages/Recognition';
+import RecognitionEngine from './pages/RecognitionEngine';
 import RecognitionFeed from './pages/RecognitionFeed';
 import Resources from './pages/Resources';
 import RewardsAdmin from './pages/RewardsAdmin';
@@ -101,7 +102,7 @@ import UserProfile from './pages/UserProfile';
 import UserRoleAssignment from './pages/UserRoleAssignment';
 import UserSegmentation from './pages/UserSegmentation';
 import Whitepapers from './pages/Whitepapers';
-import RecognitionEngine from './pages/RecognitionEngine';
+import AnalyticsDashboard from './pages/AnalyticsDashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -180,6 +181,7 @@ export const PAGES = {
     "PublicProfile": PublicProfile,
     "RealTimeAnalytics": RealTimeAnalytics,
     "Recognition": Recognition,
+    "RecognitionEngine": RecognitionEngine,
     "RecognitionFeed": RecognitionFeed,
     "Resources": Resources,
     "RewardsAdmin": RewardsAdmin,
@@ -209,7 +211,7 @@ export const PAGES = {
     "UserRoleAssignment": UserRoleAssignment,
     "UserSegmentation": UserSegmentation,
     "Whitepapers": Whitepapers,
-    "RecognitionEngine": RecognitionEngine,
+    "AnalyticsDashboard": AnalyticsDashboard,
 }
 
 export const pagesConfig = {
