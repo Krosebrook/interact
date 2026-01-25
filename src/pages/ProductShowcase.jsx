@@ -93,7 +93,7 @@ export default function ProductShowcase() {
               </Card>
             </div>
           </div>
-        </section>
+        </header>
 
         {/* Trusted By Section */}
         <section className="px-6 py-16 bg-white dark:bg-zinc-950">
