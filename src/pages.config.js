@@ -103,6 +103,8 @@ import UserRoleAssignment from './pages/UserRoleAssignment';
 import UserSegmentation from './pages/UserSegmentation';
 import Whitepapers from './pages/Whitepapers';
 import AnalyticsDashboard from './pages/AnalyticsDashboard';
+import MarketingLanding from './pages/MarketingLanding';
+import ProductShowcase from './pages/ProductShowcase';
 import __Layout from './Layout.jsx';
 
 
@@ -212,6 +214,8 @@ export const PAGES = {
     "UserSegmentation": UserSegmentation,
     "Whitepapers": Whitepapers,
     "AnalyticsDashboard": AnalyticsDashboard,
+    "MarketingLanding": MarketingLanding,
+    "ProductShowcase": ProductShowcase,
 }
 
 export const pagesConfig = {
