@@ -9,6 +9,7 @@ import AdvancedAnalytics from './pages/AdvancedAnalytics';
 import AdvancedGamificationAnalytics from './pages/AdvancedGamificationAnalytics';
 import Analytics from './pages/Analytics';
 import AuditLog from './pages/AuditLog';
+import AvatarShopHub from './pages/AvatarShopHub';
 import Blog from './pages/Blog';
 import Calendar from './pages/Calendar';
 import CaseStudies from './pages/CaseStudies';
@@ -21,6 +22,7 @@ import Dashboard from './pages/Dashboard';
 import DawnHub from './pages/DawnHub';
 import Documentation from './pages/Documentation';
 import EmployeeDirectory from './pages/EmployeeDirectory';
+import EngagementHub from './pages/EngagementHub';
 import EventAnalyticsDashboard from './pages/EventAnalyticsDashboard';
 import EventTemplates from './pages/EventTemplates';
 import EventWizard from './pages/EventWizard';
@@ -37,12 +39,14 @@ import GamificationRuleBuilder from './pages/GamificationRuleBuilder';
 import GamificationRulesAdmin from './pages/GamificationRulesAdmin';
 import GamificationSettings from './pages/GamificationSettings';
 import Home from './pages/Home';
+import HorizonHub from './pages/HorizonHub';
 import Integrations from './pages/Integrations';
 import IntegrationsAdmin from './pages/IntegrationsAdmin';
 import IntegrationsHub from './pages/IntegrationsHub';
 import KnowledgeBase from './pages/KnowledgeBase';
 import KnowledgeHub from './pages/KnowledgeHub';
 import Landing from './pages/Landing';
+import LeaderboardRankCelebration from './pages/LeaderboardRankCelebration';
 import Leaderboards from './pages/Leaderboards';
 import LearningDashboard from './pages/LearningDashboard';
 import LearningPath from './pages/LearningPath';
@@ -57,6 +61,7 @@ import OnboardingDashboard from './pages/OnboardingDashboard';
 import OnboardingHub from './pages/OnboardingHub';
 import PRDGenerator from './pages/PRDGenerator';
 import ParticipantEvent from './pages/ParticipantEvent';
+import ParticipantHub from './pages/ParticipantHub';
 import ParticipantPortal from './pages/ParticipantPortal';
 import PointStore from './pages/PointStore';
 import PowerUserHub from './pages/PowerUserHub';
@@ -96,11 +101,7 @@ import UserProfile from './pages/UserProfile';
 import UserRoleAssignment from './pages/UserRoleAssignment';
 import UserSegmentation from './pages/UserSegmentation';
 import Whitepapers from './pages/Whitepapers';
-import AvatarShopHub from './pages/AvatarShopHub';
-import ParticipantHub from './pages/ParticipantHub';
-import HorizonHub from './pages/HorizonHub';
-import EngagementHub from './pages/EngagementHub';
-import LeaderboardRankCelebration from './pages/LeaderboardRankCelebration';
+import RecognitionEngine from './pages/RecognitionEngine';
 import __Layout from './Layout.jsx';
 
 
@@ -116,6 +117,7 @@ export const PAGES = {
     "AdvancedGamificationAnalytics": AdvancedGamificationAnalytics,
     "Analytics": Analytics,
     "AuditLog": AuditLog,
+    "AvatarShopHub": AvatarShopHub,
     "Blog": Blog,
     "Calendar": Calendar,
     "CaseStudies": CaseStudies,
@@ -128,6 +130,7 @@ export const PAGES = {
     "DawnHub": DawnHub,
     "Documentation": Documentation,
     "EmployeeDirectory": EmployeeDirectory,
+    "EngagementHub": EngagementHub,
     "EventAnalyticsDashboard": EventAnalyticsDashboard,
     "EventTemplates": EventTemplates,
     "EventWizard": EventWizard,
@@ -144,12 +147,14 @@ export const PAGES = {
     "GamificationRulesAdmin": GamificationRulesAdmin,
     "GamificationSettings": GamificationSettings,
     "Home": Home,
+    "HorizonHub": HorizonHub,
     "Integrations": Integrations,
     "IntegrationsAdmin": IntegrationsAdmin,
     "IntegrationsHub": IntegrationsHub,
     "KnowledgeBase": KnowledgeBase,
     "KnowledgeHub": KnowledgeHub,
     "Landing": Landing,
+    "LeaderboardRankCelebration": LeaderboardRankCelebration,
     "Leaderboards": Leaderboards,
     "LearningDashboard": LearningDashboard,
     "LearningPath": LearningPath,
@@ -164,6 +169,7 @@ export const PAGES = {
     "OnboardingHub": OnboardingHub,
     "PRDGenerator": PRDGenerator,
     "ParticipantEvent": ParticipantEvent,
+    "ParticipantHub": ParticipantHub,
     "ParticipantPortal": ParticipantPortal,
     "PointStore": PointStore,
     "PowerUserHub": PowerUserHub,
@@ -203,11 +209,7 @@ export const PAGES = {
     "UserRoleAssignment": UserRoleAssignment,
     "UserSegmentation": UserSegmentation,
     "Whitepapers": Whitepapers,
-    "AvatarShopHub": AvatarShopHub,
-    "ParticipantHub": ParticipantHub,
-    "HorizonHub": HorizonHub,
-    "EngagementHub": EngagementHub,
-    "LeaderboardRankCelebration": LeaderboardRankCelebration,
+    "RecognitionEngine": RecognitionEngine,
 }
 
 export const pagesConfig = {
