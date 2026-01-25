@@ -99,6 +99,8 @@ import Whitepapers from './pages/Whitepapers';
 import AvatarShopHub from './pages/AvatarShopHub';
 import ParticipantHub from './pages/ParticipantHub';
 import HorizonHub from './pages/HorizonHub';
+import EngagementHub from './pages/EngagementHub';
+import LeaderboardRankCelebration from './pages/LeaderboardRankCelebration';
 import __Layout from './Layout.jsx';
 
 
@@ -204,6 +206,8 @@ export const PAGES = {
     "AvatarShopHub": AvatarShopHub,
     "ParticipantHub": ParticipantHub,
     "HorizonHub": HorizonHub,
+    "EngagementHub": EngagementHub,
+    "LeaderboardRankCelebration": LeaderboardRankCelebration,
 }
 
 export const pagesConfig = {

@@ -49,12 +49,12 @@ export default function AvatarShopHub() {
   if (loading) return <LoadingSpinner />;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-950 to-purple-950 pb-24">
+    <div className="min-h-screen bg-black pb-24">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-slate-950/80 backdrop-blur-md px-4 py-3 flex items-center justify-between border-b border-purple-500/20">
+      <header className="sticky top-0 z-50 bg-black/80 backdrop-blur-md px-4 py-3 flex items-center justify-between border-b border-white/5">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-purple-600/20 p-0.5 border border-purple-500/50">
-            <div className="w-full h-full rounded-full bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-full bg-[#ad2bee]/20 p-0.5 border border-[#ad2bee]/50 shadow-lg shadow-[#ad2bee]/30">
+            <div className="w-full h-full rounded-full bg-gradient-to-br from-[#ad2bee] to-violet-600 flex items-center justify-center">
               <ShoppingCart className="h-5 w-5 text-white" />
             </div>
           </div>
@@ -63,9 +63,9 @@ export default function AvatarShopHub() {
             <span className="text-sm font-bold">Avatar Shop Hub</span>
           </div>
         </div>
-        <div className="bg-amber-400/10 border border-amber-400/30 rounded-full px-3 py-1.5 flex items-center gap-2 shadow-lg shadow-amber-400/20">
-          <Sparkles className="h-4 w-4 text-amber-400" />
-          <span className="text-amber-400 font-bold text-sm">{userPoints?.total_points || 0} <span className="text-[10px] opacity-70">PTS</span></span>
+        <div className="bg-amber-300/10 border border-amber-300/30 rounded-full px-3 py-1.5 flex items-center gap-2 shadow-lg shadow-amber-300/20">
+          <Sparkles className="h-4 w-4 text-amber-300 fill-amber-300" />
+          <span className="text-amber-300 font-bold text-sm">{userPoints?.total_points || 0} <span className="text-[10px] opacity-70">PTS</span></span>
         </div>
       </header>
 
@@ -75,13 +75,13 @@ export default function AvatarShopHub() {
           <section>
             <div className="flex items-center justify-between mb-3 px-1">
               <h2 className="text-lg font-bold">Limited Drop</h2>
-              <span className="text-xs font-bold text-purple-400 uppercase tracking-widest">Legendary</span>
+              <span className="text-xs font-bold text-[#ad2bee] uppercase tracking-widest">Legendary</span>
             </div>
-            <div className="relative overflow-hidden rounded-xl bg-slate-900 border border-purple-500/30 shadow-lg shadow-purple-500/20">
-              <div className="aspect-video w-full bg-gradient-to-br from-purple-900 to-slate-900 flex items-center justify-center">
-                <Sparkles className="h-20 w-20 text-purple-400 opacity-50" />
+            <div className="relative overflow-hidden rounded-xl bg-zinc-900 border border-[#ad2bee]/30 shadow-lg shadow-[#ad2bee]/20">
+              <div className="aspect-video w-full bg-gradient-to-br from-[#ad2bee]/20 to-black flex items-center justify-center">
+                <Sparkles className="h-20 w-20 text-[#ad2bee] opacity-50" />
               </div>
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
               <div className="absolute bottom-0 left-0 right-0 p-4">
                 <div className="flex justify-between items-end">
                   <div>
@@ -91,7 +91,7 @@ export default function AvatarShopHub() {
                   <Button
                     onClick={() => purchaseMutation.mutate(featuredItem.id)}
                     disabled={purchaseMutation.isPending || (userPoints?.total_points || 0) < featuredItem.points_cost}
-                    className="bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-full shadow-lg"
+                    className="bg-[#ad2bee] hover:bg-[#9d27de] text-white font-bold rounded-full shadow-lg shadow-[#ad2bee]/30"
                   >
                     {featuredItem.points_cost} PTS
                   </Button>
@@ -109,8 +109,8 @@ export default function AvatarShopHub() {
               onClick={() => setSelectedCategory(cat)}
               variant={selectedCategory === cat ? "default" : "outline"}
               className={selectedCategory === cat 
-                ? "bg-purple-600 text-white font-bold whitespace-nowrap"
-                : "bg-slate-800 text-slate-400 font-bold whitespace-nowrap border-slate-700"
+                ? "bg-[#ad2bee] text-white font-bold whitespace-nowrap shadow-lg shadow-[#ad2bee]/20"
+                : "bg-zinc-900 text-slate-400 font-bold whitespace-nowrap border-zinc-800"
               }
             >
               {cat}
@@ -130,15 +130,15 @@ export default function AvatarShopHub() {
             };
 
             return (
-              <Card key={item.id} className="bg-slate-900 border-slate-800 overflow-hidden">
-                <div className="aspect-square relative bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center">
+              <Card key={item.id} className="bg-zinc-900 border-zinc-800 overflow-hidden">
+                <div className="aspect-square relative bg-gradient-to-br from-zinc-800 to-black flex items-center justify-center">
                   {item.image_url ? (
                     <img src={item.image_url} alt={item.name} className="w-full h-full object-cover" />
                   ) : (
                     <Star className="h-12 w-12 text-slate-600" />
                   )}
                   {item.rarity && item.rarity !== 'common' && (
-                    <Badge className={`absolute top-2 left-2 text-[10px] font-bold uppercase ${rarityColors[item.rarity]} bg-slate-950/80`}>
+                    <Badge className={`absolute top-2 left-2 text-[10px] font-bold uppercase ${rarityColors[item.rarity]} bg-black/80`}>
                       {item.rarity}
                     </Badge>
                   )}
@@ -151,8 +151,8 @@ export default function AvatarShopHub() {
                     disabled={!canAfford || purchaseMutation.isPending}
                     className={`w-full text-xs font-bold ${
                       canAfford 
-                        ? 'bg-purple-600 hover:bg-purple-700 text-white' 
-                        : 'bg-slate-800 text-slate-500 cursor-not-allowed'
+                        ? 'bg-[#ad2bee] hover:bg-[#9d27de] text-white shadow-lg shadow-[#ad2bee]/20' 
+                        : 'bg-zinc-800 text-slate-500 cursor-not-allowed'
                     }`}
                   >
                     {item.points_cost} PTS
