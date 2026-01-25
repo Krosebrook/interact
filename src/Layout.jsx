@@ -20,7 +20,8 @@ import {
   ChevronRight,
   Shield,
   FileText,
-  Cake
+  Cake,
+  ShoppingCart
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import NotificationBell from './components/notifications/NotificationBell';
@@ -148,13 +149,14 @@ export default function Layout({ children, currentPageName }) {
     
     // Participant navigation
     return [
+      { name: 'Participant Hub', icon: LayoutDashboard, page: 'ParticipantHub' },
+      { name: 'Horizon Hub', icon: Sparkles, page: 'HorizonHub' },
       { name: 'My Events', icon: Calendar, page: 'ParticipantPortal' },
       { name: 'Learning', icon: FileText, page: 'LearningDashboard' },
       { name: 'Teams', icon: Users, page: 'Teams' },
       { name: 'Channels', icon: Users, page: 'Channels' },
       { name: 'Recognition', icon: Gift, page: 'Recognition' },
-      { name: 'Surveys', icon: FileText, page: 'Surveys' },
-      { name: 'Milestones', icon: Cake, page: 'Milestones' },
+      { name: 'Avatar Shop', icon: ShoppingCart, page: 'AvatarShopHub' },
       { name: 'Rewards Store', icon: Gift, page: 'RewardsStore' },
       { name: 'Leaderboards', icon: BarChart3, page: 'Leaderboards' },
       { name: 'My Profile', icon: User, page: 'UserProfile' },

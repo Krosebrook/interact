@@ -96,6 +96,9 @@ import UserProfile from './pages/UserProfile';
 import UserRoleAssignment from './pages/UserRoleAssignment';
 import UserSegmentation from './pages/UserSegmentation';
 import Whitepapers from './pages/Whitepapers';
+import AvatarShopHub from './pages/AvatarShopHub';
+import ParticipantHub from './pages/ParticipantHub';
+import HorizonHub from './pages/HorizonHub';
 import __Layout from './Layout.jsx';
 
 
@@ -198,6 +201,9 @@ export const PAGES = {
     "UserRoleAssignment": UserRoleAssignment,
     "UserSegmentation": UserSegmentation,
     "Whitepapers": Whitepapers,
+    "AvatarShopHub": AvatarShopHub,
+    "ParticipantHub": ParticipantHub,
+    "HorizonHub": HorizonHub,
 }
 
 export const pagesConfig = {
