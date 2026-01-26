@@ -8,6 +8,7 @@ import AdminHub from './pages/AdminHub';
 import AdvancedAnalytics from './pages/AdvancedAnalytics';
 import AdvancedGamificationAnalytics from './pages/AdvancedGamificationAnalytics';
 import Analytics from './pages/Analytics';
+import AnalyticsDashboard from './pages/AnalyticsDashboard';
 import AuditLog from './pages/AuditLog';
 import AvatarShopHub from './pages/AvatarShopHub';
 import Blog from './pages/Blog';
@@ -54,6 +55,7 @@ import LifecycleAnalyticsDashboard from './pages/LifecycleAnalyticsDashboard';
 import LifecycleIntelligenceDashboard from './pages/LifecycleIntelligenceDashboard';
 import ManagerOnboardingDashboard from './pages/ManagerOnboardingDashboard';
 import MarketingHome from './pages/MarketingHome';
+import MarketingLanding from './pages/MarketingLanding';
 import Milestones from './pages/Milestones';
 import NewEmployeeOnboarding from './pages/NewEmployeeOnboarding';
 import NewHireOnboarding from './pages/NewHireOnboarding';
@@ -67,6 +69,7 @@ import PointStore from './pages/PointStore';
 import PowerUserHub from './pages/PowerUserHub';
 import PredictiveAnalyticsDashboard from './pages/PredictiveAnalyticsDashboard';
 import Product from './pages/Product';
+import ProductShowcase from './pages/ProductShowcase';
 import ProfileCustomization from './pages/ProfileCustomization';
 import ProjectPlan from './pages/ProjectPlan';
 import PublicProfile from './pages/PublicProfile';
@@ -102,9 +105,6 @@ import UserProfile from './pages/UserProfile';
 import UserRoleAssignment from './pages/UserRoleAssignment';
 import UserSegmentation from './pages/UserSegmentation';
 import Whitepapers from './pages/Whitepapers';
-import AnalyticsDashboard from './pages/AnalyticsDashboard';
-import MarketingLanding from './pages/MarketingLanding';
-import ProductShowcase from './pages/ProductShowcase';
 import __Layout from './Layout.jsx';
 
 
@@ -119,6 +119,7 @@ export const PAGES = {
     "AdvancedAnalytics": AdvancedAnalytics,
     "AdvancedGamificationAnalytics": AdvancedGamificationAnalytics,
     "Analytics": Analytics,
+    "AnalyticsDashboard": AnalyticsDashboard,
     "AuditLog": AuditLog,
     "AvatarShopHub": AvatarShopHub,
     "Blog": Blog,
@@ -165,6 +166,7 @@ export const PAGES = {
     "LifecycleIntelligenceDashboard": LifecycleIntelligenceDashboard,
     "ManagerOnboardingDashboard": ManagerOnboardingDashboard,
     "MarketingHome": MarketingHome,
+    "MarketingLanding": MarketingLanding,
     "Milestones": Milestones,
     "NewEmployeeOnboarding": NewEmployeeOnboarding,
     "NewHireOnboarding": NewHireOnboarding,
@@ -178,6 +180,7 @@ export const PAGES = {
     "PowerUserHub": PowerUserHub,
     "PredictiveAnalyticsDashboard": PredictiveAnalyticsDashboard,
     "Product": Product,
+    "ProductShowcase": ProductShowcase,
     "ProfileCustomization": ProfileCustomization,
     "ProjectPlan": ProjectPlan,
     "PublicProfile": PublicProfile,
@@ -213,9 +216,6 @@ export const PAGES = {
     "UserRoleAssignment": UserRoleAssignment,
     "UserSegmentation": UserSegmentation,
     "Whitepapers": Whitepapers,
-    "AnalyticsDashboard": AnalyticsDashboard,
-    "MarketingLanding": MarketingLanding,
-    "ProductShowcase": ProductShowcase,
 }
 
 export const pagesConfig = {

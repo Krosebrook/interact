@@ -7,7 +7,7 @@ import {
   TrendingUp, Calendar, Heart, Menu 
 } from 'lucide-react';
 
-const HERO_IMAGE = 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200';
+const HERO_IMAGE = 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/691e3ae3bd4916f2e05ae35e/e27ebfa44_ChatGPTImageJan14202609_44_29PM.png';
 
 export default function MarketingLanding() {
   return (
@@ -32,20 +32,21 @@ export default function MarketingLanding() {
           <div 
             className="relative min-h-[90vh] flex flex-col items-center justify-center p-6 bg-cover bg-center"
             style={{ 
-              backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.6)), url(${HERO_IMAGE})` 
+              backgroundImage: `url(${HERO_IMAGE})`,
+              backgroundPosition: 'center center'
             }}
           >
-            <div className="bg-white/10 backdrop-blur-md border border-white/20 p-8 rounded-xl max-w-lg w-full text-center space-y-6 shadow-2xl">
+            <div className="bg-white/15 backdrop-blur-xl border border-white/20 p-8 rounded-xl max-w-lg w-full text-center space-y-6 shadow-2xl">
               <div className="space-y-3">
-                <h1 className="text-white text-4xl md:text-5xl font-bold leading-tight">
+                <h1 className="text-white text-4xl md:text-5xl font-bold leading-tight drop-shadow-lg">
                   Elevate Your Workplace.
                 </h1>
-                <p className="text-white/90 text-base italic">
+                <p className="text-white/90 text-base italic drop-shadow-md">
                   Gamified engagement built on the robust Base44 backend.
                 </p>
               </div>
               <Link to={createPageUrl('Dashboard')}>
-                <Button className="bg-[#f49d25] hover:bg-[#e08d15] text-white font-bold py-4 px-8 text-lg w-full">
+                <Button className="bg-[#D97230] hover:bg-[#C46322] text-white font-bold py-4 px-8 text-lg w-full shadow-lg">
                   Get Started
                 </Button>
               </Link>
@@ -84,75 +85,75 @@ export default function MarketingLanding() {
         <section className="px-6 pb-32 max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {/* Real-time Analytics */}
-            <Card className="p-6 border-[#9c7a49]/10 hover:-translate-y-1 transition-all">
+            <Card className="p-6 border-white/20 hover:-translate-y-1 transition-all bg-white/90 backdrop-blur-xl shadow-lg">
               <div className="w-full h-48 bg-gradient-to-br from-slate-100 to-[#e2d1c3] rounded-lg mb-6 flex items-center justify-center relative overflow-hidden">
-                <BarChart3 className="h-16 w-16 text-[#f49d25]/40" />
-                <div className="absolute bottom-4 left-4 right-4 h-1 bg-[#f49d25]/20 rounded-full overflow-hidden">
-                  <div className="h-full bg-[#f49d25] w-2/3 rounded-full" />
+                <BarChart3 className="h-16 w-16 text-[#D97230]/40" />
+                <div className="absolute bottom-4 left-4 right-4 h-1 bg-[#D97230]/20 rounded-full overflow-hidden">
+                  <div className="h-full bg-[#D97230] w-2/3 rounded-full" />
                 </div>
               </div>
-              <h3 className="text-xl font-bold mb-2">Real-time Analytics</h3>
-              <p className="text-[#9c7a49]">Monitor engagement as it happens with studio-grade data visualization and predictive trends.</p>
+              <h3 className="text-xl font-bold mb-2 text-[#14294D]">Real-time Analytics</h3>
+              <p className="text-slate-700">Monitor engagement as it happens with studio-grade data visualization and predictive trends.</p>
             </Card>
 
             {/* Avatar Upgrades */}
-            <Card className="p-6 border-[#9c7a49]/10 hover:-translate-y-1 transition-all lg:row-span-2">
+            <Card className="p-6 border-white/20 hover:-translate-y-1 transition-all lg:row-span-2 bg-white/90 backdrop-blur-xl shadow-lg">
               <div className="w-full min-h-[300px] lg:min-h-full bg-gradient-to-t from-[#fff1eb] to-[#ace0f9] rounded-lg flex flex-col items-center justify-center p-8 text-center relative overflow-hidden">
-                <Sparkles className="h-20 w-20 text-[#f49d25] mb-6 drop-shadow-lg" />
-                <h3 className="text-xl font-bold mb-2 text-slate-800">Avatar Upgrades</h3>
-                <p className="text-slate-600 text-sm italic">Unlock premium aesthetic gear as your professional impact grows across the platform.</p>
-                <Award className="absolute top-10 right-10 h-10 w-10 text-[#f49d25]/30 rotate-12" />
-                <Heart className="absolute bottom-20 left-10 h-10 w-10 text-[#f49d25]/30 -rotate-12" />
+                <Sparkles className="h-20 w-20 text-[#D97230] mb-6 drop-shadow-lg" />
+                <h3 className="text-xl font-bold mb-2 text-[#14294D]">Avatar Upgrades</h3>
+                <p className="text-slate-700 text-sm italic">Unlock premium aesthetic gear as your professional impact grows across the platform.</p>
+                <Award className="absolute top-10 right-10 h-10 w-10 text-[#D97230]/30 rotate-12" />
+                <Heart className="absolute bottom-20 left-10 h-10 w-10 text-[#D97230]/30 -rotate-12" />
               </div>
             </Card>
 
             {/* Peer Recognition */}
-            <Card className="p-6 border-[#9c7a49]/10 hover:-translate-y-1 transition-all">
+            <Card className="p-6 border-white/20 hover:-translate-y-1 transition-all bg-white/90 backdrop-blur-xl shadow-lg">
               <div className="w-full h-48 bg-gradient-to-br from-orange-100 to-pink-100 rounded-lg mb-6 flex items-center justify-center">
-                <Heart className="h-16 w-16 text-[#f49d25]" />
+                <Heart className="h-16 w-16 text-[#D97230]" />
               </div>
-              <h3 className="text-xl font-bold mb-2">Peer Recognition</h3>
-              <p className="text-[#9c7a49]">Social capital powered by genuine appreciation. Make every shoutout count.</p>
+              <h3 className="text-xl font-bold mb-2 text-[#14294D]">Peer Recognition</h3>
+              <p className="text-slate-700">Social capital powered by genuine appreciation. Make every shoutout count.</p>
             </Card>
 
             {/* Pulse Surveys */}
-            <Card className="p-6 border-[#9c7a49]/10 hover:-translate-y-1 transition-all">
+            <Card className="p-6 border-white/20 hover:-translate-y-1 transition-all bg-white/90 backdrop-blur-xl shadow-lg">
               <div className="w-full h-48 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-lg mb-6 flex items-center justify-center">
                 <BarChart3 className="h-16 w-16 text-blue-500" />
               </div>
-              <h3 className="text-xl font-bold mb-2">Pulse Surveys</h3>
-              <p className="text-[#9c7a49]">Anonymous weekly check-ins that give you the sentiment pulse of your entire org.</p>
+              <h3 className="text-xl font-bold mb-2 text-[#14294D]">Pulse Surveys</h3>
+              <p className="text-slate-700">Anonymous weekly check-ins that give you the sentiment pulse of your entire org.</p>
             </Card>
 
             {/* Team Challenges */}
-            <Card className="p-6 border-[#9c7a49]/10 hover:-translate-y-1 transition-all">
+            <Card className="p-6 border-white/20 hover:-translate-y-1 transition-all bg-white/90 backdrop-blur-xl shadow-lg">
               <div className="w-full h-48 bg-gradient-to-br from-green-100 to-teal-100 rounded-lg mb-6 flex items-center justify-center">
                 <Users className="h-16 w-16 text-green-500" />
               </div>
-              <h3 className="text-xl font-bold mb-2">Team Challenges</h3>
-              <p className="text-[#9c7a49]">Cross-departmental wellness initiatives that build camaraderie at scale.</p>
+              <h3 className="text-xl font-bold mb-2 text-[#14294D]">Team Challenges</h3>
+              <p className="text-slate-700">Cross-departmental wellness initiatives that build camaraderie at scale.</p>
             </Card>
 
             {/* Milestone Celebrations */}
-            <Card className="p-6 border-[#9c7a49]/10 hover:-translate-y-1 transition-all">
+            <Card className="p-6 border-white/20 hover:-translate-y-1 transition-all bg-white/90 backdrop-blur-xl shadow-lg">
               <div className="w-full h-48 bg-gradient-to-br from-purple-100 to-pink-100 rounded-lg mb-6 flex items-center justify-center">
                 <Calendar className="h-16 w-16 text-purple-500" />
               </div>
-              <h3 className="text-xl font-bold mb-2">Milestone Celebrations</h3>
-              <p className="text-[#9c7a49]">Never miss a birthday or work anniversary. Automated celebrations that feel personal.</p>
+              <h3 className="text-xl font-bold mb-2 text-[#14294D]">Milestone Celebrations</h3>
+              <p className="text-slate-700">Never miss a birthday or work anniversary. Automated celebrations that feel personal.</p>
             </Card>
           </div>
         </section>
 
         {/* CTA Section */}
-        <section className="px-6 py-20 bg-gradient-to-br from-[#f49d25]/10 to-transparent">
+        <section className="px-6 py-20 bg-gradient-to-br from-[#D97230]/10 to-transparent">
           <div className="max-w-3xl mx-auto text-center space-y-6">
-            <h2 className="text-3xl md:text-4xl font-bold">Ready to transform your culture?</h2>
-            <p className="text-slate-600 dark:text-slate-400 text-lg">
+            <h2 className="text-3xl md:text-4xl font-bold text-[#14294D]">Ready to transform your culture?</h2>
+            <p className="text-slate-700 text-lg">
               Join forward-thinking companies using INTeract to build thriving remote cultures.
             </p>
             <Link to={createPageUrl('Dashboard')}>
-              <Button className="bg-[#f49d25] hover:bg-[#e08d15] text-white font-bold px-12 py-6 text-lg shadow-xl shadow-[#f49d25]/20">
+              <Button className="bg-[#D97230] hover:bg-[#C46322] text-white font-bold px-12 py-6 text-lg shadow-xl shadow-[#D97230]/20">
                 Start Your Journey
               </Button>
             </Link>
