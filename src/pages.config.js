@@ -109,6 +109,7 @@ import WellnessDashboard from './pages/WellnessDashboard';
 import ReportBuilder from './pages/ReportBuilder';
 import PredictiveAnalytics from './pages/PredictiveAnalytics';
 import WellnessAdmin from './pages/WellnessAdmin';
+import GamifiedOnboarding from './pages/GamifiedOnboarding';
 import __Layout from './Layout.jsx';
 
 
@@ -224,6 +225,7 @@ export const PAGES = {
     "ReportBuilder": ReportBuilder,
     "PredictiveAnalytics": PredictiveAnalytics,
     "WellnessAdmin": WellnessAdmin,
+    "GamifiedOnboarding": GamifiedOnboarding,
 }
 
 export const pagesConfig = {

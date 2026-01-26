@@ -23,7 +23,8 @@ import {
   Cake,
   ShoppingCart,
   Activity,
-  Brain
+  Brain,
+  Trophy
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import NotificationBell from './components/notifications/NotificationBell';
@@ -156,6 +157,7 @@ export default function Layout({ children, currentPageName }) {
     // Participant navigation
     return [
       { name: 'Participant Hub', icon: LayoutDashboard, page: 'ParticipantHub' },
+      { name: 'Onboarding Quest', icon: Trophy, page: 'GamifiedOnboarding' },
       { name: 'Horizon Hub', icon: Sparkles, page: 'HorizonHub' },
       { name: 'My Events', icon: Calendar, page: 'ParticipantPortal' },
       { name: 'Learning', icon: FileText, page: 'LearningDashboard' },
