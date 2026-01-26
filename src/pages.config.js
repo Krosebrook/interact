@@ -105,6 +105,10 @@ import UserProfile from './pages/UserProfile';
 import UserRoleAssignment from './pages/UserRoleAssignment';
 import UserSegmentation from './pages/UserSegmentation';
 import Whitepapers from './pages/Whitepapers';
+import WellnessDashboard from './pages/WellnessDashboard';
+import ReportBuilder from './pages/ReportBuilder';
+import PredictiveAnalytics from './pages/PredictiveAnalytics';
+import WellnessAdmin from './pages/WellnessAdmin';
 import __Layout from './Layout.jsx';
 
 
@@ -216,6 +220,10 @@ export const PAGES = {
     "UserRoleAssignment": UserRoleAssignment,
     "UserSegmentation": UserSegmentation,
     "Whitepapers": Whitepapers,
+    "WellnessDashboard": WellnessDashboard,
+    "ReportBuilder": ReportBuilder,
+    "PredictiveAnalytics": PredictiveAnalytics,
+    "WellnessAdmin": WellnessAdmin,
 }
 
 export const pagesConfig = {

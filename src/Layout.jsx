@@ -21,7 +21,9 @@ import {
   Shield,
   FileText,
   Cake,
-  ShoppingCart
+  ShoppingCart,
+  Activity,
+  Brain
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import NotificationBell from './components/notifications/NotificationBell';
@@ -122,6 +124,9 @@ export default function Layout({ children, currentPageName }) {
         { name: 'Surveys', icon: FileText, page: 'Surveys' },
         { name: 'Milestones', icon: Cake, page: 'Milestones' },
         { name: 'Analytics', icon: BarChart3, page: 'Analytics' },
+        { name: 'Wellness Admin', icon: Activity, page: 'WellnessAdmin' },
+        { name: 'Report Builder', icon: FileText, page: 'ReportBuilder' },
+        { name: 'Predictive Analytics', icon: Brain, page: 'PredictiveAnalytics' },
         { name: 'Audit Log', icon: Shield, page: 'AuditLog' },
         { name: 'Integrations', icon: Plug, page: 'IntegrationsHub' },
         { name: 'Real-Time Analytics', icon: BarChart3, page: 'RealTimeAnalytics' },
@@ -139,6 +144,7 @@ export default function Layout({ children, currentPageName }) {
         { name: 'Activities', icon: Sparkles, page: 'Activities' },
         { name: 'Calendar', icon: Calendar, page: 'Calendar' },
         { name: 'Learning', icon: FileText, page: 'LearningDashboard' },
+        { name: 'Wellness', icon: Activity, page: 'WellnessDashboard' },
         { name: 'Teams', icon: Users, page: 'Teams' },
         { name: 'Channels', icon: Users, page: 'Channels' },
         { name: 'Recognition', icon: Gift, page: 'Recognition' },
