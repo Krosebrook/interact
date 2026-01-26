@@ -8,60 +8,48 @@ Deno.serve(async (req) => {
     if (!user) {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
-
-    const { user_email, skills_to_learn } = await req.json();
-    const targetEmail = user_email || user.email;
-
-    // Get user's profile
-    const userProfile = await base44.entities.UserProfile.filter({ 
-      user_email: targetEmail 
-    });
-
-    if (!userProfile[0]) {
-      return Response.json({ error: 'User profile not found' }, { status: 404 });
+    
+    const { menteeEmail } = await req.json();
+    
+    // Fetch mentee profile
+    const [menteeProfile] = await base44.entities.UserProfile.filter({ user_email: menteeEmail });
+    
+    if (!menteeProfile) {
+      return Response.json({ error: 'Mentee profile not found' }, { status: 404 });
     }
-
-    // Get all potential mentors (users with expertise)
-    const allProfiles = await base44.asServiceRole.entities.UserProfile.filter({
-      user_email: { $ne: targetEmail }
-    });
-
+    
+    // Fetch all potential mentors (experienced users)
+    const allProfiles = await base44.asServiceRole.entities.UserProfile.filter({});
     const potentialMentors = allProfiles.filter(p => 
-      p.expertise_areas && p.expertise_areas.length > 0
+      p.user_email !== menteeEmail &&
+      (p.skills?.length || 0) >= 5 &&
+      new Date(p.start_date) < new Date(menteeProfile.start_date)
     );
+    
+    // Use AI to analyze best matches
+    const analysisPrompt = `Analyze mentor-mentee compatibility for employee onboarding:
 
-    // Use AI to match mentors
-    const matches = await base44.integrations.Core.InvokeLLM({
-      prompt: `Match this user with the best internal mentors:
+Mentee Profile:
+- Email: ${menteeEmail}
+- Role: ${menteeProfile.role || 'Not specified'}
+- Department: ${menteeProfile.department || 'Not specified'}
+- Skills: ${menteeProfile.skills?.map(s => s.skill_name).join(', ') || 'None listed'}
+- Interests: ${menteeProfile.interests?.join(', ') || 'None listed'}
+- Career aspirations: ${menteeProfile.career_aspirations || 'Not specified'}
 
-USER SEEKING MENTORSHIP:
-Email: ${targetEmail}
-Department: ${userProfile[0].department || 'N/A'}
-Job Title: ${userProfile[0].job_title || 'N/A'}
-Current Skills: ${userProfile[0].skill_levels?.map(s => `${s.skill} (${s.level})`).join(', ') || 'None'}
-Skills to Learn: ${skills_to_learn?.join(', ') || userProfile[0].skill_interests?.join(', ') || 'General growth'}
-Learning Goals: ${userProfile[0].learning_goals?.join(', ') || 'N/A'}
-
-POTENTIAL MENTORS (${potentialMentors.length} available):
-${potentialMentors.slice(0, 20).map(p => `
-- ${p.user_email}
-  Department: ${p.department || 'N/A'}
-  Job Title: ${p.job_title || 'N/A'}
-  Expertise: ${p.expertise_areas?.join(', ') || 'None'}
-  Skills: ${p.skill_levels?.map(s => `${s.skill} (${s.level})`).join(', ') || 'None'}
+Potential Mentors (${potentialMentors.length}):
+${potentialMentors.slice(0, 10).map((p, i) => `
+${i + 1}. ${p.user_email}
+   Role: ${p.role || 'Unknown'}
+   Department: ${p.department || 'Unknown'}
+   Skills: ${p.skills?.map(s => s.skill_name).join(', ') || 'None'}
+   Experience: ${p.career_history?.length || 0} positions
 `).join('\n')}
 
-Find the top 5 best mentor matches considering:
-1. Expertise alignment with learning goals
-2. Department/role relevance
-3. Skill level compatibility (mentor should be advanced in areas user wants to learn)
-
-For each match provide:
-- mentor_email
-- match_score (0-100)
-- matching_skills (array of overlapping skills)
-- mentorship_areas (what they can teach)
-- reasoning (why this is a good match)`,
+Return the top 3 mentor matches with scores and reasoning.`;
+    
+    const matches = await base44.integrations.Core.InvokeLLM({
+      prompt: analysisPrompt,
       response_json_schema: {
         type: "object",
         properties: {
@@ -72,24 +60,47 @@ For each match provide:
               properties: {
                 mentor_email: { type: "string" },
                 match_score: { type: "number" },
-                matching_skills: { type: "array", items: { type: "string" } },
-                mentorship_areas: { type: "array", items: { type: "string" } },
-                reasoning: { type: "string" }
+                skill_overlap_score: { type: "number" },
+                department_alignment: { type: "boolean" },
+                reasoning: { type: "string" },
+                suggested_goals: {
+                  type: "array",
+                  items: { type: "string" }
+                }
               }
             }
           }
         }
       }
     });
-
+    
+    // Save top matches to database
+    for (const match of matches.matches.slice(0, 3)) {
+      const existing = await base44.entities.MentorMatch.filter({
+        mentor_email: match.mentor_email,
+        mentee_email: menteeEmail
+      });
+      
+      if (existing.length === 0) {
+        await base44.asServiceRole.entities.MentorMatch.create({
+          mentor_email: match.mentor_email,
+          mentee_email: menteeEmail,
+          match_score: match.match_score,
+          matching_criteria: {
+            skill_overlap: match.skill_overlap_score,
+            department_alignment: match.department_alignment
+          },
+          status: 'suggested',
+          goals: match.suggested_goals?.map(g => ({ goal: g, progress: 0 })) || []
+        });
+      }
+    }
+    
     return Response.json({
       success: true,
-      user_email: targetEmail,
       matches: matches.matches
     });
-
   } catch (error) {
-    console.error('Mentor matching error:', error);
     return Response.json({ error: error.message }, { status: 500 });
   }
 });

@@ -2,6 +2,7 @@ import { useUserData } from '@/components/hooks/useUserData';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import GamifiedOnboardingQuest from '../components/onboarding/GamifiedOnboardingQuest';
 import AIOnboardingBuddy from '../components/ai/AIOnboardingBuddy';
+import ProactiveOnboardingTips from '../components/ai/ProactiveOnboardingTips';
 import { Sparkles, Trophy } from 'lucide-react';
 
 export default function GamifiedOnboarding() {
@@ -29,6 +30,8 @@ export default function GamifiedOnboarding() {
           <GamifiedOnboardingQuest userEmail={user.email} />
           <AIOnboardingBuddy userEmail={user.email} userName={user.full_name} />
         </div>
+        
+        <ProactiveOnboardingTips userEmail={user.email} />
         
         <div className="mt-8 bg-white/50 backdrop-blur-sm rounded-xl p-6 border border-slate-200">
           <div className="flex items-start gap-4">

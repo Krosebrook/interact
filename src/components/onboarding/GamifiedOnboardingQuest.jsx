@@ -8,6 +8,7 @@ import { Progress } from '@/components/ui/progress';
 import { CheckCircle, Circle, Award, Sparkles, ChevronRight } from 'lucide-react';
 import { toast } from 'sonner';
 import confetti from 'canvas-confetti';
+import SwipeableListItem from '../mobile/SwipeableListItem';
 
 const ONBOARDING_TASKS = [
   {
@@ -208,28 +209,34 @@ export default function GamifiedOnboardingQuest({ userEmail }) {
           }
           
           return (
-            <div
+            <SwipeableListItem
               key={task.id}
-              className={`flex items-center gap-3 p-3 rounded-lg transition-all ${
-                isComplete ? 'bg-green-50 border border-green-200' : 'bg-white border border-slate-200'
-              }`}
+              showComplete={!isComplete}
+              showDelete={false}
+              onComplete={() => toast.info('Complete this task to earn points!')}
             >
-              <div className="text-2xl">{task.icon}</div>
-              <div className="flex-1">
-                <p className="font-semibold text-sm">{task.title}</p>
-                <p className="text-xs text-slate-500">{task.description}</p>
+              <div
+                className={`flex items-center gap-3 p-3 rounded-lg transition-all ${
+                  isComplete ? 'bg-green-50 border border-green-200' : 'bg-white border border-slate-200'
+                }`}
+              >
+                <div className="text-2xl">{task.icon}</div>
+                <div className="flex-1">
+                  <p className="font-semibold text-sm">{task.title}</p>
+                  <p className="text-xs text-slate-500">{task.description}</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Badge variant="outline" className="text-xs">
+                    +{task.points}
+                  </Badge>
+                  {isComplete ? (
+                    <CheckCircle className="h-5 w-5 text-green-600" />
+                  ) : (
+                    <Circle className="h-5 w-5 text-slate-300" />
+                  )}
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                <Badge variant="outline" className="text-xs">
-                  +{task.points}
-                </Badge>
-                {isComplete ? (
-                  <CheckCircle className="h-5 w-5 text-green-600" />
-                ) : (
-                  <Circle className="h-5 w-5 text-slate-300" />
-                )}
-              </div>
-            </div>
+            </SwipeableListItem>
           );
         })}
         

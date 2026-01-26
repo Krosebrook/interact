@@ -595,6 +595,30 @@ table,
   scrollbar-width: none;
 }
 
+/* Mobile touch enhancements */
+@media (max-width: 768px) {
+  /* Increase touch targets */
+  button, a, [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Safe area for notched devices */
+  .safe-area-inset-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  /* Prevent pull-to-refresh on specific elements */
+  .no-pull-refresh {
+    overscroll-behavior-y: contain;
+  }
+  
+  /* Smooth momentum scrolling */
+  * {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
 /* ===== ANIMATION UTILITIES ===== */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }

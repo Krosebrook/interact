@@ -39,6 +39,8 @@ import KeyboardShortcuts from './components/core/KeyboardShortcuts';
 import { useSessionTimeout } from './components/hooks/useSessionTimeout';
 import HelpButton from './components/onboarding/HelpButton';
 import FeedbackButton from './components/feedback/FeedbackButton';
+import MobileBottomNav from './components/mobile/MobileBottomNav';
+import ProactiveOnboardingTips from './components/ai/ProactiveOnboardingTips';
 
 const HEADER_IMAGE = 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/691e3ae3bd4916f2e05ae35e/1b2b117bd_ChatGPTImageNov25202503_31_49PM.png';
 
@@ -134,6 +136,7 @@ export default function Layout({ children, currentPageName }) {
         { name: 'Project Plan', icon: LayoutDashboard, page: 'ProjectPlan' },
         { name: 'Documentation', icon: LayoutDashboard, page: 'Documentation' },
         { name: 'Onboarding Hub', icon: User, page: 'OnboardingDashboard' },
+        { name: 'Mentorship', icon: Users, page: 'MentorshipHub' },
         { name: 'Settings', icon: SettingsIcon, page: 'Settings' },
       ];
     }
@@ -451,8 +454,13 @@ export default function Layout({ children, currentPageName }) {
         {/* Feedback Button */}
         <FeedbackButton currentPageName={currentPageName} />
 
+        {/* Proactive AI Tips for New Users */}
+        {user && (
+          <ProactiveOnboardingTips userEmail={user.email} />
+        )}
+
         {/* Main Content */}
-        <main id="main-content" className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <main id="main-content" className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-20 md:pb-8">
         <ErrorBoundary>
           {children}
         </ErrorBoundary>
@@ -546,21 +554,24 @@ export default function Layout({ children, currentPageName }) {
         </nav>
 
         {/* Sidebar Footer */}
-        <div className="p-4 border-t border-slate-200">
-          <Button
-            variant="outline"
-            className="w-full justify-start gap-2 text-slate-600"
-            onClick={() => {
-              handleLogout();
-              setSidebarOpen(false);
-            }}
-          >
-            <LogOut className="h-4 w-4" />
-            Sign Out
-          </Button>
+          <div className="p-4 border-t border-slate-200">
+            <Button
+              variant="outline"
+              className="w-full justify-start gap-2 text-slate-600"
+              onClick={() => {
+                handleLogout();
+                setSidebarOpen(false);
+              }}
+            >
+              <LogOut className="h-4 w-4" />
+              Sign Out
+            </Button>
+          </div>
+        </aside>
+
+        {/* Mobile Bottom Navigation */}
+        <MobileBottomNav currentPageName={currentPageName} />
         </div>
-      </aside>
-      </div>
-    </OnboardingProvider>
-  );
-}
+        </OnboardingProvider>
+        );
+        }

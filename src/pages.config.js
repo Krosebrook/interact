@@ -110,6 +110,7 @@ import ReportBuilder from './pages/ReportBuilder';
 import PredictiveAnalytics from './pages/PredictiveAnalytics';
 import WellnessAdmin from './pages/WellnessAdmin';
 import GamifiedOnboarding from './pages/GamifiedOnboarding';
+import MentorshipHub from './pages/MentorshipHub';
 import __Layout from './Layout.jsx';
 
 
@@ -226,6 +227,7 @@ export const PAGES = {
     "PredictiveAnalytics": PredictiveAnalytics,
     "WellnessAdmin": WellnessAdmin,
     "GamifiedOnboarding": GamifiedOnboarding,
+    "MentorshipHub": MentorshipHub,
 }
 
 export const pagesConfig = {
