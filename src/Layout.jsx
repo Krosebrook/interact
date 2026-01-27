@@ -128,6 +128,7 @@ export default function Layout({ children, currentPageName }) {
         { name: 'Milestones', icon: Cake, page: 'Milestones' },
         { name: 'Analytics', icon: BarChart3, page: 'Analytics' },
         { name: 'Wellness Admin', icon: Activity, page: 'WellnessAdmin' },
+        { name: 'Wellness Analytics', icon: BarChart3, page: 'WellnessAnalyticsReport' },
         { name: 'Report Builder', icon: FileText, page: 'ReportBuilder' },
         { name: 'Predictive Analytics', icon: Brain, page: 'PredictiveAnalytics' },
         { name: 'Audit Log', icon: Shield, page: 'AuditLog' },

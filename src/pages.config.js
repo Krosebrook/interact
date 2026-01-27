@@ -39,6 +39,7 @@ import GamificationDashboard from './pages/GamificationDashboard';
 import GamificationRuleBuilder from './pages/GamificationRuleBuilder';
 import GamificationRulesAdmin from './pages/GamificationRulesAdmin';
 import GamificationSettings from './pages/GamificationSettings';
+import GamifiedOnboarding from './pages/GamifiedOnboarding';
 import Home from './pages/Home';
 import HorizonHub from './pages/HorizonHub';
 import Integrations from './pages/Integrations';
@@ -56,6 +57,7 @@ import LifecycleIntelligenceDashboard from './pages/LifecycleIntelligenceDashboa
 import ManagerOnboardingDashboard from './pages/ManagerOnboardingDashboard';
 import MarketingHome from './pages/MarketingHome';
 import MarketingLanding from './pages/MarketingLanding';
+import MentorshipHub from './pages/MentorshipHub';
 import Milestones from './pages/Milestones';
 import NewEmployeeOnboarding from './pages/NewEmployeeOnboarding';
 import NewHireOnboarding from './pages/NewHireOnboarding';
@@ -67,6 +69,7 @@ import ParticipantHub from './pages/ParticipantHub';
 import ParticipantPortal from './pages/ParticipantPortal';
 import PointStore from './pages/PointStore';
 import PowerUserHub from './pages/PowerUserHub';
+import PredictiveAnalytics from './pages/PredictiveAnalytics';
 import PredictiveAnalyticsDashboard from './pages/PredictiveAnalyticsDashboard';
 import Product from './pages/Product';
 import ProductShowcase from './pages/ProductShowcase';
@@ -77,6 +80,7 @@ import RealTimeAnalytics from './pages/RealTimeAnalytics';
 import Recognition from './pages/Recognition';
 import RecognitionEngine from './pages/RecognitionEngine';
 import RecognitionFeed from './pages/RecognitionFeed';
+import ReportBuilder from './pages/ReportBuilder';
 import Resources from './pages/Resources';
 import RewardsAdmin from './pages/RewardsAdmin';
 import RewardsStore from './pages/RewardsStore';
@@ -104,13 +108,10 @@ import Teams from './pages/Teams';
 import UserProfile from './pages/UserProfile';
 import UserRoleAssignment from './pages/UserRoleAssignment';
 import UserSegmentation from './pages/UserSegmentation';
-import Whitepapers from './pages/Whitepapers';
-import WellnessDashboard from './pages/WellnessDashboard';
-import ReportBuilder from './pages/ReportBuilder';
-import PredictiveAnalytics from './pages/PredictiveAnalytics';
 import WellnessAdmin from './pages/WellnessAdmin';
-import GamifiedOnboarding from './pages/GamifiedOnboarding';
-import MentorshipHub from './pages/MentorshipHub';
+import WellnessDashboard from './pages/WellnessDashboard';
+import Whitepapers from './pages/Whitepapers';
+import WellnessAnalyticsReport from './pages/WellnessAnalyticsReport';
 import __Layout from './Layout.jsx';
 
 
@@ -156,6 +157,7 @@ export const PAGES = {
     "GamificationRuleBuilder": GamificationRuleBuilder,
     "GamificationRulesAdmin": GamificationRulesAdmin,
     "GamificationSettings": GamificationSettings,
+    "GamifiedOnboarding": GamifiedOnboarding,
     "Home": Home,
     "HorizonHub": HorizonHub,
     "Integrations": Integrations,
@@ -173,6 +175,7 @@ export const PAGES = {
     "ManagerOnboardingDashboard": ManagerOnboardingDashboard,
     "MarketingHome": MarketingHome,
     "MarketingLanding": MarketingLanding,
+    "MentorshipHub": MentorshipHub,
     "Milestones": Milestones,
     "NewEmployeeOnboarding": NewEmployeeOnboarding,
     "NewHireOnboarding": NewHireOnboarding,
@@ -184,6 +187,7 @@ export const PAGES = {
     "ParticipantPortal": ParticipantPortal,
     "PointStore": PointStore,
     "PowerUserHub": PowerUserHub,
+    "PredictiveAnalytics": PredictiveAnalytics,
     "PredictiveAnalyticsDashboard": PredictiveAnalyticsDashboard,
     "Product": Product,
     "ProductShowcase": ProductShowcase,
@@ -194,6 +198,7 @@ export const PAGES = {
     "Recognition": Recognition,
     "RecognitionEngine": RecognitionEngine,
     "RecognitionFeed": RecognitionFeed,
+    "ReportBuilder": ReportBuilder,
     "Resources": Resources,
     "RewardsAdmin": RewardsAdmin,
     "RewardsStore": RewardsStore,
@@ -221,13 +226,10 @@ export const PAGES = {
     "UserProfile": UserProfile,
     "UserRoleAssignment": UserRoleAssignment,
     "UserSegmentation": UserSegmentation,
-    "Whitepapers": Whitepapers,
-    "WellnessDashboard": WellnessDashboard,
-    "ReportBuilder": ReportBuilder,
-    "PredictiveAnalytics": PredictiveAnalytics,
     "WellnessAdmin": WellnessAdmin,
-    "GamifiedOnboarding": GamifiedOnboarding,
-    "MentorshipHub": MentorshipHub,
+    "WellnessDashboard": WellnessDashboard,
+    "Whitepapers": Whitepapers,
+    "WellnessAnalyticsReport": WellnessAnalyticsReport,
 }
 
 export const pagesConfig = {
