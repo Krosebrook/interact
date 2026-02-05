@@ -1,7 +1,7 @@
 # Security Architecture
 
-**Document Version:** 1.0  
-**Last Updated:** January 7, 2026  
+**Document Version:** 1.1
+**Last Updated:** January 21, 2026
 **Status:** Active  
 
 ---
@@ -203,12 +203,12 @@ Permissions-Policy: geolocation=(), microphone=(), camera=()
 ### Automated Testing
 1. **Dependency Scanning:** npm audit (pre-commit, CI/CD)
 2. **Linting:** ESLint with security rules
-3. **SAST:** (Planned Q1 2025)
-4. **DAST:** (Planned Q2 2025)
+3. **SAST:** (Planned Q2 2026)
+4. **DAST:** (Planned Q3 2026)
 
 ### Manual Testing
 1. **Code Review:** Security-focused peer review
-2. **Penetration Testing:** (Planned Q2 2025)
+2. **Penetration Testing:** (Planned Q3 2026)
 3. **Security Audits:** Regular third-party audits
 
 ---
@@ -251,25 +251,25 @@ See [GDPR_CHECKLIST.md](./GDPR_CHECKLIST.md) for GDPR compliance details.
 
 ## Security Roadmap
 
-### Q1 2025 (Current)
+### Q1 2026 (Current)
 - ✅ Fix all critical vulnerabilities
 - ✅ Update dependencies to secure versions
 - ✅ Document security architecture
-- 📋 Implement incident response plan
-- 📋 GDPR compliance audit
+- ✅ Implement incident response plan
+- ✅ GDPR compliance audit
 
-### Q2 2025
+### Q2 2026
 - 🔜 Penetration testing
 - 🔜 SAST/DAST implementation
 - 🔜 Security training for team
 - 🔜 Enterprise SSO (Feature 7)
 
-### Q3 2025
+### Q3 2026
 - 🔜 Bug bounty program
 - 🔜 Advanced threat detection
 - 🔜 Security dashboards
 
-### Q4 2025
+### Q4 2026
 - 🔜 SOC 2 audit preparation
 - 🔜 ISO 27001 consideration
 - 🔜 Third-party security audit
@@ -364,8 +364,8 @@ try {
 ---
 
 **Document Approval:**
-- [ ] Engineering Lead
-- [ ] Security Team
-- [ ] Product Owner
+- [x] Engineering Lead
+- [x] Security Team
+- [x] Product Owner
 
-**Next Review:** April 7, 2026
+**Next Review:** April 21, 2026

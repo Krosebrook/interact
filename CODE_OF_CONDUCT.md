@@ -60,9 +60,9 @@ This Code of Conduct applies within all community spaces, and also applies when 
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the community leaders responsible for enforcement at:
 
-- **Email:** conduct@interact.app (to be established)
-- **GitHub:** Use the "Report" feature on issues/PRs
-- **Private:** Direct message to repository maintainers
+- **Email:** conduct@krosebrook.com
+- **GitHub:** Use the "Report" feature on issues/PRs, or create a private issue
+- **Private:** Direct message to @Krosebrook (repository maintainer)
 
 All complaints will be reviewed and investigated promptly and fairly.
 
@@ -125,5 +125,5 @@ If you have questions about this Code of Conduct, please reach out to the projec
 
 ---
 
-**Document Owner:** Community Team  
-**Last Updated:** January 14, 2026
+**Document Owner:** Community Team
+**Last Updated:** January 21, 2026
