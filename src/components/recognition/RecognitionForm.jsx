@@ -69,25 +69,15 @@ export default function RecognitionForm({ currentUser, onSuccess }) {
 
     setAiLoading(true);
     try {
-      const categoryLabel = CATEGORIES.find(c => c.value === category)?.label || category;
-      const result = await base44.integrations.Core.InvokeLLM({
-        prompt: `Generate 3 heartfelt, professional peer recognition messages for an employee named "${recipientName}" in the category "${categoryLabel}". 
-        
-Each message should:
-- Be 2-3 sentences
-- Sound genuine and personal
-- Mention specific positive traits
-- Be suitable for a workplace setting
-
-Return as JSON: { "suggestions": ["message1", "message2", "message3"] }`,
-        response_json_schema: {
-          type: "object",
-          properties: {
-            suggestions: { type: "array", items: { type: "string" } }
-          }
-        }
+      const response = await base44.functions.invoke('generateRecognitionSuggestions', {
+        recipientEmail,
+        context: message || '',
+        valueType: CATEGORIES.find(c => c.value === category)?.label
       });
-      setAiSuggestions(result.suggestions || []);
+      
+      if (response.data.success) {
+        setAiSuggestions(response.data.suggestions.map(s => s.message));
+      }
     } catch (error) {
       toast.error('Failed to generate suggestions');
     } finally {

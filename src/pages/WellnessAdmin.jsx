@@ -11,12 +11,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import WellnessInsightsPanel from '@/components/wellness/WellnessInsightsPanel';
-import { Plus, Activity, Droplet, Brain, Moon, Trophy } from 'lucide-react';
+import { Plus, Activity, Droplet, Brain, Moon, Trophy, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
+import { Badge } from '@/components/ui/badge';
 
 export default function WellnessAdmin() {
   const { user, loading: userLoading, isAdmin } = useUserData();
   const [showDialog, setShowDialog] = useState(false);
+  const [generatingIdeas, setGeneratingIdeas] = useState(false);
+  const [aiIdeas, setAiIdeas] = useState([]);
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -83,6 +86,40 @@ export default function WellnessAdmin() {
     });
   };
   
+  const generateChallengeIdeas = async () => {
+    setGeneratingIdeas(true);
+    try {
+      const response = await base44.functions.invoke('generateWellnessChallengeIdeas', {
+        theme: formData.challenge_type,
+        duration: '30 days',
+        teamBased: formData.team_based
+      });
+      
+      if (response.data.success) {
+        setAiIdeas(response.data.challenges);
+        toast.success('AI generated challenge ideas!');
+      }
+    } catch (error) {
+      toast.error('Failed to generate ideas');
+    } finally {
+      setGeneratingIdeas(false);
+    }
+  };
+  
+  const selectIdea = (idea) => {
+    setFormData({
+      ...formData,
+      title: idea.title,
+      description: idea.description,
+      challenge_type: idea.challenge_type,
+      goal_value: idea.goal_value,
+      goal_unit: idea.goal_unit,
+      points_reward: idea.points_reward
+    });
+    setAiIdeas([]);
+    toast.success('Challenge idea applied!');
+  };
+  
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -97,10 +134,54 @@ export default function WellnessAdmin() {
               Create Challenge
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-2xl">
+          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>Create Wellness Challenge</DialogTitle>
+              <div className="flex items-center justify-between">
+                <DialogTitle>Create Wellness Challenge</DialogTitle>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={generateChallengeIdeas}
+                  disabled={generatingIdeas}
+                  className="text-purple-600"
+                >
+                  <Sparkles className="h-4 w-4 mr-1" />
+                  {generatingIdeas ? 'Generating...' : 'AI Ideas'}
+                </Button>
+              </div>
             </DialogHeader>
+            
+            {aiIdeas.length > 0 && (
+              <div className="bg-purple-50 rounded-lg p-4 space-y-3 border border-purple-200">
+                <p className="text-sm font-semibold text-purple-900 flex items-center gap-2">
+                  <Sparkles className="h-4 w-4" />
+                  AI-Generated Challenge Ideas
+                </p>
+                {aiIdeas.map((idea, idx) => (
+                  <div
+                    key={idx}
+                    className="bg-white rounded-lg p-3 space-y-2 cursor-pointer hover:border-purple-300 border border-purple-100"
+                    onClick={() => selectIdea(idea)}
+                  >
+                    <p className="font-semibold text-sm">{idea.title}</p>
+                    <p className="text-xs text-slate-600">{idea.description}</p>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <Badge variant="outline" className="text-xs">
+                        {idea.goal_value} {idea.goal_unit}
+                      </Badge>
+                      <Badge className="text-xs bg-int-orange">
+                        {idea.points_reward} points
+                      </Badge>
+                    </div>
+                    {idea.promotional_copy && (
+                      <p className="text-xs italic text-purple-700">"{idea.promotional_copy}"</p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+            
             <div className="space-y-4">
               <div>
                 <Label>Challenge Title</Label>

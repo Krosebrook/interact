@@ -27,7 +27,8 @@ import EventTypeConditionalFields, { EVENT_TYPES } from './EventTypeConditionalF
 import TemplateSelector from './TemplateSelector';
 import AIEventPlanningAssistant from '../ai/AIEventPlanningAssistant';
 import { useState } from 'react';
-import { Layout, Sparkles } from 'lucide-react';
+import { base44 } from '@/api/base44Client';
+import { Layout, Sparkles, Wand2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function ScheduleEventDialog({
@@ -44,6 +45,7 @@ export default function ScheduleEventDialog({
 }) {
   const [templateSelectorOpen, setTemplateSelectorOpen] = useState(false);
   const [showAIAssistant, setShowAIAssistant] = useState(false);
+  const [generatingDescription, setGeneratingDescription] = useState(false);
   
   const updateField = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -111,6 +113,33 @@ export default function ScheduleEventDialog({
   const handleSubmit = (e) => {
     e.preventDefault();
     onSubmit(e);
+  };
+  
+  const generateDescription = async () => {
+    if (!formData.title) {
+      toast.error('Enter an event title first');
+      return;
+    }
+    
+    setGeneratingDescription(true);
+    try {
+      const activity = activities.find(a => a.id === formData.activity_id);
+      const response = await base44.functions.invoke('generateEventDescription', {
+        title: formData.title,
+        keywords: '',
+        activityType: activity?.type || formData.event_type,
+        duration: formData.duration_minutes
+      });
+      
+      if (response.data.success) {
+        updateField('custom_instructions', response.data.description);
+        toast.success('AI generated description!');
+      }
+    } catch (error) {
+      toast.error('Failed to generate description');
+    } finally {
+      setGeneratingDescription(false);
+    }
   };
 
   return (
@@ -292,12 +321,27 @@ export default function ScheduleEventDialog({
             onChange={setRecurrenceSettings}
           />
 
-          <RichTextEventEditor
-            label="Event Details & Instructions"
-            value={formData.custom_instructions}
-            onChange={(value) => updateField('custom_instructions', value)}
-            placeholder="Add event details, instructions, what to bring, agenda, etc..."
-          />
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <Label>Event Details & Instructions</Label>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={generateDescription}
+                disabled={generatingDescription || !formData.title}
+                className="text-purple-600 hover:text-purple-700"
+              >
+                <Wand2 className="h-4 w-4 mr-1" />
+                {generatingDescription ? 'Generating...' : 'AI Generate'}
+              </Button>
+            </div>
+            <RichTextEventEditor
+              value={formData.custom_instructions}
+              onChange={(value) => updateField('custom_instructions', value)}
+              placeholder="Add event details, instructions, what to bring, agenda, etc..."
+            />
+          </div>
 
           <div className="flex justify-end gap-3 pt-4">
             <Button 
