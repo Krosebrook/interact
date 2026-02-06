@@ -100,6 +100,7 @@ export default function Layout({ children, currentPageName }) {
         return [
           { name: 'Dashboard', icon: LayoutDashboard, page: 'Dashboard' },
           { name: 'Admin Panel', icon: Shield, page: 'AdminHub' },
+          { name: 'Admin Analytics', icon: BarChart3, page: 'AdminAnalyticsDashboard' },
           { name: 'Facilitator', icon: Users, page: 'FacilitatorDashboard' },
           { name: 'AI Coaching', icon: Sparkles, page: 'AIEnhancedCoaching' },
         { name: 'Activities', icon: Sparkles, page: 'Activities' },

@@ -56,6 +56,7 @@ import Activities from './pages/Activities';
 import AdminHub from './pages/AdminHub';
 import AdvancedAnalytics from './pages/AdvancedAnalytics';
 import AdvancedGamificationAnalytics from './pages/AdvancedGamificationAnalytics';
+import AdvancedReportingSuite from './pages/AdvancedReportingSuite';
 import Analytics from './pages/Analytics';
 import AnalyticsDashboard from './pages/AnalyticsDashboard';
 import AuditLog from './pages/AuditLog';
@@ -161,7 +162,7 @@ import WellnessAdmin from './pages/WellnessAdmin';
 import WellnessAnalyticsReport from './pages/WellnessAnalyticsReport';
 import WellnessDashboard from './pages/WellnessDashboard';
 import Whitepapers from './pages/Whitepapers';
-import AdvancedReportingSuite from './pages/AdvancedReportingSuite';
+import AdminAnalyticsDashboard from './pages/AdminAnalyticsDashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -175,6 +176,7 @@ export const PAGES = {
     "AdminHub": AdminHub,
     "AdvancedAnalytics": AdvancedAnalytics,
     "AdvancedGamificationAnalytics": AdvancedGamificationAnalytics,
+    "AdvancedReportingSuite": AdvancedReportingSuite,
     "Analytics": Analytics,
     "AnalyticsDashboard": AnalyticsDashboard,
     "AuditLog": AuditLog,
@@ -280,7 +282,7 @@ export const PAGES = {
     "WellnessAnalyticsReport": WellnessAnalyticsReport,
     "WellnessDashboard": WellnessDashboard,
     "Whitepapers": Whitepapers,
-    "AdvancedReportingSuite": AdvancedReportingSuite,
+    "AdminAnalyticsDashboard": AdminAnalyticsDashboard,
 }
 
 export const pagesConfig = {
