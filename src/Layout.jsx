@@ -131,6 +131,7 @@ export default function Layout({ children, currentPageName }) {
         { name: 'Wellness Analytics', icon: BarChart3, page: 'WellnessAnalyticsReport' },
         { name: 'Report Builder', icon: FileText, page: 'ReportBuilder' },
         { name: 'Predictive Analytics', icon: Brain, page: 'PredictiveAnalytics' },
+        { name: 'Advanced Reports', icon: FileText, page: 'AdvancedReportingSuite' },
         { name: 'Audit Log', icon: Shield, page: 'AuditLog' },
         { name: 'Integrations', icon: Plug, page: 'IntegrationsHub' },
         { name: 'Real-Time Analytics', icon: BarChart3, page: 'RealTimeAnalytics' },

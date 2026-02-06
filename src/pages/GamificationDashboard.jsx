@@ -48,6 +48,8 @@ import RewardsRedemptionSection from '../components/gamification/RewardsRedempti
 import TierStatusDisplay from '../components/gamification/TierStatusDisplay';
 import PersonalizedGoalsSuggestions from '../components/gamification/PersonalizedGoalsSuggestions';
 import DynamicDifficultyIndicator from '../components/gamification/DynamicDifficultyIndicator';
+import UserProgressReportCard from '../components/reports/UserProgressReportCard';
+import CustomizableDashboard from '../components/analytics/CustomizableDashboard';
 
 const CHART_COLORS = ['#D97230', '#14294D', '#8B5CF6', '#10B981', '#F59E0B', '#EC4899'];
 
@@ -591,7 +593,9 @@ export default function GamificationDashboard() {
         </TabsContent>
 
         {/* Analytics Tab */}
-        <TabsContent value="analytics" className="mt-6">
+        <TabsContent value="analytics" className="mt-6 space-y-6">
+          <UserProgressReportCard userEmail={user?.email} />
+          <CustomizableDashboard userEmail={user?.email} />
           <GamificationAnalyticsDashboard />
         </TabsContent>
       </Tabs>

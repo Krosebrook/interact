@@ -161,6 +161,7 @@ import WellnessAdmin from './pages/WellnessAdmin';
 import WellnessAnalyticsReport from './pages/WellnessAnalyticsReport';
 import WellnessDashboard from './pages/WellnessDashboard';
 import Whitepapers from './pages/Whitepapers';
+import AdvancedReportingSuite from './pages/AdvancedReportingSuite';
 import __Layout from './Layout.jsx';
 
 
@@ -279,6 +280,7 @@ export const PAGES = {
     "WellnessAnalyticsReport": WellnessAnalyticsReport,
     "WellnessDashboard": WellnessDashboard,
     "Whitepapers": Whitepapers,
+    "AdvancedReportingSuite": AdvancedReportingSuite,
 }
 
 export const pagesConfig = {
