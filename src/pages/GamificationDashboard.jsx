@@ -46,6 +46,8 @@ import PersonalizedGamificationTips from '../components/gamification/Personalize
 import RedemptionHistory from '../components/gamification/RedemptionHistory';
 import RewardsRedemptionSection from '../components/gamification/RewardsRedemptionSection';
 import TierStatusDisplay from '../components/gamification/TierStatusDisplay';
+import PersonalizedGoalsSuggestions from '../components/gamification/PersonalizedGoalsSuggestions';
+import DynamicDifficultyIndicator from '../components/gamification/DynamicDifficultyIndicator';
 
 const CHART_COLORS = ['#D97230', '#14294D', '#8B5CF6', '#10B981', '#F59E0B', '#EC4899'];
 
@@ -323,6 +325,14 @@ export default function GamificationDashboard() {
 
         {/* Overview Tab */}
         <TabsContent value="overview" className="space-y-6 mt-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* AI-Recommended Goals */}
+            <PersonalizedGoalsSuggestions userEmail={user?.email} />
+            
+            {/* Dynamic Difficulty */}
+            <DynamicDifficultyIndicator userEmail={user?.email} />
+          </div>
+
           {/* AI Tips */}
           <PersonalizedGamificationTips
             userEmail={user?.email}
