@@ -9,9 +9,13 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
-import { Activity, Droplet, Brain, Moon, Trophy, TrendingUp, Users, Calendar, Award } from 'lucide-react';
+import TeamWellnessLeaderboard from '@/components/wellness/TeamWellnessLeaderboard';
+import FitbitSyncButton from '@/components/wellness/FitbitSyncButton';
+import { Activity, Droplet, Brain, Moon, Trophy, TrendingUp, Users, Calendar, Award, BarChart3 } from 'lucide-react';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
+import { Link } from 'react-router-dom';
+import { createPageUrl } from '../utils';
 
 const ACTIVITY_ICONS = {
   steps: Activity,
@@ -148,12 +152,19 @@ export default function WellnessDashboard() {
   const completedGoals = myGoals.filter(g => g.status === 'completed');
   
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-20 md:pb-0">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-int-navy">Wellness Dashboard</h1>
           <p className="text-slate-600">Track your health goals and compete with your team</p>
         </div>
+        <div className="flex gap-2">
+          <Link to={createPageUrl('WellnessAnalyticsReport')}>
+            <Button variant="outline" className="gap-2">
+              <BarChart3 className="h-4 w-4" />
+              Analytics
+            </Button>
+          </Link>
         <Dialog>
           <DialogTrigger asChild>
             <Button className="bg-int-orange hover:bg-int-orange-dark">
@@ -231,6 +242,47 @@ export default function WellnessDashboard() {
             </div>
           </DialogContent>
         </Dialog>
+        </div>
+      </div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <FitbitSyncButton userEmail={user?.email} />
+        
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm flex items-center gap-2">
+              <Award className="h-4 w-4 text-int-orange" />
+              Active Goals
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-3xl font-bold">{activeGoals.length}</p>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm flex items-center gap-2">
+              <Trophy className="h-4 w-4 text-int-gold" />
+              Completed
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-3xl font-bold text-green-600">{completedGoals.length}</p>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm flex items-center gap-2">
+              <Activity className="h-4 w-4 text-blue-600" />
+              Today's Logs
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-3xl font-bold text-blue-600">{todayLogs.length}</p>
+          </CardContent>
+        </Card>
       </div>
       
       <Tabs defaultValue="my-goals">
@@ -389,11 +441,15 @@ export default function WellnessDashboard() {
         </TabsContent>
         
         <TabsContent value="leaderboard" className="space-y-4">
+          {challenges.length > 0 && (
+            <TeamWellnessLeaderboard challengeId={challenges[0].id} />
+          )}
+          
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Trophy className="h-5 w-5 text-int-gold" />
-                Wellness Leaderboard
+                Overall Wellness Leaderboard
               </CardTitle>
               <CardDescription>Top performers across all wellness activities</CardDescription>
             </CardHeader>
