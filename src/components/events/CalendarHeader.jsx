@@ -11,7 +11,8 @@ export default function CalendarHeader({
   onScheduleEvent,
   onCreatePoll,
   onCreateSeries,
-  onBulkSchedule
+  onBulkSchedule,
+  onProposeEvent
 }) {
   return (
     <PageHeader 

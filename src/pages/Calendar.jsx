@@ -19,7 +19,11 @@ import { useEventActions } from '../components/events/useEventActions';
 import { useTeamData } from '../components/hooks/useTeamData';
 import GoogleCalendarActions from '../components/events/GoogleCalendarActions';
 import CommentSection from '../components/collaboration/CommentSection';
+import ProposeEventDialog from '../components/events/ProposeEventDialog';
+import EventProposalsList from '../components/events/EventProposalsList';
+import PostEventFeedbackDialog from '../components/events/PostEventFeedbackDialog';
 import { Card } from '@/components/ui/card';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { toast } from 'sonner';
 
 export default function Calendar() {
@@ -35,6 +39,8 @@ export default function Calendar() {
   const [showSeriesCreator, setShowSeriesCreator] = useState(false);
   const [showBulkScheduler, setShowBulkScheduler] = useState(false);
   const [rescheduleEvent, setRescheduleEvent] = useState(null);
+  const [showProposeDialog, setShowProposeDialog] = useState(false);
+  const [feedbackEvent, setFeedbackEvent] = useState(null);
 
   // Use centralized scheduling hook
   const scheduling = useEventScheduling({
@@ -100,7 +106,7 @@ export default function Calendar() {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 pb-20 md:pb-0">
       {/* Google Calendar Integration */}
       <div className="glass-panel-solid">
         <GoogleCalendarActions onImportComplete={refetchEvents} />
@@ -111,13 +117,21 @@ export default function Calendar() {
         onCreatePoll={() => setShowPollDialog(true)}
         onCreateSeries={() => setShowSeriesCreator(true)}
         onBulkSchedule={() => setShowBulkScheduler(true)}
+        onProposeEvent={() => setShowProposeDialog(true)}
       />
 
-      {/* Bookmarked Events */}
-      <BookmarkedEventsList userEmail={user?.email} />
+      <Tabs defaultValue="calendar">
+        <TabsList>
+          <TabsTrigger value="calendar">Calendar</TabsTrigger>
+          <TabsTrigger value="proposals">Event Proposals</TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="calendar" className="space-y-8 mt-6">
+          {/* Bookmarked Events */}
+          <BookmarkedEventsList userEmail={user?.email} />
 
-      {/* Active Polls Section */}
-      <TimeSlotPollList 
+          {/* Active Polls Section */}
+          <TimeSlotPollList 
         userEmail={user?.email}
         userName={user?.full_name}
         isAdmin={user?.role === 'admin'}
@@ -143,20 +157,29 @@ export default function Calendar() {
         onEmptyAction={() => setShowScheduleDialog(true)}
       />
 
-      {/* Past Events */}
-      {pastEvents.length > 0 && (
-        <EventsList
-          title="Past Events"
-          events={pastEvents}
-          activities={activities}
-          participations={participations}
-          maxItems={6}
-          userEmail={user?.email}
-          eventActions={eventActions}
-          showReminder={false}
-          showCancel={false}
-        />
-      )}
+          {/* Past Events */}
+          {pastEvents.length > 0 && (
+            <EventsList
+              title="Past Events"
+              events={pastEvents}
+              activities={activities}
+              participations={participations}
+              maxItems={6}
+              userEmail={user?.email}
+              eventActions={{
+                ...eventActions,
+                onProvideFeedback: (event) => setFeedbackEvent(event)
+              }}
+              showReminder={false}
+              showCancel={false}
+            />
+          )}
+        </TabsContent>
+        
+        <TabsContent value="proposals" className="mt-6">
+          <EventProposalsList isAdmin={user?.role === 'admin'} userEmail={user?.email} />
+        </TabsContent>
+      </Tabs>
 
       {/* Schedule Event Dialog */}
       <ScheduleEventDialog
@@ -204,14 +227,20 @@ export default function Calendar() {
         onRescheduleComplete={() => queryClient.invalidateQueries(['events'])}
       />
 
-      {/* Event Discussion (if viewing single event) */}
-      {upcomingEvents.length === 1 && (
-        <CommentSection
-          entityType="event"
-          entityId={upcomingEvents[0].id}
-          title="Event Discussion"
-        />
-      )}
+      {/* Propose Event Dialog */}
+      <ProposeEventDialog
+        open={showProposeDialog}
+        onOpenChange={setShowProposeDialog}
+        user={user}
+      />
+      
+      {/* Post-Event Feedback Dialog */}
+      <PostEventFeedbackDialog
+        open={!!feedbackEvent}
+        onOpenChange={(open) => !open && setFeedbackEvent(null)}
+        event={feedbackEvent}
+        userEmail={user?.email}
+      />
     </div>
   );
 }

@@ -50,6 +50,7 @@ import PersonalizedGoalsSuggestions from '../components/gamification/Personalize
 import DynamicDifficultyIndicator from '../components/gamification/DynamicDifficultyIndicator';
 import UserProgressReportCard from '../components/reports/UserProgressReportCard';
 import CustomizableDashboard from '../components/analytics/CustomizableDashboard';
+import TierRewardsDisplay from '../components/gamification/TierRewardsDisplay';
 
 const CHART_COLORS = ['#D97230', '#14294D', '#8B5CF6', '#10B981', '#F59E0B', '#EC4899'];
 
