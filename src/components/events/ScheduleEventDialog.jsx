@@ -26,10 +26,20 @@ import RichTextEventEditor from './RichTextEventEditor';
 import EventTypeConditionalFields, { EVENT_TYPES } from './EventTypeConditionalFields';
 import TemplateSelector from './TemplateSelector';
 import AIEventPlanningAssistant from '../ai/AIEventPlanningAssistant';
+import AISchedulingSuggestions from './AISchedulingSuggestions';
 import { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Layout, Sparkles, Wand2 } from 'lucide-react';
 import { toast } from 'sonner';
+
+function getNextOccurrence(dayOfWeek, hour) {
+  const now = new Date();
+  const daysUntil = (dayOfWeek - now.getDay() + 7) % 7 || 7;
+  const nextDate = new Date(now);
+  nextDate.setDate(now.getDate() + daysUntil);
+  nextDate.setHours(hour, 0, 0, 0);
+  return nextDate;
+}
 
 export default function ScheduleEventDialog({
   open,
@@ -315,6 +325,19 @@ export default function ScheduleEventDialog({
               />
             </div>
           </div>
+
+          {/* AI Scheduling Suggestions */}
+          {formData.activity_id && (
+            <AISchedulingSuggestions
+              activityType={activities.find(a => a.id === formData.activity_id)?.activity_type}
+              duration={formData.duration_minutes}
+              onSelectTime={(suggestion) => {
+                const nextOccurrence = getNextOccurrence(suggestion.day_of_week, suggestion.hour);
+                updateField('scheduled_date', nextOccurrence.toISOString().slice(0, 16));
+                toast.success(`Applied AI suggestion: ${suggestion.day_name} ${suggestion.time_slot}`);
+              }}
+            />
+          )}
 
           <RecurrenceSettings
             recurrenceData={recurrenceSettings}
