@@ -30,6 +30,7 @@ import GoogleCalendarActions from './GoogleCalendarActions';
 import EventSyncActions from '../integrations/EventSyncActions';
 import PostEventCommunications from './PostEventCommunications';
 import SaveAsTemplateDialog from './SaveAsTemplateDialog';
+import RSVPButton from './RSVPButton';
 import { format, isPast } from 'date-fns';
 import { motion } from 'framer-motion';
 
@@ -55,6 +56,9 @@ export default function EventCalendarCard({
   event,
   activity,
   participantCount = 0,
+  participation,
+  userEmail,
+  userName,
   onView,
   onCopyLink,
   onDownloadCalendar,
@@ -62,8 +66,7 @@ export default function EventCalendarCard({
   onSendRecap,
   onCancel,
   onDelete,
-  onReschedule,
-  userEmail
+  onReschedule
 }) {
   // All hooks must be called before any conditional returns
   const [isBookmarked, setIsBookmarked] = useState(false);
@@ -251,14 +254,24 @@ export default function EventCalendarCard({
           }
         </div>
         
-        <Link to={`${createPageUrl('FacilitatorView')}?eventId=${event.id}`}>
-          <Button
-            size="sm"
-            className="bg-int-orange hover:bg-int-orange/90 text-slate-900 font-semibold shadow-md hover:shadow-lg transition-all">
-
-            Facilitate
-          </Button>
-        </Link>
+        <div className="flex items-center gap-2">
+          {userEmail && (
+            <RSVPButton 
+              event={event}
+              userEmail={userEmail}
+              userName={userName}
+              participation={participation}
+            />
+          )}
+          <Link to={`${createPageUrl('FacilitatorView')}?eventId=${event.id}`}>
+            <Button
+              size="sm"
+              variant="outline"
+              className="text-slate-700">
+              Facilitate
+            </Button>
+          </Link>
+        </div>
       </div>
 
       {/* Save as Template Dialog */}

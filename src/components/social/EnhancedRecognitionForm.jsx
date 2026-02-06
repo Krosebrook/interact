@@ -12,18 +12,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Heart, Award, Star } from 'lucide-react';
 import { toast } from 'sonner';
 
-const CATEGORIES = [
-  { value: 'teamwork', label: 'Teamwork', icon: '🤝', points: 10 },
-  { value: 'innovation', label: 'Innovation', icon: '💡', points: 15 },
-  { value: 'leadership', label: 'Leadership', icon: '👑', points: 15 },
-  { value: 'going_above', label: 'Going Above & Beyond', icon: '🚀', points: 20 },
-  { value: 'customer_focus', label: 'Customer Focus', icon: '🎯', points: 10 },
-  { value: 'problem_solving', label: 'Problem Solving', icon: '🧩', points: 15 },
-  { value: 'mentorship', label: 'Mentorship', icon: '🌟', points: 15 },
-  { value: 'culture_champion', label: 'Culture Champion', icon: '💝', points: 20 }
-];
-
-export default function EnhancedRecognitionForm({ currentUser, onSuccess }) {
+export default function EnhancedRecognitionForm({ currentUser, onSuccess, categories = [] }) {
   const [recipientEmail, setRecipientEmail] = useState('');
   const [message, setMessage] = useState('');
   const [category, setCategory] = useState('');
@@ -52,7 +41,8 @@ export default function EnhancedRecognitionForm({ currentUser, onSuccess }) {
   const createRecognitionMutation = useMutation({
     mutationFn: async (data) => {
       // Calculate total points
-      const categoryPoints = CATEGORIES.find(c => c.value === data.category)?.points || 10;
+      const selectedCategory = categories.find(c => c.slug === data.category);
+      const categoryPoints = selectedCategory?.base_points || 10;
       const totalPoints = categoryPoints + (data.bonusPoints || 0);
 
       // Create recognition
@@ -146,7 +136,7 @@ export default function EnhancedRecognitionForm({ currentUser, onSuccess }) {
     });
   };
 
-  const categoryPoints = CATEGORIES.find(c => c.value === category)?.points || 0;
+  const categoryPoints = categories.find(c => c.slug === category)?.base_points || 0;
   const totalPoints = categoryPoints + bonusPoints;
   const availablePoints = userPoints?.total_points || 0;
 
@@ -181,13 +171,12 @@ export default function EnhancedRecognitionForm({ currentUser, onSuccess }) {
                 <SelectValue placeholder="Select category..." />
               </SelectTrigger>
               <SelectContent>
-                {CATEGORIES.map((cat) => (
-                  <SelectItem key={cat.value} value={cat.value}>
+                {categories.map((cat) => (
+                  <SelectItem key={cat.id} value={cat.slug}>
                     <div className="flex items-center gap-2">
-                      <span>{cat.icon}</span>
-                      <span>{cat.label}</span>
+                      <span>{cat.name}</span>
                       <Badge variant="outline" className="ml-auto">
-                        +{cat.points} pts
+                        +{cat.base_points} pts
                       </Badge>
                     </div>
                   </SelectItem>
