@@ -237,7 +237,7 @@ export default function CustomReportBuilder() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Users</SelectItem>
-                  <SelectItem value="new">New Users (< 30 days)</SelectItem>
+                  <SelectItem value="new">New Users (under 30 days)</SelectItem>
                   <SelectItem value="active">Active Users</SelectItem>
                   <SelectItem value="at_risk">At Risk (low engagement)</SelectItem>
                   <SelectItem value="power_users">Power Users</SelectItem>
