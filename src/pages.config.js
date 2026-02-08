@@ -53,6 +53,7 @@ import AIEnhancedCoaching from './pages/AIEnhancedCoaching';
 import AIEventPlanner from './pages/AIEventPlanner';
 import AIPersonalization from './pages/AIPersonalization';
 import Activities from './pages/Activities';
+import AdminAnalyticsDashboard from './pages/AdminAnalyticsDashboard';
 import AdminHub from './pages/AdminHub';
 import AdvancedAnalytics from './pages/AdvancedAnalytics';
 import AdvancedGamificationAnalytics from './pages/AdvancedGamificationAnalytics';
@@ -162,7 +163,7 @@ import WellnessAdmin from './pages/WellnessAdmin';
 import WellnessAnalyticsReport from './pages/WellnessAnalyticsReport';
 import WellnessDashboard from './pages/WellnessDashboard';
 import Whitepapers from './pages/Whitepapers';
-import AdminAnalyticsDashboard from './pages/AdminAnalyticsDashboard';
+import CustomReportBuilder from './pages/CustomReportBuilder';
 import __Layout from './Layout.jsx';
 
 
@@ -173,6 +174,7 @@ export const PAGES = {
     "AIEventPlanner": AIEventPlanner,
     "AIPersonalization": AIPersonalization,
     "Activities": Activities,
+    "AdminAnalyticsDashboard": AdminAnalyticsDashboard,
     "AdminHub": AdminHub,
     "AdvancedAnalytics": AdvancedAnalytics,
     "AdvancedGamificationAnalytics": AdvancedGamificationAnalytics,
@@ -282,7 +284,7 @@ export const PAGES = {
     "WellnessAnalyticsReport": WellnessAnalyticsReport,
     "WellnessDashboard": WellnessDashboard,
     "Whitepapers": Whitepapers,
-    "AdminAnalyticsDashboard": AdminAnalyticsDashboard,
+    "CustomReportBuilder": CustomReportBuilder,
 }
 
 export const pagesConfig = {
