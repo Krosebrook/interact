@@ -41,6 +41,7 @@ import HelpButton from './components/onboarding/HelpButton';
 import FeedbackButton from './components/feedback/FeedbackButton';
 import MobileBottomNav from './components/mobile/MobileBottomNav';
 import ProactiveOnboardingTips from './components/ai/ProactiveOnboardingTips';
+import AIChatbotAssistant from './components/core/AIChatbotAssistant';
 
 const HEADER_IMAGE = 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/691e3ae3bd4916f2e05ae35e/1b2b117bd_ChatGPTImageNov25202503_31_49PM.png';
 
@@ -461,6 +462,9 @@ export default function Layout({ children, currentPageName }) {
         {user && (
           <ProactiveOnboardingTips userEmail={user.email} />
         )}
+
+        {/* AI Chatbot Assistant */}
+        {user && <AIChatbotAssistant />}
 
         {/* Main Content */}
         <main id="main-content" className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-20 md:pb-8">
