@@ -84,6 +84,9 @@
     "zod": "^3.24.2"
   },
   "devDependencies": {
+    "@capacitor/android": "^8.0.2",
+    "@capacitor/cli": "^8.0.2",
+    "@capacitor/core": "^8.0.2",
     "@eslint/js": "^9.19.0",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.1",
@@ -104,6 +107,7 @@
     "happy-dom": "^20.1.0",
     "jsdom": "^27.4.0",
     "postcss": "^8.5.3",
+    "rollup-plugin-visualizer": "^6.0.5",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.8.2",
     "vite": "^6.1.0",

@@ -4,7 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import IntegrationCard from '../components/integrations/IntegrationCard';
-import INTEGRATIONS_REGISTRY from '../functions/integrationsRegistry';
+import INTEGRATIONS_REGISTRY from '@/lib/integrationsRegistry';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { Search } from 'lucide-react';
 
