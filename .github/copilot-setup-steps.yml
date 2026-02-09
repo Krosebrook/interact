@@ -1,0 +1,56 @@
+# GitHub Copilot Setup Steps for Interact Platform
+# This file defines the environment setup for Copilot agents
+
+name: Copilot Environment Setup
+
+steps:
+  # Checkout repository code
+  - name: Checkout repository
+    uses: actions/checkout@v4
+    with:
+      fetch-depth: 1
+  
+  # Setup Node.js environment
+  - name: Setup Node.js
+    uses: actions/setup-node@v4
+    with:
+      node-version: '20'
+      cache: 'npm'
+  
+  # Install project dependencies
+  - name: Install dependencies
+    run: npm ci
+  
+  # Verify installation
+  - name: Verify installation
+    run: |
+      node --version
+      npm --version
+      echo "Dependencies installed successfully"
+  
+  # Optional: Build project (if needed for tests)
+  - name: Build project (optional)
+    run: npm run build
+    continue-on-error: true
+  
+  # Optional: Run linter (to check code quality)
+  - name: Run linter (optional)
+    run: npm run lint
+    continue-on-error: true
+  
+  # Optional: Run tests (to verify environment)
+  - name: Run tests (optional)
+    run: npm test
+    continue-on-error: true
+
+# Environment variables (if needed)
+env:
+  NODE_ENV: development
+  CI: true
+
+# Notes:
+# - This setup ensures agents can build and test code
+# - All agents have access to npm scripts defined in package.json
+# - Node 20 is the required version for this project
+# - npm ci ensures clean, reproducible installs
+# - continue-on-error: true on optional steps won't fail the setup
