@@ -9,12 +9,11 @@ import {
 import { HelpCircle, Sparkles, BookOpen } from 'lucide-react';
 
 export default function OnboardingTrigger() {
-  // Add safety check
-  let onboardingContext;
-  try {
-    onboardingContext = useOnboarding();
-  } catch (error) {
-    // If we're not inside OnboardingProvider, don't render
+  // Call hook unconditionally at the top level (Rules of Hooks)
+  const onboardingContext = useOnboarding();
+
+  // Handle case where context is not available
+  if (!onboardingContext) {
     console.warn('OnboardingTrigger rendered outside OnboardingProvider');
     return null;
   }
