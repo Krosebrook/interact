@@ -84,6 +84,9 @@
     "zod": "^3.24.2"
   },
   "devDependencies": {
+    "@capacitor/android": "^8.0.2",
+    "@capacitor/cli": "^8.0.2",
+    "@capacitor/core": "^8.0.2",
     "@eslint/js": "^9.19.0",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.1",
