@@ -60,7 +60,7 @@ You are an AI/ML engineer specializing in recommendation systems. Build Feature 
 - functions/ (Base44 backend functions)
 - src/api/ (API client configuration)
 - FEATURE_ROADMAP.md (Feature 4: AI Recommendation Engine)
-- PRD.md (AI integration requirements)
+- docs/planning/PRD.md (AI integration requirements)
 
 ## AI Service Environment Variables Required
 - OPENAI_API_KEY

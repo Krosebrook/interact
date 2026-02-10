@@ -20,14 +20,18 @@ The Interact platform has extensive documentation with a score of **98/100** (as
 ```
 /
 ├── README.md                    # Main project readme
-├── AGENTS.md                    # Agent documentation
-├── PRD.md                       # Product requirements
-├── FEATURE_ROADMAP.md          # 18-month roadmap
-├── TESTING.md                   # Testing guide
-├── CODEBASE_AUDIT.md           # Technical audit
+├── docs/
+│   ├── README.md               # Documentation hub
+│   ├── planning/
+│   │   ├── PRD.md              # Product requirements
+│   │   └── FEATURE_ROADMAP.md  # 18-month roadmap
+│   ├── guides/
+│   │   └── TESTING.md          # Testing guide
+│   ├── audits/
+│   │   └── CODEBASE_AUDIT.md   # Technical audit
+│   └── integrations/
+│       └── AGENTS.md           # Agent documentation
 ├── CONTRIBUTING.md              # Contribution guidelines
-├── docs/                        # Documentation directory
-│   ├── index.md                # Documentation hub
 │   ├── security/               # Security docs
 │   ├── api/                    # API documentation
 │   └── guides/                 # How-to guides
@@ -439,18 +443,22 @@ When writing documentation:
 Check these existing docs for patterns:
 - `README.md` - High-level overview, badges, quick start
 - `TESTING.md` - Comprehensive technical guide
-- `API_INTEGRATION_GUIDE.md` - API documentation
+- `docs/guides/API_INTEGRATION_GUIDE.md` - API documentation
 - `CONTRIBUTING.md` - Process documentation
-- `FEATURE_ROADMAP.md` - Roadmap format
+- `docs/planning/FEATURE_ROADMAP.md` - Roadmap format
 
 ## Documentation Locations
 
 ### Root-level docs
-Major docs go in project root:
+Essential docs at project root:
 - `README.md` - Main entry point
-- `PRD.md` - Product requirements
-- `TESTING.md` - Testing guide
+- `CONTRIBUTING.md` - How to contribute
 - `SECURITY.md` - Security guidelines
+
+### Organized docs/
+All other docs in organized structure:
+- `docs/planning/PRD.md` - Product requirements
+- `docs/guides/TESTING.md` - Testing guide
 
 ### Component docs
 Component-specific docs in `components/docs/`:

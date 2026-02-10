@@ -50,4 +50,4 @@ You are a TypeScript migration specialist. Execute Phase 1 migration:
 ## Files to Reference
 - jsconfig.json (current configuration)
 - FEATURE_ROADMAP.md (Feature 3: TypeScript Migration)
-- PRD.md (Technical Architecture section)
+- docs/planning/PRD.md (Technical Architecture section)
