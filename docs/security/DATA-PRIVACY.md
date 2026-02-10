@@ -115,9 +115,9 @@ This document outlines data privacy practices, policies, and compliance measures
 
 ## Related Documentation
 
-- [docs/security/GDPR_CHECKLIST.md](./docs/security/GDPR_CHECKLIST.md)
-- [docs/security/DATA_MAPPING.md](./docs/security/DATA_MAPPING.md)
-- [GOVERNANCE.md](./GOVERNANCE.md)
+- [GDPR_CHECKLIST.md](./GDPR_CHECKLIST.md)
+- [DATA_MAPPING.md](./DATA_MAPPING.md)
+- [GOVERNANCE.md](../community/GOVERNANCE.md)
 
 ---
 

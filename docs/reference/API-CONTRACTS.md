@@ -5,7 +5,7 @@
 
 ## Overview
 
-API endpoint specifications and contracts for the Interact platform. Complete documentation at [components/docs/API_REFERENCE.md](./components/docs/API_REFERENCE.md).
+API endpoint specifications and contracts for the Interact platform. Complete documentation at [components/docs/API_REFERENCE.md](../../components/docs/API_REFERENCE.md).
 
 ## Base URL
 
@@ -41,9 +41,9 @@ Authorization: Bearer <jwt_token>
 
 ## Related Documentation
 
-- [components/docs/API_REFERENCE.md](./components/docs/API_REFERENCE.md)
+- [components/docs/API_REFERENCE.md](../../components/docs/API_REFERENCE.md)
 - [SCHEMAS.md](./SCHEMAS.md)
-- [AUTH.md](./AUTH.md)
+- [AUTH.md](../security/AUTH.md)
 
 **Document Owner:** API Team  
 **Last Updated:** January 14, 2026

@@ -1125,10 +1125,10 @@ rg "base44\." src/ -l
 
 ## References
 
-- [ADR-001: Use Base44 Backend](./ADR/001-use-base44-backend.md)
-- [ADR-004: TypeScript Migration](./ADR/004-typescript-migration.md)
-- [SSO Implementation Guide](./SSO_IMPLEMENTATION.md)
-- [CI/CD Documentation](./CI-CD.md)
+- [ADR-001: Use Base44 Backend](../../ADR/001-use-base44-backend.md)
+- [ADR-004: TypeScript Migration](../../ADR/004-typescript-migration.md)
+- [SSO Implementation Guide](../security/SSO_IMPLEMENTATION.md)
+- [CI/CD Documentation](../operations/CI-CD.md)
 - [Base44 SDK Documentation](https://docs.base44.com)
 - [Supabase Documentation](https://supabase.com/docs)
 - [Vercel Documentation](https://vercel.com/docs)

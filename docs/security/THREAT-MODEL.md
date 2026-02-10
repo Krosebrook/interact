@@ -124,9 +124,9 @@ This document identifies security threats, attack vectors, and mitigations for t
 
 ## Related Documentation
 
-- [docs/security/SECURITY.md](./docs/security/SECURITY.md)
-- [docs/security/INCIDENT_RESPONSE.md](./docs/security/INCIDENT_RESPONSE.md)
-- [AI-SAFETY.md](./AI-SAFETY.md)
+- [SECURITY.md](./SECURITY.md)
+- [INCIDENT_RESPONSE.md](./INCIDENT_RESPONSE.md)
+- [AI-SAFETY.md](../development/AI-SAFETY.md)
 
 ---
 

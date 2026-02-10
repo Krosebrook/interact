@@ -145,9 +145,9 @@ Required variables are validated at startup. Missing required variables will cau
 
 ## Related Documentation
 
-- [DEVELOPMENT.md](./DEVELOPMENT.md)
-- [CI-CD.md](./CI-CD.md)
-- [INFRASTRUCTURE.md](./INFRASTRUCTURE.md)
+- [DEVELOPMENT.md](../getting-started/DEVELOPMENT.md)
+- [CI-CD.md](../operations/CI-CD.md)
+- [INFRASTRUCTURE.md](../operations/INFRASTRUCTURE.md)
 
 ---
 
