@@ -221,7 +221,7 @@ Essential documents kept at repository root:
 To maintain documentation quality:
 
 1. Update docs alongside code changes
-2. Follow [Documentation Guidelines](../DOCUMENTATION_GUIDELINES.md)
+2. Follow [Documentation Guidelines](./guides/DOCUMENTATION_GUIDELINES.md)
 3. Run link checker before commits
 4. Review quarterly for accuracy
 

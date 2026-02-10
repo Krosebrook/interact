@@ -625,7 +625,7 @@ Based on the codebase analysis:
 
 ### C. Related Documents
 
-- [ADR-001: Use Base44 for Backend](/ADR/001-use-base44-backend.md)
+- [ADR-001: Use Base44 for Backend](../../ADR/001-use-base44-backend.md)
 - [Base44 Visual Canvas Guide](/.github/base44-updates.md)
 - [Architecture Overview](/docs/ARCHITECTURE_OVERVIEW.md)
 

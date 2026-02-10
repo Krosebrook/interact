@@ -39,7 +39,7 @@ Interact is designed for:
 
 ### How do I install Interact?
 
-See the [Quick Start Guide](./README.md#quick-start) or [Development Guide](./DEVELOPMENT.md) for detailed installation instructions.
+See the [Quick Start Guide](./README.md#quick-start) or [Development Guide](./docs/getting-started/DEVELOPMENT.md) for detailed installation instructions.
 
 Quick setup:
 ```bash
@@ -57,13 +57,13 @@ npm run dev
 ### How do I get access to the platform?
 
 For development: Clone the repository and follow the setup instructions.
-For production: Contact your organization's administrator or see [Support](./SUPPORT.md).
+For production: Contact your organization's administrator or see [Support](./docs/community/SUPPORT.md).
 
 ### Where can I find documentation?
 
 - **[README.md](./README.md)** - Project overview and quick start
-- **[Documentation Hub](./docs/index.md)** - Central documentation navigation
-- **[API Guide](./API_INTEGRATION_GUIDE.md)** - API integration
+- **[Documentation Hub](./docs/README.md)** - Central documentation navigation
+- **[API Guide](./docs/guides/API_INTEGRATION_GUIDE.md)** - API integration
 - **[Contributing](./CONTRIBUTING.md)** - How to contribute
 
 ---
@@ -88,11 +88,11 @@ For production: Contact your organization's administrator or see [Support](./SUP
 - Anthropic Claude
 - Google Gemini
 
-See [PRD.md](./PRD.md) for complete technical architecture.
+See [PRD.md](./docs/planning/PRD.md) for complete technical architecture.
 
 ### Is TypeScript supported?
 
-Interact is currently built with JavaScript (JSX). TypeScript migration is planned for Q2-Q3 2026. See [ADR-004: TypeScript Migration](./ADR/004-typescript-migration.md) and [Feature Roadmap](./FEATURE_ROADMAP.md) for details.
+Interact is currently built with JavaScript (JSX). TypeScript migration is planned for Q2-Q3 2026. See [ADR-004: TypeScript Migration](./ADR/004-typescript-migration.md) and [Feature Roadmap](./docs/planning/FEATURE_ROADMAP.md) for details.
 
 ### What testing framework is used?
 
@@ -102,7 +102,7 @@ Testing infrastructure is being established in Q1 2026:
 - **E2E Tests:** Playwright
 - **Visual Tests:** Storybook
 
-See [TESTING.md](./TESTING.md) for complete testing strategy.
+See [TESTING.md](./docs/guides/TESTING.md) for complete testing strategy.
 
 ### How do I run tests?
 
@@ -126,7 +126,7 @@ npm test -- --watch
 - **Server State:** TanStack Query for API data fetching and caching
 - **Form State:** React Hook Form for complex forms
 
-See [State Management section in PRD.md](./PRD.md#state-management) for details.
+See [State Management section in PRD.md](./docs/planning/PRD.md#state-management) for details.
 
 ---
 
@@ -164,7 +164,7 @@ See [GitHub Copilot Instructions](./.github/copilot-instructions.md) for complet
 
 ### How do I request features?
 
-1. Review the [Feature Roadmap](./FEATURE_ROADMAP.md) to see if it's already planned
+1. Review the [Feature Roadmap](./docs/planning/FEATURE_ROADMAP.md) to see if it's already planned
 2. Open a GitHub issue with the `enhancement` label
 3. Describe the feature, use case, and benefits
 4. Engage in discussion with maintainers
@@ -181,7 +181,7 @@ Yes. Security is a top priority:
 - ✅ GDPR compliance implemented
 - ✅ Incident response procedures in place
 
-See [CODEBASE_AUDIT.md](./CODEBASE_AUDIT.md) and [Security Documentation](./docs/security/SECURITY.md).
+See [CODEBASE_AUDIT.md](./docs/audits/CODEBASE_AUDIT.md) and [Security Documentation](./docs/security/SECURITY.md).
 
 ### How do I report security vulnerabilities?
 
@@ -195,7 +195,7 @@ Follow the [Vulnerability Disclosure Policy](./docs/security/VULNERABILITY_DISCL
 
 ### What data does Interact collect?
 
-See [Data Privacy](./DATA-PRIVACY.md) and [Data Mapping](./docs/security/DATA_MAPPING.md) for complete information on:
+See [Data Privacy](./docs/security/DATA-PRIVACY.md) and [Data Mapping](./docs/security/DATA_MAPPING.md) for complete information on:
 - Data collection practices
 - Data storage and processing
 - User privacy rights
