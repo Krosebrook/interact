@@ -1,133 +1,171 @@
 /**
- * pages.config.js - Page routing configuration with lazy loading
+ * pages.config.js - Page routing configuration
  * 
- * MODIFIED FOR CODE SPLITTING: This file now uses React.lazy() for route-based code splitting.
- * Each page is loaded on demand rather than all at once, significantly reducing initial bundle size.
+ * This file is AUTO-GENERATED. Do not add imports or modify PAGES manually.
+ * Pages are auto-registered when you create files in the ./pages/ folder.
  * 
  * THE ONLY EDITABLE VALUE: mainPage
  * This controls which page is the landing page (shown when users visit the app).
+ * 
+ * Example file structure:
+ * 
+ *   import HomePage from './pages/HomePage';
+ *   import Dashboard from './pages/Dashboard';
+ *   import Settings from './pages/Settings';
+ *   
+ *   export const PAGES = {
+ *       "HomePage": HomePage,
+ *       "Dashboard": Dashboard,
+ *       "Settings": Settings,
+ *   }
+ *   
+ *   export const pagesConfig = {
+ *       mainPage: "HomePage",
+ *       Pages: PAGES,
+ *   };
+ * 
+ * Example with Layout (wraps all pages):
+ *
+ *   import Home from './pages/Home';
+ *   import Settings from './pages/Settings';
+ *   import __Layout from './Layout.jsx';
+ *
+ *   export const PAGES = {
+ *       "Home": Home,
+ *       "Settings": Settings,
+ *   }
+ *
+ *   export const pagesConfig = {
+ *       mainPage: "Home",
+ *       Pages: PAGES,
+ *       Layout: __Layout,
+ *   };
+ *
+ * To change the main page from HomePage to Dashboard, use find_replace:
+ *   Old: mainPage: "HomePage",
+ *   New: mainPage: "Dashboard",
+ *
+ * The mainPage value must match a key in the PAGES object exactly.
  */
-import { lazy } from 'react';
+import ABTestingDashboard from './pages/ABTestingDashboard';
+import AIAdminDashboard from './pages/AIAdminDashboard';
+import AIEnhancedCoaching from './pages/AIEnhancedCoaching';
+import AIEventPlanner from './pages/AIEventPlanner';
+import AIPersonalization from './pages/AIPersonalization';
+import Activities from './pages/Activities';
+import AdminAnalyticsDashboard from './pages/AdminAnalyticsDashboard';
+import AdminHub from './pages/AdminHub';
+import AdvancedAnalytics from './pages/AdvancedAnalytics';
+import AdvancedGamificationAnalytics from './pages/AdvancedGamificationAnalytics';
+import AdvancedReportingSuite from './pages/AdvancedReportingSuite';
+import Analytics from './pages/Analytics';
+import AnalyticsDashboard from './pages/AnalyticsDashboard';
+import AuditLog from './pages/AuditLog';
+import AvatarShopHub from './pages/AvatarShopHub';
+import Blog from './pages/Blog';
+import Calendar from './pages/Calendar';
+import CaseStudies from './pages/CaseStudies';
+import Channels from './pages/Channels';
+import ComprehensiveProfile from './pages/ComprehensiveProfile';
+import ContentModerationAdmin from './pages/ContentModerationAdmin';
+import CustomAnalytics from './pages/CustomAnalytics';
+import CustomReportBuilder from './pages/CustomReportBuilder';
+import CustomizableAnalyticsDashboard from './pages/CustomizableAnalyticsDashboard';
+import Dashboard from './pages/Dashboard';
+import DawnHub from './pages/DawnHub';
+import Documentation from './pages/Documentation';
+import EmployeeDirectory from './pages/EmployeeDirectory';
+import EngagementHub from './pages/EngagementHub';
+import EventAnalyticsDashboard from './pages/EventAnalyticsDashboard';
+import EventTemplates from './pages/EventTemplates';
+import EventWizard from './pages/EventWizard';
+import ExampleModulePage from './pages/ExampleModulePage';
+import ExpandedUserProfile from './pages/ExpandedUserProfile';
+import FacilitatorDashboard from './pages/FacilitatorDashboard';
+import FacilitatorView from './pages/FacilitatorView';
+import FeedbackAdmin from './pages/FeedbackAdmin';
+import Gamification from './pages/Gamification';
+import GamificationAdmin from './pages/GamificationAdmin';
+import GamificationAnalytics from './pages/GamificationAnalytics';
+import GamificationDashboard from './pages/GamificationDashboard';
+import GamificationRuleBuilder from './pages/GamificationRuleBuilder';
+import GamificationRulesAdmin from './pages/GamificationRulesAdmin';
+import GamificationSettings from './pages/GamificationSettings';
+import GamifiedOnboarding from './pages/GamifiedOnboarding';
+import Home from './pages/Home';
+import HorizonHub from './pages/HorizonHub';
+import Integrations from './pages/Integrations';
+import IntegrationsAdmin from './pages/IntegrationsAdmin';
+import IntegrationsHub from './pages/IntegrationsHub';
+import KnowledgeBase from './pages/KnowledgeBase';
+import KnowledgeHub from './pages/KnowledgeHub';
+import Landing from './pages/Landing';
+import LeaderboardRankCelebration from './pages/LeaderboardRankCelebration';
+import Leaderboards from './pages/Leaderboards';
+import LearningDashboard from './pages/LearningDashboard';
+import LearningPath from './pages/LearningPath';
+import LifecycleAnalyticsDashboard from './pages/LifecycleAnalyticsDashboard';
+import LifecycleIntelligenceDashboard from './pages/LifecycleIntelligenceDashboard';
+import ManagerOnboardingDashboard from './pages/ManagerOnboardingDashboard';
+import MarketingHome from './pages/MarketingHome';
+import MarketingLanding from './pages/MarketingLanding';
+import MentorshipHub from './pages/MentorshipHub';
+import Milestones from './pages/Milestones';
+import NewEmployeeOnboarding from './pages/NewEmployeeOnboarding';
+import NewHireOnboarding from './pages/NewHireOnboarding';
+import OnboardingDashboard from './pages/OnboardingDashboard';
+import OnboardingHub from './pages/OnboardingHub';
+import PRDGenerator from './pages/PRDGenerator';
+import ParticipantEvent from './pages/ParticipantEvent';
+import ParticipantHub from './pages/ParticipantHub';
+import ParticipantPortal from './pages/ParticipantPortal';
+import PointStore from './pages/PointStore';
+import PowerUserHub from './pages/PowerUserHub';
+import PredictiveAnalytics from './pages/PredictiveAnalytics';
+import PredictiveAnalyticsDashboard from './pages/PredictiveAnalyticsDashboard';
+import Product from './pages/Product';
+import ProductShowcase from './pages/ProductShowcase';
+import ProfileCustomization from './pages/ProfileCustomization';
+import ProjectPlan from './pages/ProjectPlan';
+import PublicProfile from './pages/PublicProfile';
+import RealTimeAnalytics from './pages/RealTimeAnalytics';
+import Recognition from './pages/Recognition';
+import RecognitionEngine from './pages/RecognitionEngine';
+import RecognitionFeed from './pages/RecognitionFeed';
+import ReportBuilder from './pages/ReportBuilder';
+import Resources from './pages/Resources';
+import RewardsAdmin from './pages/RewardsAdmin';
+import RewardsStore from './pages/RewardsStore';
+import RoleManagement from './pages/RoleManagement';
+import RoleSelection from './pages/RoleSelection';
+import RoleSetup from './pages/RoleSetup';
+import SegmentationDashboard from './pages/SegmentationDashboard';
+import Settings from './pages/Settings';
+import SkillsDashboard from './pages/SkillsDashboard';
+import SkillsMatrix from './pages/SkillsMatrix';
+import SocialGamification from './pages/SocialGamification';
+import SocialHub from './pages/SocialHub';
+import Splash from './pages/Splash';
+import Surveys from './pages/Surveys';
+import TeamAnalyticsDashboard from './pages/TeamAnalyticsDashboard';
+import TeamAutomation from './pages/TeamAutomation';
+import TeamAutomations from './pages/TeamAutomations';
+import TeamChallenges from './pages/TeamChallenges';
+import TeamCompetition from './pages/TeamCompetition';
+import TeamDashboard from './pages/TeamDashboard';
+import TeamLeaderDashboard from './pages/TeamLeaderDashboard';
+import TeamLeaderboard from './pages/TeamLeaderboard';
+import TeamPerformanceDashboard from './pages/TeamPerformanceDashboard';
+import Teams from './pages/Teams';
+import UserProfile from './pages/UserProfile';
+import UserRoleAssignment from './pages/UserRoleAssignment';
+import UserSegmentation from './pages/UserSegmentation';
+import WellnessAdmin from './pages/WellnessAdmin';
+import WellnessAnalyticsReport from './pages/WellnessAnalyticsReport';
+import WellnessDashboard from './pages/WellnessDashboard';
+import Whitepapers from './pages/Whitepapers';
 import __Layout from './Layout.jsx';
 
-// Lazy load all pages for code splitting
-const ABTestingDashboard = lazy(() => import('./pages/ABTestingDashboard'));
-const AIAdminDashboard = lazy(() => import('./pages/AIAdminDashboard'));
-const AIEnhancedCoaching = lazy(() => import('./pages/AIEnhancedCoaching'));
-const AIEventPlanner = lazy(() => import('./pages/AIEventPlanner'));
-const AIPersonalization = lazy(() => import('./pages/AIPersonalization'));
-const Activities = lazy(() => import('./pages/Activities'));
-const AdminAnalyticsDashboard = lazy(() => import('./pages/AdminAnalyticsDashboard'));
-const AdminHub = lazy(() => import('./pages/AdminHub'));
-const AdvancedAnalytics = lazy(() => import('./pages/AdvancedAnalytics'));
-const AdvancedGamificationAnalytics = lazy(() => import('./pages/AdvancedGamificationAnalytics'));
-const AdvancedReportingSuite = lazy(() => import('./pages/AdvancedReportingSuite'));
-const Analytics = lazy(() => import('./pages/Analytics'));
-const AnalyticsDashboard = lazy(() => import('./pages/AnalyticsDashboard'));
-const AuditLog = lazy(() => import('./pages/AuditLog'));
-const AvatarShopHub = lazy(() => import('./pages/AvatarShopHub'));
-const Blog = lazy(() => import('./pages/Blog'));
-const Calendar = lazy(() => import('./pages/Calendar'));
-const CaseStudies = lazy(() => import('./pages/CaseStudies'));
-const Channels = lazy(() => import('./pages/Channels'));
-const ComprehensiveProfile = lazy(() => import('./pages/ComprehensiveProfile'));
-const ContentModerationAdmin = lazy(() => import('./pages/ContentModerationAdmin'));
-const CustomAnalytics = lazy(() => import('./pages/CustomAnalytics'));
-const CustomizableAnalyticsDashboard = lazy(() => import('./pages/CustomizableAnalyticsDashboard'));
-const Dashboard = lazy(() => import('./pages/Dashboard'));
-const DawnHub = lazy(() => import('./pages/DawnHub'));
-const Documentation = lazy(() => import('./pages/Documentation'));
-const EmployeeDirectory = lazy(() => import('./pages/EmployeeDirectory'));
-const EngagementHub = lazy(() => import('./pages/EngagementHub'));
-const EventAnalyticsDashboard = lazy(() => import('./pages/EventAnalyticsDashboard'));
-const EventTemplates = lazy(() => import('./pages/EventTemplates'));
-const EventWizard = lazy(() => import('./pages/EventWizard'));
-const ExampleModulePage = lazy(() => import('./pages/ExampleModulePage'));
-const ExpandedUserProfile = lazy(() => import('./pages/ExpandedUserProfile'));
-const FacilitatorDashboard = lazy(() => import('./pages/FacilitatorDashboard'));
-const FacilitatorView = lazy(() => import('./pages/FacilitatorView'));
-const FeedbackAdmin = lazy(() => import('./pages/FeedbackAdmin'));
-const Gamification = lazy(() => import('./pages/Gamification'));
-const GamificationAdmin = lazy(() => import('./pages/GamificationAdmin'));
-const GamificationAnalytics = lazy(() => import('./pages/GamificationAnalytics'));
-const GamificationDashboard = lazy(() => import('./pages/GamificationDashboard'));
-const GamificationRuleBuilder = lazy(() => import('./pages/GamificationRuleBuilder'));
-const GamificationRulesAdmin = lazy(() => import('./pages/GamificationRulesAdmin'));
-const GamificationSettings = lazy(() => import('./pages/GamificationSettings'));
-const GamifiedOnboarding = lazy(() => import('./pages/GamifiedOnboarding'));
-const Home = lazy(() => import('./pages/Home'));
-const HorizonHub = lazy(() => import('./pages/HorizonHub'));
-const Integrations = lazy(() => import('./pages/Integrations'));
-const IntegrationsAdmin = lazy(() => import('./pages/IntegrationsAdmin'));
-const IntegrationsHub = lazy(() => import('./pages/IntegrationsHub'));
-const KnowledgeBase = lazy(() => import('./pages/KnowledgeBase'));
-const KnowledgeHub = lazy(() => import('./pages/KnowledgeHub'));
-const Landing = lazy(() => import('./pages/Landing'));
-const LeaderboardRankCelebration = lazy(() => import('./pages/LeaderboardRankCelebration'));
-const Leaderboards = lazy(() => import('./pages/Leaderboards'));
-const LearningDashboard = lazy(() => import('./pages/LearningDashboard'));
-const LearningPath = lazy(() => import('./pages/LearningPath'));
-const LifecycleAnalyticsDashboard = lazy(() => import('./pages/LifecycleAnalyticsDashboard'));
-const LifecycleIntelligenceDashboard = lazy(() => import('./pages/LifecycleIntelligenceDashboard'));
-const ManagerOnboardingDashboard = lazy(() => import('./pages/ManagerOnboardingDashboard'));
-const MarketingHome = lazy(() => import('./pages/MarketingHome'));
-const MarketingLanding = lazy(() => import('./pages/MarketingLanding'));
-const MentorshipHub = lazy(() => import('./pages/MentorshipHub'));
-const Milestones = lazy(() => import('./pages/Milestones'));
-const NewEmployeeOnboarding = lazy(() => import('./pages/NewEmployeeOnboarding'));
-const NewHireOnboarding = lazy(() => import('./pages/NewHireOnboarding'));
-const OnboardingDashboard = lazy(() => import('./pages/OnboardingDashboard'));
-const OnboardingHub = lazy(() => import('./pages/OnboardingHub'));
-const PRDGenerator = lazy(() => import('./pages/PRDGenerator'));
-const ParticipantEvent = lazy(() => import('./pages/ParticipantEvent'));
-const ParticipantHub = lazy(() => import('./pages/ParticipantHub'));
-const ParticipantPortal = lazy(() => import('./pages/ParticipantPortal'));
-const PointStore = lazy(() => import('./pages/PointStore'));
-const PowerUserHub = lazy(() => import('./pages/PowerUserHub'));
-const PredictiveAnalytics = lazy(() => import('./pages/PredictiveAnalytics'));
-const PredictiveAnalyticsDashboard = lazy(() => import('./pages/PredictiveAnalyticsDashboard'));
-const Product = lazy(() => import('./pages/Product'));
-const ProductShowcase = lazy(() => import('./pages/ProductShowcase'));
-const ProfileCustomization = lazy(() => import('./pages/ProfileCustomization'));
-const ProjectPlan = lazy(() => import('./pages/ProjectPlan'));
-const PublicProfile = lazy(() => import('./pages/PublicProfile'));
-const RealTimeAnalytics = lazy(() => import('./pages/RealTimeAnalytics'));
-const Recognition = lazy(() => import('./pages/Recognition'));
-const RecognitionEngine = lazy(() => import('./pages/RecognitionEngine'));
-const RecognitionFeed = lazy(() => import('./pages/RecognitionFeed'));
-const ReportBuilder = lazy(() => import('./pages/ReportBuilder'));
-const Resources = lazy(() => import('./pages/Resources'));
-const RewardsAdmin = lazy(() => import('./pages/RewardsAdmin'));
-const RewardsStore = lazy(() => import('./pages/RewardsStore'));
-const RoleManagement = lazy(() => import('./pages/RoleManagement'));
-const RoleSelection = lazy(() => import('./pages/RoleSelection'));
-const RoleSetup = lazy(() => import('./pages/RoleSetup'));
-const SegmentationDashboard = lazy(() => import('./pages/SegmentationDashboard'));
-const Settings = lazy(() => import('./pages/Settings'));
-const SkillsDashboard = lazy(() => import('./pages/SkillsDashboard'));
-const SkillsMatrix = lazy(() => import('./pages/SkillsMatrix'));
-const SocialGamification = lazy(() => import('./pages/SocialGamification'));
-const SocialHub = lazy(() => import('./pages/SocialHub'));
-const Splash = lazy(() => import('./pages/Splash'));
-const Surveys = lazy(() => import('./pages/Surveys'));
-const TeamAnalyticsDashboard = lazy(() => import('./pages/TeamAnalyticsDashboard'));
-const TeamAutomation = lazy(() => import('./pages/TeamAutomation'));
-const TeamAutomations = lazy(() => import('./pages/TeamAutomations'));
-const TeamChallenges = lazy(() => import('./pages/TeamChallenges'));
-const TeamCompetition = lazy(() => import('./pages/TeamCompetition'));
-const TeamDashboard = lazy(() => import('./pages/TeamDashboard'));
-const TeamLeaderDashboard = lazy(() => import('./pages/TeamLeaderDashboard'));
-const TeamLeaderboard = lazy(() => import('./pages/TeamLeaderboard'));
-const TeamPerformanceDashboard = lazy(() => import('./pages/TeamPerformanceDashboard'));
-const Teams = lazy(() => import('./pages/Teams'));
-const UserProfile = lazy(() => import('./pages/UserProfile'));
-const UserRoleAssignment = lazy(() => import('./pages/UserRoleAssignment'));
-const UserSegmentation = lazy(() => import('./pages/UserSegmentation'));
-const WellnessAdmin = lazy(() => import('./pages/WellnessAdmin'));
-const WellnessAnalyticsReport = lazy(() => import('./pages/WellnessAnalyticsReport'));
-const WellnessDashboard = lazy(() => import('./pages/WellnessDashboard'));
-const Whitepapers = lazy(() => import('./pages/Whitepapers'));
-const CustomReportBuilder = lazy(() => import('./pages/CustomReportBuilder'));
 
 export const PAGES = {
     "ABTestingDashboard": ABTestingDashboard,
@@ -152,6 +190,7 @@ export const PAGES = {
     "ComprehensiveProfile": ComprehensiveProfile,
     "ContentModerationAdmin": ContentModerationAdmin,
     "CustomAnalytics": CustomAnalytics,
+    "CustomReportBuilder": CustomReportBuilder,
     "CustomizableAnalyticsDashboard": CustomizableAnalyticsDashboard,
     "Dashboard": Dashboard,
     "DawnHub": DawnHub,
@@ -246,7 +285,6 @@ export const PAGES = {
     "WellnessAnalyticsReport": WellnessAnalyticsReport,
     "WellnessDashboard": WellnessDashboard,
     "Whitepapers": Whitepapers,
-    "CustomReportBuilder": CustomReportBuilder,
 }
 
 export const pagesConfig = {

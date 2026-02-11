@@ -162,7 +162,7 @@ export default function AIOnboardingAssistant({ onDismiss }) {
                       </Badge>
                     </div>
                     <p className="text-xs text-slate-600 mb-2">{action.reason}</p>
-                    <Link to={createPageUrl(action.feature_path)}>
+                    <Link to={createPageUrl('UserProfile')}>
                       <Button 
                         size="sm" 
                         className="w-full bg-purple-600 hover:bg-purple-700"

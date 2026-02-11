@@ -5,11 +5,14 @@ import { useUserData } from '../components/hooks/useUserData';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { ShoppingCart, Sparkles, Star, Clock } from 'lucide-react';
+import { ShoppingCart, Sparkles, Star, Clock, ArrowLeft } from 'lucide-react';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
+import { createPageUrl } from '../utils';
 
 export default function AvatarShopHub() {
+  const navigate = useNavigate();
   const { user, loading } = useUserData();
   const [selectedCategory, setSelectedCategory] = useState('Apparel');
   const queryClient = useQueryClient();
@@ -53,6 +56,14 @@ export default function AvatarShopHub() {
       {/* Header */}
       <header className="sticky top-0 z-50 bg-black/80 backdrop-blur-md px-4 py-3 flex items-center justify-between border-b border-white/5">
         <div className="flex items-center gap-3">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => navigate(createPageUrl('ParticipantHub'))}
+            className="text-white hover:bg-white/10"
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
           <div className="w-10 h-10 rounded-full bg-[#ad2bee]/20 p-0.5 border border-[#ad2bee]/50 shadow-lg shadow-[#ad2bee]/30">
             <div className="w-full h-full rounded-full bg-gradient-to-br from-[#ad2bee] to-violet-600 flex items-center justify-center">
               <ShoppingCart className="h-5 w-5 text-white" />

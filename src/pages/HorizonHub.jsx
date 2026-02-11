@@ -14,6 +14,9 @@ const SUNRISE_BG = 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4
 export default function HorizonHub() {
   const { user, loading } = useUserData();
 
+  // This page renders without standard Layout navigation
+  // Users can navigate away via browser back button or bottom nav
+
   const { data: userProfile } = useQuery({
     queryKey: ['user-profile', user?.email],
     queryFn: async () => {
