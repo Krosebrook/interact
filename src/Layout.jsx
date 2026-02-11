@@ -2,8 +2,10 @@ import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from './utils';
 import { base44 } from '@/api/base44Client';
-import { useUserData } from './components/hooks/useUserData';
+import { useAuth } from './components/auth/AuthProvider';
 import ErrorBoundary from './components/common/ErrorBoundary';
+import RoleGate from './components/auth/RoleGate';
+import RedirectLoopDetector from './components/auth/RedirectLoopDetector';
 import { 
   LayoutDashboard, 
   Calendar, 
@@ -24,7 +26,8 @@ import {
   ShoppingCart,
   Activity,
   Brain,
-  Trophy
+  Trophy,
+  Store
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import NotificationBell from './components/notifications/NotificationBell';
@@ -46,7 +49,7 @@ import AIChatbotAssistant from './components/core/AIChatbotAssistant';
 const HEADER_IMAGE = 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/691e3ae3bd4916f2e05ae35e/1b2b117bd_ChatGPTImageNov25202503_31_49PM.png';
 
 export default function Layout({ children, currentPageName }) {
-  const { user, loading: userLoading } = useUserData(false);
+  const { user, normalizedRole, isAuthenticated, isChecking } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [installPrompt, setInstallPrompt] = useState(null);
   const [showInstallBanner, setShowInstallBanner] = useState(false);
@@ -90,9 +93,9 @@ export default function Layout({ children, currentPageName }) {
     base44.auth.logout();
   };
 
-  const isAdmin = user?.role === 'admin';
-  const isFacilitator = user?.user_type === 'facilitator';
-  const isParticipant = user?.user_type === 'participant';
+  const isAdmin = normalizedRole === 'admin';
+  const isFacilitator = normalizedRole === 'facilitator';
+  const isParticipant = normalizedRole === 'participant';
 
   // Navigation based on role hierarchy: Admin > Facilitator > Participant
   // This must be called unconditionally before any early returns
@@ -112,8 +115,10 @@ export default function Layout({ children, currentPageName }) {
         { name: 'Teams', icon: Users, page: 'Teams' },
         { name: 'Channels', icon: Users, page: 'Channels' },
         { name: 'Recognition', icon: Gift, page: 'Recognition' },
-        { name: 'Recognition Feed', icon: Sparkles, page: 'RecognitionFeed' },
-        { name: 'Team Challenges', icon: Users, page: 'TeamChallenges' },
+          { name: 'Recognition Feed', icon: Sparkles, page: 'RecognitionFeed' },
+          { name: 'Team Challenges', icon: Users, page: 'TeamChallenges' },
+          { name: 'Point Store', icon: ShoppingCart, page: 'PointStore' },
+          { name: 'Rewards Store', icon: Gift, page: 'RewardsStore' },
         { name: 'AI Admin Insights', icon: BarChart3, page: 'AIAdminDashboard' },
         { name: 'My Profile', icon: User, page: 'ExpandedUserProfile' },
         { name: 'Leaderboards', icon: BarChart3, page: 'Leaderboards' },
@@ -157,6 +162,8 @@ export default function Layout({ children, currentPageName }) {
         { name: 'Teams', icon: Users, page: 'Teams' },
         { name: 'Channels', icon: Users, page: 'Channels' },
         { name: 'Recognition', icon: Gift, page: 'Recognition' },
+        { name: 'Point Store', icon: ShoppingCart, page: 'PointStore' },
+        { name: 'Rewards Store', icon: Gift, page: 'RewardsStore' },
         { name: 'Leaderboards', icon: BarChart3, page: 'Leaderboards' },
         { name: 'My Profile', icon: User, page: 'UserProfile' },
       ];
@@ -375,6 +382,8 @@ export default function Layout({ children, currentPageName }) {
   // Authenticated/protected pages with onboarding
   return (
     <OnboardingProvider>
+      <RedirectLoopDetector />
+      <RoleGate pageName={currentPageName}>
       <div className="min-h-screen flex flex-col bg-slate-100" lang="en">
         {/* Skip to main content - WCAG 2.4.1 */}
         <a 
@@ -580,6 +589,7 @@ export default function Layout({ children, currentPageName }) {
         {/* Mobile Bottom Navigation */}
         <MobileBottomNav currentPageName={currentPageName} />
         </div>
+        </RoleGate>
         </OnboardingProvider>
         );
         }
