@@ -1,139 +1,175 @@
-/**
- * USER MANAGEMENT PANEL
- * Comprehensive user admin controls with invite, role management, and suspension
- */
-
+import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { 
-  Users, 
-  Ban, 
-  CheckCircle,
-  Clock,
-  Mail,
-  XCircle
-} from 'lucide-react';
+  Table, 
+  TableBody, 
+  TableCell, 
+  TableHead, 
+  TableHeader, 
+  TableRow 
+} from '@/components/ui/table';
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Search, MoreVertical, CheckCircle, XCircle, Mail } from 'lucide-react';
 import { toast } from 'sonner';
-import { hasPermission } from '../lib/rbac/roles';
+import { format } from 'date-fns';
 
-export default function UserManagementPanel({ currentUser }) {
+export default function UserManagementPanel() {
   const queryClient = useQueryClient();
+  const [searchQuery, setSearchQuery] = useState('');
 
-  // Fetch pending invitations
-  const { data: invitations = [], isLoading } = useQuery({
-    queryKey: ['user-invitations'],
-    queryFn: () => base44.entities.UserInvitation.filter({ status: 'pending' }),
-    enabled: hasPermission(currentUser, 'INVITE_USERS')
+  const { data: users = [], isLoading } = useQuery({
+    queryKey: ['all-users'],
+    queryFn: () => base44.asServiceRole.entities.User.list('-created_date', 100)
   });
 
-  const revokeInviteMutation = useMutation({
-    mutationFn: async (inviteId) => {
-      await base44.entities.UserInvitation.update(inviteId, { status: 'revoked' });
+  const toggleUserStatusMutation = useMutation({
+    mutationFn: async ({ userId, newStatus }) => {
+      await base44.asServiceRole.entities.User.update(userId, {
+        status: newStatus
+      });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(['user-invitations']);
-      toast.success('Invitation revoked');
-    }
+      queryClient.invalidateQueries(['all-users']);
+      toast.success('User status updated');
+    },
+    onError: () => toast.error('Failed to update user')
   });
 
-  if (!hasPermission(currentUser, 'INVITE_USERS')) {
-    return null;
-  }
+  const inviteUserMutation = useMutation({
+    mutationFn: async ({ email, role }) => {
+      await base44.users.inviteUser(email, role);
+    },
+    onSuccess: () => toast.success('Invitation sent!'),
+    onError: () => toast.error('Failed to send invitation')
+  });
+
+  const filteredUsers = users.filter(user =>
+    user.full_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    user.email?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  if (isLoading) return <LoadingSpinner message="Loading users..." />;
 
   return (
-    <div className="space-y-6" data-b44-sync="true" data-feature="admin" data-component="usermanagementpanel">
-      {/* Pending Invitations */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Clock className="h-5 w-5 text-blue-600" />
-            Pending Invitations
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          {invitations.length === 0 ? (
-            <p className="text-sm text-slate-600 text-center py-4">
-              No pending invitations
-            </p>
-          ) : (
-            <div className="space-y-3">
-              {invitations.map(invite => (
-                <div key={invite.id} className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <Mail className="h-4 w-4 text-slate-400" />
-                      <span className="font-medium text-slate-900">{invite.email}</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-xs text-slate-600">
-                      <Badge variant="outline" className="text-xs">
-                        {invite.role === 'admin' ? 'Admin' : invite.user_type || 'Employee'}
-                      </Badge>
-                      <span>Invited by {invite.invited_by}</span>
-                      <span>• {new Date(invite.created_date).toLocaleDateString()}</span>
-                    </div>
-                  </div>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                    onClick={() => revokeInviteMutation.mutate(invite.id)}
-                  >
-                    <XCircle className="h-4 w-4" />
-                  </Button>
-                </div>
-              ))}
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card className="p-4">
-          <div className="flex items-center gap-3">
-            <div className="p-3 rounded-lg bg-blue-100">
-              <Users className="h-6 w-6 text-blue-600" />
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-slate-900">
-                {invitations.filter(i => i.status === 'pending').length}
-              </p>
-              <p className="text-sm text-slate-600">Pending</p>
-            </div>
+    <Card>
+      <CardHeader>
+        <CardTitle>User Management</CardTitle>
+        <div className="flex gap-3 mt-4">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+            <Input
+              placeholder="Search users by name or email..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-9"
+            />
           </div>
-        </Card>
+          <Button 
+            onClick={() => {
+              const email = prompt('Enter email to invite:');
+              const role = confirm('Invite as admin?') ? 'admin' : 'user';
+              if (email) inviteUserMutation.mutate({ email, role });
+            }}
+            className="bg-int-orange hover:bg-[#C46322]"
+          >
+            <Mail className="h-4 w-4 mr-2" />
+            Invite User
+          </Button>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Name</TableHead>
+              <TableHead>Email</TableHead>
+              <TableHead>Role</TableHead>
+              <TableHead>Type</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Joined</TableHead>
+              <TableHead className="text-right">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filteredUsers.map(user => {
+              const isActive = user.status !== 'inactive';
+              
+              return (
+                <TableRow key={user.id}>
+                  <TableCell className="font-medium">{user.full_name || 'N/A'}</TableCell>
+                  <TableCell>{user.email}</TableCell>
+                  <TableCell>
+                    <Badge variant={user.role === 'admin' ? 'default' : 'outline'}>
+                      {user.role || 'user'}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant="secondary">
+                      {user.user_type || 'participant'}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    <Badge 
+                      variant={isActive ? 'default' : 'destructive'}
+                      className={isActive ? 'bg-green-600' : ''}
+                    >
+                      {isActive ? (
+                        <>
+                          <CheckCircle className="h-3 w-3 mr-1" />
+                          Active
+                        </>
+                      ) : (
+                        <>
+                          <XCircle className="h-3 w-3 mr-1" />
+                          Inactive
+                        </>
+                      )}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="text-sm text-slate-600">
+                    {format(new Date(user.created_date), 'MMM d, yyyy')}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon">
+                          <MoreVertical className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem
+                          onClick={() => toggleUserStatusMutation.mutate({
+                            userId: user.id,
+                            newStatus: isActive ? 'inactive' : 'active'
+                          })}
+                        >
+                          {isActive ? 'Deactivate' : 'Activate'}
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
 
-        <Card className="p-4">
-          <div className="flex items-center gap-3">
-            <div className="p-3 rounded-lg bg-emerald-100">
-              <CheckCircle className="h-6 w-6 text-emerald-600" />
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-slate-900">
-                {invitations.filter(i => i.status === 'accepted').length}
-              </p>
-              <p className="text-sm text-slate-600">Accepted</p>
-            </div>
+        {filteredUsers.length === 0 && (
+          <div className="text-center py-12 text-slate-500">
+            <p>No users found</p>
           </div>
-        </Card>
-
-        <Card className="p-4">
-          <div className="flex items-center gap-3">
-            <div className="p-3 rounded-lg bg-red-100">
-              <Ban className="h-6 w-6 text-red-600" />
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-slate-900">
-                {invitations.filter(i => i.status === 'expired' || i.status === 'revoked').length}
-              </p>
-              <p className="text-sm text-slate-600">Expired/Revoked</p>
-            </div>
-          </div>
-        </Card>
-      </div>
-    </div>
+        )}
+      </CardContent>
+    </Card>
   );
 }

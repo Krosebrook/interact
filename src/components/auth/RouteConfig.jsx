@@ -95,6 +95,7 @@ export const SHARED_AUTHENTICATED_ROUTES = [
   'Recognition',
   'RecognitionEngine',
   'RecognitionFeed',
+  'Challenges',
   'PointStore',
   'RewardsStore',
   'Leaderboards',
