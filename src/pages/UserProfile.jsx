@@ -282,6 +282,10 @@ export default function UserProfile() {
                 <Calendar className="h-4 w-4 mr-2" />
                 Events
               </TabsTrigger>
+              <TabsTrigger value="gamification">
+                <Trophy className="h-4 w-4 mr-2" />
+                Achievements
+              </TabsTrigger>
               <TabsTrigger value="contributions">
                 <Award className="h-4 w-4 mr-2" />
                 Contributions
@@ -293,6 +297,14 @@ export default function UserProfile() {
                 </TabsTrigger>
               )}
             </TabsList>
+
+            {/* Gamification Tab */}
+            <TabsContent value="gamification" className="space-y-4">
+              <GamificationShowcase 
+                userEmail={viewingUserEmail} 
+                isOwnProfile={isOwnProfile}
+              />
+            </TabsContent>
 
             {/* Events Tab */}
             <TabsContent value="events" className="space-y-4">
