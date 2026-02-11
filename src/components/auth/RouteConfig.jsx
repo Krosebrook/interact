@@ -21,6 +21,7 @@ export const PUBLIC_ROUTES = [
 export const ADMIN_ONLY_ROUTES = [
   'AdminPanel',
   'AdminHub',
+  'AdminDashboard',
   'AdminAnalyticsDashboard',
   'AIAdminDashboard',
   'IntegrationsAdmin',
