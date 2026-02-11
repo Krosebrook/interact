@@ -41,7 +41,9 @@ export default function RoleGate({ children, pageName }) {
       
       // Redirect to login with return URL
       const currentPath = location.pathname + location.search;
-      base44.auth.redirectToLogin(currentPath);
+      import('@/api/base44Client').then(({ base44 }) => {
+        base44.auth.redirectToLogin(currentPath);
+      });
       return;
     }
 

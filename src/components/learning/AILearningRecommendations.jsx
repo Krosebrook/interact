@@ -7,7 +7,7 @@ import LoadingSpinner from '../common/LoadingSpinner';
 import LearningPathCard from './LearningPathCard';
 
 export default function AILearningRecommendations({ userEmail, availablePaths }) {
-  const { data: recommendations, isLoading } = useQuery({
+  const { data: recommendations, isLoading, isError } = useQuery({
     queryKey: ['learning-recommendations', userEmail],
     queryFn: async () => {
       const response = await base44.functions.invoke('learningPathAI', {
@@ -17,11 +17,25 @@ export default function AILearningRecommendations({ userEmail, availablePaths })
       return response.data;
     },
     enabled: !!userEmail,
-    staleTime: 10 * 60 * 1000
+    staleTime: 10 * 60 * 1000,
+    retry: 1,
+    gcTime: 5 * 60 * 1000
   });
 
   if (isLoading) {
     return <LoadingSpinner message="Analyzing your profile..." />;
+  }
+
+  if (isError || !recommendations) {
+    return (
+      <Card>
+        <CardContent className="py-12 text-center">
+          <AlertCircle className="h-12 w-12 mx-auto mb-3 text-slate-300" />
+          <p className="text-slate-600">Unable to load AI suggestions</p>
+          <p className="text-sm text-slate-500 mt-1">Please try again later</p>
+        </CardContent>
+      </Card>
+    );
   }
 
   const priorityColors = {
