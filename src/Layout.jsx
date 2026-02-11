@@ -5,7 +5,6 @@ import { base44 } from '@/api/base44Client';
 import { useAuth } from './components/auth/AuthProvider';
 import ErrorBoundary from './components/common/ErrorBoundary';
 import RoleGate from './components/auth/RoleGate';
-import RedirectLoopDetector from './components/auth/RedirectLoopDetector';
 import { 
   LayoutDashboard, 
   Calendar, 
@@ -382,7 +381,6 @@ export default function Layout({ children, currentPageName }) {
   // Authenticated/protected pages with onboarding
   return (
     <OnboardingProvider>
-      <RedirectLoopDetector />
       <RoleGate pageName={currentPageName}>
       <div className="min-h-screen flex flex-col bg-slate-100" lang="en">
         {/* Skip to main content - WCAG 2.4.1 */}
