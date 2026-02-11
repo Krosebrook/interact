@@ -2,8 +2,8 @@
 
 This directory contains specialized coding agents that understand the Interact platform's architecture, patterns, and conventions.
 
-**Last Updated:** February 9, 2026  
-**Total Agents:** 12
+**Last Updated:** February 11, 2026  
+**Total Agents:** 21
 
 ---
 
@@ -256,6 +256,202 @@ Example:
 
 ---
 
+### 🚀 Performance & Optimization
+
+#### 13. Performance Optimizer
+**File:** `performance-optimizer.agent.md`  
+**Purpose:** Identifies and fixes performance bottlenecks in React + Vite
+
+**Specializations:**
+- Bundle analysis and code splitting
+- Lazy loading (117 pages)
+- React.memo, useMemo, useCallback optimization
+- Image optimization with Cloudinary
+- TanStack Query cache configuration
+- Dependency optimization (remove moment.js)
+
+**When to Use:**
+- Reducing bundle size
+- Improving page load times
+- Optimizing render performance
+- Lighthouse performance score < 90
+
+---
+
+#### 14. State Management Expert
+**File:** `state-management-expert.agent.md`  
+**Purpose:** Implements Context API + TanStack Query state patterns
+
+**Specializations:**
+- React Context for UI state
+- TanStack Query for server state
+- Avoiding prop drilling
+- Optimistic updates
+- Query key conventions
+- Cache invalidation strategies
+
+**When to Use:**
+- Managing global app state
+- Implementing complex data flows
+- Optimizing re-renders
+- Setting up new contexts
+
+---
+
+### 🔗 Integration & APIs
+
+#### 15. API Integration Specialist
+**File:** `api-integration-specialist.agent.md`  
+**Purpose:** Implements 15+ third-party API integrations
+
+**Specializations:**
+- Google Calendar, Maps
+- Microsoft Teams
+- Slack
+- Notion, HubSpot, Zapier
+- OAuth flows
+- Webhook handlers
+- Rate limiting and retries
+
+**When to Use:**
+- Adding new external integrations
+- Implementing OAuth authentication
+- Setting up webhooks
+- Troubleshooting API errors
+
+---
+
+### 🧭 Navigation & Routing
+
+#### 16. Route & Navigation Manager
+**File:** `route-navigation-manager.agent.md`  
+**Purpose:** Manages React Router 6.26.0 for 117 pages
+
+**Specializations:**
+- Route organization and lazy loading
+- Protected routes and role guards
+- Nested routes
+- URL state management
+- Breadcrumbs and navigation
+- XSS-safe navigation (fixed v6.26.0)
+
+**When to Use:**
+- Adding new pages and routes
+- Implementing navigation guards
+- Refactoring route structure
+- Debugging routing issues
+
+---
+
+### 🛡️ Error Handling & Logging
+
+#### 17. Error Handling & Logging Expert
+**File:** `error-handling-logging.agent.md`  
+**Purpose:** Implements comprehensive error handling and logging
+
+**Specializations:**
+- Error boundaries for React errors
+- API error handling
+- User-friendly error messages
+- Global error handlers
+- Logging service integration
+- Sentry integration
+
+**When to Use:**
+- Implementing error boundaries
+- Improving error messages
+- Setting up error tracking
+- Debugging production issues
+
+---
+
+### ♿ Accessibility
+
+#### 18. Accessibility Auditor
+**File:** `accessibility-auditor.agent.md`  
+**Purpose:** Ensures WCAG 2.1 AA compliance
+
+**Specializations:**
+- Semantic HTML
+- ARIA labels and roles
+- Keyboard navigation
+- Screen reader support
+- Color contrast checking
+- Form accessibility
+
+**When to Use:**
+- Auditing components for a11y
+- Fixing accessibility violations
+- Implementing keyboard navigation
+- Lighthouse accessibility score < 100
+
+---
+
+### 📊 Analytics & Visualization
+
+#### 19. Analytics Implementation Specialist
+**File:** `analytics-implementation.agent.md`  
+**Purpose:** Implements tracking and analytics
+
+**Specializations:**
+- Event tracking system
+- User engagement metrics
+- Analytics dashboards
+- Real-time analytics
+- GDPR-compliant tracking
+- Analytics export (CSV, PDF)
+
+**When to Use:**
+- Implementing analytics tracking
+- Creating engagement metrics
+- Building analytics dashboards
+- Setting up event logging
+
+---
+
+#### 20. Data Visualization Expert
+**File:** `data-visualization-expert.agent.md`  
+**Purpose:** Creates charts and dashboards with Recharts 2.15.4
+
+**Specializations:**
+- Line, bar, pie, area, radar charts
+- Custom tooltips and legends
+- Responsive chart layouts
+- Chart export (image, PDF)
+- Recharts + TailwindCSS integration
+- Accessible visualizations
+
+**When to Use:**
+- Creating analytics dashboards
+- Visualizing engagement metrics
+- Building leaderboard charts
+- Implementing data export
+
+---
+
+### 📱 Mobile & PWA
+
+#### 21. PWA Implementation Specialist
+**File:** `pwa-implementation.agent.md`  
+**Purpose:** Implements Progressive Web App features
+
+**Specializations:**
+- Service workers
+- Web app manifest
+- Offline support
+- Install prompts
+- Push notifications
+- Background sync
+- App store submission (TWA, Capacitor)
+
+**When to Use:**
+- Implementing PWA features (Q2 2026)
+- Adding offline support
+- Creating install prompts
+- Setting up push notifications
+
+---
+
 ## Agent Selection Guide
 
 ### By Task Type
@@ -309,9 +505,10 @@ Example:
 - **AI:** OpenAI GPT-4, Claude 3, Gemini Pro
 
 ### Project Stats
-- **Pages:** 47 application pages
+- **Pages:** 117 application pages (not 47)
 - **Components:** 42+ component categories
 - **Backend Functions:** 61 TypeScript functions
+- **Custom Agents:** 21 specialized agents
 - **Test Coverage:** 0.09% (target: 30%+ by Q1 2026)
 - **Security Score:** 100/100 ✅
 - **Documentation Score:** 98/100 ✅
@@ -320,7 +517,9 @@ Example:
 - 100+ ESLint warnings/errors
 - 2 critical React Hooks violations
 - Low test coverage (0.09%)
+- Large bundle size (117 pages not lazy loaded)
 - Need TypeScript migration (Q2-Q3 2026)
+- PWA features not yet implemented (Q2 2026)
 
 ---
 
