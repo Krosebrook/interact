@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from './utils';
 import { base44 } from '@/api/base44Client';
-import { useAuth } from './components/auth/AuthProvider';
+import { AuthProvider, useAuth } from './components/auth/AuthProvider';
 import ErrorBoundary from './components/common/ErrorBoundary';
 import RoleGate from './components/auth/RoleGate';
 import { 
@@ -47,7 +47,7 @@ import AIChatbotAssistant from './components/core/AIChatbotAssistant';
 
 const HEADER_IMAGE = 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/691e3ae3bd4916f2e05ae35e/1b2b117bd_ChatGPTImageNov25202503_31_49PM.png';
 
-export default function Layout({ children, currentPageName }) {
+function LayoutInner({ children, currentPageName }) {
   const { user, normalizedRole, isAuthenticated, isChecking } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [installPrompt, setInstallPrompt] = useState(null);
@@ -589,5 +589,13 @@ export default function Layout({ children, currentPageName }) {
         </div>
         </RoleGate>
         </OnboardingProvider>
+        );
+        }
+
+        export default function Layout({ children, currentPageName }) {
+        return (
+        <AuthProvider>
+        <LayoutInner children={children} currentPageName={currentPageName} />
+        </AuthProvider>
         );
         }
