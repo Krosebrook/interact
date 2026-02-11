@@ -13,6 +13,10 @@ import { createPageUrl } from '../../utils';
  * @param {boolean} requireParticipant - Redirect if not participant
  * @returns {Object} User data and helpers
  */
+/**
+ * DEPRECATED: Use useAuth() from AuthProvider instead
+ * This hook is kept for backward compatibility but should be phased out
+ */
 export function useUserData(
   requireAuth = true, 
   requireAdmin = false,
