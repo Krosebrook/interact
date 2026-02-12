@@ -46,32 +46,32 @@ Check for performance issues:
 
 **Pattern for Pages (HIGH PRIORITY):**
 
-Currently, all 117 pages are imported eagerly. Implement lazy loading:
+In a naive setup, all 117 pages would be imported eagerly, which hurts bundle size and initial load. **This repo already uses lazy loading via `src/pages.config.js` and `Suspense` in `src/App.jsx` — do not revert to eager imports.** When optimizing or adding new pages, extend this pattern:
 
 ```javascript
-// In src/App.jsx or routing configuration
-import { lazy, Suspense } from 'react';
+// In src/pages.config.js
+import { lazy } from 'react';
+
+export const pagesConfig = {
+  Dashboard: lazy(() => import('./pages/Dashboard')),
+  Activities: lazy(() => import('./pages/Activities')),
+  TeamDashboard: lazy(() => import('./pages/TeamDashboard')),
+  // ...add additional pages here using React.lazy
+};
+
+// In src/App.jsx
+import { Suspense } from 'react';
+import { pagesConfig } from './pages.config';
 import { Loading } from '@/components/common/Loading';
 
-// BEFORE (eager loading - BAD for large apps)
-import Dashboard from './pages/Dashboard';
-import Activities from './pages/Activities';
-// ... 115 more imports
-
-// AFTER (lazy loading - GOOD)
-const Dashboard = lazy(() => import('./pages/Dashboard'));
-const Activities = lazy(() => import('./pages/Activities'));
-const TeamDashboard = lazy(() => import('./pages/TeamDashboard'));
-// ... wrap all page imports
-
-// Router implementation
-<Suspense fallback={<Loading />}>
-  <Routes>
-    <Route path="/dashboard" element={<Dashboard />} />
-    <Route path="/activities" element={<Activities />} />
-    {/* ... */}
-  </Routes>
-</Suspense>
+export function App() {
+  return (
+    <Suspense fallback={<Loading />}>
+      {/* The Pages component from pages.config.js handles all routes and lazy-loaded pages */}
+      <pagesConfig.Pages />
+    </Suspense>
+  );
+}
 ```
 
 **Pattern for Heavy Components:**
