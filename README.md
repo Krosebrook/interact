@@ -2,7 +2,7 @@
 
 [![Version](https://img.shields.io/badge/version-0.1.0--alpha-blue.svg)](https://github.com/Krosebrook/interact)
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](#)
-[![Security](https://img.shields.io/badge/security-100%2F100-success.svg)](./CODEBASE_AUDIT.md)
+[![Security](https://img.shields.io/badge/security-100%2F100-success.svg)](./docs/audits/CODEBASE_AUDIT.md)
 [![Vulnerabilities](https://img.shields.io/badge/vulnerabilities-0-success.svg)](./CHANGELOG.md#security)
 [![Documentation](https://img.shields.io/badge/docs-98%2F100-success.svg)](./docs/index.md)
 [![License](https://img.shields.io/badge/license-Proprietary-lightgrey.svg)](./LICENSE)
@@ -41,41 +41,39 @@ Interact is an enterprise-grade employee engagement platform that transforms wor
 
 ## 📚 Documentation
 
-**[📖 Complete Documentation Hub](./docs/index.md)** - Central navigation for all documentation
+**[📖 Complete Documentation Hub](./docs/README.md)** - Central navigation for all documentation
 
 ### Quick Links
 
 **Getting Started:**
 - **[Quick Start Guide](#-quick-start)** - Get up and running in 5 minutes
-- **[Development Guide](./DEVELOPMENT.md)** - Local development setup
+- **[Development Guide](./docs/getting-started/DEVELOPMENT.md)** - Local development setup
 - **[Contributing Guidelines](./CONTRIBUTING.md)** - How to contribute
 
 **Essential Documentation:**
-- **[Product Requirements (PRD)](./PRD.md)** - Product vision and requirements
-- **[Feature Roadmap](./FEATURE_ROADMAP.md)** - 18-month roadmap with 15 features
-- **[API Integration Guide](./API_INTEGRATION_GUIDE.md)** - Base44 SDK integration
-- **[Testing Guide](./TESTING.md)** - Testing strategy and best practices
+- **[Product Requirements (PRD)](./docs/planning/PRD.md)** - Product vision and requirements
+- **[Feature Roadmap](./docs/planning/FEATURE_ROADMAP.md)** - 18-month roadmap with 15 features
+- **[API Integration Guide](./docs/guides/API_INTEGRATION_GUIDE.md)** - Base44 SDK integration
+- **[Testing Guide](./docs/guides/TESTING.md)** - Testing strategy and best practices
 
 **For Developers:**
-- **[Usage Examples](./USAGE-EXAMPLES.md)** - Code examples and patterns
-- **[Documentation Guidelines](./DOCUMENTATION_GUIDELINES.md)** - How to write docs
-- **[Codebase Audit](./CODEBASE_AUDIT.md)** - Technical audit and quality metrics
+- **[Usage Examples](./docs/guides/USAGE-EXAMPLES.md)** - Code examples and patterns
+- **[Documentation Guidelines](./docs/guides/DOCUMENTATION_GUIDELINES.md)** - How to write docs
+- **[Codebase Audit](./docs/audits/CODEBASE_AUDIT.md)** - Technical audit and quality metrics
 - **[FAQ](./FAQ.md)** - Frequently asked questions
 
 **Operations:**
-- **[Deployment Checklist](./DEPLOYMENT_CHECKLIST.md)** - Pre-deployment verification
+- **[Deployment Checklist](./docs/operations/DEPLOYMENT_CHECKLIST.md)** - Pre-deployment verification
 - **[Security Documentation](./docs/security/)** - Security and compliance
-- **[Integrations](./INTEGRATIONS.md)** - Third-party integrations
+- **[Integrations](./docs/integrations/INTEGRATIONS.md)** - Third-party integrations
 
 **By Audience:**
-- **Developers:** Start with [Quick Start](#-quick-start) → [Development Guide](./DEVELOPMENT.md) → [Usage Examples](./USAGE-EXAMPLES.md)
-- **Product Managers:** Read [PRD](./PRD.md) → [Feature Roadmap](./FEATURE_ROADMAP.md)
-- **DevOps:** Review [Deployment Checklist](./DEPLOYMENT_CHECKLIST.md) → [CI/CD](./CI-CD.md)
-- **Security:** Check [Security Docs](./docs/security/SECURITY.md) → [Codebase Audit](./CODEBASE_AUDIT.md)
+- **Developers:** Start with [Quick Start](#-quick-start) → [Development Guide](./docs/getting-started/DEVELOPMENT.md) → [Usage Examples](./docs/guides/USAGE-EXAMPLES.md)
+- **Product Managers:** Read [PRD](./docs/planning/PRD.md) → [Feature Roadmap](./docs/planning/FEATURE_ROADMAP.md)
+- **DevOps:** Review [Deployment Checklist](./docs/operations/DEPLOYMENT_CHECKLIST.md) → [CI/CD](./docs/operations/CI-CD.md)
+- **Security:** Check [Security Docs](./docs/security/SECURITY.md) → [Codebase Audit](./docs/audits/CODEBASE_AUDIT.md)
 
-> **📊 148 documentation files** covering architecture, APIs, security, deployment, and more.
-  - DEPLOYMENT_GUIDE.md - Deployment instructions
-  - And 55+ more technical docs
+> **📊 70+ organized documentation files** in 11 categories covering architecture, APIs, security, deployment, and more.
 
 ### Base44 Integration
 - **[.github/base44-updates.md](./.github/base44-updates.md)** - Base44 visual canvas integration guide and module architecture
@@ -226,7 +224,7 @@ interact/
 **Q3 2026:** Advanced analytics, customizable gamification, wellness integration  
 **Q4 2026:** Multi-tenancy, AI content generation, advanced LMS  
 
-**See [FEATURE_ROADMAP.md](./FEATURE_ROADMAP.md) for complete 18-month roadmap with 15 features.**
+**See [FEATURE_ROADMAP.md](./docs/planning/FEATURE_ROADMAP.md) for complete 18-month roadmap with 15 features.**
 
 ## 🤝 Contributing
 
@@ -235,7 +233,7 @@ interact/
 - Follow **[Copilot Instructions](./.github/copilot-instructions.md)** for coding standards and patterns
 - Review agent prompts in **[.github/prompts](./.github/prompts/)** for specialized tasks
 
-Please refer to the [PRD.md](./PRD.md) for:
+Please refer to the [PRD.md](./docs/planning/PRD.md) for:
 - Technical architecture details
 - Development standards
 - Integration requirements
@@ -256,7 +254,7 @@ Please refer to the [PRD.md](./PRD.md) for:
 - Security: All vulnerabilities fixed (January 9, 2026) - Score: 100/100
 - Documentation: 85/100 → 98/100 (60+ technical docs added)
 
-**See [CODEBASE_AUDIT.md](./CODEBASE_AUDIT.md) Section 14 for scoring methodology.**
+**See [CODEBASE_AUDIT.md](./docs/audits/CODEBASE_AUDIT.md) Section 14 for scoring methodology.**
 
 ## 📝 License
 

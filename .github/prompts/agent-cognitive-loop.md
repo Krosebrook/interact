@@ -412,7 +412,7 @@ LOOP_DECISION: CONTINUE → await clarification
 ## Files to Reference
 - FEATURE_ROADMAP.md (planned features and timeline)
 - CODEBASE_AUDIT.md (security and quality issues)
-- PRD.md (product requirements)
+- docs/planning/PRD.md (product requirements)
 - RECOMMENDATIONS.md (best practices)
 - .github/copilot-instructions.md (coding standards)
 

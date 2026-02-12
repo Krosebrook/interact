@@ -138,9 +138,9 @@ This document describes audit logging practices for compliance, security, and tr
 
 ## Related Documentation
 
-- [GOVERNANCE.md](./GOVERNANCE.md)
+- [GOVERNANCE.md](../community/GOVERNANCE.md)
 - [DATA-PRIVACY.md](./DATA-PRIVACY.md)
-- [docs/security/INCIDENT_RESPONSE.md](./docs/security/INCIDENT_RESPONSE.md)
+- [INCIDENT_RESPONSE.md](./INCIDENT_RESPONSE.md)
 
 ---
 

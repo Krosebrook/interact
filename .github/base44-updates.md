@@ -767,8 +767,8 @@ Verify component appears and functions in Base44 canvas.
 
 ### Interact Documentation
 - **README.md** - Quick start and overview
-- **PRD.md** - Product requirements and architecture
-- **FEATURE_ROADMAP.md** - 18-month feature roadmap
+- **docs/planning/PRD.md** - Product requirements and architecture
+- **docs/planning/FEATURE_ROADMAP.md** - 18-month feature roadmap
 - **CODEBASE_AUDIT.md** - Security and quality metrics
 - **.github/agents.md** - AI agent context log (for future reference)
 

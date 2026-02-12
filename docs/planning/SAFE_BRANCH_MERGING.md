@@ -632,8 +632,8 @@ git checkout main
 
 ### Internal Documentation
 - [CHANGELOG.md](../CHANGELOG.md) - Version history
-- [CODEBASE_AUDIT.md](../CODEBASE_AUDIT.md) - Code quality metrics
-- [RECOMMENDATIONS.md](../RECOMMENDATIONS.md) - Best practices
+- [CODEBASE_AUDIT.md](../audits/CODEBASE_AUDIT.md) - Code quality metrics
+- [RECOMMENDATIONS.md](../planning/RECOMMENDATIONS.md) - Best practices
 
 ### External Resources
 - [Git Branching Guide](https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging)

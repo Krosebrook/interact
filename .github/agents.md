@@ -115,7 +115,7 @@ src/modules/
 
 - `.github/base44-updates.md` - Detailed implementation guide
 - `README.md` - Updated project structure section
-- `PRD.md` - Architecture section
+- `docs/planning/PRD.md` - Architecture section
 
 ---
 
@@ -657,8 +657,8 @@ When working on this codebase:
 - **.github/copilot-instructions.md** - Coding standards and patterns
 - **.github/base44-updates.md** - Base44 integration guide
 - **This file (agents.md)** - Historical context and decisions
-- **PRD.md** - Product requirements and architecture
-- **FEATURE_ROADMAP.md** - Planned features and priorities
+- **docs/planning/PRD.md** - Product requirements and architecture
+- **docs/planning/FEATURE_ROADMAP.md** - Planned features and priorities
 
 #### 2. Follow the Module Pattern for New Features
 

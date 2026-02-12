@@ -471,7 +471,7 @@ npm test -- path/to/test.js
 npm test -- --coverage
 ```
 
-**See [TESTING.md](./TESTING.md) for detailed testing guidelines.**
+**See [TESTING.md](./docs/guides/TESTING.md) for detailed testing guidelines.**
 
 ---
 
@@ -554,10 +554,10 @@ npm audit
 
 ### Resources
 
-- **Documentation:** Start with [README.md](./README.md) and [DOCUMENTATION_SUMMARY.md](./DOCUMENTATION_SUMMARY.md)
-- **Codebase Audit:** See [CODEBASE_AUDIT.md](./CODEBASE_AUDIT.md) for architecture
-- **Feature Roadmap:** Check [FEATURE_ROADMAP.md](./FEATURE_ROADMAP.md) for planned features
-- **Testing Guide:** Read [TESTING.md](./TESTING.md) for testing standards
+- **Documentation:** Start with [README.md](./README.md) and [DOCUMENTATION_SUMMARY.md](./docs/audits/DOCUMENTATION_SUMMARY.md)
+- **Codebase Audit:** See [CODEBASE_AUDIT.md](./docs/audits/CODEBASE_AUDIT.md) for architecture
+- **Feature Roadmap:** Check [FEATURE_ROADMAP.md](./docs/planning/FEATURE_ROADMAP.md) for planned features
+- **Testing Guide:** Read [TESTING.md](./docs/guides/TESTING.md) for testing standards
 
 ### Communication Channels
 
@@ -570,16 +570,16 @@ npm audit
 ### Common Questions
 
 **Q: How do I set up Base44 SDK?**
-A: See [API_INTEGRATION_GUIDE.md](./API_INTEGRATION_GUIDE.md) for setup instructions.
+A: See [API_INTEGRATION_GUIDE.md](./docs/guides/API_INTEGRATION_GUIDE.md) for setup instructions.
 
 **Q: What's the testing strategy?**
-A: See [TESTING.md](./TESTING.md) for comprehensive testing guidelines.
+A: See [TESTING.md](./docs/guides/TESTING.md) for comprehensive testing guidelines.
 
 **Q: How do I run the linter?**
 A: Run `npm run lint` to check, `npm run lint:fix` to auto-fix.
 
 **Q: My PR has merge conflicts, what do I do?**
-A: See [docs/SAFE_BRANCH_MERGING.md](./docs/SAFE_BRANCH_MERGING.md) for safe merging practices.
+A: See [docs/SAFE_BRANCH_MERGING.md](./docs/planning/SAFE_BRANCH_MERGING.md) for safe merging practices.
 
 ---
 
@@ -652,9 +652,9 @@ Thank you for contributing to Interact! 🎉
 
 **Related Documentation:**
 - [README.md](./README.md) - Project overview
-- [TESTING.md](./TESTING.md) - Testing guidelines
-- [CODEBASE_AUDIT.md](./CODEBASE_AUDIT.md) - Code quality standards
-- [FEATURE_ROADMAP.md](./FEATURE_ROADMAP.md) - Feature planning
+- [TESTING.md](./docs/guides/TESTING.md) - Testing guidelines
+- [CODEBASE_AUDIT.md](./docs/audits/CODEBASE_AUDIT.md) - Code quality standards
+- [FEATURE_ROADMAP.md](./docs/planning/FEATURE_ROADMAP.md) - Feature planning
 
 ---
 

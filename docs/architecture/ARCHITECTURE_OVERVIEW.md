@@ -472,7 +472,7 @@ graph TB
 - **[Complete System Architecture](../components/docs/COMPLETE_SYSTEM_ARCHITECTURE.md)** - Detailed architecture documentation
 - **[Database Schema](../components/docs/DATABASE_SCHEMA_TECHNICAL_SPEC.md)** - Complete database design
 - **[API Reference](../components/docs/API_REFERENCE.md)** - API documentation
-- **[Data Flow](../DATA-FLOW.md)** - Data flow documentation
+- **[Data Flow](./DATA-FLOW.md)** - Data flow documentation
 
 ---
 

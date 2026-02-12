@@ -207,11 +207,11 @@ try {
 ```
 
 ## Documentation References
-- **CODEBASE_AUDIT.md** - Security vulnerabilities and code quality issues
-- **PRD.md** - Product requirements and technical architecture
-- **FEATURE_ROADMAP.md** - 18-month roadmap with 15 features
-- **DOCUMENTATION_SUMMARY.md** - Overview of all documentation
-- **RECOMMENDATIONS.md** - Best practices and repository recommendations
+- **docs/audits/CODEBASE_AUDIT.md** - Security vulnerabilities and code quality issues
+- **docs/planning/PRD.md** - Product requirements and technical architecture
+- **docs/planning/FEATURE_ROADMAP.md** - 18-month roadmap with 15 features
+- **docs/audits/DOCUMENTATION_SUMMARY.md** - Overview of all documentation
+- **docs/planning/RECOMMENDATIONS.md** - Best practices and repository recommendations
 
 ## Git Workflow
 - Branch naming: `feature/feature-name` or `fix/bug-name`
@@ -226,9 +226,9 @@ try {
 ## When Working on Code
 
 ### Before Making Changes
-1. Check CODEBASE_AUDIT.md for known issues in the area
-2. Review PRD.md for requirements and constraints
-3. Check FEATURE_ROADMAP.md for related features
+1. Check docs/audits/CODEBASE_AUDIT.md for known issues in the area
+2. Review docs/planning/PRD.md for requirements and constraints
+3. Check docs/planning/FEATURE_ROADMAP.md for related features
 4. Ensure tests exist (or create them)
 
 ### While Coding
@@ -259,8 +259,8 @@ try {
 
 ## Questions or Clarifications
 For ambiguous requirements, refer to:
-1. PRD.md (product requirements)
-2. FEATURE_ROADMAP.md (implementation details)
+1. docs/planning/PRD.md (product requirements)
+2. docs/planning/FEATURE_ROADMAP.md (implementation details)
 3. Existing similar implementations in codebase
 4. Team lead or product owner
 

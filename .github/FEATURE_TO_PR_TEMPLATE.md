@@ -459,7 +459,7 @@ npm run dev
 **Known Constraints**:
 - ⚠️ **No tests yet**: Testing infrastructure needs to be added (Vitest planned)
 - ⚠️ **JavaScript only**: No TypeScript (migration planned for Q2 2025)
-- ⚠️ **8 security vulnerabilities**: Documented in CODEBASE_AUDIT.md
+- ⚠️ **8 security vulnerabilities**: Documented in docs/audits/CODEBASE_AUDIT.md
 - ⚠️ **100+ ESLint warnings**: Ongoing cleanup
 
 **Build Commands**:
@@ -473,9 +473,9 @@ npm run preview   # Preview production build
 
 **Required Reading** (check these first):
 - `.github/copilot-instructions.md` - Coding standards and patterns
-- `CODEBASE_AUDIT.md` - Security findings and known issues
-- `PRD.md` - Product requirements document
-- `FEATURE_ROADMAP.md` - Planned features and timeline
+- `docs/audits/CODEBASE_AUDIT.md` - Security findings and known issues
+- `docs/planning/PRD.md` - Product requirements document
+- `docs/planning/FEATURE_ROADMAP.md` - Planned features and timeline
 
 **Helpful Context**:
 - 47 application pages
@@ -568,7 +568,7 @@ Acceptance Criteria:
 ## 📞 Need Help?
 
 If stuck or unsure:
-1. **Check documentation**: README, CODEBASE_AUDIT.md, PRD.md
+1. **Check documentation**: README, docs/audits/CODEBASE_AUDIT.md, docs/planning/PRD.md
 2. **Look for similar code**: Find reference implementation
 3. **Ask specific questions**: "Should I use pattern A or B?" not "What should I do?"
 4. **Propose a solution**: "I'm planning X because Y. Thoughts?" gets faster feedback

@@ -224,7 +224,7 @@ interface ErrorResponse {
 
 ## Database Schemas
 
-See [components/docs/DATABASE_SCHEMA_TECHNICAL_SPEC.md](./components/docs/DATABASE_SCHEMA_TECHNICAL_SPEC.md) for complete Base44 entity schemas.
+See [components/docs/DATABASE_SCHEMA_TECHNICAL_SPEC.md](../../components/docs/DATABASE_SCHEMA_TECHNICAL_SPEC.md) for complete Base44 entity schemas.
 
 ---
 
@@ -273,8 +273,8 @@ interface BadgeAwardedEvent {
 ## Related Documentation
 
 - [API-CONTRACTS.md](./API-CONTRACTS.md) - API specifications
-- [DATA-FLOW.md](./DATA-FLOW.md) - Data flow patterns
-- [components/docs/DATABASE_SCHEMA_TECHNICAL_SPEC.md](./components/docs/DATABASE_SCHEMA_TECHNICAL_SPEC.md) - Database schema
+- [DATA-FLOW.md](../architecture/DATA-FLOW.md) - Data flow patterns
+- [components/docs/DATABASE_SCHEMA_TECHNICAL_SPEC.md](../../components/docs/DATABASE_SCHEMA_TECHNICAL_SPEC.md) - Database schema
 
 ---
 

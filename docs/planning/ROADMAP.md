@@ -159,7 +159,7 @@ Transform workplace culture through AI-powered engagement, comprehensive gamific
 
 - [FEATURE_ROADMAP.md](./FEATURE_ROADMAP.md) - Detailed feature specs
 - [PRD.md](./PRD.md) - Product requirements
-- [RELEASES.md](./RELEASES.md) - Release history
+- [RELEASES.md](../community/RELEASES.md) - Release history
 
 ---
 
