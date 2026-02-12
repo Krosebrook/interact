@@ -140,11 +140,11 @@ import { useMemo } from 'react';
 
 function LeaderboardPage({ users }) {
   // BEFORE - Recalculates on every render
-  const sortedUsers = users.sort((a, b) => b.points - a.points);
+  const sortedUsers = [...users].sort((a, b) => b.points - a.points);
 
   // AFTER - Only recalculates when users change
   const sortedUsers = useMemo(
-    () => users.sort((a, b) => b.points - a.points),
+    () => [...users].sort((a, b) => b.points - a.points),
     [users]
   );
 
