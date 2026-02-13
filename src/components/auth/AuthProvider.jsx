@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
+import { isPublicIntentPage } from '../lib/routeIntent';
 
 /**
  * AUTH STATE MACHINE
@@ -13,7 +14,7 @@ import { useQuery } from '@tanstack/react-query';
 
 const AuthContext = createContext(null);
 
-export function AuthProvider({ children }) {
+export function AuthProvider({ children, currentPageName }) {
   const [authState, setAuthState] = useState('checking');
   const [roleState, setRoleState] = useState('unknown');
   const [normalizedRole, setNormalizedRole] = useState(null);
@@ -23,6 +24,10 @@ export function AuthProvider({ children }) {
   const { data: authData, isLoading, isError, error } = useQuery({
     queryKey: ['auth-session'],
     queryFn: async () => {
+      // Skip authentication for public intent pages
+      if (isPublicIntentPage(currentPageName)) {
+        return { user: null, isAuthenticated: false };
+      }
       try {
         const user = await base44.auth.me();
         return { user, isAuthenticated: true };

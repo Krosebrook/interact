@@ -197,7 +197,7 @@ function LayoutInner({ children, currentPageName }) {
   }
 
   // Public pages (no onboarding/auth UI)
-  const isPublicPage = ['Splash', 'Landing', 'MarketingHome', 'Product', 'Blog', 'CaseStudies', 'Whitepapers', 'Resources'].includes(currentPageName);
+  const isPublicPage = ['Splash', 'MarketingHome', 'Product', 'Blog', 'CaseStudies', 'Whitepapers', 'Resources'].includes(currentPageName);
   
   // Minimal layout pages (no sidebar/header)
   if (currentPageName === 'ParticipantEvent' || currentPageName === 'RoleSelection') {
@@ -604,9 +604,9 @@ function LayoutInner({ children, currentPageName }) {
         }
 
         export default function Layout({ children, currentPageName }) {
-        return (
-        <AuthProvider>
-        <LayoutInner children={children} currentPageName={currentPageName} />
-        </AuthProvider>
-        );
+          return (
+            <AuthProvider currentPageName={currentPageName}>
+              <LayoutInner children={children} currentPageName={currentPageName} />
+            </AuthProvider>
+          );
         }
