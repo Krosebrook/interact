@@ -13,6 +13,7 @@ import SkillGapMicroLearning from './SkillGapMicroLearning';
 
 export default function GamifiedLearningDashboard({ userEmail }) {
   const [activeTab, setActiveTab] = useState('explore');
+  const [showPersonalizedAI, setShowPersonalizedAI] = useState(false);
 
   // Fetch all learning paths
   const { data: allPaths, isLoading: loadingPaths } = useQuery({
@@ -160,7 +161,17 @@ export default function GamifiedLearningDashboard({ userEmail }) {
         </TabsContent>
 
         {/* AI Suggestions Tab */}
-        <TabsContent value="ai-suggestions" className="mt-6">
+        <TabsContent value="ai-suggestions" className="mt-6 space-y-6">
+          <AIContentAssistant
+            type="learning"
+            context={{ 
+              userEmail,
+              currentPaths: enrolledPathIds,
+              completedCount: completedPaths.length,
+              tier: userPoints?.tier
+            }}
+            onSelect={(path) => console.log('Selected learning path:', path)}
+          />
           <AILearningRecommendations
             userEmail={userEmail}
             availablePaths={availablePaths}

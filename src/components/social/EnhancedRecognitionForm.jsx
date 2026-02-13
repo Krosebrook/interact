@@ -9,8 +9,9 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Heart, Award, Star } from 'lucide-react';
+import { Heart, Award, Star, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
+import AIContentAssistant from '../ai/AIContentAssistant';
 
 export default function EnhancedRecognitionForm({ currentUser, onSuccess, categories = [] }) {
   const [recipientEmail, setRecipientEmail] = useState('');
@@ -20,6 +21,7 @@ export default function EnhancedRecognitionForm({ currentUser, onSuccess, catego
   const [awardBadge, setAwardBadge] = useState(false);
   const [selectedBadge, setSelectedBadge] = useState(null);
   const [bonusPoints, setBonusPoints] = useState(0);
+  const [showAIAssistant, setShowAIAssistant] = useState(false);
   const queryClient = useQueryClient();
 
   // Fetch available badges
@@ -187,7 +189,19 @@ export default function EnhancedRecognitionForm({ currentUser, onSuccess, catego
 
           {/* Message */}
           <div>
-            <Label htmlFor="message">Your Message *</Label>
+            <div className="flex items-center justify-between mb-2">
+              <Label htmlFor="message">Your Message *</Label>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowAIAssistant(!showAIAssistant)}
+                className="text-int-orange hover:text-[#C46322]"
+              >
+                <Sparkles className="h-4 w-4 mr-1" />
+                AI Suggestions
+              </Button>
+            </div>
             <Textarea
               id="message"
               value={message}
@@ -196,6 +210,17 @@ export default function EnhancedRecognitionForm({ currentUser, onSuccess, catego
               rows={4}
               required
             />
+            {showAIAssistant && (
+              <AIContentAssistant
+                type="recognition"
+                context={{ recipientEmail, category }}
+                onSelect={(suggestion) => {
+                  setMessage(suggestion);
+                  setShowAIAssistant(false);
+                }}
+                className="mt-3"
+              />
+            )}
           </div>
 
           {/* Bonus Points */}
