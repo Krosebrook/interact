@@ -54,7 +54,6 @@ import AIEventPlanner from './pages/AIEventPlanner';
 import AIPersonalization from './pages/AIPersonalization';
 import Activities from './pages/Activities';
 import AdminAnalyticsDashboard from './pages/AdminAnalyticsDashboard';
-import AdminDashboard from './pages/AdminDashboard';
 import AdminHub from './pages/AdminHub';
 import AdvancedAnalytics from './pages/AdvancedAnalytics';
 import AdvancedGamificationAnalytics from './pages/AdvancedGamificationAnalytics';
@@ -66,7 +65,6 @@ import AvatarShopHub from './pages/AvatarShopHub';
 import Blog from './pages/Blog';
 import Calendar from './pages/Calendar';
 import CaseStudies from './pages/CaseStudies';
-import Challenges from './pages/Challenges';
 import Channels from './pages/Channels';
 import ComprehensiveProfile from './pages/ComprehensiveProfile';
 import ContentModerationAdmin from './pages/ContentModerationAdmin';
@@ -166,7 +164,8 @@ import WellnessAdmin from './pages/WellnessAdmin';
 import WellnessAnalyticsReport from './pages/WellnessAnalyticsReport';
 import WellnessDashboard from './pages/WellnessDashboard';
 import Whitepapers from './pages/Whitepapers';
-import TeamAnalytics from './pages/TeamAnalytics';
+import AdminDashboard from './pages/AdminDashboard';
+import Challenges from './pages/Challenges';
 import __Layout from './Layout.jsx';
 
 
@@ -178,7 +177,6 @@ export const PAGES = {
     "AIPersonalization": AIPersonalization,
     "Activities": Activities,
     "AdminAnalyticsDashboard": AdminAnalyticsDashboard,
-    "AdminDashboard": AdminDashboard,
     "AdminHub": AdminHub,
     "AdvancedAnalytics": AdvancedAnalytics,
     "AdvancedGamificationAnalytics": AdvancedGamificationAnalytics,
@@ -190,7 +188,6 @@ export const PAGES = {
     "Blog": Blog,
     "Calendar": Calendar,
     "CaseStudies": CaseStudies,
-    "Challenges": Challenges,
     "Channels": Channels,
     "ComprehensiveProfile": ComprehensiveProfile,
     "ContentModerationAdmin": ContentModerationAdmin,
@@ -290,7 +287,8 @@ export const PAGES = {
     "WellnessAnalyticsReport": WellnessAnalyticsReport,
     "WellnessDashboard": WellnessDashboard,
     "Whitepapers": Whitepapers,
-    "TeamAnalytics": TeamAnalytics,
+    "AdminDashboard": AdminDashboard,
+    "Challenges": Challenges,
 }
 
 export const pagesConfig = {
