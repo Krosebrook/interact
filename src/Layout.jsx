@@ -5,6 +5,8 @@ import { base44 } from '@/api/base44Client';
 import { AuthProvider, useAuth } from './components/auth/AuthProvider';
 import ErrorBoundary from './components/common/ErrorBoundary';
 import RoleGate from './components/auth/RoleGate';
+import { isPublicIntentPage } from './lib/routeIntent';
+import PublicLayout from './components/layouts/PublicLayout';
 import { 
   LayoutDashboard, 
   Calendar, 
@@ -188,6 +190,11 @@ function LayoutInner({ children, currentPageName }) {
       { name: 'My Profile', icon: User, page: 'UserProfile' },
     ];
     }, [isAdmin, isFacilitator, isParticipant]);
+
+  // Early return for public intent pages (clean marketing layout, no authenticated UI)
+  if (isPublicIntentPage(currentPageName)) {
+    return <PublicLayout>{children}</PublicLayout>;
+  }
 
   // Public pages (no onboarding/auth UI)
   const isPublicPage = ['Splash', 'Landing', 'MarketingHome', 'Product', 'Blog', 'CaseStudies', 'Whitepapers', 'Resources'].includes(currentPageName);
