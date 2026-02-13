@@ -192,6 +192,11 @@ function LayoutInner({ children, currentPageName }) {
     }, [isAdmin, isFacilitator, isParticipant]);
 
   // Early return for public intent pages (clean marketing layout, no authenticated UI)
+  // Landing page has its own complete layout, so render directly
+  if (currentPageName === 'Landing') {
+    return <>{children}</>;
+  }
+
   if (isPublicIntentPage(currentPageName)) {
     return <PublicLayout>{children}</PublicLayout>;
   }
