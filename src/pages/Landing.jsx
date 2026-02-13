@@ -106,7 +106,10 @@ export default function Landing() {
                 Pricing
               </a>
               <Button 
-                onClick={() => base44.auth.redirectToLogin()}
+                onClick={() => {
+                  console.log('[LANDING] Redirecting to login...');
+                  base44.auth.redirectToLogin(createPageUrl('Dashboard'));
+                }}
                 className="bg-gradient-to-r from-[#FF8A3D] to-[#FFB86C] hover:from-[#FFB86C] hover:to-[#FF8A3D] text-white"
               >
                 Sign In
@@ -154,7 +157,10 @@ export default function Landing() {
                 Pricing
               </a>
               <Button 
-                onClick={() => base44.auth.redirectToLogin()}
+                onClick={() => {
+                  console.log('[LANDING] Redirecting to login...');
+                  base44.auth.redirectToLogin(createPageUrl('Dashboard'));
+                }}
                 className="w-full bg-gradient-to-r from-[#FF8A3D] to-[#FFB86C] text-white"
               >
                 Get Started
@@ -213,7 +219,10 @@ export default function Landing() {
             >
               <Button
                 size="lg"
-                onClick={() => base44.auth.redirectToLogin()}
+                onClick={() => {
+                  console.log('[LANDING] Redirecting to login...');
+                  base44.auth.redirectToLogin(createPageUrl('Dashboard'));
+                }}
                 className="bg-gradient-to-r from-[#FF8A3D] to-[#FFB86C] hover:from-[#FFB86C] hover:to-[#FF8A3D] text-white text-lg px-8 py-6 w-full sm:w-auto shadow-lg hover:shadow-xl transition-all"
               >
                 Start Free Trial
@@ -355,7 +364,10 @@ export default function Landing() {
             </p>
             <Button
               size="lg"
-              onClick={() => base44.auth.redirectToLogin()}
+              onClick={() => {
+                console.log('[LANDING] Redirecting to login...');
+                base44.auth.redirectToLogin(createPageUrl('Dashboard'));
+              }}
               className="bg-white text-[#14294D] hover:bg-white/90 text-lg px-8 py-6 rounded-full shadow-2xl hover:shadow-white/20 transition-all"
             >
               Start Your Free Trial

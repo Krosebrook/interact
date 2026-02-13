@@ -26,19 +26,24 @@ export function AuthProvider({ children, currentPageName }) {
     queryFn: async () => {
       // Skip authentication for public intent pages
       if (isPublicIntentPage(currentPageName)) {
+        console.log('[AUTH] Skipping auth check for public page:', currentPageName);
         return { user: null, isAuthenticated: false };
       }
       try {
+        console.log('[AUTH] Checking authentication...');
         const user = await base44.auth.me();
+        console.log('[AUTH] User authenticated:', user?.email);
         return { user, isAuthenticated: true };
       } catch (err) {
         // Not authenticated - this is normal, not an error
+        console.log('[AUTH] Not authenticated:', err.message);
         return { user: null, isAuthenticated: false };
       }
     },
     staleTime: 60000, // Cache for 1 minute
     retry: false, // Don't retry failed auth checks
     refetchOnWindowFocus: true, // Re-check when user returns to tab
+    refetchOnMount: 'always', // Always check on mount
   });
 
   // Update auth state machine based on query results
