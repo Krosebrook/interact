@@ -149,6 +149,7 @@ import SocialGamification from './pages/SocialGamification';
 import SocialHub from './pages/SocialHub';
 import Splash from './pages/Splash';
 import Surveys from './pages/Surveys';
+import TeamAnalytics from './pages/TeamAnalytics';
 import TeamAnalyticsDashboard from './pages/TeamAnalyticsDashboard';
 import TeamAutomation from './pages/TeamAutomation';
 import TeamAutomations from './pages/TeamAutomations';
@@ -166,7 +167,6 @@ import WellnessAdmin from './pages/WellnessAdmin';
 import WellnessAnalyticsReport from './pages/WellnessAnalyticsReport';
 import WellnessDashboard from './pages/WellnessDashboard';
 import Whitepapers from './pages/Whitepapers';
-import TeamAnalytics from './pages/TeamAnalytics';
 import __Layout from './Layout.jsx';
 
 
@@ -273,6 +273,7 @@ export const PAGES = {
     "SocialHub": SocialHub,
     "Splash": Splash,
     "Surveys": Surveys,
+    "TeamAnalytics": TeamAnalytics,
     "TeamAnalyticsDashboard": TeamAnalyticsDashboard,
     "TeamAutomation": TeamAutomation,
     "TeamAutomations": TeamAutomations,
@@ -290,7 +291,6 @@ export const PAGES = {
     "WellnessAnalyticsReport": WellnessAnalyticsReport,
     "WellnessDashboard": WellnessDashboard,
     "Whitepapers": Whitepapers,
-    "TeamAnalytics": TeamAnalytics,
 }
 
 export const pagesConfig = {
