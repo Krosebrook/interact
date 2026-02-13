@@ -5,8 +5,8 @@ import { base44 } from '@/api/base44Client';
 import { AuthProvider, useAuth } from './components/auth/AuthProvider';
 import ErrorBoundary from './components/common/ErrorBoundary';
 import RoleGate from './components/auth/RoleGate';
-import { isPublicIntentPage } from './components/lib/routeIntent';
-import PublicLayout from './components/layouts/PublicLayout';
+import { isPublicIntentPage } from './components/lib/routeIntent.js';
+import PublicLayout from './components/layouts/PublicLayout.jsx';
 import { 
   LayoutDashboard, 
   Calendar, 
