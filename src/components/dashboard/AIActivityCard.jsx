@@ -1,71 +1,102 @@
-import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Clock, Users, Zap, Sparkles } from 'lucide-react';
+import { Clock, Users, Sparkles } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { createPageUrl } from '../../utils';
 
-const categoryBadges = {
-  icebreaker: { label: 'Quick Win', icon: Zap, color: 'bg-blue-100 text-blue-800 border-blue-200' },
-  social: { label: 'Social', icon: Users, color: 'bg-pink-100 text-pink-800 border-pink-200' },
-  wellness: { label: 'Wellness', icon: Sparkles, color: 'bg-green-100 text-green-800 border-green-200' },
-  learning: { label: 'Learning', icon: Sparkles, color: 'bg-purple-100 text-purple-800 border-purple-200' },
-  competitive: { label: 'Priority', icon: Zap, color: 'bg-orange-100 text-orange-800 border-orange-200' },
-};
+export default function AIActivityCard({ activity, points, matchScore, reason, onJoin }) {
+  const categoryColors = {
+    icebreaker: 'from-blue-500 to-blue-600',
+    creative: 'from-purple-500 to-purple-600',
+    competitive: 'from-orange-500 to-orange-600',
+    wellness: 'from-green-500 to-green-600',
+    learning: 'from-cyan-500 to-cyan-600',
+    social: 'from-pink-500 to-pink-600'
+  };
 
-export default function AIActivityCard({ activity, onJoin, points = 10 }) {
-  const badgeInfo = categoryBadges[activity.type] || categoryBadges.icebreaker;
-  const BadgeIcon = badgeInfo.icon;
+  const categoryEmojis = {
+    icebreaker: '🎯',
+    creative: '🎨',
+    competitive: '🏆',
+    wellness: '🧘',
+    learning: '📚',
+    social: '🎉'
+  };
+
+  const gradient = categoryColors[activity.type] || categoryColors.social;
+  const emoji = categoryEmojis[activity.type] || '✨';
 
   return (
-    <Card className="group hover:shadow-xl transition-all duration-300 border-0 overflow-hidden bg-white dark:bg-slate-800">
-      <div className="relative h-32 w-full bg-slate-100 overflow-hidden">
-        {activity.image_url ? (
-          <img 
-            src={activity.image_url}
-            alt={activity.title}
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-          />
-        ) : (
-          <div className="w-full h-full bg-gradient-to-br from-int-navy to-int-orange flex items-center justify-center text-white text-4xl">
-            ✨
-          </div>
-        )}
+    <Card className="h-full glass-card hover:shadow-xl transition-all duration-300 border-0 bg-gradient-to-br from-white to-slate-50 group">
+      {/* Header Image */}
+      <div className="relative h-36 w-full overflow-hidden rounded-t-xl">
+        <div className={`w-full h-full bg-gradient-to-br ${gradient} flex items-center justify-center`}>
+          <div className="text-6xl group-hover:scale-110 transition-transform">{emoji}</div>
+        </div>
+        
+        {/* Overlay Badges */}
         <div className="absolute top-3 left-3">
-          <Badge className={`${badgeInfo.color} border font-semibold backdrop-blur-sm`}>
-            <BadgeIcon className="w-3 h-3 mr-1" />
-            {badgeInfo.label}
+          <Badge className="bg-white/90 text-slate-900 border-0 font-semibold backdrop-blur-sm">
+            {activity.duration}
           </Badge>
         </div>
+        
+        {matchScore && (
+          <div className="absolute top-3 right-3">
+            <Badge className="bg-purple-600 text-white border-0 font-semibold">
+              <Sparkles className="h-3 w-3 mr-1" />
+              {Math.round(matchScore * 100)}% match
+            </Badge>
+          </div>
+        )}
+        
         {points && (
-          <div className="absolute bottom-3 right-3 bg-int-orange/90 backdrop-blur-sm px-2 py-1 rounded-lg flex items-center gap-1 text-white text-xs font-bold">
-            +{points} pts
+          <div className="absolute bottom-3 right-3">
+            <Badge className="bg-amber-500 text-white border-0 font-semibold">
+              +{points} pts
+            </Badge>
           </div>
         )}
       </div>
+
       <CardContent className="p-4">
-        <h4 className="font-bold text-slate-900 dark:text-white mb-2 line-clamp-2 text-base">
+        <h4 className="font-bold text-slate-900 mb-2 line-clamp-2 group-hover:text-int-orange transition-colors">
           {activity.title}
         </h4>
-        <p className="text-sm text-slate-600 dark:text-slate-400 mb-4 line-clamp-2">
+        
+        {reason && (
+          <p className="text-xs text-purple-700 mb-2 line-clamp-2 font-medium bg-purple-50 p-2 rounded">
+            {reason}
+          </p>
+        )}
+        
+        <p className="text-sm text-slate-600 mb-3 line-clamp-2">
           {activity.description}
         </p>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3 text-xs text-slate-500">
-            {activity.duration && (
-              <span className="flex items-center gap-1">
-                <Clock className="w-3 h-3" />
-                {activity.duration}
-              </span>
-            )}
+
+        <div className="flex items-center gap-3 mb-3 text-xs text-slate-500">
+          <div className="flex items-center gap-1">
+            <Clock className="h-3 w-3" />
+            {activity.duration}
           </div>
+          {activity.capacity && (
+            <div className="flex items-center gap-1">
+              <Users className="h-3 w-3" />
+              {activity.capacity} max
+            </div>
+          )}
+        </div>
+
+        <Link to={createPageUrl('Activities')}>
           <Button 
             size="sm" 
-            onClick={() => onJoin(activity)}
-            className="bg-primary hover:bg-primary/90 text-white font-semibold"
+            className="w-full bg-gradient-to-r from-int-orange to-int-orange-dark hover:from-int-orange-dark hover:to-int-orange"
+            onClick={() => onJoin && onJoin(activity)}
           >
-            Join
+            View Details
           </Button>
-        </div>
+        </Link>
       </CardContent>
     </Card>
   );

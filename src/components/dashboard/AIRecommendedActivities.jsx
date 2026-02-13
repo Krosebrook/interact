@@ -10,14 +10,35 @@ import { createPageUrl } from '../../utils';
 import AIActivityCard from './AIActivityCard';
 
 export default function AIRecommendedActivities({ userEmail }) {
-  const { data: activities = [], isLoading } = useQuery({
-    queryKey: ['ai-recommended-activities', userEmail],
+  const { data: recommendations, isLoading } = useQuery({
+    queryKey: ['ai-personalized-recommendations', userEmail],
     queryFn: async () => {
-      const allActivities = await base44.entities.Activity.list('-popularity_score', 10);
-      // In a real implementation, this would call an AI function
-      return allActivities.slice(0, 3);
-    }
+      try {
+        const response = await base44.functions.invoke('personalizedRecommendations', { 
+          userEmail 
+        });
+        return response.data;
+      } catch (error) {
+        console.error('AI recommendations error:', error);
+        // Fallback to basic activities
+        const allActivities = await base44.entities.Activity.list('-popularity_score', 10);
+        return {
+          success: true,
+          recommendations: {
+            events: [],
+            challenges: [],
+            goals: [],
+            insights: []
+          },
+          fallbackActivities: allActivities.slice(0, 3)
+        };
+      }
+    },
+    staleTime: 300000, // 5 minutes
+    refetchInterval: 600000 // 10 minutes
   });
+
+  const activities = recommendations?.fallbackActivities || [];
 
   const { data: events = [] } = useQuery({
     queryKey: ['upcoming-events-featured'],
@@ -62,8 +83,59 @@ export default function AIRecommendedActivities({ userEmail }) {
         </Link>
       </div>
 
+      {/* AI Insights Banner */}
+      {recommendations?.recommendations?.insights?.length > 0 && (
+        <div className="bg-gradient-to-r from-purple-500/10 to-blue-500/10 border border-purple-200 rounded-xl p-4 mb-4">
+          <div className="flex items-start gap-3">
+            <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center flex-shrink-0">
+              <Sparkles className="h-5 w-5 text-white" />
+            </div>
+            <div className="flex-1">
+              <h4 className="font-semibold text-slate-900 mb-1">AI Insight</h4>
+              <p className="text-sm text-slate-700">{recommendations.recommendations.insights[0]}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Horizontal Scroll Container */}
       <div className="flex overflow-x-auto no-scrollbar gap-4 pb-4 -mx-4 px-4 snap-x">
+        {/* AI Recommended Events */}
+        {recommendations?.recommendations?.events?.slice(0, 2).map((rec) => (
+          <div key={rec.event?.id} className="flex-none w-72 snap-center group">
+            <Card className="h-full glass-card hover:shadow-xl transition-all duration-300 border-2 border-purple-200 bg-gradient-to-br from-purple-50 to-blue-50">
+              <div className="relative h-36 w-full bg-slate-100 overflow-hidden rounded-t-xl">
+                <div className="w-full h-full bg-gradient-to-br from-purple-500 to-blue-600 flex items-center justify-center">
+                  <div className="text-center text-white p-4">
+                    <Sparkles className="h-10 w-10 mx-auto mb-2" />
+                    <div className="text-sm font-bold">AI Match: {Math.round(rec.match_score * 100)}%</div>
+                  </div>
+                </div>
+                <div className="absolute top-3 left-3">
+                  <Badge className="bg-purple-600 text-white border-purple-400 border font-semibold">
+                    🎯 Recommended
+                  </Badge>
+                </div>
+              </div>
+              <CardContent className="p-4">
+                <h4 className="font-bold text-slate-900 mb-2 line-clamp-2">{rec.event?.title}</h4>
+                <p className="text-xs text-purple-700 mb-3 line-clamp-2 font-medium">
+                  {rec.reason}
+                </p>
+                <p className="text-sm text-slate-600 mb-3">
+                  {new Date(rec.event?.scheduled_date).toLocaleDateString()}
+                </p>
+                <Link to={createPageUrl('Calendar')}>
+                  <Button size="sm" className="w-full bg-purple-600 hover:bg-purple-700">
+                    View Event
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+          </div>
+        ))}
+
+        {/* Fallback Activities */}
         {activities.map((activity) => (
           <div key={activity.id} className="flex-none w-72 snap-center">
             <AIActivityCard 
