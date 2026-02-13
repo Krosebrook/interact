@@ -95,6 +95,23 @@ export default function ModerationItem({
           </div>
         </div>
       </CardContent>
+
+      {showAIInsights && (
+        <div className="p-4 pt-0">
+          <AIContentAssistant
+            type="moderation"
+            context={{ 
+              content: item.message,
+              category: item.category,
+              sender: item.sender_email
+            }}
+            onSelect={(insights) => {
+              console.log('AI Moderation Insights:', insights);
+              setShowAIInsights(false);
+            }}
+          />
+        </div>
+      )}
     </Card>
   );
 }
@@ -144,54 +161,73 @@ function AIAnalysisPanel({ item, flagInfo }) {
 function ActionButtons({ 
   item, isSelected, onSelectItem, onApprove, onReject, onAnalyze, isAnalyzing, isModerating 
 }) {
+  const [showAIInsights, setShowAIInsights] = useState(false);
+
   return (
-    <div className="flex items-center gap-2 flex-wrap">
-      <Button
-        size="sm"
-        variant="outline"
-        onClick={() => onSelectItem(isSelected ? null : item)}
-      >
-        <Eye className="h-4 w-4 mr-1" />
-        Review
-      </Button>
-
-      {item.status !== 'approved' && (
+    <>
+      <div className="flex items-center gap-2 flex-wrap">
         <Button
           size="sm"
-          onClick={() => onApprove(item.id)}
-          className="bg-green-600 hover:bg-green-700"
-          disabled={isModerating}
+          variant="outline"
+          onClick={() => onSelectItem(isSelected ? null : item)}
         >
-          <Check className="h-4 w-4 mr-1" />
-          Approve
+          <Eye className="h-4 w-4 mr-1" />
+          Review
         </Button>
-      )}
 
-      {item.status !== 'rejected' && (
-        <Button
-          size="sm"
-          variant="destructive"
-          onClick={() => onReject(item.id)}
-          disabled={isModerating}
-        >
-          <X className="h-4 w-4 mr-1" />
-          Reject
-        </Button>
-      )}
+        {item.status !== 'approved' && (
+          <Button
+            size="sm"
+            onClick={() => onApprove(item.id)}
+            className="bg-green-600 hover:bg-green-700"
+            disabled={isModerating}
+          >
+            <Check className="h-4 w-4 mr-1" />
+            Approve
+          </Button>
+        )}
 
-      {!item.ai_flag_reason && (
+        {item.status !== 'rejected' && (
+          <Button
+            size="sm"
+            variant="destructive"
+            onClick={() => onReject(item.id)}
+            disabled={isModerating}
+          >
+            <X className="h-4 w-4 mr-1" />
+            Reject
+          </Button>
+        )}
+
         <Button
           size="sm"
           variant="ghost"
-          onClick={() => onAnalyze(item)}
+          onClick={() => setShowAIInsights(!showAIInsights)}
           disabled={isAnalyzing}
           className="text-purple-600"
         >
           <Sparkles className="h-4 w-4 mr-1" />
-          AI Analyze
+          AI Insights
         </Button>
+      </div>
+
+      {showAIInsights && (
+        <div className="mt-3">
+          <AIContentAssistant
+            type="moderation"
+            context={{ 
+              content: item.message,
+              category: item.category,
+              sender: item.sender_email
+            }}
+            onSelect={(insights) => {
+              console.log('AI Moderation Insights:', insights);
+              setShowAIInsights(false);
+            }}
+          />
+        </div>
       )}
-    </div>
+    </>
   );
 }
 
