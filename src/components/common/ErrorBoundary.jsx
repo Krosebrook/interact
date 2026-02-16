@@ -26,6 +26,25 @@ class ErrorBoundary extends React.Component {
       componentStack: errorInfo.componentStack,
       boundary: 'ErrorBoundary'
     });
+    
+    // Send to backend error logging endpoint
+    fetch('/api/logError', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        error: {
+          message: error.message,
+          stack: error.stack,
+          name: error.name
+        },
+        errorInfo,
+        componentStack: errorInfo.componentStack,
+        userAgent: navigator.userAgent,
+        url: window.location.href
+      })
+    }).catch(logErr => {
+      console.error('Failed to send error log:', logErr);
+    });
   }
 
   handleRetry = () => {
