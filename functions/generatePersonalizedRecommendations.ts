@@ -17,6 +17,19 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    // Check user consent for AI personalization
+    const userProfileRecords = await base44.entities.UserProfile.filter({
+      user_email: user.email
+    });
+    const userProfile = userProfileRecords[0];
+
+    if (!userProfile?.user_consent) {
+      return Response.json({
+        error: 'AI personalization requires user consent',
+        consent_required: true
+      }, { status: 403 });
+    }
+
     // Fetch user's gamification data
     const userPointsRecords = await base44.entities.UserPoints.filter({ 
       user_email: user.email 
@@ -108,7 +121,56 @@ Deno.serve(async (req) => {
       })
     };
 
+    // Generate cache key
+    const crypto = await import('node:crypto');
+    const contextString = JSON.stringify({ 
+      points: context.user.total_points, 
+      level: context.user.level, 
+      badges: context.user.badges_earned,
+      type: context.user.favorite_activity_type
+    });
+    const cacheKey = crypto.createHash('sha256').update(`recommendations_${user.email}_${contextString}`).digest('hex');
+
+    // Check cache first
+    const cachedRecords = await base44.asServiceRole.entities.AICache.filter({
+      cache_key: cacheKey,
+      expires_at: { $gte: new Date().toISOString() }
+    });
+
+    if (cachedRecords.length > 0) {
+      const cached = cachedRecords[0];
+      // Update hit count
+      await base44.asServiceRole.entities.AICache.update(cached.id, {
+        hit_count: (cached.hit_count || 0) + 1
+      });
+
+      // Log cache hit
+      await base44.asServiceRole.entities.AIUsageLog.create({
+        user_email: user.email,
+        function_name: 'generatePersonalizedRecommendations',
+        model_name: cached.model_name || 'cached',
+        tokens_used: 0,
+        cached: true,
+        response_time_ms: 0,
+        success: true
+      });
+
+      return Response.json({
+        success: true,
+        cached: true,
+        user_context: {
+          name: context.user.name,
+          points: context.user.total_points,
+          level: context.user.level,
+          badges: context.user.badges_earned
+        },
+        ...cached.response,
+        generated_at: cached.created_date
+      });
+    }
+
     // Generate AI recommendations
+    const startTime = Date.now();
     const prompt = `You are an expert gamification coach. Analyze this user's profile and generate personalized recommendations.
 
 USER PROFILE:
@@ -144,47 +206,142 @@ Each recommendation should:
 - Have a priority level (high/medium/low)
 - Include an emoji that fits the recommendation type`;
 
-    const aiResponse = await base44.asServiceRole.integrations.Core.InvokeLLM({
-      prompt,
-      response_json_schema: {
-        type: "object",
-        properties: {
-          recommendations: {
-            type: "array",
-            items: {
+    let aiResponse;
+    let useFallback = false;
+
+    try {
+      aiResponse = await base44.asServiceRole.integrations.Core.InvokeLLM({
+        prompt,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            recommendations: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  title: { type: "string" },
+                  description: { type: "string" },
+                  action_type: { 
+                    type: "string",
+                    enum: ["earn_points", "earn_badge", "redeem_reward", "level_up", "attend_event", "maintain_streak"]
+                  },
+                  priority: { 
+                    type: "string",
+                    enum: ["high", "medium", "low"]
+                  },
+                  emoji: { type: "string" },
+                  points_impact: { type: "number" },
+                  estimated_effort: { type: "string" }
+                }
+              }
+            },
+            motivational_message: { type: "string" },
+            next_milestone: {
               type: "object",
               properties: {
-                title: { type: "string" },
                 description: { type: "string" },
-                action_type: { 
-                  type: "string",
-                  enum: ["earn_points", "earn_badge", "redeem_reward", "level_up", "attend_event", "maintain_streak"]
-                },
-                priority: { 
-                  type: "string",
-                  enum: ["high", "medium", "low"]
-                },
-                emoji: { type: "string" },
-                points_impact: { type: "number" },
-                estimated_effort: { type: "string" }
+                points_needed: { type: "number" },
+                estimated_time: { type: "string" }
               }
-            }
-          },
-          motivational_message: { type: "string" },
-          next_milestone: {
-            type: "object",
-            properties: {
-              description: { type: "string" },
-              points_needed: { type: "number" },
-              estimated_time: { type: "string" }
             }
           }
         }
-      }
-    });
+      });
+
+      const responseTime = Date.now() - startTime;
+      const estimatedTokens = Math.ceil(prompt.length / 4) + 500;
+
+      // Cache successful response
+      await base44.asServiceRole.entities.AICache.create({
+        cache_key: cacheKey,
+        prompt_hash: crypto.createHash('md5').update(prompt).digest('hex'),
+        model_name: 'gpt-4o-mini',
+        response: {
+          recommendations: aiResponse.recommendations,
+          motivational_message: aiResponse.motivational_message,
+          next_milestone: aiResponse.next_milestone
+        },
+        expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // 24 hours
+        hit_count: 0
+      });
+
+      // Log AI usage
+      await base44.asServiceRole.entities.AIUsageLog.create({
+        user_email: user.email,
+        function_name: 'generatePersonalizedRecommendations',
+        model_name: 'gpt-4o-mini',
+        tokens_used: estimatedTokens,
+        cached: false,
+        response_time_ms: responseTime,
+        success: true
+      });
+
+    } catch (aiError) {
+      console.error('AI service failed, using fallback:', aiError);
+      useFallback = true;
+
+      // Log failed attempt
+      await base44.asServiceRole.entities.AIUsageLog.create({
+        user_email: user.email,
+        function_name: 'generatePersonalizedRecommendations',
+        model_name: 'fallback',
+        tokens_used: 0,
+        cached: false,
+        response_time_ms: Date.now() - startTime,
+        success: false,
+        error_message: aiError.message
+      });
+
+      // Fallback to featured activities
+      const featuredActivities = allActivities
+        .filter(a => a.popularity_score && a.popularity_score > 50)
+        .sort((a, b) => (b.popularity_score || 0) - (a.popularity_score || 0))
+        .slice(0, 5);
+
+      aiResponse = {
+        recommendations: [
+          {
+            title: "🎯 Attend Popular Events",
+            description: `Join one of our top-rated ${favoriteActivityType} activities to earn quick points!`,
+            action_type: "attend_event",
+            priority: "high",
+            emoji: "🎯",
+            points_impact: 25,
+            estimated_effort: "1 hour"
+          },
+          {
+            title: "🏆 Complete Your Next Badge",
+            description: "You're close to unlocking a new achievement. Keep going!",
+            action_type: "earn_badge",
+            priority: "medium",
+            emoji: "🏆",
+            points_impact: 50,
+            estimated_effort: "3-5 activities"
+          },
+          {
+            title: "⚡ Maintain Your Streak",
+            description: `Keep your ${userPoints.streak_days || 0}-day streak alive by participating today!`,
+            action_type: "maintain_streak",
+            priority: "high",
+            emoji: "⚡",
+            points_impact: 10,
+            estimated_effort: "15 minutes"
+          }
+        ],
+        motivational_message: `Keep up the great work, ${user.full_name}! You're doing amazing with ${userPoints.total_points} points.`,
+        next_milestone: {
+          description: `Reach Level ${(userPoints.level || 1) + 1}`,
+          points_needed: Math.max(0, ((userPoints.level || 1) * 100) - userPoints.total_points),
+          estimated_time: "1-2 weeks"
+        }
+      };
+    }
 
     return Response.json({
       success: true,
+      cached: false,
+      fallback: useFallback,
       user_context: {
         name: context.user.name,
         points: context.user.total_points,
