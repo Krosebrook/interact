@@ -108,44 +108,104 @@ Deno.serve(async (req: Request): Promise<Response> => {
     // Build updates
     const updates = buildPointsUpdate(userPoints, pointsToAward, config, actionType, participation);
 
-    // Apply updates
-    await applyUpdates(base44, participationId, userPoints.id, updates, actionType);
+    // Execute all updates in a transaction-like pattern with rollback
+    let participationUpdated = false;
+    let userPointsUpdated = false;
+    let teamPointsUpdated = false;
 
-    // Update team if applicable
-    if (userPoints.team_id) {
-      await updateTeamPoints(base44, userPoints.team_id, pointsToAward);
+    try {
+      // Apply participation updates
+      await applyUpdates(base44, participationId, userPoints.id, updates, actionType);
+      participationUpdated = true;
+
+      // Check for level up
+      const oldLevel = userPoints.level || 1;
+      const newLevel = Math.floor(updates.total_points! / POINTS_PER_LEVEL) + 1;
+
+      if (newLevel > oldLevel) {
+        await createNotification(base44, participation.participant_email, 'level_up_alerts',
+          '🚀 Level Up!', `You've reached Level ${newLevel}!`);
+        updates.level = newLevel;
+      }
+
+      // Update user points
+      await base44.asServiceRole.entities.UserPoints.update(userPoints.id, updates);
+      userPointsUpdated = true;
+
+      // Update team points if applicable
+      if (userPoints.team_id) {
+        await updateTeamPoints(base44, userPoints.team_id, pointsToAward);
+        teamPointsUpdated = true;
+      }
+
+      // Check and award badges (outside transaction as it's non-critical)
+      const badges = await checkAndAwardBadges(base44, userPoints, updates);
+
+      return Response.json({
+        success: true,
+        pointsAwarded: pointsToAward,
+        newTotal: updates.total_points!,
+        newLevel: newLevel,
+        badgesEarned: badges
+      });
+
+    } catch (transactionError) {
+      console.error('Transaction failed, rolling back:', transactionError);
+
+      // Rollback: Reverse changes in reverse order
+      if (teamPointsUpdated && userPoints.team_id) {
+        try {
+          const teams = await base44.asServiceRole.entities.Team.filter({ id: userPoints.team_id });
+          if (teams.length > 0) {
+            await base44.asServiceRole.entities.Team.update(teams[0].id, {
+              total_points: (teams[0].total_points || 0) - pointsToAward
+            });
+          }
+        } catch (rollbackError) {
+          console.error('Team points rollback failed:', rollbackError);
+        }
+      }
+
+      if (userPointsUpdated) {
+        try {
+          await base44.asServiceRole.entities.UserPoints.update(userPoints.id, {
+            total_points: userPoints.total_points,
+            available_points: userPoints.available_points,
+            lifetime_points: userPoints.lifetime_points
+          });
+        } catch (rollbackError) {
+          console.error('UserPoints rollback failed:', rollbackError);
+        }
+      }
+
+      if (participationUpdated) {
+        try {
+          const rollbackUpdate: Partial<Participation> = {};
+          if (actionType === 'attendance') rollbackUpdate.points_awarded = false;
+          if (actionType === 'activity_completion') rollbackUpdate.activity_completed = false;
+          if (actionType === 'feedback') rollbackUpdate.feedback_submitted = false;
+          
+          if (Object.keys(rollbackUpdate).length > 0) {
+            await base44.asServiceRole.entities.Participation.update(participationId, rollbackUpdate);
+          }
+        } catch (rollbackError) {
+          console.error('Participation rollback failed:', rollbackError);
+        }
+      }
+
+      throw transactionError;
     }
-
-    // Check for level up and notify
-    const oldLevel = userPoints.level || 1;
-    const newLevel = Math.floor(updates.total_points! / POINTS_PER_LEVEL) + 1;
-
-    if (newLevel > oldLevel) {
-      await createNotification(base44, participation.participant_email, 'level_up_alerts',
-        '🚀 Level Up!', `You've reached Level ${newLevel}!`);
-      updates.level = newLevel;
-    }
-
-    await base44.asServiceRole.entities.UserPoints.update(userPoints.id, updates);
-
-    // Check and award badges
-    const badges = await checkAndAwardBadges(base44, userPoints, updates);
-
-    const response: AwardPointsResponse = {
-      success: true,
-      pointsAwarded: pointsToAward,
-      newTotal: updates.total_points!,
-      newLevel: newLevel,
-      badgesEarned: badges
-    };
-
-    return Response.json(response);
-
   } catch (error: unknown) {
     console.error('Award points error:', error);
     return Response.json({ error: getErrorMessage(error) }, { status: 500 });
   }
 });
+
+// ============================================================================
+// HELPER FUNCTIONS
+// ============================================================================
+
+
 
 // ============================================================================
 // HELPER FUNCTIONS
