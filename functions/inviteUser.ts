@@ -75,10 +75,15 @@ Deno.serve(async (req) => {
         const expiresAt = new Date();
         expiresAt.setDate(expiresAt.getDate() + 7);
 
+        // Map role to Base44's built-in User.role field
+        const base44Role = role === 'admin' ? 'admin' : 'user';
+        const userType = role === 'facilitator' ? 'facilitator' : 'participant';
+
         const invitation = await base44.asServiceRole.entities.UserInvitation.create({
           email,
           invited_by: currentUser.email,
-          role: role === 'admin' ? 'admin' : (role === 'facilitator' ? 'facilitator' : 'participant'),
+          role: base44Role,
+          user_type: userType,
           token,
           status: 'pending',
           expires_at: expiresAt.toISOString(),
