@@ -11,6 +11,7 @@ import CreateChallengeDialog from '../components/challenges/CreateChallengeDialo
 import AIAssistedChallengeCreator from '../components/challenges/AIAssistedChallengeCreator';
 import ChallengeLeaderboard from '../components/challenges/ChallengeLeaderboard';
 import MyChallenges from '../components/challenges/MyChallenges';
+import { Card, CardContent } from '@/components/ui/card';
 
 export default function Challenges() {
   const { user } = useAuth();

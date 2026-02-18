@@ -27,6 +27,7 @@ import AIRecommendedActivities from '../components/dashboard/AIRecommendedActivi
 import PersonalizedInsightsWidget from '../components/ai/PersonalizedInsightsWidget';
 import ModernStatsCard from '../components/dashboard/ModernStatsCard';
 import PersonalizedContentFeed from '../components/personalization/PersonalizedContentFeed';
+import PersonalizedGamificationNudges from '../components/gamification/PersonalizedGamificationNudges';
 import {
   Calendar,
   Users,
@@ -77,6 +78,9 @@ export default function Dashboard() {
           nextLevelPoints={2000}
           userName={user.full_name}
         />
+
+        {/* AI Gamification Nudges */}
+        <PersonalizedGamificationNudges userEmail={user?.email} />
 
         {/* AI Personalized Insights */}
         <PersonalizedInsightsWidget userEmail={user?.email} />

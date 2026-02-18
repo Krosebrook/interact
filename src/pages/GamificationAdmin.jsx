@@ -14,6 +14,7 @@ import ContentIntegrationManager from '../components/admin/gamification/ContentI
 import AIContentGenerator from '../components/admin/gamification/AIContentGenerator';
 import AIRuleOptimizer from '../components/admin/gamification/AIRuleOptimizer';
 import { useGamificationStats } from '../components/admin/gamification/QuickStatsLoader';
+import AIBadgeRewardSuggestions from '../components/gamification/AIBadgeRewardSuggestions';
 
 export default function GamificationAdmin() {
   const { user, loading } = useUserData(true, true); // Require auth and admin
@@ -92,10 +93,14 @@ export default function GamificationAdmin() {
 
       {/* Main Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+        <TabsList className="grid w-full grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
           <TabsTrigger value="overview" className="gap-2">
             <Users className="h-4 w-4" />
             Overview
+          </TabsTrigger>
+          <TabsTrigger value="ai-suggestions" className="gap-2">
+            <Sparkles className="h-4 w-4" />
+            AI Ideas
           </TabsTrigger>
           <TabsTrigger value="awards" className="gap-2">
             <Award className="h-4 w-4" />
@@ -117,6 +122,10 @@ export default function GamificationAdmin() {
 
         <TabsContent value="overview" className="mt-6">
           <UserProgressOverview />
+        </TabsContent>
+
+        <TabsContent value="ai-suggestions" className="mt-6">
+          <AIBadgeRewardSuggestions />
         </TabsContent>
 
         <TabsContent value="awards" className="mt-6">

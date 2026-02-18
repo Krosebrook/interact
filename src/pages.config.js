@@ -83,6 +83,7 @@ import EventTemplates from './pages/EventTemplates';
 import EventWizard from './pages/EventWizard';
 import ExampleModulePage from './pages/ExampleModulePage';
 import ExpandedUserProfile from './pages/ExpandedUserProfile';
+import FacilitatorAITools from './pages/FacilitatorAITools';
 import FacilitatorDashboard from './pages/FacilitatorDashboard';
 import FacilitatorView from './pages/FacilitatorView';
 import FeedbackAdmin from './pages/FeedbackAdmin';
@@ -169,7 +170,6 @@ import WellnessAdmin from './pages/WellnessAdmin';
 import WellnessAnalyticsReport from './pages/WellnessAnalyticsReport';
 import WellnessDashboard from './pages/WellnessDashboard';
 import Whitepapers from './pages/Whitepapers';
-import FacilitatorAITools from './pages/FacilitatorAITools';
 import __Layout from './Layout.jsx';
 
 
@@ -210,6 +210,7 @@ export const PAGES = {
     "EventWizard": EventWizard,
     "ExampleModulePage": ExampleModulePage,
     "ExpandedUserProfile": ExpandedUserProfile,
+    "FacilitatorAITools": FacilitatorAITools,
     "FacilitatorDashboard": FacilitatorDashboard,
     "FacilitatorView": FacilitatorView,
     "FeedbackAdmin": FeedbackAdmin,
@@ -296,7 +297,6 @@ export const PAGES = {
     "WellnessAnalyticsReport": WellnessAnalyticsReport,
     "WellnessDashboard": WellnessDashboard,
     "Whitepapers": Whitepapers,
-    "FacilitatorAITools": FacilitatorAITools,
 }
 
 export const pagesConfig = {
