@@ -21,6 +21,13 @@ import {
 
 const ADMIN_FEATURES = [
   {
+    title: 'User Management',
+    description: 'Manage users, roles, and permissions',
+    icon: Users,
+    page: 'UserManagement',
+    color: 'from-int-navy to-blue-900'
+  },
+  {
     title: 'AI Admin Insights',
     description: 'Proactive engagement monitoring and interventions',
     icon: Brain,
