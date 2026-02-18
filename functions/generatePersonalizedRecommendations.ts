@@ -169,8 +169,9 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Generate AI recommendations
-    const startTime = Date.now();
+    // Generate AI recommendations with governance controls
+    const { secureAICall } = await import('./lib/aiGovernance.ts');
+    
     const prompt = `You are an expert gamification coach. Analyze this user's profile and generate personalized recommendations.
 
 USER PROFILE:
@@ -209,10 +210,8 @@ Each recommendation should:
     let aiResponse;
     let useFallback = false;
 
-    try {
-      aiResponse = await base44.asServiceRole.integrations.Core.InvokeLLM({
-        prompt,
-        response_json_schema: {
+    // Use secure AI call with governance controls
+    const responseSchema = {
           type: "object",
           properties: {
             recommendations: {
@@ -247,9 +246,24 @@ Each recommendation should:
             }
           }
         }
+      };
+
+    try {
+      const aiResult = await secureAICall(base44, {
+        userEmail: user.email,
+        userRole: user.role || 'user',
+        functionName: 'generatePersonalizedRecommendations',
+        prompt,
+        responseSchema,
+        agentName: 'PersonalizedGamificationCoach'
       });
 
-      const responseTime = Date.now() - startTime;
+      if (!aiResult.success) {
+        throw new Error(aiResult.error || 'AI call failed');
+      }
+
+      aiResponse = aiResult.data;
+      const responseTime = aiResult.riskScore; // Placeholder - actual time logged in secureAICall
       const estimatedTokens = Math.ceil(prompt.length / 4) + 500;
 
       // Cache successful response
@@ -264,17 +278,6 @@ Each recommendation should:
         },
         expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // 24 hours
         hit_count: 0
-      });
-
-      // Log AI usage
-      await base44.asServiceRole.entities.AIUsageLog.create({
-        user_email: user.email,
-        function_name: 'generatePersonalizedRecommendations',
-        model_name: 'gpt-4o-mini',
-        tokens_used: estimatedTokens,
-        cached: false,
-        response_time_ms: responseTime,
-        success: true
       });
 
     } catch (aiError) {

@@ -97,10 +97,21 @@ Answer the user's question based on this knowledge.`;
       .map(m => `${m.role === 'system' ? 'SYSTEM' : m.role === 'user' ? 'USER' : 'ASSISTANT'}: ${m.content}`)
       .join('\n\n');
     
-    const response = await base44.integrations.Core.InvokeLLM({
+    // Use secure AI call with governance
+    const { secureAICall } = await import('./lib/aiGovernance.ts');
+    const aiResult = await secureAICall(base44, {
+      userEmail: user.email,
+      userRole: user.role || 'user',
+      functionName: 'aiChatbotAssistant',
       prompt: `${conversationText}\n\nASSISTANT:`,
-      add_context_from_internet: false
+      agentName: 'ChatbotAssistant'
     });
+    
+    if (!aiResult.success) {
+      return Response.json({ error: aiResult.error }, { status: 400 });
+    }
+    
+    const response = aiResult.data;
     
     return Response.json({
       success: true,
