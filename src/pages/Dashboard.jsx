@@ -81,6 +81,9 @@ export default function Dashboard() {
         {/* AI Personalized Insights */}
         <PersonalizedInsightsWidget userEmail={user?.email} />
 
+        {/* AI-Powered Content Personalization */}
+        <PersonalizedContentFeed userEmail={user?.email} />
+
         {/* AI Recommended Activities */}
         <AIRecommendedActivities userEmail={user?.email} />
 
