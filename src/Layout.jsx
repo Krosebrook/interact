@@ -158,6 +158,7 @@ function LayoutInner({ children, currentPageName }) {
       return [
         { name: 'Dashboard', icon: LayoutDashboard, page: 'FacilitatorDashboard' },
         { name: 'Team Leader', icon: Users, page: 'TeamLeaderDashboard' },
+        { name: 'AI Tools', icon: Brain, page: 'FacilitatorAITools' },
         { name: 'Activities', icon: Sparkles, page: 'Activities' },
         { name: 'Calendar', icon: Calendar, page: 'Calendar' },
         { name: 'Learning', icon: FileText, page: 'LearningDashboard' },
