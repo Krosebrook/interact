@@ -284,17 +284,7 @@ Each recommendation should:
       console.error('AI service failed, using fallback:', aiError);
       useFallback = true;
 
-      // Log failed attempt
-      await base44.asServiceRole.entities.AIUsageLog.create({
-        user_email: user.email,
-        function_name: 'generatePersonalizedRecommendations',
-        model_name: 'fallback',
-        tokens_used: 0,
-        cached: false,
-        response_time_ms: Date.now() - startTime,
-        success: false,
-        error_message: aiError.message
-      });
+      // Error already logged in secureAICall
 
       // Fallback to featured activities
       const featuredActivities = allActivities
