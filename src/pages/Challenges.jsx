@@ -3,11 +3,12 @@ import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { useAuth } from '../components/auth/AuthProvider';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Trophy, Plus, Zap } from 'lucide-react';
+import { Trophy, Plus, Zap, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import ChallengeCard from '../components/challenges/ChallengeCard';
 import CreateChallengeDialog from '../components/challenges/CreateChallengeDialog';
+import AIAssistedChallengeCreator from '../components/challenges/AIAssistedChallengeCreator';
 import ChallengeLeaderboard from '../components/challenges/ChallengeLeaderboard';
 import MyChallenges from '../components/challenges/MyChallenges';
 
@@ -15,6 +16,7 @@ export default function Challenges() {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('active');
   const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const [showAICreator, setShowAICreator] = useState(false);
 
   const { data: challenges = [], isLoading } = useQuery({
     queryKey: ['challenges'],
@@ -44,11 +46,17 @@ export default function Challenges() {
           </h1>
           <p className="text-slate-600 mt-1">Participate in challenges to earn points and badges</p>
         </div>
-        {user?.role === 'admin' && (
-          <Button onClick={() => setShowCreateDialog(true)} className="bg-int-orange hover:bg-[#C46322]">
-            <Plus className="h-4 w-4 mr-2" />
-            Create Challenge
-          </Button>
+        {(user?.role === 'admin' || user?.user_type === 'facilitator') && (
+          <div className="flex gap-2">
+            <Button onClick={() => setShowAICreator(true)} className="bg-gradient-to-r from-int-orange to-purple-500 hover:opacity-90">
+              <Sparkles className="h-4 w-4 mr-2" />
+              AI Creator
+            </Button>
+            <Button onClick={() => setShowCreateDialog(true)} variant="outline">
+              <Plus className="h-4 w-4 mr-2" />
+              Manual Create
+            </Button>
+          </div>
         )}
       </div>
 
@@ -118,10 +126,14 @@ export default function Challenges() {
         </TabsContent>
       </Tabs>
 
-      {/* Create Dialog */}
+      {/* Create Dialogs */}
       <CreateChallengeDialog
         open={showCreateDialog}
         onOpenChange={setShowCreateDialog}
+      />
+      <AIAssistedChallengeCreator
+        open={showAICreator}
+        onOpenChange={setShowAICreator}
       />
     </div>
   );
