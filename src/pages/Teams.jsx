@@ -19,6 +19,7 @@ import TeamCard from '../components/teams/TeamCard';
 import CreateTeamDialog from '../components/teams/CreateTeamDialog';
 import TeamMemberManager from '../components/teams/TeamMemberManager';
 import TeamAnalytics from '../components/teams/TeamAnalytics';
+import PersonalizedTeamFeed from '../components/teams/PersonalizedTeamFeed';
 
 export default function Teams() {
   const navigate = useNavigate();
@@ -75,15 +76,20 @@ export default function Teams() {
 
       {/* My Team */}
       {myTeam && (
-        <MyTeamCard
-          team={myTeam}
-          user={user}
-          onNavigateToDashboard={() => handleViewDashboard(myTeam.id)}
-          onManageMembers={() => setShowMemberManager(true)}
-          onViewAnalytics={() => setShowAnalytics(true)}
-          onLeaveTeam={leaveTeam}
-          isLeaving={isLeaving}
-        />
+        <>
+          <MyTeamCard
+            team={myTeam}
+            user={user}
+            onNavigateToDashboard={() => handleViewDashboard(myTeam.id)}
+            onManageMembers={() => setShowMemberManager(true)}
+            onViewAnalytics={() => setShowAnalytics(true)}
+            onLeaveTeam={leaveTeam}
+            isLeaving={isLeaving}
+          />
+          
+          {/* Personalized Team Content */}
+          <PersonalizedTeamFeed teamId={myTeam.id} userEmail={user.email} />
+        </>
       )}
 
       {/* All Teams Leaderboard */}

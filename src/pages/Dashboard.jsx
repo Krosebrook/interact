@@ -25,8 +25,8 @@ import PersonalizedDashboard from '../components/dashboard/PersonalizedDashboard
 import GamificationHeroCard from '../components/dashboard/GamificationHeroCard';
 import AIRecommendedActivities from '../components/dashboard/AIRecommendedActivities';
 import PersonalizedInsightsWidget from '../components/ai/PersonalizedInsightsWidget';
-import PersonalizedContentFeed from '../components/personalization/PersonalizedContentFeed';
 import ModernStatsCard from '../components/dashboard/ModernStatsCard';
+import PersonalizedContentFeed from '../components/personalization/PersonalizedContentFeed';
 import {
   Calendar,
   Users,
