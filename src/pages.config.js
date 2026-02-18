@@ -117,6 +117,7 @@ import NewEmployeeOnboarding from './pages/NewEmployeeOnboarding';
 import NewHireOnboarding from './pages/NewHireOnboarding';
 import OnboardingDashboard from './pages/OnboardingDashboard';
 import OnboardingHub from './pages/OnboardingHub';
+import OnboardingWelcome from './pages/OnboardingWelcome';
 import PRDGenerator from './pages/PRDGenerator';
 import ParticipantEvent from './pages/ParticipantEvent';
 import ParticipantHub from './pages/ParticipantHub';
@@ -168,7 +169,6 @@ import WellnessAdmin from './pages/WellnessAdmin';
 import WellnessAnalyticsReport from './pages/WellnessAnalyticsReport';
 import WellnessDashboard from './pages/WellnessDashboard';
 import Whitepapers from './pages/Whitepapers';
-import OnboardingWelcome from './pages/OnboardingWelcome';
 import __Layout from './Layout.jsx';
 
 
@@ -243,6 +243,7 @@ export const PAGES = {
     "NewHireOnboarding": NewHireOnboarding,
     "OnboardingDashboard": OnboardingDashboard,
     "OnboardingHub": OnboardingHub,
+    "OnboardingWelcome": OnboardingWelcome,
     "PRDGenerator": PRDGenerator,
     "ParticipantEvent": ParticipantEvent,
     "ParticipantHub": ParticipantHub,
@@ -294,7 +295,6 @@ export const PAGES = {
     "WellnessAnalyticsReport": WellnessAnalyticsReport,
     "WellnessDashboard": WellnessDashboard,
     "Whitepapers": Whitepapers,
-    "OnboardingWelcome": OnboardingWelcome,
 }
 
 export const pagesConfig = {
