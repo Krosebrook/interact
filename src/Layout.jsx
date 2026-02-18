@@ -105,6 +105,7 @@ function LayoutInner({ children, currentPageName }) {
         return [
           { name: 'Dashboard', icon: LayoutDashboard, page: 'Dashboard' },
           { name: 'Admin Panel', icon: Shield, page: 'AdminHub' },
+          { name: 'Role Security', icon: Shield, page: 'RoleSecurity' },
           { name: 'Admin Analytics', icon: BarChart3, page: 'AdminAnalyticsDashboard' },
           { name: 'Facilitator', icon: Users, page: 'FacilitatorDashboard' },
           { name: 'AI Coaching', icon: Sparkles, page: 'AIEnhancedCoaching' },

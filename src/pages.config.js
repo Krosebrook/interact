@@ -141,6 +141,7 @@ import Resources from './pages/Resources';
 import RewardsAdmin from './pages/RewardsAdmin';
 import RewardsStore from './pages/RewardsStore';
 import RoleManagement from './pages/RoleManagement';
+import RoleSecurity from './pages/RoleSecurity';
 import RoleSelection from './pages/RoleSelection';
 import RoleSetup from './pages/RoleSetup';
 import SegmentationDashboard from './pages/SegmentationDashboard';
@@ -160,8 +161,8 @@ import TeamCompetition from './pages/TeamCompetition';
 import TeamDashboard from './pages/TeamDashboard';
 import TeamLeaderDashboard from './pages/TeamLeaderDashboard';
 import TeamLeaderboard from './pages/TeamLeaderboard';
-import TeamPerformanceDashboard from './pages/TeamPerformanceDashboard';
 import Teams from './pages/Teams';
+import TeamPerformanceDashboard from './pages/TeamPerformanceDashboard';
 import UserManagement from './pages/UserManagement';
 import UserProfile from './pages/UserProfile';
 import UserRoleAssignment from './pages/UserRoleAssignment';
@@ -170,7 +171,6 @@ import WellnessAdmin from './pages/WellnessAdmin';
 import WellnessAnalyticsReport from './pages/WellnessAnalyticsReport';
 import WellnessDashboard from './pages/WellnessDashboard';
 import Whitepapers from './pages/Whitepapers';
-import RoleSecurity from './pages/RoleSecurity';
 import __Layout from './Layout.jsx';
 
 
@@ -269,6 +269,7 @@ export const PAGES = {
     "RewardsAdmin": RewardsAdmin,
     "RewardsStore": RewardsStore,
     "RoleManagement": RoleManagement,
+    "RoleSecurity": RoleSecurity,
     "RoleSelection": RoleSelection,
     "RoleSetup": RoleSetup,
     "SegmentationDashboard": SegmentationDashboard,
@@ -288,8 +289,8 @@ export const PAGES = {
     "TeamDashboard": TeamDashboard,
     "TeamLeaderDashboard": TeamLeaderDashboard,
     "TeamLeaderboard": TeamLeaderboard,
-    "TeamPerformanceDashboard": TeamPerformanceDashboard,
     "Teams": Teams,
+    "TeamPerformanceDashboard": TeamPerformanceDashboard,
     "UserManagement": UserManagement,
     "UserProfile": UserProfile,
     "UserRoleAssignment": UserRoleAssignment,
@@ -298,7 +299,6 @@ export const PAGES = {
     "WellnessAnalyticsReport": WellnessAnalyticsReport,
     "WellnessDashboard": WellnessDashboard,
     "Whitepapers": Whitepapers,
-    "RoleSecurity": RoleSecurity,
 }
 
 export const pagesConfig = {

@@ -63,18 +63,14 @@ export function AuthProvider({ children, currentPageName }) {
       setNormalizedRole(resolved);
       setRoleState('resolved');
 
-      // Audit: Log role resolution if role is unknown/fallback
-      if (resolved === 'participant' && !user.user_type && user.role !== 'admin') {
-        auditLog('role_unknown_fallback', {
-          user_id: user.id,
-          user_email: user.email,
-          fields_present: {
-            role: user.role,
-            user_type: user.user_type,
-          },
-          resolved_role: resolved,
-        });
-      }
+      // Audit: Log role resolution for tracking
+      auditLog('role_resolved', {
+        user_id: user.id,
+        user_email: user.email,
+        raw_role: user.role,
+        user_type: user.user_type,
+        resolved_role: resolved,
+      });
     } else {
       setAuthState('unauthenticated');
       setRoleState('unknown');
@@ -118,17 +114,23 @@ export function useAuth() {
 /**
  * ROLE RESOLVER
  * Normalizes Base44's user object to our RBAC model
- * Priority: user.role === "admin" > user.user_type === "facilitator" > participant (default)
+ * Priority: admin > ops > hr > team_lead > employee > facilitator > participant
  */
 function resolveRole(user) {
   if (!user) return null;
   
-  // Priority 1: Admin role (highest privilege)
+  // Direct role mapping (highest priority)
   if (user.role === 'admin') return 'admin';
+  if (user.role === 'ops') return 'ops';
+  if (user.role === 'hr') return 'hr';
+  if (user.role === 'team_lead') return 'team_lead';
+  if (user.role === 'employee') return 'employee';
   
-  // Priority 2: Facilitator user_type
-  if (user.user_type === 'facilitator') return 'facilitator';
+  // Check user_type for backward compatibility
+  if (user.user_type === 'facilitator' || user.role === 'facilitator') {
+    return 'facilitator';
+  }
   
-  // Priority 3: Participant (default/least privilege)
+  // Default to participant (safest lowest privilege)
   return 'participant';
 }

@@ -52,11 +52,8 @@ export default function SecureUserInvitation() {
 
   const inviteMutation = useMutation({
     mutationFn: async (inviteData) => {
-      // Call backend function to create invitation with extended metadata
-      await base44.users.inviteUser(inviteData.email, inviteData.role);
-      
-      // Create invitation record with additional metadata
-      return base44.entities.UserInvitation.create({
+      // First create invitation record with metadata
+      const invitation = await base44.entities.UserInvitation.create({
         email: inviteData.email,
         role: inviteData.role,
         user_type: inviteData.userType,
@@ -65,6 +62,11 @@ export default function SecureUserInvitation() {
         token: crypto.randomUUID(),
         expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
       });
+      
+      // Then send Base44 invitation email
+      await base44.users.inviteUser(inviteData.email, inviteData.role);
+      
+      return invitation;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['userInvitations'] });
