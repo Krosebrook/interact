@@ -28,15 +28,12 @@ export default function AIGuidedOnboarding({
   const fetchAIGuidance = async () => {
     setIsLoading(true);
     try {
-      const response = await base44.integrations.Core.InvokeLLM({
-        prompt: `You are an onboarding assistant for an employee engagement platform. 
-        Current step: "${step.title}"
-        Description: "${step.description}"
-        
-        Provide a brief, friendly, and actionable tip (1-2 sentences) to help the user complete this step successfully. 
-        Be encouraging and specific.`,
+      const user = await base44.auth.me();
+      const response = await base44.functions.invoke('generateOnboardingTip', {
+        step_title: step.title,
+        step_description: step.description
       });
-      setAiGuidance(response);
+      setAiGuidance(response.data?.tip || 'Take your time and explore this step!');
     } catch (error) {
       setAiGuidance('Take your time and explore this step!');
     } finally {

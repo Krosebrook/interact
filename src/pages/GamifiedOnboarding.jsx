@@ -3,12 +3,15 @@ import LoadingSpinner from '@/components/common/LoadingSpinner';
 import GamifiedOnboardingQuest from '../components/onboarding/GamifiedOnboardingQuest';
 import AIOnboardingBuddy from '../components/ai/AIOnboardingBuddy';
 import ProactiveOnboardingTips from '../components/ai/ProactiveOnboardingTips';
+import RoleBasedQuickStart from '../components/onboarding/RoleBasedQuickStart';
 import { Sparkles, Trophy } from 'lucide-react';
 
 export default function GamifiedOnboarding() {
   const { user, loading } = useUserData();
   
   if (loading) return <LoadingSpinner />;
+  
+  const userRole = user?.role === 'admin' ? 'admin' : user?.user_type || 'participant';
   
   return (
     <div className="min-h-screen bg-gradient-to-br from-int-orange/5 to-purple-500/5 py-8">
@@ -22,8 +25,13 @@ export default function GamifiedOnboarding() {
             Start Your Journey
           </h1>
           <p className="text-slate-600 text-lg">
-            Complete quests, earn points, and get help from your AI buddy
+            AI-powered onboarding tailored to your role
           </p>
+        </div>
+        
+        {/* Role-Based Quick Start */}
+        <div className="mb-6">
+          <RoleBasedQuickStart userRole={userRole} />
         </div>
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

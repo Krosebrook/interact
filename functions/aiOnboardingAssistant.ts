@@ -93,9 +93,10 @@ Provide personalized onboarding guidance in JSON format:
   "personalized_encouragement": "Motivating message based on their progress"
 }`
 
-    const aiGuidance = await base44.integrations.Core.InvokeLLM({
-      prompt,
-      response_json_schema: {
+    // Use secure AI call with governance
+    const { secureAICall } = await import('./lib/aiGovernance.ts');
+    
+    const responseSchema = {
         type: "object",
         properties: {
           welcome_message: { type: "string" },
@@ -142,7 +143,22 @@ Provide personalized onboarding guidance in JSON format:
           personalized_encouragement: { type: "string" }
         }
       }
+    };
+
+    const aiResult = await secureAICall(base44, {
+      userEmail: user.email,
+      userRole: user.role || 'user',
+      functionName: 'aiOnboardingAssistant',
+      prompt,
+      responseSchema,
+      agentName: 'OnboardingCoach'
     });
+
+    if (!aiResult.success) {
+      throw new Error(aiResult.error || 'AI call failed');
+    }
+
+    const aiGuidance = aiResult.data;
 
     return Response.json({
       success: true,

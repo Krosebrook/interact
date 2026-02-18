@@ -12,14 +12,18 @@ export function useOnboardingSteps(userRole = 'participant') {
           cardPosition: null
         },
         {
-          title: 'Admin Dashboard',
-          description: 'Navigate to your admin panel to manage users, configure settings, and view platform analytics.',
+          title: 'User Management',
+          description: 'Start by inviting your team! Go to Admin Hub → User Management to send invitations with specific roles.',
           targetElement: { top: 80, left: 20, width: 200, height: 50 },
-          cardPosition: { top: 150, left: 240 }
+          cardPosition: { top: 150, left: 240 },
+          actionButton: {
+            label: 'Invite Team Members',
+            onClick: () => window.location.href = createPageUrl('UserManagement')
+          }
         },
         {
-          title: 'User Management',
-          description: 'Invite team members, assign roles, and manage permissions from the Admin Hub.',
+          title: 'Admin Dashboard',
+          description: 'Navigate to your admin panel to manage users, configure settings, and view platform analytics.',
           targetElement: { top: 140, left: 20, width: 200, height: 50 },
           cardPosition: { top: 210, left: 240 }
         },
@@ -70,41 +74,49 @@ export function useOnboardingSteps(userRole = 'participant') {
           cardPosition: null
         },
         {
-          title: 'Your Dashboard',
-          description: 'This is your home base. See upcoming events, recent recognition, and your activity feed.',
+          title: 'Complete Your Profile',
+          description: 'Start by adding your bio, skills, and interests. This helps teammates connect with you!',
           targetElement: { top: 140, left: 20, width: 200, height: 50 },
-          cardPosition: { top: 210, left: 240 }
-        },
-        {
-          title: 'Join Events',
-          description: 'Check out the calendar to RSVP for team activities and social events.',
-          targetElement: { top: 200, left: 20, width: 200, height: 50 },
-          cardPosition: { top: 270, left: 240 }
-        },
-        {
-          title: 'Give Recognition',
-          description: 'Celebrate your teammates! Send public shoutouts or private thank-you notes.',
-          targetElement: { top: 260, left: 20, width: 200, height: 50 },
-          cardPosition: { top: 330, left: 240 },
+          cardPosition: { top: 210, left: 240 },
           actionButton: {
-            label: 'Try Recognition',
-            onClick: () => window.location.href = '/Recognition'
+            label: 'Set Up Profile',
+            onClick: () => window.location.href = createPageUrl('UserProfile')
           }
         },
         {
-          title: 'Earn Points & Badges',
-          description: 'Participate in activities, complete challenges, and unlock achievements!',
-          targetElement: { top: 320, left: 20, width: 200, height: 50 },
-          cardPosition: { top: 390, left: 240 }
+          title: 'Join or Create a Team',
+          description: 'Teams let you compete together in challenges and earn collective points. Find your squad!',
+          targetElement: { top: 200, left: 20, width: 200, height: 50 },
+          cardPosition: { top: 270, left: 240 },
+          actionButton: {
+            label: 'Browse Teams',
+            onClick: () => window.location.href = createPageUrl('Teams')
+          }
         },
         {
-          title: 'Customize Your Profile',
-          description: 'Add your bio, skills, and interests so teammates can get to know you better.',
+          title: 'RSVP for Events',
+          description: 'Check out the calendar to join team activities, workshops, and social events.',
+          targetElement: { top: 260, left: 20, width: 200, height: 50 },
+          cardPosition: { top: 330, left: 240 }
+        },
+        {
+          title: 'Give Recognition',
+          description: 'Celebrate your teammates! Send public shoutouts to spread positivity.',
+          targetElement: { top: 320, left: 20, width: 200, height: 50 },
+          cardPosition: { top: 390, left: 240 },
+          actionButton: {
+            label: 'Try Recognition',
+            onClick: () => window.location.href = createPageUrl('Recognition')
+          }
+        },
+        {
+          title: 'Join a Challenge',
+          description: 'Take on personal or team challenges to earn bonus points and exclusive badges!',
           targetElement: { top: 380, left: 20, width: 200, height: 50 },
           cardPosition: { top: 450, left: 240 },
           actionButton: {
-            label: 'Go to Profile',
-            onClick: () => window.location.href = '/UserProfile'
+            label: 'View Challenges',
+            onClick: () => window.location.href = createPageUrl('Challenges')
           }
         }
       ]

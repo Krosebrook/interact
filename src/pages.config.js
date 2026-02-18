@@ -160,6 +160,7 @@ import TeamLeaderDashboard from './pages/TeamLeaderDashboard';
 import TeamLeaderboard from './pages/TeamLeaderboard';
 import TeamPerformanceDashboard from './pages/TeamPerformanceDashboard';
 import Teams from './pages/Teams';
+import UserManagement from './pages/UserManagement';
 import UserProfile from './pages/UserProfile';
 import UserRoleAssignment from './pages/UserRoleAssignment';
 import UserSegmentation from './pages/UserSegmentation';
@@ -167,7 +168,7 @@ import WellnessAdmin from './pages/WellnessAdmin';
 import WellnessAnalyticsReport from './pages/WellnessAnalyticsReport';
 import WellnessDashboard from './pages/WellnessDashboard';
 import Whitepapers from './pages/Whitepapers';
-import UserManagement from './pages/UserManagement';
+import OnboardingWelcome from './pages/OnboardingWelcome';
 import __Layout from './Layout.jsx';
 
 
@@ -285,6 +286,7 @@ export const PAGES = {
     "TeamLeaderboard": TeamLeaderboard,
     "TeamPerformanceDashboard": TeamPerformanceDashboard,
     "Teams": Teams,
+    "UserManagement": UserManagement,
     "UserProfile": UserProfile,
     "UserRoleAssignment": UserRoleAssignment,
     "UserSegmentation": UserSegmentation,
@@ -292,7 +294,7 @@ export const PAGES = {
     "WellnessAnalyticsReport": WellnessAnalyticsReport,
     "WellnessDashboard": WellnessDashboard,
     "Whitepapers": Whitepapers,
-    "UserManagement": UserManagement,
+    "OnboardingWelcome": OnboardingWelcome,
 }
 
 export const pagesConfig = {
