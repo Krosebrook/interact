@@ -27,6 +27,7 @@ export const ADMIN_ONLY_ROUTES = [
   'IntegrationsAdmin',
   'RewardsAdmin',
   'RoleManagement',
+  'RoleSecurity',
   'UserRoleAssignment',
   'GamificationAdmin',
   'GamificationRulesAdmin',
@@ -196,8 +197,16 @@ export function getDefaultRoute(normalizedRole) {
   switch (normalizedRole) {
     case 'admin':
       return 'Dashboard';
+    case 'ops':
+      return 'Dashboard';
+    case 'hr':
+      return 'Dashboard';
+    case 'team_lead':
+      return 'TeamLeaderDashboard';
     case 'facilitator':
       return 'FacilitatorDashboard';
+    case 'employee':
+      return 'Dashboard';
     case 'participant':
       return 'ParticipantHub';
     default:
