@@ -4,7 +4,7 @@
  * Ensures consistent user state across the entire application
  */
 
-import { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { authClient } from '../lib/apiClient';
 import { logError } from '../lib/errors';
@@ -112,7 +112,11 @@ export function UserContextProvider({ children }) {
     .toUpperCase()
     .slice(0, 2) || 'U';
   
-  const value = {
+  /**
+   * 🚀 PERFORMANCE: Memoize context value to prevent unnecessary re-renders
+   * Only recreates when dependencies change
+   */
+  const value = useMemo(() => ({
     // User state
     user,
     loading,
@@ -134,7 +138,7 @@ export function UserContextProvider({ children }) {
     refreshUser,
     updateUser,
     logout,
-  };
+  }), [user, loading, error, isAuthenticated, isAdmin, isHR, isTeamLead, isFacilitator, isParticipant, displayName, initials, refreshUser, updateUser, logout]);
   
   return (
     <UserContext.Provider value={value}>
@@ -159,6 +163,30 @@ export function useUser() {
   }
   
   return context;
+}
+
+/**
+ * 🚀 PERFORMANCE: Granular selector hooks
+ * Use these to subscribe only to specific slices of user data
+ */
+export function useUserRole() {
+  const { userRole, userType } = useUser();
+  return useMemo(() => ({ role: userRole, type: userType }), [userRole, userType]);
+}
+
+export function useUserPermissions() {
+  const { isAdmin, isHR, isFacilitator, isTeamLead } = useUser();
+  return useMemo(() => ({ isAdmin, isHR, isFacilitator, isTeamLead }), [isAdmin, isHR, isFacilitator, isTeamLead]);
+}
+
+export function useUserDisplay() {
+  const { displayName, initials } = useUser();
+  return useMemo(() => ({ displayName, initials }), [displayName, initials]);
+}
+
+export function useAuthState() {
+  const { isAuthenticated, loading, error } = useUser();
+  return useMemo(() => ({ isAuthenticated, loading, error }), [isAuthenticated, loading, error]);
 }
 
 export default UserContext;
