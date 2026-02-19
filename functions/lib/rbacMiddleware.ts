@@ -8,26 +8,31 @@ const OWNER_EMAILS = []; // Configure with actual owner emails - leave empty if 
 export const ROLES = {
   OWNER: 'owner',
   ADMIN: 'admin',
+  OPS: 'ops',
+  HR: 'hr',
+  TEAM_LEAD: 'team_lead',
+  EMPLOYEE: 'employee',
   FACILITATOR: 'facilitator',
   PARTICIPANT: 'participant'
 };
 
 export const PERMISSIONS = {
-  INVITE_USERS: [ROLES.OWNER, ROLES.ADMIN],
+  INVITE_USERS: [ROLES.OWNER, ROLES.ADMIN, ROLES.HR],
   MANAGE_ROLES: [ROLES.OWNER],
-  SUSPEND_USERS: [ROLES.OWNER, ROLES.ADMIN],
-  VIEW_ALL_USERS: [ROLES.OWNER, ROLES.ADMIN],
-  CREATE_EVENTS: [ROLES.OWNER, ROLES.ADMIN, ROLES.FACILITATOR],
-  EDIT_ANY_EVENT: [ROLES.OWNER, ROLES.ADMIN],
+  SUSPEND_USERS: [ROLES.OWNER, ROLES.ADMIN, ROLES.HR],
+  VIEW_ALL_USERS: [ROLES.OWNER, ROLES.ADMIN, ROLES.HR],
+  CREATE_EVENTS: [ROLES.OWNER, ROLES.ADMIN, ROLES.OPS, ROLES.FACILITATOR],
+  EDIT_ANY_EVENT: [ROLES.OWNER, ROLES.ADMIN, ROLES.OPS],
   DELETE_EVENTS: [ROLES.OWNER, ROLES.ADMIN],
-  VIEW_ANALYTICS: [ROLES.OWNER, ROLES.ADMIN, ROLES.FACILITATOR],
-  EXPORT_DATA: [ROLES.OWNER, ROLES.ADMIN],
+  VIEW_ANALYTICS: [ROLES.OWNER, ROLES.ADMIN, ROLES.OPS, ROLES.HR, ROLES.FACILITATOR],
+  EXPORT_DATA: [ROLES.OWNER, ROLES.ADMIN, ROLES.HR],
   EXPORT_SENSITIVE_DATA: [ROLES.OWNER],
-  MANAGE_BADGES: [ROLES.OWNER, ROLES.ADMIN],
-  MANAGE_REWARDS: [ROLES.OWNER, ROLES.ADMIN],
+  MANAGE_BADGES: [ROLES.OWNER, ROLES.ADMIN, ROLES.OPS],
+  MANAGE_REWARDS: [ROLES.OWNER, ROLES.ADMIN, ROLES.OPS],
   ADJUST_POINTS: [ROLES.OWNER, ROLES.ADMIN],
   CONFIGURE_SYSTEM: [ROLES.OWNER],
-  VIEW_AUDIT_LOG: [ROLES.OWNER, ROLES.ADMIN]
+  VIEW_AUDIT_LOG: [ROLES.OWNER, ROLES.ADMIN],
+  VIEW_HR_DATA: [ROLES.OWNER, ROLES.HR]
 };
 
 /**
@@ -44,7 +49,15 @@ export function isOwner(user) {
 export function getEffectiveRole(user) {
   if (!user) return null;
   if (isOwner(user)) return ROLES.OWNER;
+  
+  // Direct role mapping
   if (user.role === 'admin') return ROLES.ADMIN;
+  if (user.role === 'ops') return ROLES.OPS;
+  if (user.role === 'hr') return ROLES.HR;
+  if (user.role === 'team_lead') return ROLES.TEAM_LEAD;
+  if (user.role === 'employee') return ROLES.EMPLOYEE;
+  
+  // Fallback to user_type
   if (user.user_type === 'facilitator') return ROLES.FACILITATOR;
   return ROLES.PARTICIPANT;
 }

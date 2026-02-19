@@ -55,6 +55,23 @@ Deno.serve(async (req) => {
       }, { status: 400 });
     }
 
+    // Validate redemption limits (if specified)
+    if (reward.max_per_user) {
+      const previousRedemptions = await base44.asServiceRole.entities.RewardRedemption.filter({
+        user_email: user.email,
+        reward_id: reward.id,
+        status: { $in: ['pending', 'approved', 'fulfilled'] }
+      });
+      
+      if (previousRedemptions.length >= reward.max_per_user) {
+        return Response.json({
+          error: 'Redemption limit reached',
+          limit: reward.max_per_user,
+          redeemed: previousRedemptions.length
+        }, { status: 400 });
+      }
+    }
+
     // Get user points record
     const userPointsRecords = await base44.asServiceRole.entities.UserPoints.filter({ 
       user_email: user.email 

@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.4';
+import { requirePermission, PERMISSIONS } from './lib/rbacMiddleware.ts';
 import type {
   Base44Client,
   UserPoints,
@@ -63,10 +64,8 @@ Deno.serve(async (req: Request): Promise<Response> => {
   const base44 = createClientFromRequest(req) as Base44Client;
 
   try {
-    const user = await base44.auth.me();
-    if (!user) {
-      return Response.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    // 🔒 SECURITY: Require admin permission for manual point awards
+    await requirePermission(base44, 'ADJUST_POINTS');
 
     const { participationId, actionType, userEmail: targetEmail }: AwardPointsPayload = await req.json();
 
