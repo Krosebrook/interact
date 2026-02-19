@@ -4,7 +4,14 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Shield, Check, X, Eye, AlertCircle } from 'lucide-react';
-import { ROUTE_CONFIG } from '../components/auth/RouteConfig';
+import { 
+  PUBLIC_ROUTES, 
+  ADMIN_ONLY_ROUTES, 
+  FACILITATOR_ROUTES, 
+  PARTICIPANT_ROUTES, 
+  SHARED_AUTHENTICATED_ROUTES,
+  canAccessRoute 
+} from '../components/auth/RouteConfig';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 
@@ -19,15 +26,36 @@ export default function RBACTestChecklist() {
     const accessible = [];
     const blocked = [];
 
-    Object.entries(ROUTE_CONFIG).forEach(([pageName, config]) => {
-      const { allowedRoles, isPublic } = config;
+    // Combine all routes
+    const allRoutes = [
+      ...PUBLIC_ROUTES,
+      ...ADMIN_ONLY_ROUTES,
+      ...FACILITATOR_ROUTES,
+      ...PARTICIPANT_ROUTES,
+      ...SHARED_AUTHENTICATED_ROUTES
+    ];
 
-      if (isPublic) {
-        accessible.push({ page: pageName, reason: 'Public page' });
-      } else if (!allowedRoles || allowedRoles.includes(role)) {
-        accessible.push({ page: pageName, reason: 'Role permitted' });
+    // Deduplicate
+    const uniqueRoutes = [...new Set(allRoutes)];
+
+    uniqueRoutes.forEach((pageName) => {
+      const hasAccess = canAccessRoute(pageName, role);
+
+      if (hasAccess) {
+        let reason = 'Shared route';
+        if (PUBLIC_ROUTES.includes(pageName)) reason = 'Public page';
+        else if (ADMIN_ONLY_ROUTES.includes(pageName)) reason = 'Admin access';
+        else if (FACILITATOR_ROUTES.includes(pageName)) reason = 'Facilitator access';
+        else if (PARTICIPANT_ROUTES.includes(pageName)) reason = 'Participant access';
+        
+        accessible.push({ page: pageName, reason });
       } else {
-        blocked.push({ page: pageName, reason: `Requires: ${allowedRoles.join(', ')}` });
+        let reason = 'Insufficient permissions';
+        if (ADMIN_ONLY_ROUTES.includes(pageName)) reason = 'Requires: admin';
+        else if (FACILITATOR_ROUTES.includes(pageName)) reason = 'Requires: facilitator';
+        else if (PARTICIPANT_ROUTES.includes(pageName)) reason = 'Requires: participant';
+        
+        blocked.push({ page: pageName, reason });
       }
     });
 
@@ -156,7 +184,7 @@ export default function RBACTestChecklist() {
         <CardContent className="pt-6">
           <div className="grid grid-cols-3 gap-4 text-center">
             <div>
-              <p className="text-2xl font-bold text-slate-900">{Object.keys(ROUTE_CONFIG).length}</p>
+              <p className="text-2xl font-bold text-slate-900">{matrix.accessible.length + matrix.blocked.length}</p>
               <p className="text-sm text-slate-600">Total Routes</p>
             </div>
             <div>
