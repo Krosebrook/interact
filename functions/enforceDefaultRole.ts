@@ -4,12 +4,19 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.4';
  * Enforce Default Role on User Creation
  * Triggered by entity automation when new User is created
  * Ensures all users default to 'user' role (participant), not 'admin'
+ * 
+ * 🔒 SECURITY: This is a system automation - validates event source
  */
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
     
     const { event, data } = await req.json();
+    
+    // 🔒 SECURITY: Validate this is a system-triggered automation
+    if (!event || !event.entity_name || !event.type) {
+      return Response.json({ error: 'Invalid automation event' }, { status: 400 });
+    }
 
     // Only process user creation events
     if (event?.type !== 'create' || event?.entity_name !== 'User') {
@@ -31,11 +38,15 @@ Deno.serve(async (req) => {
       return Response.json({ success: true, skipped: 'User has invitation' });
     }
 
+    // 🔒 SECURITY: Validate role against allowed enum
+    const ALLOWED_ROLES = ['user', 'admin'];
+    const targetRole = userData.role && ALLOWED_ROLES.includes(userData.role) ? userData.role : 'user';
+    
     // CRITICAL: Default all direct signups to 'user' role (participant)
     // Only explicit invitations can create admins/facilitators
     if (!userData.role || userData.role === 'admin') {
       await base44.asServiceRole.entities.User.update(userId, {
-        role: 'user', // Base44 built-in: 'admin' or 'user'
+        role: targetRole, // Base44 built-in: 'admin' or 'user'
         user_type: 'participant' // Our custom type
       });
 

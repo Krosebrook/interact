@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
+import { requireAuth } from './lib/rbacMiddleware.ts';
 
 /**
  * Track challenge completion and award points/badges
@@ -8,11 +9,9 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
-
-    if (!user) {
-      return Response.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    
+    // 🔒 SECURITY: Require authentication
+    const user = await requireAuth(base44);
 
     const { challenge_id, progress_value } = await req.json();
 
@@ -26,7 +25,7 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Challenge not found' }, { status: 404 });
     }
 
-    // Get or create participation record
+    // 🔒 SECURITY: User can ONLY update their own participation
     const participations = await base44.entities.ChallengeParticipation.filter({
       challenge_id,
       user_email: user.email
@@ -41,6 +40,11 @@ Deno.serve(async (req) => {
         status: 'active',
         progress: 0
       });
+    }
+    
+    // 🔒 Double-check ownership
+    if (participation.user_email !== user.email) {
+      return Response.json({ error: 'Forbidden: Cannot update other users challenges' }, { status: 403 });
     }
 
     // Update progress

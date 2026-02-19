@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.4';
+import { requireAuth } from './lib/rbacMiddleware.ts';
 
 /**
  * REFACTORED STORE PURCHASE SYSTEM
@@ -22,10 +23,8 @@ Deno.serve(async (req) => {
   const base44 = createClientFromRequest(req);
   
   try {
-    const user = await base44.auth.me();
-    if (!user) {
-      return Response.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    // 🔒 SECURITY: Require authentication
+    const user = await requireAuth(base44);
 
     const { itemId, quantity = 1 } = await req.json();
     
@@ -33,10 +32,10 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Item ID required' }, { status: 400 });
     }
 
-    // Parallel fetch for performance
+    // 🔒 SECURITY: Parallel fetch - user can ONLY purchase for themselves
     const [items, userPointsList, existingInventory] = await Promise.all([
       base44.entities.StoreItem.filter({ id: itemId }),
-      base44.entities.UserPoints.filter({ user_email: user.email }),
+      base44.asServiceRole.entities.UserPoints.filter({ user_email: user.email }),
       base44.entities.UserInventory.filter({ user_email: user.email, item_id: itemId })
     ]);
 

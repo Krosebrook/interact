@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
+import { requirePermission, checkRateLimit } from './lib/rbacMiddleware.ts';
 
 /**
  * Smart notification system that triggers personalized alerts
@@ -8,7 +9,17 @@ Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
     
-    // Service role for system notifications
+    // 🔒 SECURITY: Require admin/ops permission for AI notification generation
+    const caller = await requirePermission(base44, 'CREATE_EVENTS');
+    
+    // 🔒 SECURITY: Rate limit AI calls (10 per minute per user)
+    if (!checkRateLimit(caller.email, 10, 60000)) {
+      return Response.json({ 
+        error: 'Rate limit exceeded',
+        retry_after: 60 
+      }, { status: 429 });
+    }
+    
     const { user_email, notification_type, context } = await req.json();
 
     if (!user_email) {

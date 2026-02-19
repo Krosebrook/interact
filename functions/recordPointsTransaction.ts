@@ -5,16 +5,14 @@
  */
 
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.4';
+import { requirePermission } from './lib/rbacMiddleware.ts';
 
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
     
-    // Authenticate
-    const currentUser = await base44.auth.me();
-    if (!currentUser) {
-      return Response.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    // 🔒 SECURITY: Require admin permission for point ledger manipulation
+    const currentUser = await requirePermission(base44, 'ADJUST_POINTS');
 
     const { 
       userEmail, 
