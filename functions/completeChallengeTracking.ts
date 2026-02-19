@@ -99,13 +99,29 @@ Deno.serve(async (req) => {
     });
 
   } catch (error) {
-    console.error('Challenge tracking error:', {
-      challenge_id: req.url.includes('challenge_id') ? 'from_request' : 'unknown',
-      user_email: 'auth_failed_or_unknown',
-      error: error.message,
-      stack: error.stack,
+    // Structured error logging with full context
+    const errorContext = {
+      function: 'completeChallengeTracking',
+      challenge_id: 'unknown',
+      user_email: 'auth_failed',
+      error_message: error.message,
+      error_stack: error.stack,
       timestamp: new Date().toISOString()
-    });
-    return Response.json({ error: error.message || 'Failed to track challenge progress' }, { status: 500 });
+    };
+
+    // Try to extract context from request body if possible
+    try {
+      const bodyText = await req.text();
+      const body = JSON.parse(bodyText);
+      if (body.challenge_id) errorContext.challenge_id = body.challenge_id;
+    } catch (parseError) {
+      // Ignore parse errors for logging
+    }
+
+    console.error('Challenge tracking error:', errorContext);
+    
+    return Response.json({ 
+      error: error.message || 'Failed to track challenge progress' 
+    }, { status: 500 });
   }
 });

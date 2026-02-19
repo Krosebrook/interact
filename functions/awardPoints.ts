@@ -149,7 +149,13 @@ Deno.serve(async (req: Request): Promise<Response> => {
       });
 
     } catch (transactionError) {
-      console.error('Transaction failed, rolling back:', transactionError);
+      console.error('Transaction rollback initiated:', {
+        function: 'awardPoints',
+        action_type: actionType,
+        user_email: participation?.participant_email || 'unknown',
+        error: transactionError.message,
+        stack: transactionError.stack
+      });
 
       // Rollback: Reverse changes in reverse order
       if (teamPointsUpdated && userPoints.team_id) {
@@ -161,7 +167,11 @@ Deno.serve(async (req: Request): Promise<Response> => {
             });
           }
         } catch (rollbackError) {
-          console.error('Team points rollback failed:', rollbackError);
+          console.error('Team points rollback failed:', {
+            function: 'awardPoints',
+            team_id: userPoints.team_id,
+            error: rollbackError.message
+          });
         }
       }
 
@@ -173,7 +183,11 @@ Deno.serve(async (req: Request): Promise<Response> => {
             lifetime_points: userPoints.lifetime_points
           });
         } catch (rollbackError) {
-          console.error('UserPoints rollback failed:', rollbackError);
+          console.error('UserPoints rollback failed:', {
+            function: 'awardPoints',
+            user_points_id: userPoints.id,
+            error: rollbackError.message
+          });
         }
       }
 
@@ -188,14 +202,23 @@ Deno.serve(async (req: Request): Promise<Response> => {
             await base44.asServiceRole.entities.Participation.update(participationId, rollbackUpdate);
           }
         } catch (rollbackError) {
-          console.error('Participation rollback failed:', rollbackError);
+          console.error('Participation rollback failed:', {
+            function: 'awardPoints',
+            participation_id: participationId,
+            error: rollbackError.message
+          });
         }
       }
 
       throw transactionError;
     }
   } catch (error: unknown) {
-    console.error('Award points error:', error);
+    console.error('Award points error:', {
+      function: 'awardPoints',
+      action_type: 'unknown',
+      error: getErrorMessage(error),
+      stack: error instanceof Error ? error.stack : undefined
+    });
     return Response.json({ error: getErrorMessage(error) }, { status: 500 });
   }
 });
@@ -313,7 +336,12 @@ async function updateTeamPoints(base44: Base44Client, teamId: string, points: nu
       });
     }
   } catch (e: unknown) {
-    console.error('Team points update failed:', e);
+    console.error('Team points update failed:', {
+      function: 'updateTeamPoints',
+      team_id: teamId,
+      points: points,
+      error: e instanceof Error ? e.message : String(e)
+    });
   }
 }
 
@@ -370,7 +398,12 @@ async function createNotification(
       is_read: false
     });
   } catch (e: unknown) {
-    console.error('Notification failed:', e);
+    console.error('Notification creation failed:', {
+      function: 'createNotification',
+      user_email: userEmail,
+      type: type,
+      error: e instanceof Error ? e.message : String(e)
+    });
   }
 }
 
@@ -422,7 +455,11 @@ async function checkAndAwardBadges(
 
     return awarded;
   } catch (e: unknown) {
-    console.error('Badge check failed:', e);
+    console.error('Badge award check failed:', {
+      function: 'checkAndAwardBadges',
+      user_email: userPoints.user_email,
+      error: e instanceof Error ? e.message : String(e)
+    });
     return [];
   }
 }

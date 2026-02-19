@@ -50,8 +50,6 @@ Deno.serve(async (req) => {
         user_type: 'participant' // Our custom type
       });
 
-      console.log('Enforced default role for direct signup:', userData.email);
-
       // Audit log
       await base44.asServiceRole.entities.AuditLog.create({
         user_email: 'system',
@@ -70,7 +68,12 @@ Deno.serve(async (req) => {
     return Response.json({ success: true });
 
   } catch (error) {
-    console.error('enforceDefaultRole error:', error);
+    console.error('Role enforcement error:', {
+      function: 'enforceDefaultRole',
+      user_email: 'unknown',
+      error: error.message,
+      stack: error.stack
+    });
     return Response.json({
       error: error.message || 'Failed to enforce role'
     }, { status: 500 });

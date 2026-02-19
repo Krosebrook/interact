@@ -56,7 +56,12 @@ Deno.serve(async (req) => {
     return Response.json(result);
 
   } catch (error) {
-    console.error('Purchase error:', error);
+    console.error('Purchase error:', {
+      function: 'purchaseWithPoints',
+      user_email: 'auth_failed_or_unknown',
+      error: error.message,
+      stack: error.stack
+    });
     return Response.json({ error: error.message }, { status: 500 });
   }
 });
@@ -217,11 +222,12 @@ async function activatePowerUp(base44, userEmail, item, expiresAt) {
     }
   } catch (e) {
     console.error('Power-up activation failed:', {
+      function: 'activatePowerUp',
       user_email: userEmail,
       item_id: item.id,
       item_name: item.name,
       error: e.message,
-      timestamp: new Date().toISOString()
+      stack: e.stack
     });
   }
 }

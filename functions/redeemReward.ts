@@ -136,7 +136,12 @@ Deno.serve(async (req) => {
         body: `Hi ${user.full_name},\n\nYou've successfully redeemed "${reward.reward_name}" for ${reward.points_cost} points!\n\nRedemption Status: Pending\nRemaining Points: ${newPointsTotal}\n\n${reward.redemption_instructions || 'We will process your redemption shortly.'}\n\nThank you!`
       });
     } catch (emailError) {
-      console.error('Email notification failed:', emailError);
+      console.error('Email notification failed:', {
+        function: 'redeemReward',
+        user_email: user.email,
+        reward_id: reward.id,
+        error: emailError.message
+      });
       // Don't fail the redemption if email fails
     }
 
@@ -148,7 +153,12 @@ Deno.serve(async (req) => {
     });
 
   } catch (error) {
-    console.error('Redemption error:', error);
+    console.error('Redemption error:', {
+      function: 'redeemReward',
+      user_email: 'auth_failed_or_unknown',
+      error: error.message,
+      stack: error.stack
+    });
     return Response.json({ 
       error: error.message || 'An unexpected error occurred',
       details: error.toString()
