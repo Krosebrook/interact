@@ -99,6 +99,13 @@ Deno.serve(async (req) => {
     });
 
   } catch (error) {
-    return Response.json({ error: error.message }, { status: 500 });
+    console.error('Challenge tracking error:', {
+      challenge_id: req.url.includes('challenge_id') ? 'from_request' : 'unknown',
+      user_email: 'auth_failed_or_unknown',
+      error: error.message,
+      stack: error.stack,
+      timestamp: new Date().toISOString()
+    });
+    return Response.json({ error: error.message || 'Failed to track challenge progress' }, { status: 500 });
   }
 });

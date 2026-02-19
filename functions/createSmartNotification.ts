@@ -90,15 +90,28 @@ Rules:
 
     if (!aiResult.success) {
       // Fallback to basic notification
-      await base44.asServiceRole.entities.Notification.create({
-        user_email,
-        type: notification_type,
-        title: context.title || 'New Update',
-        message: context.message || 'Check out something new',
-        read: false
-      });
+      try {
+        await base44.asServiceRole.entities.Notification.create({
+          user_email,
+          type: notification_type,
+          title: context.title || 'New Update',
+          message: context.message || 'Check out something new',
+          read: false
+        });
 
-      return Response.json({ success: true, fallback: true });
+        return Response.json({ success: true, fallback: true });
+      } catch (fallbackError) {
+        console.error('Fallback notification creation failed:', {
+          user_email,
+          notification_type,
+          error: fallbackError.message,
+          timestamp: new Date().toISOString()
+        });
+        return Response.json({ 
+          error: 'Failed to create notification',
+          success: false 
+        }, { status: 500 });
+      }
     }
 
     // Create personalized notification

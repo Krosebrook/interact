@@ -216,6 +216,12 @@ async function activatePowerUp(base44, userEmail, item, expiresAt) {
       });
     }
   } catch (e) {
-    console.error('Power-up activation failed:', e);
+    console.error('Power-up activation failed:', {
+      user_email: userEmail,
+      item_id: item.id,
+      item_name: item.name,
+      error: e.message,
+      timestamp: new Date().toISOString()
+    });
   }
 }
