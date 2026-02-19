@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthProvider';
 import { canAccessRoute, requiresAuth, getDefaultRoute, PUBLIC_ROUTES } from './RouteConfig';
 import { createPageUrl } from '../../utils';
+import { base44 } from '@/api/base44Client';
 import LoadingSpinner from '../common/LoadingSpinner';
 
 /**
@@ -41,14 +42,12 @@ export default function RoleGate({ children, pageName }) {
       
       // Redirect to login with return URL
       const currentPath = location.pathname + location.search;
-      import('@/api/base44Client').then(({ base44 }) => {
-        base44.auth.redirectToLogin(currentPath);
-      });
+      base44.auth.redirectToLogin(currentPath);
       return;
     }
 
     // User is authenticated but role not resolved yet
-    if (!roleState === 'resolved') {
+    if (roleState !== 'resolved') {
       // Show loading, don't redirect
       return;
     }

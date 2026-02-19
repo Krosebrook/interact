@@ -34,8 +34,10 @@ export default function RedirectLoopDetector() {
       const paths = historyRef.current.map((e) => e.path);
       const uniquePaths = [...new Set(paths)];
 
-      // If we're bouncing between a small set of routes, that's a loop
-      if (uniquePaths.length <= 3) {
+      // Require at least 3 full cycles through the same 2 routes
+      const hasCycle = paths.length >= 6 && uniquePaths.length <= 2;
+
+      if (hasCycle) {
         auditLog('redirect_loop_detected', {
           route_history: paths,
           unique_routes: uniquePaths,

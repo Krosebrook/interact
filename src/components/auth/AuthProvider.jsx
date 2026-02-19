@@ -54,6 +54,14 @@ export function AuthProvider({ children, currentPageName }) {
       return;
     }
 
+    if (isError) {
+      console.error('[AUTH] Query failed:', error);
+      setAuthState('unauthenticated');
+      setRoleState('unknown');
+      setNormalizedRole(null);
+      return;
+    }
+
     if (authData?.isAuthenticated) {
       setAuthState('authenticated');
       
@@ -78,7 +86,7 @@ export function AuthProvider({ children, currentPageName }) {
     }
 
     initRef.current = true;
-  }, [authData, isLoading]);
+  }, [authData, isLoading, isError, error]);
 
   // Audit logging helper
   const auditLog = (event, data) => {
