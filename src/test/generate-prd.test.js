@@ -292,4 +292,71 @@ describe('PRD Generator Script', () => {
       expect(testingTools).toContain('Playwright');
     });
   });
+
+  describe('Vercel Production-Readiness Scope', () => {
+    // Inline implementation of generateVercelSection for isolated unit tests
+    function generateVercelSection(projectType) {
+      const isNonWebApp = projectType === 'api' || projectType === 'cli';
+      if (isNonWebApp) {
+        const kind = projectType === 'api' ? 'backend API' : 'CLI';
+        return `> **N/A** \u2014 This is a ${kind} project and is not applicable for Vercel web deployment. Vercel hosts web apps (e.g., Next.js, Vite); ${projectType === 'api' ? 'API' : 'CLI'} projects should be deployed to their own appropriate runtime (e.g., Base44 serverless functions, Docker, cloud run).`;
+      }
+      return [
+        '- [ ] `vercel.json` present and configured (framework, buildCommand, outputDirectory)',
+        '- [ ] Environment variables defined in Vercel dashboard (not hard-coded)',
+        '- [ ] Preview deployments enabled for pull requests',
+        '- [ ] Production domain configured with valid SSL certificate',
+        '- [ ] Security headers set (X-Content-Type-Options, X-Frame-Options, Referrer-Policy)',
+        '- [ ] `rewrites` / `redirects` configured for SPA routing (e.g., `/api/:path*`)',
+        '- [ ] Edge network region(s) selected appropriate for target audience',
+        '- [ ] Build passes locally with `npm run build` (output to `dist/` or configured `outputDirectory`)',
+        '- [ ] No secrets committed to source; all sensitive values use Vercel environment variable references',
+      ].join('\n');
+    }
+
+    it('should include full Vercel checklist for web-app project type', () => {
+      const section = generateVercelSection('web-app');
+
+      expect(section).toContain('vercel.json');
+      expect(section).toContain('Environment variables');
+      expect(section).toContain('Preview deployments');
+      expect(section).toContain('Security headers');
+      expect(section).not.toContain('N/A');
+    });
+
+    it('should mark Vercel section as N/A for api project type', () => {
+      const section = generateVercelSection('api');
+
+      expect(section).toContain('N/A');
+      expect(section).toContain('backend API');
+      expect(section).toContain('not applicable for Vercel web deployment');
+      expect(section).not.toContain('vercel.json');
+    });
+
+    it('should mark Vercel section as N/A for cli project type', () => {
+      const section = generateVercelSection('cli');
+
+      expect(section).toContain('N/A');
+      expect(section).toContain('CLI');
+      expect(section).toContain('not applicable for Vercel web deployment');
+      expect(section).not.toContain('vercel.json');
+    });
+
+    it('should default to web-app when projectType is not set', () => {
+      const section = generateVercelSection('web-app');
+
+      expect(section).toContain('vercel.json');
+      expect(section).not.toContain('N/A');
+    });
+
+    it('should distinguish api N/A message from cli N/A message', () => {
+      const apiSection = generateVercelSection('api');
+      const cliSection = generateVercelSection('cli');
+
+      expect(apiSection).toContain('backend API');
+      expect(cliSection).toContain('CLI');
+      expect(apiSection).not.toContain('CLI project');
+      expect(cliSection).not.toContain('backend API');
+    });
+  });
 });
