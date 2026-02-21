@@ -82,8 +82,8 @@ Interact is an enterprise-grade employee engagement platform that transforms wor
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Node.js 18+ 
-- npm or yarn
+- Node.js 20 (use `.nvmrc` — run `nvm use` if you have nvm)
+- npm
 
 ### Installation
 
@@ -110,6 +110,26 @@ npm run preview
 - `npm run lint:fix` - Fix ESLint issues automatically
 - `npm test` - Run unit tests
 - `npm run test:coverage` - Generate test coverage report
+
+## ☁️ Deploy to Vercel
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FKrosebrook%2Finteract)
+
+**Required environment variables** (set in Vercel dashboard under Project → Settings → Environment Variables):
+
+| Variable | Description |
+|---|---|
+| `VITE_BASE44_APP_ID` | Base44 application identifier |
+| `VITE_BASE44_BACKEND_URL` | Base44 backend service URL |
+
+Copy `.env.example` to `.env.local` for local development:
+
+```bash
+cp .env.example .env.local
+# Fill in VITE_BASE44_APP_ID and VITE_BASE44_BACKEND_URL
+```
+
+See **[docs/operations/VERCEL_AUDIT.md](./docs/operations/VERCEL_AUDIT.md)** for the full deployment guide and multi-repo Vercel readiness assessment.
 
 ### Tools & Utilities
 
