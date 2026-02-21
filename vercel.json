@@ -5,15 +5,6 @@
   "outputDirectory": "dist",
   "installCommand": "npm ci",
   "devCommand": "npm run dev",
-  "env": {
-    "NODE_VERSION": "20"
-  },
-  "build": {
-    "env": {
-      "VITE_API_URL": "@api_url",
-      "VITE_BASE44_PROJECT_ID": "@base44_project_id"
-    }
-  },
   "regions": ["iad1"],
   "headers": [
     {
@@ -44,15 +35,8 @@
   ],
   "rewrites": [
     {
-      "source": "/api/:path*",
-      "destination": "/api/:path*"
-    }
-  ],
-  "redirects": [
-    {
-      "source": "/login",
-      "destination": "/auth/login",
-      "permanent": false
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ],
   "cleanUrls": true,
