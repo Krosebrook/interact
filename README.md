@@ -31,6 +31,7 @@ Interact is an enterprise-grade employee engagement platform that transforms wor
 - [Overview](#overview)
 - [Documentation](#-documentation)
 - [Quick Start](#-quick-start)
+- [Deploying to Vercel](#-deploying-to-vercel)
 - [Project Structure](#️-project-structure)
 - [Current Features](#-current-features)
 - [Roadmap Highlights](#-roadmap-highlights)
@@ -78,6 +79,53 @@ Interact is an enterprise-grade employee engagement platform that transforms wor
 ### Base44 Integration
 - **[.github/base44-updates.md](./.github/base44-updates.md)** - Base44 visual canvas integration guide and module architecture
 - **[.github/agents.md](./.github/agents.md)** - AI agent context log and historical development decisions
+
+## 🚀 Deploying to Vercel
+
+**Project type:** Vercel Web App — React SPA (single-page application) built with Vite.
+
+### One-click deploy
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Krosebrook/interact)
+
+### Manual deploy
+
+1. Import the repository at [vercel.com/new](https://vercel.com/new).
+2. Vercel auto-detects the Vite framework. Confirm the settings:
+   - **Framework Preset:** Vite
+   - **Build Command:** `npm run build`
+   - **Output Directory:** `dist`
+   - **Install Command:** `npm ci`
+   - **Node.js Version:** 20
+3. Add the required environment variables (see below), then click **Deploy**.
+
+### Environment variables
+
+Copy `.env.example` to understand all available variables. The following are **required** for the app to function:
+
+| Variable | Description |
+|---|---|
+| `VITE_BASE44_APP_ID` | Your Base44 application ID |
+| `VITE_BASE44_BACKEND_URL` | Base44 backend server URL (e.g. `https://your-backend.base44.app`) |
+
+The following are **optional** but enable specific features:
+
+| Variable | Description |
+|---|---|
+| `VITE_BASE44_API_URL` | Base44 API URL (if different from backend URL) |
+| `VITE_COMPANY_ID` | Company identifier |
+| `VITE_ENABLE_ANALYTICS` | Enable analytics (`true`/`false`) |
+| `VITE_GOOGLE_ANALYTICS_ID` | Google Analytics measurement ID |
+| `VITE_STRIPE_PUBLISHABLE_KEY` | Stripe publishable key (payments feature) |
+
+Set these in the Vercel dashboard under **Settings → Environment Variables**, or via the Vercel CLI:
+
+```bash
+vercel env add VITE_BASE44_APP_ID
+vercel env add VITE_BASE44_BACKEND_URL
+```
+
+> **Note:** All `VITE_` prefixed variables are bundled into the client-side build. Never put secrets in `VITE_` variables. Backend/serverless function secrets (OpenAI keys, Stripe secret keys, etc.) should be set separately in your Base44 dashboard.
 
 ## 🚀 Quick Start
 
