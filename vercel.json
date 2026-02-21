@@ -5,13 +5,10 @@
   "outputDirectory": "dist",
   "installCommand": "npm ci",
   "devCommand": "npm run dev",
-  "env": {
-    "NODE_VERSION": "20"
-  },
   "build": {
     "env": {
-      "VITE_API_URL": "@api_url",
-      "VITE_BASE44_PROJECT_ID": "@base44_project_id"
+      "VITE_BASE44_APP_ID": "@vite_base44_app_id",
+      "VITE_BASE44_BACKEND_URL": "@vite_base44_backend_url"
     }
   },
   "regions": ["iad1"],
@@ -44,8 +41,8 @@
   ],
   "rewrites": [
     {
-      "source": "/api/:path*",
-      "destination": "/api/:path*"
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ],
   "redirects": [
