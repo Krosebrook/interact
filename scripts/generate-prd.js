@@ -56,7 +56,8 @@ function parseArgs() {
     context: {},
     model: 'claude',
     interactive: false,
-    help: false
+    help: false,
+    projectType: 'web-app'
   };
 
   for (let i = 0; i < args.length; i++) {
@@ -99,6 +100,11 @@ function parseArgs() {
         options.model = next;
         i++;
         break;
+      case '--project-type':
+      case '-t':
+        options.projectType = next;
+        i++;
+        break;
       case '--interactive':
       case '-I':
         options.interactive = true;
@@ -132,6 +138,7 @@ ${colors.bright}Options:${colors.reset}
   --output, -o      Output file path (default: PRD-{timestamp}.md)
   --context, -c     Additional context (JSON string or file)
   --model, -m       AI model to use (claude|gpt4|gemini, default: claude)
+  --project-type, -t Project type: web-app|api|cli (default: web-app)
   --help, -h        Show this help message
 
 ${colors.bright}Context JSON Format:${colors.reset}
@@ -176,6 +183,7 @@ async function interactiveMode() {
   
   console.log(`\n${colors.dim}Optional context (press Enter to skip):${colors.reset}`);
   
+  const projectTypeInput = await question(`${colors.yellow}Project type (web-app/api/cli, default: web-app):${colors.reset} `);
   const targetAudience = await question(`${colors.yellow}Target Audience:${colors.reset} `);
   const businessGoals = await question(`${colors.yellow}Business Goals:${colors.reset} `);
   const technicalConstraints = await question(`${colors.yellow}Technical Constraints:${colors.reset} `);
@@ -187,6 +195,7 @@ async function interactiveMode() {
   rl.close();
 
   const context = {};
+  context.projectType = projectTypeInput || 'web-app';
   if (targetAudience) context.targetAudience = targetAudience;
   if (businessGoals) context.businessGoals = businessGoals;
   if (technicalConstraints) context.technicalConstraints = technicalConstraints;
@@ -200,10 +209,30 @@ async function interactiveMode() {
   };
 }
 
+// Generate Vercel production-readiness section based on project type
+function generateVercelSection(projectType) {
+  const isNonWebApp = projectType === 'api' || projectType === 'cli';
+  if (isNonWebApp) {
+    const kind = projectType === 'api' ? 'backend API' : 'CLI';
+    return `> **N/A** \u2014 This is a ${kind} project and is not applicable for Vercel web deployment. Vercel hosts web apps (e.g., Next.js, Vite); ${projectType === 'api' ? 'API' : 'CLI'} projects should be deployed to their own appropriate runtime (e.g., Base44 serverless functions, Docker, cloud run).`;
+  }
+  return [
+    '- [ ] `vercel.json` present and configured (framework, buildCommand, outputDirectory)',
+    '- [ ] Environment variables defined in Vercel dashboard (not hard-coded)',
+    '- [ ] Preview deployments enabled for pull requests',
+    '- [ ] Production domain configured with valid SSL certificate',
+    '- [ ] Security headers set (X-Content-Type-Options, X-Frame-Options, Referrer-Policy)',
+    '- [ ] `rewrites` / `redirects` configured for SPA routing (e.g., `/api/:path*`)',
+    '- [ ] Edge network region(s) selected appropriate for target audience',
+    '- [ ] Build passes locally with `npm run build` (output to `dist/` or configured `outputDirectory`)',
+    '- [ ] No secrets committed to source; all sensitive values use Vercel environment variable references',
+  ].join('\n');
+}
+
 // Generate PRD using local AI template (fallback without API)
 function generatePRDTemplate(featureIdea, context = {}) {
   const timestamp = new Date().toISOString().split('T')[0];
-  
+  const vercelSection = generateVercelSection(context.projectType || 'web-app');
   return `# Product Requirements Document (PRD)
 
 **Feature:** ${featureIdea}
@@ -576,6 +605,10 @@ ${context.existingIntegrations ? `- ${context.existingIntegrations.split(',').jo
 5. Investigate root cause
 6. Fix and redeploy
 
+### 12.5 Vercel Production-Readiness
+
+${vercelSection}
+
 ---
 
 ## 13. Assumptions, Risks & Open Questions
@@ -670,6 +703,9 @@ async function main() {
     }
 
     context = options.context;
+    if (!context.projectType) {
+      context.projectType = options.projectType;
+    }
     outputFile = options.output;
   }
 
