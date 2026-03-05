@@ -41,15 +41,8 @@
   ],
   "rewrites": [
     {
-      "source": "/((?!api/).*)",
+      "source": "/(.*)",
       "destination": "/index.html"
-    }
-  ],
-  "redirects": [
-    {
-      "source": "/login",
-      "destination": "/auth/login",
-      "permanent": false
     }
   ],
   "cleanUrls": true,
