@@ -5,6 +5,12 @@
   "outputDirectory": "dist",
   "installCommand": "npm ci",
   "devCommand": "npm run dev",
+  "build": {
+    "env": {
+      "VITE_BASE44_APP_ID": "@vite_base44_app_id",
+      "VITE_BASE44_BACKEND_URL": "@vite_base44_backend_url"
+    }
+  },
   "regions": ["iad1"],
   "headers": [
     {

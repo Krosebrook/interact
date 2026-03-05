@@ -32,6 +32,7 @@ Interact is an enterprise-grade employee engagement platform that transforms wor
 - [Documentation](#-documentation)
 - [Deploying to Vercel](#-deploying-to-vercel)
 - [Quick Start](#-quick-start)
+- [Deploy to Vercel](#-deploy-to-vercel)
 - [Project Structure](#️-project-structure)
 - [Current Features](#-current-features)
 - [Roadmap Highlights](#-roadmap-highlights)
@@ -130,8 +131,8 @@ vercel env add VITE_BASE44_BACKEND_URL
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Node.js 18+ 
-- npm or yarn
+- Node.js 20 (use `.nvmrc` — run `nvm use` if you have nvm)
+- npm
 
 ### Installation
 
@@ -158,6 +159,26 @@ npm run preview
 - `npm run lint:fix` - Fix ESLint issues automatically
 - `npm test` - Run unit tests
 - `npm run test:coverage` - Generate test coverage report
+
+## ☁️ Deploy to Vercel
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FKrosebrook%2Finteract)
+
+**Required environment variables** (set in Vercel dashboard under Project → Settings → Environment Variables):
+
+| Variable | Description |
+|---|---|
+| `VITE_BASE44_APP_ID` | Base44 application identifier |
+| `VITE_BASE44_BACKEND_URL` | Base44 backend service URL |
+
+Copy `.env.example` to `.env.local` for local development:
+
+```bash
+cp .env.example .env.local
+# Fill in VITE_BASE44_APP_ID and VITE_BASE44_BACKEND_URL
+```
+
+See **[docs/operations/VERCEL_AUDIT.md](./docs/operations/VERCEL_AUDIT.md)** for the full deployment guide and multi-repo Vercel readiness assessment.
 
 ### Tools & Utilities
 
@@ -200,7 +221,49 @@ node scripts/generate-prd.js --file ideas/feature.txt
 - **[docs/SAFE_BRANCH_MERGING.md](./docs/SAFE_BRANCH_MERGING.md)** - Complete guide for safe branch merging
 - **[docs/PRE_MERGE_CHECKLIST.md](./docs/PRE_MERGE_CHECKLIST.md)** - Checklist template before merging
 
-## 🏗️ Project Structure
+## ☁️ Deploy to Vercel
+
+### One-Click Deploy
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Krosebrook/interact)
+
+### Build Settings
+
+| Setting | Value |
+|---------|-------|
+| **Framework Preset** | Vite |
+| **Build Command** | `npm run build` |
+| **Output Directory** | `dist` |
+| **Install Command** | `npm ci` |
+| **Node.js Version** | 20.x |
+
+### Required Environment Variables
+
+Configure these in your Vercel project's **Settings → Environment Variables**:
+
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `VITE_BASE44_APP_ID` | Your Base44 application ID | ✅ Yes |
+| `VITE_BASE44_BACKEND_URL` | Base44 backend URL (e.g. `https://api.base44.app`) | ✅ Yes |
+
+### Optional Environment Variables
+
+| Variable | Description |
+|----------|-------------|
+| `VITE_GOOGLE_ANALYTICS_ID` | Google Analytics measurement ID |
+| `VITE_STRIPE_PUBLISHABLE_KEY` | Stripe publishable key (payments) |
+| `VITE_ENABLE_ANALYTICS` | Feature flag: enable analytics (`true`/`false`) |
+| `VITE_ENABLE_PWA` | Feature flag: enable PWA (`true`/`false`) |
+| `VITE_COMPANY_ID` | Company identifier for multi-tenant setups |
+
+> **Tip:** Copy `.env.example` to `.env.local` for local development.  
+> Backend serverless function secrets (OpenAI keys, Cloudinary, etc.) are managed separately in your Base44 dashboard.
+
+### SPA Routing
+
+The included `vercel.json` configures a catch-all rewrite so React Router handles all client-side navigation correctly without 404s on page refresh.
+
+
 
 ```
 interact/
