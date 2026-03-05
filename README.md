@@ -30,8 +30,8 @@ Interact is an enterprise-grade employee engagement platform that transforms wor
 
 - [Overview](#overview)
 - [Documentation](#-documentation)
-- [Quick Start](#-quick-start)
 - [Deploying to Vercel](#-deploying-to-vercel)
+- [Quick Start](#-quick-start)
 - [Project Structure](#️-project-structure)
 - [Current Features](#-current-features)
 - [Roadmap Highlights](#-roadmap-highlights)
