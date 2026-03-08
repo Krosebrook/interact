@@ -25,6 +25,7 @@
 Essential guides to get you up and running quickly.
 
 - **[Development Setup](./getting-started/DEVELOPMENT.md)** - Local development environment setup
+- **[Onboarding Checklist](./getting-started/ONBOARDING_CHECKLIST.md)** - Step-by-step checklist for new developers
 - **[Capacitor Setup](./getting-started/CAPACITOR_SETUP.md)** - Mobile app development with Capacitor
 - **[Migration Quickstart](./getting-started/MIGRATION_QUICKSTART.md)** - Quick migration guide
 
@@ -47,6 +48,8 @@ System design, data flow, and architectural decisions.
 How-to guides and practical examples.
 
 - **[API Integration Guide](./guides/API_INTEGRATION_GUIDE.md)** - Comprehensive API integration guide
+- **[Configuration & Customization Guide](./guides/CONFIGURATION_GUIDE.md)** - Environment variables, feature flags, and runtime configuration
+- **[Troubleshooting Guide](./guides/TROUBLESHOOTING.md)** - Common errors and resolution steps
 - **[Usage Examples](./guides/USAGE-EXAMPLES.md)** - Code examples and patterns
 - **[Testing Guide](./guides/TESTING.md)** - Testing strategy and best practices
 - **[CLI Guide](./guides/CLI.md)** - Command-line interface documentation
@@ -69,6 +72,7 @@ Technical reference documentation.
 
 Deployment, infrastructure, and operational procedures.
 
+- **[Operational Runbook](./operations/RUNBOOK.md)** - On-call procedures, health checks, rollback, and incident response
 - **[Deployment Checklist](./operations/DEPLOYMENT_CHECKLIST.md)** - Pre-deployment verification steps
 - **[CI/CD Pipeline](./operations/CI-CD.md)** - Continuous integration and deployment
 - **[Observability](./operations/OBSERVABILITY.md)** - Monitoring, logging, and alerting
@@ -98,6 +102,7 @@ Security policies, procedures, and compliance documentation.
 
 Development practices, patterns, and technical implementation details.
 
+- **[Coding Standards](./development/CODING_STANDARDS.md)** - Naming conventions, component patterns, hooks rules, and code review checklist
 - **[Algorithms](./development/ALGORITHMS.md)** - Core algorithms and data structures
 - **[Caching Strategy](./development/CACHING.md)** - Caching implementation and patterns
 - **[Performance Optimization](./development/PERFORMANCE.md)** - Performance tuning guide
@@ -110,6 +115,8 @@ Development practices, patterns, and technical implementation details.
 
 Product planning, roadmaps, and strategic documents.
 
+- **[Documentation Strategy](./planning/DOCUMENTATION_STRATEGY.md)** - Documentation inventory, gap analysis, standards, and maintenance plan
+- **[Versioning Policy](./planning/VERSIONING_POLICY.md)** - Semantic versioning rules, branching, and release process
 - **[Product Requirements (PRD)](./planning/PRD.md)** - Product requirements document (v1.1)
 - **[Feature Roadmap](./planning/FEATURE_ROADMAP.md)** - 18-month feature roadmap
 - **[Roadmap](./planning/ROADMAP.md)** - Strategic roadmap overview
@@ -176,9 +183,10 @@ Essential documents kept at repository root:
 ### By Role
 
 **🧑‍💻 Developers:**
-1. Start with [Getting Started](#-getting-started)
-2. Review [Architecture](#-architecture) for system understanding
-3. Reference [Guides](#-guides) for implementation patterns
+1. Start with [Onboarding Checklist](./getting-started/ONBOARDING_CHECKLIST.md)
+2. Review [Coding Standards](./development/CODING_STANDARDS.md)
+3. Reference [Architecture](#-architecture) for system understanding
+4. Use [Troubleshooting Guide](./guides/TROUBLESHOOTING.md) when stuck
 
 **📊 Product Managers:**
 1. Read [Planning](#-planning) documents
@@ -186,7 +194,7 @@ Essential documents kept at repository root:
 3. Check [Audits](#-audits) for status
 
 **🚀 DevOps:**
-1. Start with [Operations](#-operations)
+1. Start with [Operational Runbook](./operations/RUNBOOK.md)
 2. Review [Deployment Checklist](./operations/DEPLOYMENT_CHECKLIST.md)
 3. Check [Infrastructure](./operations/INFRASTRUCTURE.md)
 
