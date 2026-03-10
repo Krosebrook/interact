@@ -174,7 +174,7 @@ export default function ParticipantEvent() {
       <div className="max-w-3xl mx-auto space-y-8">
         {/* Event Header */}
         <Card className="border-0 shadow-xl overflow-hidden">
-          <div className="bg-gradient-to-br from-indigo-600 to-purple-600 p-8 text-white">
+          <div className="bg-gradient-to-br from-int-orange to-[#E8884A] p-8 text-white">
             <Badge className="bg-white/20 text-white border-0 mb-4">
               {activity?.type}
             </Badge>
@@ -221,7 +221,7 @@ export default function ParticipantEvent() {
                   href={event.meeting_link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-int-orange text-white rounded-lg hover:bg-[#C46322] transition"
                 >
                   Join Video Call
                 </a>
@@ -270,7 +270,7 @@ export default function ParticipantEvent() {
                   placeholder="your.email@company.com"
                 />
               </div>
-              <Button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-700 text-lg py-6">
+              <Button type="submit" className="w-full bg-int-orange hover:bg-[#C46322] text-lg py-6">
                 Confirm RSVP
               </Button>
             </form>
@@ -321,7 +321,7 @@ export default function ParticipantEvent() {
             {!['whiteboard', 'breakout_rooms', 'multiplayer_game'].includes(activity?.interaction_type) && (
               <Card className="p-8 border-0 shadow-lg">
                 <h2 className="text-2xl font-bold text-slate-900 mb-6">
-                  <Send className="inline h-6 w-6 mr-2 text-indigo-600" />
+                  <Send className="inline h-6 w-6 mr-2 text-int-orange" />
                   Submit Your Response
                 </h2>
                 <div className="space-y-4">
@@ -351,7 +351,7 @@ export default function ParticipantEvent() {
                   <Button
                     onClick={handleSubmitActivity}
                     disabled={!submission.content && !submission.file_url}
-                    className="w-full bg-indigo-600 hover:bg-indigo-700"
+                    className="w-full bg-int-orange hover:bg-[#C46322]"
                   >
                     Submit
                   </Button>
@@ -364,9 +364,9 @@ export default function ParticipantEvent() {
         {/* Live Q&A Section - Show during active events */}
         {myParticipation && (event.status === 'in_progress' || event.status === 'scheduled') && (
           <Card className="border-0 shadow-lg overflow-hidden">
-            <div className="p-4 bg-gradient-to-r from-purple-50 to-indigo-50 border-b">
+            <div className="p-4 bg-gradient-to-r from-int-orange/5 to-orange-50 border-b">
               <h2 className="font-bold text-lg flex items-center gap-2">
-                <MessageCircle className="h-5 w-5 text-purple-600" />
+                <MessageCircle className="h-5 w-5 text-int-orange" />
                 Live Chat & Q&A
               </h2>
             </div>

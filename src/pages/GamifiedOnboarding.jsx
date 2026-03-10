@@ -14,10 +14,10 @@ export default function GamifiedOnboarding() {
   const userRole = user?.role === 'admin' ? 'admin' : user?.user_type || 'participant';
   
   return (
-    <div className="min-h-screen bg-gradient-to-br from-int-orange/5 to-purple-500/5 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-int-orange/5 to-slate-100 py-8">
       <div className="max-w-7xl mx-auto px-4">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-2 bg-gradient-to-r from-int-orange to-purple-500 text-white px-6 py-3 rounded-full mb-4">
+          <div className="inline-flex items-center gap-2 bg-gradient-to-r from-int-orange to-int-orange text-white px-6 py-3 rounded-full mb-4">
             <Trophy className="h-5 w-5" />
             <span className="font-bold">Welcome to INTeract!</span>
           </div>
@@ -43,7 +43,7 @@ export default function GamifiedOnboarding() {
         
         <div className="mt-8 bg-white/50 backdrop-blur-sm rounded-xl p-6 border border-slate-200">
           <div className="flex items-start gap-4">
-            <div className="p-3 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg">
+            <div className="p-3 bg-gradient-to-br from-int-orange to-[#E8884A] rounded-lg">
               <Sparkles className="h-6 w-6 text-white" />
             </div>
             <div>

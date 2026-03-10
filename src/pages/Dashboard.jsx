@@ -66,7 +66,7 @@ export default function Dashboard() {
 
   return (
     <ErrorBoundary fallbackMessage="Dashboard failed to load. Please try refreshing.">
-      <div className="bg-blue-50 opacity-100 space-y-8 animate-fade-in">
+      <div className="bg-slate-50 opacity-100 space-y-8 animate-fade-in">
 
         {/* Onboarding Widget */}
         <OnboardingWidget variant="banner" />

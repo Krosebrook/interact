@@ -55,20 +55,20 @@ export default function ParticipantHub() {
   const xpNeeded = xpForNextLevel - currentXP;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-zinc-950 via-slate-950 to-zinc-950 pb-24">
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 via-blue-50 to-slate-50 pb-24">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-zinc-950/80 backdrop-blur-md px-4 py-4 border-b border-white/5">
+      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md px-4 py-4 border-b border-slate-200">
         <div className="max-w-md mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-[#2b4bee] rounded-full flex items-center justify-center shadow-lg shadow-[#2b4bee]/50">
-              <span className="text-white font-extrabold text-xs italic">INTI</span>
+            <div className="w-10 h-10 bg-int-orange rounded-full flex items-center justify-center shadow-lg shadow-int-orange/30">
+              <span className="text-white font-extrabold text-xs italic">INT</span>
             </div>
-            <h2 className="text-lg font-extrabold">Participant Hub</h2>
+            <h2 className="text-lg font-extrabold text-slate-900">Participant Hub</h2>
           </div>
           <Link to={createPageUrl('UserProfile')}>
-            <Avatar className="h-10 w-10 border-2 border-[#2b4bee]">
+            <Avatar className="h-10 w-10 border-2 border-int-orange">
               <AvatarImage src={userProfile?.profile_picture_url} />
-              <AvatarFallback className="bg-gradient-to-br from-[#2b4bee] to-violet-600 text-white">
+              <AvatarFallback className="bg-gradient-to-br from-int-orange to-[#E8884A] text-white">
                 {user?.email?.charAt(0).toUpperCase()}
               </AvatarFallback>
             </Avatar>
@@ -78,20 +78,20 @@ export default function ParticipantHub() {
 
       <main className="max-w-md mx-auto px-4 pt-6 space-y-6">
         {/* Profile & Level Card */}
-        <Card className="relative overflow-hidden bg-gradient-to-br from-zinc-900 to-slate-900 border-white/5 shadow-xl">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-[#2b4bee]/10 blur-3xl rounded-full -mr-10 -mt-10"></div>
+        <Card className="relative overflow-hidden bg-gradient-to-br from-white to-slate-50 border-slate-200 shadow-lg">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-int-orange/5 blur-3xl rounded-full -mr-10 -mt-10"></div>
           <CardContent className="p-5 space-y-4 relative z-10">
             <div className="flex items-center gap-4">
               <div className="relative">
-                <div className="w-16 h-16 rounded-full border-2 border-[#2b4bee] p-0.5">
+                <div className="w-16 h-16 rounded-full border-2 border-int-orange p-0.5">
                   <Avatar className="w-full h-full">
                     <AvatarImage src={userProfile?.profile_picture_url} />
-                    <AvatarFallback className="bg-gradient-to-br from-[#2b4bee] to-violet-600 text-white text-xl">
+                    <AvatarFallback className="bg-gradient-to-br from-int-orange to-[#E8884A] text-white text-xl">
                       {user?.email?.charAt(0).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
                 </div>
-                <div className="absolute -bottom-1 -right-1 bg-[#2b4bee] text-[10px] font-bold px-1.5 py-0.5 rounded-full text-white">
+                <div className="absolute -bottom-1 -right-1 bg-int-orange text-[10px] font-bold px-1.5 py-0.5 rounded-full text-white">
                   LVL {level}
                 </div>
               </div>
@@ -107,18 +107,18 @@ export default function ParticipantHub() {
                 <p className="text-slate-300 text-xs font-semibold uppercase tracking-wider">Experience Points</p>
                 <p className="text-white text-sm font-bold">{currentXP} <span className="text-slate-500">/ {xpForNextLevel} XP</span></p>
               </div>
-              <div className="h-3 w-full bg-zinc-800 rounded-full overflow-hidden">
+              <div className="h-3 w-full bg-slate-200 rounded-full overflow-hidden">
                 <div 
-                  className="h-full bg-gradient-to-r from-[#2b4bee] to-violet-600 rounded-full shadow-lg shadow-[#2b4bee]/50"
+                  className="h-full bg-gradient-to-r from-int-orange to-[#E8884A] rounded-full shadow-lg shadow-int-orange/30"
                   style={{ width: `${xpProgress}%` }}
                 ></div>
               </div>
-              <p className="text-[#2b4bee] text-xs font-bold flex items-center gap-1">
+              <p className="text-int-orange text-xs font-bold flex items-center gap-1">
                 <Sparkles className="h-3 w-3" /> {xpNeeded} XP to Level {level + 1}
               </p>
             </div>
 
-            <Button className="w-full bg-[#2b4bee] hover:bg-[#2440d6] text-white font-bold shadow-lg shadow-[#2b4bee]/20">
+            <Button className="w-full bg-int-orange hover:bg-[#C46322] text-white font-bold shadow-lg shadow-int-orange/20">
               View Skill Tree & Rewards
             </Button>
           </CardContent>
@@ -126,41 +126,41 @@ export default function ParticipantHub() {
 
         {/* Stats Grid */}
         <div className="grid grid-cols-2 gap-3">
-          <Card className="bg-zinc-900 border-zinc-800">
+          <Card className="bg-white border-slate-200">
             <CardContent className="p-4 space-y-2">
               <div className="flex items-center justify-between">
-                <Sparkles className="h-5 w-5 text-[#2b4bee]" />
+                <Sparkles className="h-5 w-5 text-int-orange" />
                 <p className="text-green-400 text-xs font-bold">+120</p>
               </div>
               <div>
-                <p className="text-white text-2xl font-extrabold">{userPoints?.total_points || 0}</p>
-                <p className="text-slate-400 text-xs font-medium">Total Points</p>
+                <p className="text-slate-900 text-2xl font-extrabold">{userPoints?.total_points || 0}</p>
+                <p className="text-slate-600 text-xs font-medium">Total Points</p>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-zinc-900 border-zinc-800">
+          <Card className="bg-white border-slate-200">
             <CardContent className="p-4 space-y-2">
               <div className="flex items-center justify-between">
-                <Award className="h-5 w-5 text-[#ad2bee]" />
+                <Award className="h-5 w-5 text-int-navy" />
                 <p className="text-green-400 text-xs font-bold">+2</p>
               </div>
               <div>
-                <p className="text-white text-2xl font-extrabold">{badges.length}</p>
-                <p className="text-slate-400 text-xs font-medium">Badges Earned</p>
+                <p className="text-slate-900 text-2xl font-extrabold">{badges.length}</p>
+                <p className="text-slate-600 text-xs font-medium">Badges Earned</p>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-zinc-900 border-zinc-800 col-span-2">
+          <Card className="bg-white border-slate-200 col-span-2">
             <CardContent className="p-4">
               <div className="flex items-center justify-between mb-2">
-                <p className="text-slate-400 text-xs font-medium uppercase tracking-widest">Current Streak</p>
-                <Flame className="h-5 w-5 text-orange-500" />
+                <p className="text-slate-600 text-xs font-medium uppercase tracking-widest">Current Streak</p>
+                <Flame className="h-5 w-5 text-int-orange" />
               </div>
               <div className="flex items-baseline gap-3">
-                <p className="text-white text-3xl font-extrabold">{userPoints?.current_streak || 0}</p>
-                <p className="text-slate-400 text-sm">days</p>
+                <p className="text-slate-900 text-3xl font-extrabold">{userPoints?.current_streak || 0}</p>
+                <p className="text-slate-600 text-sm">days</p>
               </div>
             </CardContent>
           </Card>
@@ -169,23 +169,23 @@ export default function ParticipantHub() {
         {/* Recent Recognition */}
         <section>
           <div className="flex items-center justify-between mb-3 px-1">
-            <h3 className="text-white text-lg font-bold">Recent Recognition</h3>
-            <Link to={createPageUrl('Recognition')} className="text-blue-400 text-xs font-bold">View All</Link>
+            <h3 className="text-slate-900 text-lg font-bold">Recent Recognition</h3>
+            <Link to={createPageUrl('Recognition')} className="text-int-orange text-xs font-bold">View All</Link>
           </div>
           <div className="space-y-3">
             {recentRecognitions.slice(0, 3).map(rec => (
-              <Card key={rec.id} className="bg-zinc-900/50 backdrop-blur-md border-zinc-800">
+              <Card key={rec.id} className="bg-white backdrop-blur-md border-slate-200">
                 <CardContent className="p-4 flex items-start gap-3">
-                  <Avatar className="h-10 w-10 border border-zinc-700">
-                    <AvatarFallback className="bg-gradient-to-br from-[#2b4bee] to-violet-600 text-white text-sm">
+                  <Avatar className="h-10 w-10 border border-slate-300">
+                    <AvatarFallback className="bg-gradient-to-br from-int-orange to-[#E8884A] text-white text-sm">
                       {rec.sender_name?.charAt(0).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-white">
-                      <span className="font-bold text-[#2b4bee]">{rec.sender_name}</span> thanked you
+                    <p className="text-sm font-medium text-slate-900">
+                      <span className="font-bold text-int-orange">{rec.sender_name}</span> thanked you
                     </p>
-                    <p className="text-slate-400 text-xs italic line-clamp-2">"{rec.message}"</p>
+                    <p className="text-slate-600 text-xs italic line-clamp-2">"{rec.message}"</p>
                     <span className="text-[10px] text-slate-500 mt-1 block">
                       {formatDistanceToNow(new Date(rec.created_date), { addSuffix: true })}
                     </span>
@@ -199,21 +199,21 @@ export default function ParticipantHub() {
         {/* Quick Actions */}
         <div className="grid grid-cols-3 gap-3">
           <Link to={createPageUrl('Calendar')}>
-            <Button variant="outline" className="w-full flex flex-col gap-2 h-auto py-4 bg-zinc-900 border-zinc-800 hover:bg-zinc-800">
-              <BarChart3 className="h-6 w-6 text-[#2b4bee]" />
-              <span className="text-xs font-bold text-slate-300">Events</span>
+            <Button variant="outline" className="w-full flex flex-col gap-2 h-auto py-4 bg-white border-slate-300 hover:bg-slate-50">
+              <BarChart3 className="h-6 w-6 text-int-orange" />
+              <span className="text-xs font-bold text-slate-700">Events</span>
             </Button>
           </Link>
           <Link to={createPageUrl('Teams')}>
-            <Button variant="outline" className="w-full flex flex-col gap-2 h-auto py-4 bg-zinc-900 border-zinc-800 hover:bg-zinc-800">
-              <TrendingUp className="h-6 w-6 text-[#2b4bee]" />
-              <span className="text-xs font-bold text-slate-300">Teams</span>
+            <Button variant="outline" className="w-full flex flex-col gap-2 h-auto py-4 bg-white border-slate-300 hover:bg-slate-50">
+              <TrendingUp className="h-6 w-6 text-int-navy" />
+              <span className="text-xs font-bold text-slate-700">Teams</span>
             </Button>
           </Link>
           <Link to={createPageUrl('AvatarShopHub')}>
-            <Button variant="outline" className="w-full flex flex-col gap-2 h-auto py-4 bg-zinc-900 border-zinc-800 hover:bg-zinc-800">
-              <Gift className="h-6 w-6 text-amber-400" />
-              <span className="text-xs font-bold text-slate-300">Shop</span>
+            <Button variant="outline" className="w-full flex flex-col gap-2 h-auto py-4 bg-white border-slate-300 hover:bg-slate-50">
+              <Gift className="h-6 w-6 text-int-orange" />
+              <span className="text-xs font-bold text-slate-700">Shop</span>
             </Button>
           </Link>
         </div>

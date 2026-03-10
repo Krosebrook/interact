@@ -17,16 +17,16 @@ export default function OnboardingDashboard() {
   return (
     <div className="space-y-6 animate-fade-in">
       {/* Hero Section */}
-      <Card className="border-0 bg-gradient-to-r from-purple-600 to-indigo-600 text-white">
+      <Card className="border-0 bg-gradient-to-r from-int-orange to-[#E8884A] text-white">
         <CardContent className="py-8">
           <div className="flex items-center gap-3 mb-3">
             <Rocket className="h-8 w-8" />
             <h1 className="text-3xl font-bold">Welcome to INTeract, {user?.full_name}! 🎉</h1>
           </div>
-          <p className="text-lg text-purple-100 mb-4">
+          <p className="text-lg text-white/90 mb-4">
             Let's get you started with everything you need to thrive in our remote-first culture.
           </p>
-          <div className="flex items-center gap-2 text-sm text-purple-100">
+          <div className="flex items-center gap-2 text-sm text-white/80">
             <Sparkles className="h-4 w-4" />
             AI-powered personalized onboarding experience
           </div>

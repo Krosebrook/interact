@@ -242,7 +242,7 @@ export default function ParticipantPortal() {
                           <h3 className="font-bold text-lg mb-1">{event.title}</h3>
                           <p className="text-sm text-slate-600">{activity?.type}</p>
                         </div>
-                        <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-200">
+                        <Badge variant="outline" className="bg-int-orange/10 text-int-orange border-int-orange/20">
                           Feedback Needed
                         </Badge>
                       </div>
