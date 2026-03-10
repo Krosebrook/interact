@@ -352,10 +352,7 @@ export default function Landing() {
             </p>
             <Button
               size="lg"
-              onClick={() => {
-                console.log('[LANDING] Redirecting to login...');
-                base44.auth.redirectToLogin(createPageUrl('Dashboard'));
-              }}
+              onClick={handleLogin}
               className="bg-white text-[#14294D] hover:bg-white/90 text-lg px-8 py-6 rounded-full shadow-2xl hover:shadow-white/20 transition-all"
             >
               Start Your Free Trial
