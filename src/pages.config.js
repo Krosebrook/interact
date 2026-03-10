@@ -132,6 +132,7 @@ import ProductShowcase from './pages/ProductShowcase';
 import ProfileCustomization from './pages/ProfileCustomization';
 import ProjectPlan from './pages/ProjectPlan';
 import PublicProfile from './pages/PublicProfile';
+import RBACTestChecklist from './pages/RBACTestChecklist';
 import RealTimeAnalytics from './pages/RealTimeAnalytics';
 import Recognition from './pages/Recognition';
 import RecognitionEngine from './pages/RecognitionEngine';
@@ -160,8 +161,8 @@ import TeamChallenges from './pages/TeamChallenges';
 import TeamCompetition from './pages/TeamCompetition';
 import TeamDashboard from './pages/TeamDashboard';
 import TeamLeaderDashboard from './pages/TeamLeaderDashboard';
-import TeamLeaderboard from './pages/TeamLeaderboard';
 import Teams from './pages/Teams';
+import TeamLeaderboard from './pages/TeamLeaderboard';
 import TeamPerformanceDashboard from './pages/TeamPerformanceDashboard';
 import UserManagement from './pages/UserManagement';
 import UserProfile from './pages/UserProfile';
@@ -171,7 +172,6 @@ import WellnessAdmin from './pages/WellnessAdmin';
 import WellnessAnalyticsReport from './pages/WellnessAnalyticsReport';
 import WellnessDashboard from './pages/WellnessDashboard';
 import Whitepapers from './pages/Whitepapers';
-import RBACTestChecklist from './pages/RBACTestChecklist';
 import __Layout from './Layout.jsx';
 
 
@@ -261,6 +261,7 @@ export const PAGES = {
     "ProfileCustomization": ProfileCustomization,
     "ProjectPlan": ProjectPlan,
     "PublicProfile": PublicProfile,
+    "RBACTestChecklist": RBACTestChecklist,
     "RealTimeAnalytics": RealTimeAnalytics,
     "Recognition": Recognition,
     "RecognitionEngine": RecognitionEngine,
@@ -289,8 +290,8 @@ export const PAGES = {
     "TeamCompetition": TeamCompetition,
     "TeamDashboard": TeamDashboard,
     "TeamLeaderDashboard": TeamLeaderDashboard,
-    "TeamLeaderboard": TeamLeaderboard,
     "Teams": Teams,
+    "TeamLeaderboard": TeamLeaderboard,
     "TeamPerformanceDashboard": TeamPerformanceDashboard,
     "UserManagement": UserManagement,
     "UserProfile": UserProfile,
@@ -300,7 +301,6 @@ export const PAGES = {
     "WellnessAnalyticsReport": WellnessAnalyticsReport,
     "WellnessDashboard": WellnessDashboard,
     "Whitepapers": Whitepapers,
-    "RBACTestChecklist": RBACTestChecklist,
 }
 
 export const pagesConfig = {
