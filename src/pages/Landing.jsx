@@ -25,6 +25,11 @@ import { Badge } from '@/components/ui/badge';
 
 export default function Landing() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [demoOpen, setDemoOpen] = useState(false);
+
+  const handleLogin = () => {
+    base44.auth.redirectToLogin(createPageUrl('Dashboard'));
+  };
 
   const features = [
     {
