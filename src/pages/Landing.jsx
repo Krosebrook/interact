@@ -363,6 +363,25 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* Demo Modal */}
+      <Dialog open={demoOpen} onOpenChange={setDemoOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>INTeract Platform Demo</DialogTitle>
+          </DialogHeader>
+          <div className="aspect-video bg-slate-100 rounded-lg flex items-center justify-center">
+            <div className="text-center text-slate-500">
+              <Sparkles className="h-12 w-12 mx-auto mb-3 text-[#FF8A3D]" />
+              <p className="font-medium text-slate-700">Demo video coming soon</p>
+              <p className="text-sm mt-1">Contact us at hello@intinc.com for a live walkthrough</p>
+              <Button className="mt-4 bg-gradient-to-r from-[#FF8A3D] to-[#FFB86C] text-white" onClick={handleLogin}>
+                Start Free Trial Instead
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       {/* Footer */}
       <footer className="bg-slate-900 text-white py-8 sm:py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
