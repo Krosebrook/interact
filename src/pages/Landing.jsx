@@ -377,13 +377,13 @@ export default function Landing() {
               © 2026 INTeract. Powered by FlashFusion.
             </p>
             <div className="flex gap-6 text-sm text-slate-400">
-              <a href="#" className="hover:text-white transition-colors">
+              <Link to={createPageUrl('Privacy')} className="hover:text-white transition-colors">
                 Privacy
-              </a>
-              <a href="#" className="hover:text-white transition-colors">
+              </Link>
+              <Link to={createPageUrl('Terms')} className="hover:text-white transition-colors">
                 Terms
-              </a>
-              <a href="#" className="hover:text-white transition-colors">
+              </Link>
+              <a href="mailto:hello@intinc.com" className="hover:text-white transition-colors">
                 Contact
               </a>
             </div>
