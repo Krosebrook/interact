@@ -108,14 +108,8 @@ export default function Landing() {
               <a href="#benefits" className="text-slate-700 hover:text-[#FF8A3D] transition-colors">
                 Benefits
               </a>
-              <a href="#pricing" className="text-slate-700 hover:text-[#FF8A3D] transition-colors">
-                Pricing
-              </a>
               <Button 
-                onClick={() => {
-                  console.log('[LANDING] Redirecting to login...');
-                  base44.auth.redirectToLogin(createPageUrl('Dashboard'));
-                }}
+                onClick={handleLogin}
                 className="bg-gradient-to-r from-[#FF8A3D] to-[#FFB86C] hover:from-[#FFB86C] hover:to-[#FF8A3D] text-white"
               >
                 Sign In
