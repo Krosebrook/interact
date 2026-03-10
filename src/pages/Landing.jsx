@@ -149,18 +149,8 @@ export default function Landing() {
               >
                 Benefits
               </a>
-              <a
-                href="#pricing"
-                className="block py-2 text-slate-700 hover:text-[#FF8A3D]"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Pricing
-              </a>
               <Button 
-                onClick={() => {
-                  console.log('[LANDING] Redirecting to login...');
-                  base44.auth.redirectToLogin(createPageUrl('Dashboard'));
-                }}
+                onClick={() => { setMobileMenuOpen(false); handleLogin(); }}
                 className="w-full bg-gradient-to-r from-[#FF8A3D] to-[#FFB86C] text-white"
               >
                 Get Started
