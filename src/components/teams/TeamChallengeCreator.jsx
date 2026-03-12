@@ -6,8 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Sparkles, Trophy, Target, Users, Calendar, Award } from 'lucide-react';
+import { Sparkles, Trophy, Target, Calendar, Award } from 'lucide-react';
 import LoadingSpinner from '../common/LoadingSpinner';
 import { toast } from 'sonner';
 

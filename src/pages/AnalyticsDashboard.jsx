@@ -8,14 +8,14 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import { 
-  LineChart, Line, BarChart, Bar, PieChart, Pie, Cell,
+  LineChart, Line, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer 
 } from 'recharts';
 import { 
   TrendingUp, Users, Award, Calendar, Target, Download,
   Heart, Sparkles, Activity, BarChart3 
 } from 'lucide-react';
-import { format, subDays, startOfMonth, endOfMonth } from 'date-fns';
+import { format, subDays } from 'date-fns';
 
 const COLORS = ['#ee8c2b', '#3b82f6', '#10b981', '#8b5cf6', '#f59e0b', '#ec4899'];
 

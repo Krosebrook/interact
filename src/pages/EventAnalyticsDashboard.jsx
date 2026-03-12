@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { useUserData } from '../components/hooks/useUserData';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { 
@@ -23,7 +23,6 @@ import ActivityTypeDistribution from '../components/analytics/ActivityTypeDistri
 import FeedbackSentimentAnalysis from '../components/analytics/FeedbackSentimentAnalysis';
 import AISuggestionImpact from '../components/analytics/AISuggestionImpact';
 import EngagementTrendChart from '../components/analytics/EngagementTrendChart';
-import { format, subMonths, startOfMonth, endOfMonth } from 'date-fns';
 
 export default function EventAnalyticsDashboard() {
   const { user, loading } = useUserData(true, true);

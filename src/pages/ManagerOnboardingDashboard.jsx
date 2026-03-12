@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { useUserData } from '../components/hooks/useUserData';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Users, Plus, TrendingUp } from 'lucide-react';
+import { Users, Plus } from 'lucide-react';
 import OnboardingPlanCreator from '../components/onboarding/OnboardingPlanCreator';
 import ProgressTracker from '../components/onboarding/ProgressTracker';
 import TaskChecklist from '../components/onboarding/TaskChecklist';

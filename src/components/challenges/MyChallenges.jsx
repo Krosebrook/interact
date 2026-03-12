@@ -1,9 +1,7 @@
-import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { Trophy, Target, Calendar, TrendingUp } from 'lucide-react';
+import { Trophy, Target, Calendar } from 'lucide-react';
 import { format, differenceInDays } from 'date-fns';
 
 export default function MyChallenges({ participations, challenges }) {

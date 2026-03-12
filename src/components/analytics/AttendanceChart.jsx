@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { TrendingUp, Users } from 'lucide-react';
-import { format, startOfMonth, subMonths, parseISO } from 'date-fns';
+import { format, startOfMonth, subMonths } from 'date-fns';
 
 export default function AttendanceChart({ events, participations }) {
   const chartData = useMemo(() => {

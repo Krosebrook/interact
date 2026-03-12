@@ -18,11 +18,9 @@ import LoadingSpinner from '../components/common/LoadingSpinner';
 import { useEventActions } from '../components/events/useEventActions';
 import { useTeamData } from '../components/hooks/useTeamData';
 import GoogleCalendarActions from '../components/events/GoogleCalendarActions';
-import CommentSection from '../components/collaboration/CommentSection';
 import ProposeEventDialog from '../components/events/ProposeEventDialog';
 import EventProposalsList from '../components/events/EventProposalsList';
 import PostEventFeedbackDialog from '../components/events/PostEventFeedbackDialog';
-import { Card } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { toast } from 'sonner';
 

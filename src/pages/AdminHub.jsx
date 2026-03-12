@@ -3,7 +3,7 @@
  */
 
 import { useUserData } from '../components/hooks/useUserData';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import {
@@ -13,9 +13,7 @@ import {
   Gift,
   Settings,
   Zap,
-  FileText,
   Brain,
-  TrendingUp,
   Award
 } from 'lucide-react';
 

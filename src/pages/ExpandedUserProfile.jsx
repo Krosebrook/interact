@@ -16,9 +16,7 @@ import {
   BookOpen,
   Users,
   Zap,
-  Trophy,
   Heart,
-  Settings,
   Edit2,
   Briefcase,
   TrendingUp

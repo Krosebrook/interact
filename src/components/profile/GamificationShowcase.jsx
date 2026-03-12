@@ -8,7 +8,7 @@ import { Progress } from '@/components/ui/progress';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Trophy, Award, Target, Star, Pin, Plus, TrendingUp } from 'lucide-react';
+import { Trophy, Award, Target, Pin, Plus } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function GamificationShowcase({ userEmail, isOwnProfile }) {

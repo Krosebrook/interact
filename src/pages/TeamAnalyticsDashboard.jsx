@@ -4,9 +4,9 @@ import { useAuth } from '../components/auth/AuthProvider';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Users, TrendingUp, Award, Target, BarChart3 } from 'lucide-react';
+import { Users, TrendingUp, Award, Target } from 'lucide-react';
 import LoadingSpinner from '../components/common/LoadingSpinner';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
 export default function TeamAnalyticsDashboard() {
   const { user } = useAuth();

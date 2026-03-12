@@ -11,12 +11,10 @@ import {
   Award, 
   TrendingUp,
   Filter,
-  ArrowUp,
   Sparkles,
   Trophy
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { toast } from 'sonner';
 import moment from 'moment';
 
 const TIER_BADGES = {

@@ -15,8 +15,7 @@ import {
   TrendingUp,
   MessageSquare,
   Target,
-  Lightbulb,
-  BarChart3
+  Lightbulb
 } from 'lucide-react';
 import { toast } from 'sonner';
 

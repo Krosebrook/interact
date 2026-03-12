@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
-import { Brain, TrendingUp, AlertCircle, CheckCircle, Target } from 'lucide-react';
+import { Brain, TrendingUp, CheckCircle, Target } from 'lucide-react';
 
 export default function WellnessInsightsPanel() {
   const { data: insights, isLoading, refetch } = useQuery({

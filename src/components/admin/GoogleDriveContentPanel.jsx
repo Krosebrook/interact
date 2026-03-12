@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { FileText, Search, Download, ExternalLink, Sparkles } from 'lucide-react';
+import { FileText, Search, ExternalLink, Sparkles } from 'lucide-react';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 
 export default function GoogleDriveContentPanel() {

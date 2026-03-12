@@ -3,14 +3,13 @@
  * Predictive scoring, cohort analysis, trends, custom reports
  */
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useUserData } from '../components/hooks/useUserData';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { TrendingUp, Users, Target, Download, Filter } from 'lucide-react';
+import { TrendingUp, Users, Target, Download } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import PredictiveEngagementScoring from '../components/analytics/PredictiveEngagementScoring';
