@@ -1,10 +1,10 @@
 # Interact - Employee Engagement & Gamification Platform
 
-[![Version](https://img.shields.io/badge/version-0.1.0--alpha-blue.svg)](https://github.com/Krosebrook/interact)
+[![Version](https://img.shields.io/badge/version-0.0.0-blue.svg)](https://github.com/Krosebrook/interact)
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](#)
-[![Security](https://img.shields.io/badge/security-100%2F100-success.svg)](./docs/audits/CODEBASE_AUDIT.md)
-[![Vulnerabilities](https://img.shields.io/badge/vulnerabilities-0-success.svg)](./CHANGELOG.md#security)
-[![Documentation](https://img.shields.io/badge/docs-98%2F100-success.svg)](./docs/index.md)
+[![Security](https://img.shields.io/badge/security-audit%20required-orange.svg)](./docs/SECURITY.md)
+[![Vulnerabilities](https://img.shields.io/badge/vulnerabilities-9-critical.svg)](./docs/SECURITY.md)
+[![Documentation](https://img.shields.io/badge/docs-comprehensive-success.svg)](./docs/README.md)
 [![License](https://img.shields.io/badge/license-Proprietary-lightgrey.svg)](./LICENSE)
 [![React](https://img.shields.io/badge/React-18-61dafb.svg)](https://react.dev)
 [![Vite](https://img.shields.io/badge/Vite-6-646cff.svg)](https://vitejs.dev)
@@ -23,7 +23,7 @@ Interact is an enterprise-grade employee engagement platform that transforms wor
 - 🤖 **AI-Powered Recommendations** - Personalized activity suggestions using machine learning
 - 📊 **Advanced Analytics** - Real-time engagement metrics and team insights
 - 🔗 **15+ Integrations** - Google Calendar, Slack, Teams, OpenAI, and more
-- 🔒 **Enterprise Security** - GDPR compliant, SOC 2 ready, zero vulnerabilities
+- 🔒 **Enterprise Security** - GDPR compliant, SOC 2 ready, audit in progress
 - 📱 **Mobile-First Design** - Responsive UI with PWA capabilities (roadmap)
 
 ## 📋 Table of Contents
@@ -52,30 +52,36 @@ Interact is an enterprise-grade employee engagement platform that transforms wor
 - **[Development Guide](./docs/getting-started/DEVELOPMENT.md)** - Local development setup
 - **[Contributing Guidelines](./CONTRIBUTING.md)** - How to contribute
 
+**Audit & Architecture (March 2026):**
+- **[Audit Report](./docs/AUDIT-REPORT.md)** - Comprehensive codebase audit with WSJF scoring
+- **[Architecture](./docs/ARCHITECTURE.md)** - System components, auth flow, integrations
+- **[API Reference](./docs/API.md)** - All 39 entities and 200+ serverless functions
+- **[Database Schema](./docs/DATABASE.md)** - Full entity schema reference
+- **[Security Report](./docs/SECURITY.md)** - Vulnerabilities, OWASP mapping, remediation
+- **[Dead Code Triage](./docs/DEAD-CODE-TRIAGE.md)** - Dead code analysis and restoration plan
+- **[Roadmap](./docs/ROADMAP.md)** - WSJF-scored technical roadmap
+- **[Architecture Decisions](./docs/adr/)** - 9 ADRs for major technical choices
+
 **Essential Documentation:**
-- **[Product Requirements (PRD)](./docs/planning/PRD.md)** - Product vision and requirements
+- **[Product Requirements (PRD)](./docs/PRD.md)** - Current-state product requirements
 - **[Feature Roadmap](./docs/planning/FEATURE_ROADMAP.md)** - 18-month roadmap with 15 features
-- **[API Integration Guide](./docs/guides/API_INTEGRATION_GUIDE.md)** - Base44 SDK integration
-- **[Testing Guide](./docs/guides/TESTING.md)** - Testing strategy and best practices
+- **[Runbook](./docs/RUNBOOK.md)** - Operational procedures and incident response
 
 **For Developers:**
-- **[Usage Examples](./docs/guides/USAGE-EXAMPLES.md)** - Code examples and patterns
-- **[Documentation Guidelines](./docs/guides/DOCUMENTATION_GUIDELINES.md)** - How to write docs
-- **[Codebase Audit](./docs/audits/CODEBASE_AUDIT.md)** - Technical audit and quality metrics
 - **[FAQ](./FAQ.md)** - Frequently asked questions
 
 **Operations:**
 - **[Deployment Checklist](./docs/operations/DEPLOYMENT_CHECKLIST.md)** - Pre-deployment verification
 - **[Security Documentation](./docs/security/)** - Security and compliance
-- **[Integrations](./docs/integrations/INTEGRATIONS.md)** - Third-party integrations
+- **[CI/CD](./docs/operations/CI-CD.md)** - Pipeline documentation
 
 **By Audience:**
-- **Developers:** Start with [Quick Start](#-quick-start) → [Development Guide](./docs/getting-started/DEVELOPMENT.md) → [Usage Examples](./docs/guides/USAGE-EXAMPLES.md)
-- **Product Managers:** Read [PRD](./docs/planning/PRD.md) → [Feature Roadmap](./docs/planning/FEATURE_ROADMAP.md)
-- **DevOps:** Review [Deployment Checklist](./docs/operations/DEPLOYMENT_CHECKLIST.md) → [CI/CD](./docs/operations/CI-CD.md)
-- **Security:** Check [Security Docs](./docs/security/SECURITY.md) → [Codebase Audit](./docs/audits/CODEBASE_AUDIT.md)
+- **Developers:** Start with [Quick Start](#-quick-start) → [Architecture](./docs/ARCHITECTURE.md) → [API Reference](./docs/API.md)
+- **Product Managers:** Read [PRD](./docs/PRD.md) → [Feature Roadmap](./docs/planning/FEATURE_ROADMAP.md)
+- **DevOps:** Review [Runbook](./docs/RUNBOOK.md) → [Deployment Checklist](./docs/operations/DEPLOYMENT_CHECKLIST.md)
+- **Security:** Check [Security Report](./docs/SECURITY.md) → [Audit Report](./docs/AUDIT-REPORT.md)
 
-> **📊 70+ organized documentation files** in 11 categories covering architecture, APIs, security, deployment, and more.
+> **📊 80+ organized documentation files** in 12 categories covering architecture, APIs, security, deployment, and more.
 
 ### Base44 Integration
 - **[.github/base44-updates.md](./.github/base44-updates.md)** - Base44 visual canvas integration guide and module architecture
@@ -352,20 +358,23 @@ Please refer to the [PRD.md](./docs/planning/PRD.md) for:
 
 ## 📊 Quality Metrics
 
+*As of March 2026 audit — see [docs/AUDIT-REPORT.md](./docs/AUDIT-REPORT.md) for full details.*
+
 | Metric | Current | Target (6 months) |
 |--------|---------|-------------------|
-| Test Coverage | 0% | 80% |
-| Security Score | **100/100** ✅ | 95/100 |
-| Security Vulnerabilities | **0** ✅ | 0 |
-| Code Quality | 65/100 | 90/100 |
-| Documentation | **98/100** ⬆️ | 98/100 |
-| Performance | 75/100 | 90/100 |
+| Test Coverage | ~8% (114 tests) | 30%+ |
+| npm Vulnerabilities | **9** (6 high) ⚠️ | 0 |
+| ESLint Errors | **513** (unused imports) | 0 |
+| Documentation | Comprehensive | Maintained |
+| Skipped Tests | 31 | 0 |
 
-**Recent Improvements (Q4 2025 - Q1 2026):**
-- Security: All vulnerabilities fixed (January 9, 2026) - Score: 100/100
-- Documentation: 85/100 → 98/100 (60+ technical docs added)
+**Recent Improvements (March 2026 Audit):**
+- Comprehensive codebase audit completed — 11 new documentation files generated
+- 9 npm vulnerabilities identified and tracked with remediation steps in [docs/SECURITY.md](./docs/SECURITY.md)
+- Dead code triage completed — 1 stale backup file identified ([docs/DEAD-CODE-TRIAGE.md](./docs/DEAD-CODE-TRIAGE.md))
+- Architecture Decision Records created for 9 major architectural choices
 
-**See [CODEBASE_AUDIT.md](./docs/audits/CODEBASE_AUDIT.md) Section 14 for scoring methodology.**
+**See [docs/AUDIT-REPORT.md](./docs/AUDIT-REPORT.md) for the full audit report.**
 
 ## 📝 License
 
