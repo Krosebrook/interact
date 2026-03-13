@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { useAuth } from '../components/auth/AuthProvider';
+import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Users, BookOpen, BarChart3, TrendingUp } from 'lucide-react';
 import UserManagementPanel from '../components/admin/UserManagementPanel';
