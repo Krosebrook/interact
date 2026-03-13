@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Activity, RefreshCw, CheckCircle, AlertCircle } from 'lucide-react';
+import { Activity, RefreshCw, CheckCircle } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function FitbitSyncButton({ userEmail }) {

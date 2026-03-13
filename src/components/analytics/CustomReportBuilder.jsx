@@ -5,11 +5,11 @@
 
 import { useState } from 'react';
 import { base44 } from '@/api/base44Client';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Plus, FileText, Mail, Clock } from 'lucide-react';
+import { Plus, FileText, Clock } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function CustomReportBuilder() {

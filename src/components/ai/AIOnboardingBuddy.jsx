@@ -3,7 +3,6 @@ import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Avatar } from '@/components/ui/avatar';
 import { Sparkles, Send, Loader2 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 

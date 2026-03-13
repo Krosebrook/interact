@@ -144,7 +144,7 @@ export default function AIAdminDashboard() {
                 <div className="flex items-center justify-between mb-4">
                   <div>
                     <p className="text-3xl font-bold text-red-600">{nudges?.at_risk_count || 0}</p>
-                    <p className="text-sm text-slate-600">Users with churn risk > 60%</p>
+                    <p className="text-sm text-slate-600">Users with churn risk &gt; 60%</p>
                   </div>
                   <Button className="gap-2">
                     <Send className="h-4 w-4" />

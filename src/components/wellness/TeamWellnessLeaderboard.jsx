@@ -2,9 +2,8 @@ import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Avatar } from '@/components/ui/avatar';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { Trophy, TrendingUp, Users, Award } from 'lucide-react';
+import { Trophy, Users, Award } from 'lucide-react';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 
 export default function TeamWellnessLeaderboard({ challengeId }) {

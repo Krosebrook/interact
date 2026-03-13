@@ -10,7 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Zap, Users } from 'lucide-react';
+import { Plus, Zap } from 'lucide-react';
 import LoadingSpinner from '../common/LoadingSpinner';
 
 export default function TeamGamificationRules() {

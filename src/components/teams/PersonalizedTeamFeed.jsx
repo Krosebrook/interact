@@ -3,7 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Sparkles, Users, TrendingUp, Calendar } from 'lucide-react';
+import { Sparkles, Users, TrendingUp } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function PersonalizedTeamFeed({ teamId, userEmail }) {

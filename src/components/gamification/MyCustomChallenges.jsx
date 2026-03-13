@@ -10,7 +10,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { Plus, Target, Calendar, TrendingUp, Users } from 'lucide-react';
+import { Plus, Target, Calendar, Users } from 'lucide-react';
 import CustomChallengeCreator from './CustomChallengeCreator';
 import LoadingSpinner from '../common/LoadingSpinner';
 import { motion } from 'framer-motion';

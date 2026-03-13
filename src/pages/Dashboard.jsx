@@ -11,7 +11,6 @@ import {
   calculateDashboardStats } from
 '../components/utils/eventUtils';
 import { Button } from '@/components/ui/button';
-import { StatCard } from '../components/common/StatsGrid';
 import SkeletonGrid from '../components/common/SkeletonGrid';
 import QuickActionCard from '../components/common/QuickActionCard';
 import EventCalendarCard from '../components/events/EventCalendarCard';

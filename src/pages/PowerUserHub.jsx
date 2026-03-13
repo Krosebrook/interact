@@ -1,13 +1,12 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion } from 'framer-motion';
-import { Sparkles, TrendingUp, Lock } from 'lucide-react';
+import { Sparkles, TrendingUp } from 'lucide-react';
 import TierProgressCard from '../components/poweruser/TierProgressCard';
 import ValueMetricsCard from '../components/poweruser/ValueMetricsCard';
 import TierUnlockAlert from '../components/poweruser/TierUnlockAlert';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 
 export default function PowerUserHub() {
   const [unlockedTierToShow, setUnlockedTierToShow] = useState(null);
