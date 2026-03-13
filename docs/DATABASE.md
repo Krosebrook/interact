@@ -4,7 +4,7 @@
 **Access:** Base44 SDK (`Query.*` entity operations)  
 **Entity Count:** 39  
 **Schema Source:** `src/models/schema.json`  
-**Last Updated:** January 2026
+**Last Updated:** March 2026
 
 ---
 

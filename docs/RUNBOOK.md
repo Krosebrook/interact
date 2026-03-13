@@ -1,7 +1,7 @@
 # Runbook — Interact Platform
 
 **Audience:** Engineers, DevOps, On-call responders  
-**Last Updated:** January 2026  
+**Last Updated:** March 2026  
 **Environment:** Vercel (frontend) + Base44 (backend)
 
 ---

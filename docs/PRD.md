@@ -3,7 +3,7 @@
 
 **Version:** 1.0.0  
 **Status:** Active Development (Q1 2026)  
-**Last Updated:** January 2026  
+**Last Updated:** March 2026  
 
 > This document captures the **current-state** product requirements reflecting what is implemented in the codebase. For planning-oriented PRD content, see `docs/planning/PRD.md`.
 

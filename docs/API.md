@@ -1,6 +1,6 @@
 # API Reference — Interact Platform
 
-**Last Updated:** January 2026  
+**Last Updated:** March 2026  
 **SDK:** Base44 SDK 0.8.3  
 **Auth:** Token-based (Bearer JWT managed by Base44)
 

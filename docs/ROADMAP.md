@@ -2,7 +2,7 @@
 
 **Framework:** WSJF (Weighted Shortest Job First)  
 **WSJF Score = (Business Value + Time Criticality + Risk Reduction) / Job Size**  
-**Last Updated:** January 2026
+**Last Updated:** March 2026
 
 ---
 
@@ -106,7 +106,7 @@ npm run test:run  # Review skipped test output
 
 ---
 
-## Tier 2 — This Sprint (WSJF 5–7)
+## Tier 2 — Q2 2026 (WSJF 5–7)
 
 ### 2.1 Add Content-Security-Policy Header — WSJF: 7
 
@@ -146,7 +146,7 @@ The `vercel.json` security headers are missing **Content-Security-Policy (CSP)**
 
 TypeScript migration is planned for Q2 2025. Foundation is already in place (`tsconfig.json`, `@types/*` packages installed).
 
-**Phase 1 (this sprint):**
+**Phase 1 (Q2 2026):**
 1. Migrate `src/lib/` utilities to `.ts`
 2. Migrate `src/api/` to `.ts`
 3. Migrate `src/hooks/` to `.ts`

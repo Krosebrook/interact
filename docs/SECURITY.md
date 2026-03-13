@@ -1,7 +1,7 @@
 # Security Documentation — Interact Platform
 
-**Last Updated:** January 2026  
-**Audit Date:** January 2026  
+**Last Updated:** March 2026  
+**Audit Date:** March 2026  
 **Overall Security Posture:** ⚠️ Medium Risk (active vulnerabilities require remediation)
 
 > For security incident reporting, see [SECURITY.md](../SECURITY.md) in the repository root.  
@@ -24,11 +24,11 @@
 
 ## 1. Current Vulnerabilities
 
-### npm Audit Results (January 2026)
+### npm Audit Results (March 2026)
 
 **Total:** 9 vulnerabilities (1 low, 2 moderate, 6 high)
 
-> ⚠️ Run `npm audit` for the current state — this reflects the audit as of January 2026.
+> ⚠️ Run `npm audit` for the current state — this reflects the audit as of March 2026.
 
 | # | Package | Severity | CVE / Issue | Impact | Fix |
 |---|---|---|---|---|---|
