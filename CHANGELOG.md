@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added - January 2026 (Audit Round)
+- **Comprehensive Audit Documentation** — Full codebase audit producing 9 new documentation files
+  - `docs/DEAD-CODE-TRIAGE.md` — Dead code and backup file analysis; 1 stale backup found
+  - `docs/ARCHITECTURE.md` — Full system architecture: SPA, serverless backend, integrations, deployment
+  - `docs/API.md` — Complete API reference: 39 entities, 200 functions, auth patterns
+  - `docs/PRD.md` — Current-state product requirements for all 13 feature areas
+  - `docs/ROADMAP.md` — WSJF-scored technical roadmap (Tier 1–4 prioritization)
+  - `docs/RUNBOOK.md` — Operational runbook: deployments, rollbacks, incident response
+  - `docs/DATABASE.md` — Full 39-entity schema documentation
+  - `docs/SECURITY.md` — Security posture: 9 npm vulnerabilities, header gaps, OWASP mapping
+  - `docs/AUDIT-REPORT.md` — Comprehensive audit report with WSJF scoring
+
+- **Audit Findings Summary:**
+  - 117 registered pages (was 47 in initial release) across 13 feature domains
+  - ~200 TypeScript serverless functions in `functions/`
+  - 39 data entities in Base44 managed database
+  - 9 npm vulnerabilities identified (6 high: jspdf, quill, axios, rollup, flatted, minimatch)
+  - 870 ESLint problems (513 errors, mostly unused imports)
+  - 114 tests passing, 31 skipped
+  - 1 stale backup file: `src/pages.config.js.backup` (safe to delete)
+  - Missing security headers: CSP, HSTS, CORP/COOP
+
 ### Added - January 21, 2026
 - **Documentation Standards Update** - Updated documentation to meet 2026 best practices
   - Added status badges to README.md (build, security, documentation, vulnerabilities)

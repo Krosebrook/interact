@@ -633,6 +633,95 @@ npm test -- --coverage
 
 ---
 
+## Known Gotchas
+
+The following are common pitfalls specific to this codebase that are easy to miss:
+
+### 1. `pages.config.js` Is Auto-Generated
+
+**Do not** manually edit the `import` statements or `PAGES` object in `src/pages.config.js`. This file is auto-registered by the Base44 SDK tooling when you create new files in `src/pages/`.
+
+The **only** field you should manually edit is `mainPage`:
+
+```js
+export const pagesConfig = {
+  mainPage: "Landing",  // ← only edit this
+  Pages: PAGES,
+  Layout: __Layout,
+};
+```
+
+### 2. Base44 SDK Entity Access Pattern
+
+All database access goes through `Query` from `src/api/entities.js`:
+
+```js
+import { Query } from '@/api/entities';
+
+// ✅ Correct
+const events = await Query.Event.filter({ status: 'active' });
+
+// ❌ Wrong — no direct database imports
+import { Event } from 'some-db-library';
+```
+
+### 3. React Hooks Rules Are Enforced
+
+The project uses `eslint-plugin-react-hooks` with strict enforcement. The most common violation is calling a hook after a conditional return:
+
+```jsx
+// ❌ Breaks hooks rules — useMemo is after an early return
+const MyComponent = ({ data }) => {
+  if (!data) return null;           // early return
+  const processed = useMemo(...)    // hook called conditionally
+};
+
+// ✅ Correct — all hooks before any return
+const MyComponent = ({ data }) => {
+  const processed = useMemo(...)    // hook called unconditionally
+  if (!data) return null;
+  return <div>{processed}</div>;
+};
+```
+
+### 4. VITE_ Environment Variables Are Public
+
+Any environment variable prefixed with `VITE_` is bundled into the frontend JavaScript and is **publicly visible** to anyone who visits the app. Never put secrets in `VITE_` variables.
+
+```bash
+# .env.local
+VITE_BASE44_APP_ID=...       # ← OK, this is a public app identifier
+VITE_BASE44_BACKEND_URL=...  # ← OK, this is a public API URL
+
+# Backend secrets go in functions/ environment only
+OPENAI_API_KEY=...            # ← Never use VITE_ prefix for secrets
+```
+
+### 5. `moment.js` Is Deprecated — Use `date-fns`
+
+`moment.js` is present as a legacy dependency. Do not use it in new code. Use `date-fns` instead:
+
+```js
+// ❌ Deprecated
+import moment from 'moment';
+const formatted = moment(date).format('MMMM Do YYYY');
+
+// ✅ Modern
+import { format } from 'date-fns';
+const formatted = format(date, 'MMMM do yyyy');
+```
+
+### 6. Lint Before Committing
+
+The codebase has 870 existing ESLint problems. Do not add more. Always run lint before pushing:
+
+```bash
+npm run lint        # Check for errors
+npm run lint:fix    # Auto-fix unused imports
+```
+
+---
+
 ## Recognition
 
 Contributors will be recognized in:
