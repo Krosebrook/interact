@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { User, Calendar, Bell, Award, TrendingUp, Edit, Mail, Sparkles } from 'lucide-react';
+import { Calendar, Bell, Award, TrendingUp, Edit, Mail, Sparkles } from 'lucide-react';
 import { format, isPast } from 'date-fns';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import NotificationSettings from '../components/profile/NotificationSettings';

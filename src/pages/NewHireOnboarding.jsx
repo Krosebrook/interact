@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { useUserData } from '../components/hooks/useUserData';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
-import { Rocket, Users, BookOpen, Target } from 'lucide-react';
+import { Rocket, Users } from 'lucide-react';
 import TaskChecklist from '../components/onboarding/TaskChecklist';
 import ProgressTracker from '../components/onboarding/ProgressTracker';
 import LearningPathSuggestions from '../components/skills/LearningPathSuggestions';

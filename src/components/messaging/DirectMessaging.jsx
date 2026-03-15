@@ -5,11 +5,8 @@ import { useUserData } from '../hooks/useUserData';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
 import { MessageSquare, Send, Search, X } from 'lucide-react';
 import { format } from 'date-fns';
-import { toast } from 'sonner';
 
 export default function DirectMessaging({ recipientEmail, onClose }) {
   const { user } = useUserData();

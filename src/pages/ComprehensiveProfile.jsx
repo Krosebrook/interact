@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useUserData } from '../components/hooks/useUserData';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { User, TrendingUp, Sparkles } from 'lucide-react';
+import { User, Sparkles } from 'lucide-react';
 import ComprehensiveProfileView from '../components/profile/ComprehensiveProfileView';
 import AIDevelopmentPlan from '../components/profile/AIDevelopmentPlan';
 

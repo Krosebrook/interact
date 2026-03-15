@@ -2,11 +2,10 @@ import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { useUserData } from '@/components/hooks/useUserData';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import WellnessInsightsPanel from '@/components/wellness/WellnessInsightsPanel';
 import TeamWellnessLeaderboard from '@/components/wellness/TeamWellnessLeaderboard';
-import { Activity, TrendingUp, Users, Calendar, Target } from 'lucide-react';
+import { Activity, TrendingUp, Users, Target } from 'lucide-react';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
 export default function WellnessAnalyticsReport() {

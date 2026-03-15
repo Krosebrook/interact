@@ -1,14 +1,12 @@
-import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { useUserData } from '@/components/hooks/useUserData';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Avatar } from '@/components/ui/avatar';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
-import { Users, Sparkles, CheckCircle, XCircle, Calendar, Target, TrendingUp } from 'lucide-react';
+import { Users, Sparkles, CheckCircle, XCircle, Calendar, Target } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function MentorshipHub() {

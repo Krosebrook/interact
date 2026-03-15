@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import ManagerCoachingDashboard from '../components/admin/ManagerCoachingDashboard';
 import FeedbackAnalyticsDashboard from '../components/admin/FeedbackAnalyticsDashboard';

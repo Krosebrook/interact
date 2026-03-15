@@ -6,6 +6,15 @@ import pluginUnusedImports from "eslint-plugin-unused-imports";
 
 export default [
   {
+    // Globally ignore generated/hybrid files that cannot be parsed as plain JSX
+    ignores: [
+      "src/components/docs/**",
+      "src/components/lib/architecture/**",
+      "**/*.ts.jsx",
+      "**/*.md.jsx",
+    ],
+  },
+  {
     files: [
       "src/components/**/*.{js,mjs,cjs,jsx}",
       "src/pages/**/*.{js,mjs,cjs,jsx}",

@@ -1,8 +1,6 @@
-import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Users } from 'lucide-react';
-import { Progress } from '@/components/ui/progress';
 
 export default function CohortAnalysis({ data, cohortType, onCohortTypeChange }) {
   if (!data?.cohorts) return null;

@@ -3,7 +3,7 @@
  * Shows rewards grouped by tier with unlock requirements
  */
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Lock, Sparkles } from 'lucide-react';

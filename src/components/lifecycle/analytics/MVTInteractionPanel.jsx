@@ -1,8 +1,6 @@
-import React from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { GitMerge, TrendingUp, TrendingDown, Minus } from 'lucide-react';
-import { Progress } from '@/components/ui/progress';
 
 export default function MVTInteractionPanel({ mvtData }) {
   if (!mvtData || !mvtData.interactions) return null;

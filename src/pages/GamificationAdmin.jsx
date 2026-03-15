@@ -9,10 +9,6 @@ import UserProgressOverview from '../components/admin/gamification/UserProgressO
 import ManualAwardsPanel from '../components/admin/gamification/ManualAwardsPanel';
 import GamificationRulesConfig from '../components/admin/gamification/GamificationRulesConfig';
 import EngagementAnalytics from '../components/admin/gamification/EngagementAnalytics';
-import SkillDevelopmentTrends from '../components/admin/gamification/SkillDevelopmentTrends';
-import ContentIntegrationManager from '../components/admin/gamification/ContentIntegrationManager';
-import AIContentGenerator from '../components/admin/gamification/AIContentGenerator';
-import AIRuleOptimizer from '../components/admin/gamification/AIRuleOptimizer';
 import { useGamificationStats } from '../components/admin/gamification/QuickStatsLoader';
 import AIBadgeRewardSuggestions from '../components/gamification/AIBadgeRewardSuggestions';
 

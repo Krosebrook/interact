@@ -1,5 +1,4 @@
-import React from 'react';
-import { Trophy, Calendar, Lightbulb, Flame } from 'lucide-react';
+import { Calendar, Lightbulb, Flame } from 'lucide-react';
 
 export default function GamificationStatsGrid({ eventsAttended, ideasSubmitted, dayStreak }) {
   return (

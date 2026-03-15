@@ -3,9 +3,9 @@ import { base44 } from '@/api/base44Client';
 import { useAuth } from '../components/auth/AuthProvider';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Users, TrendingUp, Award, Target } from 'lucide-react';
+import { Users, TrendingUp, Award } from 'lucide-react';
 import LoadingSpinner from '../components/common/LoadingSpinner';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 export default function TeamAnalytics() {
   const { user } = useAuth();

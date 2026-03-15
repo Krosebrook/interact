@@ -1,7 +1,6 @@
-import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Briefcase, Calendar, TrendingUp } from 'lucide-react';
+import { Briefcase, Calendar } from 'lucide-react';
 
 export default function ProjectContributionsShowcase({ contributions }) {
   if (!contributions?.length) {

@@ -4,8 +4,8 @@ import { Badge } from '@/components/ui/badge';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { 
-  Activity, TrendingUp, Code, BarChart3, 
-  Users, Award, Check, Menu 
+  Activity, Code, 
+  Users, Award, Menu 
 } from 'lucide-react';
 
 const BG_IMAGE = 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/691e3ae3bd4916f2e05ae35e/e27ebfa44_ChatGPTImageJan14202609_44_29PM.png';
