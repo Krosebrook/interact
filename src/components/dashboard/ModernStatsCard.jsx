@@ -1,4 +1,3 @@
-import React from 'react';
 import { TrendingUp } from 'lucide-react';
 
 export default function ModernStatsCard({ title, value, subtitle, icon: Icon, trend, color = 'blue' }) {

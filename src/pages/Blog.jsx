@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Calendar, Clock, Tag, Search } from 'lucide-react';
+import { Calendar, Clock, Search } from 'lucide-react';
 import MarketingFooter from '@/components/marketing/MarketingFooter';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';

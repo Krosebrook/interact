@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Award, Heart, Star, TrendingUp } from 'lucide-react';
+import { Award, Star, TrendingUp } from 'lucide-react';
 import { format } from 'date-fns';
 
 export default function ProfileContributionSummary({ 

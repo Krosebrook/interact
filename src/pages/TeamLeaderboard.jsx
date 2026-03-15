@@ -3,14 +3,13 @@
  * Compare team engagement and performance
  */
 
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
 import { useUserData } from '../components/hooks/useUserData';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Badge } from '@/components/ui/badge';
-import { Trophy, TrendingUp, Users, Zap } from 'lucide-react';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Trophy } from 'lucide-react';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 
 export default function TeamLeaderboard() {

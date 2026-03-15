@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { Trash2, Check, X } from 'lucide-react';
+import { Trash2, Check } from 'lucide-react';
 
 export default function SwipeableListItem({ 
   children, 

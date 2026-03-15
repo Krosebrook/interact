@@ -11,7 +11,7 @@ import { Label } from '@/components/ui/label';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import TeamWellnessLeaderboard from '@/components/wellness/TeamWellnessLeaderboard';
 import FitbitSyncButton from '@/components/wellness/FitbitSyncButton';
-import { Activity, Droplet, Brain, Moon, Trophy, TrendingUp, Users, Calendar, Award, BarChart3 } from 'lucide-react';
+import { Activity, Droplet, Brain, Moon, Trophy, Users, Calendar, Award, BarChart3 } from 'lucide-react';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { Link } from 'react-router-dom';

@@ -27,8 +27,7 @@ import {
   ShoppingCart,
   Activity,
   Brain,
-  Trophy,
-  Store
+  Trophy
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import NotificationBell from './components/notifications/NotificationBell';

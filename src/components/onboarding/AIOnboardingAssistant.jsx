@@ -10,7 +10,6 @@ import {
   CheckCircle, 
   ArrowRight,
   Target,
-  Award,
   Lightbulb,
   Clock,
   X
@@ -18,7 +17,6 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import { createPageUrl } from '@/utils';
 import { Link } from 'react-router-dom';
-import { toast } from 'sonner';
 
 const ICON_MAP = {
   calendar: '📅',

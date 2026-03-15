@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -15,11 +15,9 @@ import {
   MessageSquare,
   Award,
   CheckCircle,
-  Search,
   Sparkles
 } from 'lucide-react';
 import LoadingSpinner from '../common/LoadingSpinner';
-import { toast } from 'sonner';
 import BurnoutInsightsPanel from '../wellness/BurnoutInsightsPanel';
 
 const STATUS_COLORS = {

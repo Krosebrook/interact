@@ -1,7 +1,6 @@
-import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { TrendingUp, MapPin, Calendar } from 'lucide-react';
+import { TrendingUp, Calendar } from 'lucide-react';
 
 export default function CareerPathVisualization({ careerHistory, currentRole, performanceMetrics, skills }) {
   const sortedHistory = [...(careerHistory || [])].sort((a, b) => 

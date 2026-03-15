@@ -4,7 +4,6 @@ import { base44 } from '@/api/base44Client';
 import { useAuth } from '../components/auth/AuthProvider';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Users, BookOpen, BarChart3, TrendingUp } from 'lucide-react';
-import LoadingSpinner from '../components/common/LoadingSpinner';
 import UserManagementPanel from '../components/admin/UserManagementPanel';
 import LearningPathManager from '../components/admin/LearningPathManager';
 import AdminAnalyticsOverview from '../components/admin/AdminAnalyticsOverview';

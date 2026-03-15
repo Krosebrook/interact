@@ -2,15 +2,12 @@ import { useState, useEffect } from 'react';
 import { useUserData } from '../components/hooks/useUserData';
 import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
-import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import {
   Trophy,
   Award,
   Users,
-  Gift,
   TrendingUp,
   Sparkles,
   Flame,

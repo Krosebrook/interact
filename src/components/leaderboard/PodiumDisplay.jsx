@@ -1,5 +1,4 @@
-import React from 'react';
-import { Crown, TrendingUp } from 'lucide-react';
+import { Crown } from 'lucide-react';
 
 export default function PodiumDisplay({ topThree }) {
   if (!topThree || topThree.length < 3) return null;

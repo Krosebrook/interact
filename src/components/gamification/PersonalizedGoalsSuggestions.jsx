@@ -4,7 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Sparkles, Target, TrendingUp, CheckCircle, X, RefreshCw } from 'lucide-react';
+import { Sparkles, Target, CheckCircle, X, RefreshCw } from 'lucide-react';
 import { toast } from 'sonner';
 import LoadingSpinner from '../common/LoadingSpinner';
 

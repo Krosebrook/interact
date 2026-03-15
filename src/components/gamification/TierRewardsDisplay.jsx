@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Lock, Check, Crown, Gift, Zap, Star } from 'lucide-react';
+import { Lock, Check, Crown, Star } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 
 const TIER_CONFIG = {

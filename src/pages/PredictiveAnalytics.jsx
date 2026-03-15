@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
-import { AlertTriangle, TrendingUp, Users, Brain, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
+import { AlertTriangle, Brain, CheckCircle, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 

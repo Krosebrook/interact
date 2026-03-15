@@ -7,8 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import TeamChallengeCreator from '../components/teams/TeamChallengeCreator';
-import { Trophy, Plus, Target, Calendar } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
+import { Trophy, Plus, Calendar } from 'lucide-react';
 import moment from 'moment';
 
 export default function TeamChallenges() {

@@ -39,7 +39,6 @@ import {
   Edit,
   Trash2,
   Ban,
-  Shield,
   UserCheck,
   Mail,
   Calendar,

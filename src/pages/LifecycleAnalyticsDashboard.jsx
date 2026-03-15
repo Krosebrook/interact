@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { BarChart3, TrendingDown, Users, Zap, Brain, Target } from 'lucide-react';
+import { TrendingDown, Users, Zap, Brain, Target } from 'lucide-react';
 import StateDistributionChart from '../components/lifecycle/analytics/StateDistributionChart';
 import ChurnTrendChart from '../components/lifecycle/analytics/ChurnTrendChart';
 import InterventionMetrics from '../components/lifecycle/analytics/InterventionMetrics';

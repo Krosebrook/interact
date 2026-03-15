@@ -35,7 +35,7 @@ import {
   RefreshCw
 } from 'lucide-react';
 import { toast } from 'sonner';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 export default function AIAssistedChallengeCreator({ open, onOpenChange }) {
   const queryClient = useQueryClient();
